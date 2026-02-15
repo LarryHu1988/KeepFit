@@ -5,6 +5,7 @@ struct EatWellView: View {
     let onSettingsTap: () -> Void
 
     @State private var selectedFood: FoodItem?
+    @State private var selectedDate = Date()
     @State private var intakeTime = Date()
     @State private var amountText = "120"
     @State private var showFoodSheet = false
@@ -14,7 +15,7 @@ struct EatWellView: View {
     private let compactFieldWidth: CGFloat = 112
 
     private var todayNutrition: DayNutritionSummary {
-        appState.dayNutrition(on: Date())
+        appState.dayNutrition(on: selectedDate)
     }
 
     private var targetCalories: Double {
@@ -22,7 +23,7 @@ struct EatWellView: View {
     }
 
     private var todayLogs: [FoodLog] {
-        appState.foodLogs(on: Date())
+        appState.foodLogs(on: selectedDate)
     }
 
     private var selectedUnitSymbol: String {
@@ -38,6 +39,7 @@ struct EatWellView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: cardSpacing) {
+                    weekCalendarStrip
                     intakeProgressCard
                     intakeMacroCard
                     todayIntakeCard
@@ -83,6 +85,15 @@ struct EatWellView: View {
         }
     }
 
+    private var weekCalendarStrip: some View {
+        WeekStripCalendarView(
+            selectedDate: $selectedDate,
+            indicatorColor: { date in
+                appState.foodLogs(on: date).isEmpty ? nil : .orange
+            }
+        )
+    }
+
     private var intakeProgressCard: some View {
         let remain = targetCalories - todayNutrition.calories
         let centerMain = remain >= 0 ? "剩余\n\(Int(remain))" : "超出\n\(Int(abs(remain)))"
@@ -93,7 +104,7 @@ struct EatWellView: View {
             accent: .orange
         ) {
             ProgressRing(
-                progress: appState.intakeProgress(on: Date()),
+                progress: appState.intakeProgress(on: selectedDate),
                 lineWidth: 12,
                 gradient: LinearGradient(colors: [.orange, .red], startPoint: .topLeading, endPoint: .bottomTrailing),
                 valueText: centerMain,
@@ -233,7 +244,7 @@ struct EatWellView: View {
             subtitle: nil,
             accent: .yellow
         ) {
-            Text(appState.foodAdvice(on: Date()))
+            Text(appState.foodAdvice(on: selectedDate))
                 .font(.body)
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -301,7 +312,7 @@ struct EatWellView: View {
         guard let food = selectedFood else { return }
         guard let amount = Double(amountText), amount > 0 else { return }
 
-        let now = Date()
+        let now = selectedDate
         let calendar = Calendar.current
         let selectedComponents = calendar.dateComponents([.hour, .minute], from: intakeTime)
         let date = calendar.date(bySettingHour: selectedComponents.hour ?? 0, minute: selectedComponents.minute ?? 0, second: 0, of: now) ?? now

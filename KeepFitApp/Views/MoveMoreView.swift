@@ -5,6 +5,7 @@ struct MoveMoreView: View {
     let onSettingsTap: () -> Void
 
     @State private var selectedExercise: ExerciseItem?
+    @State private var selectedDate = Date()
     @State private var exerciseTime = Date()
     @State private var durationText = "30"
     @State private var showExerciseSheet = false
@@ -14,17 +15,18 @@ struct MoveMoreView: View {
     private let compactFieldWidth: CGFloat = 112
 
     private var todaySummary: DayFitnessSummary {
-        appState.dayExercise(on: Date())
+        appState.dayExercise(on: selectedDate)
     }
 
     private var todayLogs: [ExerciseLog] {
-        appState.exerciseLogs(on: Date())
+        appState.exerciseLogs(on: selectedDate)
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: cardSpacing) {
+                    weekCalendarStrip
                     exerciseProgressCard
                     exerciseMetricsCard
                     todayExerciseCard
@@ -65,6 +67,15 @@ struct MoveMoreView: View {
         }
     }
 
+    private var weekCalendarStrip: some View {
+        WeekStripCalendarView(
+            selectedDate: $selectedDate,
+            indicatorColor: { date in
+                appState.exerciseLogs(on: date).isEmpty ? nil : .green
+            }
+        )
+    }
+
     private var exerciseProgressCard: some View {
         let goal = max(appState.profile.dailyExerciseGoal, 1)
         let burned = todaySummary.caloriesBurned
@@ -77,7 +88,7 @@ struct MoveMoreView: View {
             accent: .green
         ) {
             ProgressRing(
-                progress: appState.exerciseProgress(on: Date()),
+                progress: appState.exerciseProgress(on: selectedDate),
                 lineWidth: 12,
                 gradient: LinearGradient(colors: [.green, .mint], startPoint: .topLeading, endPoint: .bottomTrailing),
                 valueText: centerMain,
@@ -221,7 +232,7 @@ struct MoveMoreView: View {
             subtitle: nil,
             accent: .yellow
         ) {
-            Text(appState.exerciseAdvice(on: Date()))
+            Text(appState.exerciseAdvice(on: selectedDate))
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -285,7 +296,7 @@ struct MoveMoreView: View {
         guard let exercise = selectedExercise else { return }
         guard let minutes = Double(durationText), minutes > 0 else { return }
 
-        let now = Date()
+        let now = selectedDate
         let calendar = Calendar.current
         let selectedComponents = calendar.dateComponents([.hour, .minute], from: exerciseTime)
         let date = calendar.date(bySettingHour: selectedComponents.hour ?? 0, minute: selectedComponents.minute ?? 0, second: 0, of: now) ?? now

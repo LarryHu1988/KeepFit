@@ -41,6 +41,7 @@ struct LoseWeightView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: cardSpacing) {
+                    weekCalendarStrip
                     summaryRingCard
                     summaryMetricsCard
                     calendarCard
@@ -78,6 +79,20 @@ struct LoseWeightView: View {
                 syncBodyMetricInputs(for: newValue)
             }
         }
+    }
+
+    private var weekCalendarStrip: some View {
+        WeekStripCalendarView(
+            selectedDate: $selectedDate,
+            indicatorColor: { date in
+                let hasData = !appState.foodLogs(on: date).isEmpty || !appState.exerciseLogs(on: date).isEmpty
+                guard hasData else { return nil }
+                let balance = appState.dailyBalance(on: date)
+                if balance <= -80 { return .green }
+                if balance >= 80 { return .red }
+                return .orange
+            }
+        )
     }
 
     private var summaryRingCard: some View {
@@ -241,18 +256,32 @@ struct LoseWeightView: View {
 
     private var bodyMetricInputCard: some View {
         CardContainer(
-            title: "记录体重与体脂",
+            title: "记录体重体脂",
             subtitle: nil,
             accent: .mint
         ) {
             VStack(spacing: 10) {
                 HStack(spacing: 10) {
                     HStack(spacing: 6) {
+                        Button {
+                            shiftSelectedDate(by: -1)
+                        } label: {
+                            Image(systemName: "chevron.left.circle.fill")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+
                         Image(systemName: "calendar")
                             .foregroundStyle(.secondary)
-                        DatePicker("日期", selection: $selectedDate, displayedComponents: [.date])
-                            .labelsHidden()
-                            .datePickerStyle(.compact)
+                        Text(Formatters.monthDay.string(from: selectedDate))
+
+                        Button {
+                            shiftSelectedDate(by: 1)
+                        } label: {
+                            Image(systemName: "chevron.right.circle.fill")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
                     }
                     .font(.subheadline)
 
@@ -369,5 +398,10 @@ struct LoseWeightView: View {
 
         appState.upsertBodyMetric(date: selectedDate, weightKg: weight, bodyFatPercent: bodyFat)
         appState.profile.weightKg = weight
+    }
+
+    private func shiftSelectedDate(by dayDelta: Int) {
+        let calendar = Calendar.current
+        selectedDate = calendar.date(byAdding: .day, value: dayDelta, to: selectedDate) ?? selectedDate
     }
 }

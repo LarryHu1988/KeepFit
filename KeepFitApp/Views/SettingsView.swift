@@ -11,6 +11,9 @@ struct SettingsView: View {
     @AppStorage("keepfit.autoSync") private var autoSyncEnabled = false
 
     @State private var selectedAvatarItem: PhotosPickerItem?
+    @State private var showSexSheet = false
+    @State private var showActivitySheet = false
+    @State private var activeInfo: SettingsInfoTopic?
 
     var body: some View {
         NavigationStack {
@@ -34,7 +37,7 @@ struct SettingsView: View {
                         }
                     }
                 } header: {
-                    Label("个人头像", systemImage: "person.crop.circle")
+                    Text("个人头像")
                 }
 
                 Section {
@@ -62,12 +65,8 @@ struct SettingsView: View {
                             Text("性别")
                         }
                         Spacer()
-                        Menu {
-                            ForEach(BiologicalSex.allCases) { sex in
-                                Button(sex.title) {
-                                    appState.profile.sex = sex
-                                }
-                            }
+                        Button {
+                            showSexSheet = true
                         } label: {
                             HStack(spacing: 6) {
                                 Text(appState.profile.sex.title)
@@ -76,6 +75,7 @@ struct SettingsView: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
+                        .buttonStyle(.plain)
                     }
 
                     HStack {
@@ -84,12 +84,8 @@ struct SettingsView: View {
                             Text("活动水平")
                         }
                         Spacer()
-                        Menu {
-                            ForEach(ActivityLevel.allCases) { level in
-                                Button(level.title) {
-                                    appState.profile.activityLevel = level
-                                }
-                            }
+                        Button {
+                            showActivitySheet = true
                         } label: {
                             HStack(spacing: 6) {
                                 Text(appState.profile.activityLevel.title)
@@ -98,9 +94,10 @@ struct SettingsView: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
+                        .buttonStyle(.plain)
                     }
                 } header: {
-                    Label("基础信息", systemImage: "person.text.rectangle")
+                    Text("基础信息")
                 }
 
                 Section {
@@ -110,8 +107,19 @@ struct SettingsView: View {
 
                     HStack {
                         HStack(spacing: 10) {
+                            rowIcon("heart.text.square.fill", .green)
+                            Text("基础代谢 BMR")
+                            infoButton(.bmr)
+                        }
+                        Spacer()
+                        valueWithUnit(value: "\(Int(appState.profile.bmr))", unit: "kcal")
+                    }
+
+                    HStack {
+                        HStack(spacing: 10) {
                             rowIcon("speedometer", .green)
-                            Text("维持消耗")
+                            Text("维持消耗 TDEE")
+                            infoButton(.tdee)
                         }
                         Spacer()
                         valueWithUnit(value: "\(Int(appState.profile.dailyMaintenanceCalories))", unit: "kcal")
@@ -121,62 +129,13 @@ struct SettingsView: View {
                         HStack(spacing: 10) {
                             rowIcon("fork.knife.circle.fill", .red)
                             Text("减脂建议摄入")
+                            infoButton(.intake)
                         }
                         Spacer()
                         valueWithUnit(value: "\(Int(appState.profile.recommendedIntakeForFatLoss))", unit: "kcal")
                     }
                 } header: {
-                    Label("目标与建议", systemImage: "chart.line.uptrend.xyaxis")
-                }
-
-                Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack(spacing: 10) {
-                            rowIcon("heart.text.square.fill", .green)
-                            Text("基础代谢 BMR (Mifflin-St Jeor)")
-                                .font(.subheadline.weight(.semibold))
-                        }
-                        Text("男: 10×体重(kg) + 6.25×身高(cm) - 5×年龄 + 5")
-                            .font(.caption)
-                        Text("女: 10×体重(kg) + 6.25×身高(cm) - 5×年龄 - 161")
-                            .font(.caption)
-                        Text("当前 BMR ≈ \(Int(appState.profile.bmr)) kcal")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-
-                        Divider()
-
-                        HStack(spacing: 10) {
-                            rowIcon("speedometer", .green)
-                            Text("维持消耗 TDEE")
-                                .font(.subheadline.weight(.semibold))
-                        }
-                        Text("TDEE = BMR × 活动系数")
-                            .font(.caption)
-                        Text("活动系数: 久坐 1.2 / 轻度 1.375 / 中度 1.55 / 高强度 1.725")
-                            .font(.caption)
-                        Text("当前 TDEE ≈ \(Int(appState.profile.dailyMaintenanceCalories)) kcal")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-
-                        Divider()
-
-                        HStack(spacing: 10) {
-                            rowIcon("fork.knife.circle.fill", .red)
-                            Text("建议摄入与净差计算")
-                                .font(.subheadline.weight(.semibold))
-                        }
-                        Text("减脂建议摄入 = max(1200, TDEE - 450)")
-                            .font(.caption)
-                        Text("当前建议摄入 ≈ \(Int(appState.profile.recommendedIntakeForFatLoss)) kcal")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Text("当日净差 = 摄入 - (TDEE + 运动消耗)，负值为赤字，正值为超量。")
-                            .font(.caption)
-                    }
-                    .padding(.vertical, 2)
-                } header: {
-                    Label("科学计算说明", systemImage: "book.closed")
+                    Text("目标与建议")
                 }
 
                 Section {
@@ -201,7 +160,7 @@ struct SettingsView: View {
                         }
                     }
                 } header: {
-                    Label("常用设置", systemImage: "gearshape.2")
+                    Text("常用设置")
                 }
             }
             .navigationTitle("个人设置")
@@ -223,6 +182,45 @@ struct SettingsView: View {
                     }
                     selectedAvatarItem = nil
                 }
+            }
+            .sheet(isPresented: $showSexSheet) {
+                selectionSheet(
+                    title: "选择性别",
+                    options: BiologicalSex.allCases,
+                    selectedTitle: appState.profile.sex.title,
+                    label: { $0.title },
+                    onSelect: { value in
+                        appState.profile.sex = value
+                    },
+                    onClose: {
+                        showSexSheet = false
+                    }
+                )
+                .presentationDetents([.fraction(0.35)])
+                .presentationDragIndicator(.visible)
+            }
+            .sheet(isPresented: $showActivitySheet) {
+                selectionSheet(
+                    title: "选择活动水平",
+                    options: ActivityLevel.allCases,
+                    selectedTitle: appState.profile.activityLevel.title,
+                    label: { $0.title },
+                    onSelect: { value in
+                        appState.profile.activityLevel = value
+                    },
+                    onClose: {
+                        showActivitySheet = false
+                    }
+                )
+                .presentationDetents([.fraction(0.45)])
+                .presentationDragIndicator(.visible)
+            }
+            .alert(item: $activeInfo) { topic in
+                Alert(
+                    title: Text(topic.title),
+                    message: Text(topic.message),
+                    dismissButton: .default(Text("知道了"))
+                )
             }
         }
     }
@@ -251,6 +249,17 @@ struct SettingsView: View {
         Image(systemName: icon)
             .foregroundStyle(color)
             .frame(width: 18)
+    }
+
+    private func infoButton(_ topic: SettingsInfoTopic) -> some View {
+        Button {
+            activeInfo = topic
+        } label: {
+            Image(systemName: "info.circle")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .buttonStyle(.plain)
     }
 
     private func iconTextFieldRow(icon: String, title: String, text: Binding<String>, unit: String, keyboard: UIKeyboardType, color: Color) -> some View {
@@ -285,6 +294,46 @@ struct SettingsView: View {
         .frame(width: 130, alignment: .trailing)
     }
 
+    private func selectionSheet<T: Identifiable>(
+        title: String,
+        options: [T],
+        selectedTitle: String,
+        label: @escaping (T) -> String,
+        onSelect: @escaping (T) -> Void,
+        onClose: @escaping () -> Void
+    ) -> some View {
+        NavigationStack {
+            List {
+                ForEach(options) { option in
+                    Button {
+                        onSelect(option)
+                        onClose()
+                    } label: {
+                        HStack {
+                            Text(label(option))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            if label(option) == selectedTitle {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(Color.accentColor)
+                            }
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("完成") {
+                        onClose()
+                    }
+                }
+            }
+        }
+    }
+
     private func binding<T>(_ keyPath: WritableKeyPath<UserProfile, T>) -> Binding<T> {
         Binding(
             get: { appState.profile[keyPath: keyPath] },
@@ -301,5 +350,35 @@ struct SettingsView: View {
                 }
             }
         )
+    }
+}
+
+private enum SettingsInfoTopic: String, Identifiable {
+    case bmr
+    case tdee
+    case intake
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .bmr:
+            return "基础代谢 BMR"
+        case .tdee:
+            return "维持消耗 TDEE"
+        case .intake:
+            return "减脂建议摄入"
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .bmr:
+            return "Mifflin-St Jeor 公式: 男 = 10×体重(kg) + 6.25×身高(cm) - 5×年龄 + 5; 女 = 10×体重(kg) + 6.25×身高(cm) - 5×年龄 - 161。"
+        case .tdee:
+            return "TDEE = BMR × 活动系数。活动系数: 久坐 1.2 / 轻度活动 1.375 / 中度活动 1.55 / 高强度活动 1.725。"
+        case .intake:
+            return "减脂建议摄入 = max(1200, TDEE - 450)。当日净差 = 摄入 - (TDEE + 运动消耗)，负值为赤字，正值为超量。"
+        }
     }
 }
