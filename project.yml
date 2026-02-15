@@ -14,11 +14,6 @@ settings:
     INFOPLIST_KEY_UILaunchScreen_Generation: YES
     CODE_SIGN_STYLE: Automatic
 
-packages:
-  PhosphorSwift:
-    url: https://github.com/phosphor-icons/swift
-    branch: main
-
 targets:
   KeepFit:
     type: application
@@ -31,13 +26,12 @@ targets:
     resources:
       - path: KeepFitApp/Assets.xcassets
     dependencies:
-      - package: PhosphorSwift
       - sdk: Charts.framework
       - sdk: PhotosUI.framework
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.larry.keepfit
-        MARKETING_VERSION: 0.1.1
+        MARKETING_VERSION: 0.2.0
         CURRENT_PROJECT_VERSION: 1
         INFOPLIST_KEY_CFBundleDisplayName: KeepFit
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: 允许你选择头像图片

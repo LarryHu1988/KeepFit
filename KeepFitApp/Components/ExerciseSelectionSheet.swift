@@ -1,9 +1,8 @@
-import PhosphorSwift
 import SwiftUI
 
 struct ExerciseSelectionSheet: View {
     let items: [ExerciseItem]
-    let iconForItem: (ExerciseItem) -> Ph
+    let iconForItem: (ExerciseItem) -> String
     let onSelect: (ExerciseItem) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -27,7 +26,7 @@ struct ExerciseSelectionSheet: View {
                                     dismiss()
                                 } label: {
                                     HStack(spacing: 12) {
-                                        AppIconBadge(icon: iconForItem(item), tint: .green, size: 30)
+                                        AppIconBadge(icon: iconForItem(item), seed: item.id, size: 30)
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(item.name)
                                                 .foregroundStyle(.primary)

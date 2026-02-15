@@ -1,22 +1,22 @@
-import PhosphorSwift
 import SwiftUI
 
 struct AppIconBadge: View {
-    let icon: Ph
-    let tint: Color
+    let icon: String
+    let seed: String
     let size: CGFloat
-    var weight: Ph.IconWeight = .duotone
 
     var body: some View {
-        icon.weight(weight)
-            .color(tint)
-            .aspectRatio(contentMode: .fit)
-            .frame(width: size * 0.56, height: size * 0.56)
-            .padding(size * 0.22)
-            .frame(width: size, height: size)
-            .background(
-                RoundedRectangle(cornerRadius: size * 0.34, style: .continuous)
-                    .fill(tint.opacity(0.16))
-            )
+        Group {
+            if icon.hasPrefix("sf:") {
+                Image(systemName: String(icon.dropFirst(3)))
+                    .font(.system(size: size * 0.62, weight: .semibold))
+                    .foregroundStyle(.primary)
+            } else {
+                Text(icon)
+                    .font(.system(size: size * 0.72))
+            }
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
     }
 }

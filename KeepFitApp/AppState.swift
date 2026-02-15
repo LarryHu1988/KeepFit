@@ -1,5 +1,4 @@
 import Foundation
-import PhosphorSwift
 
 struct DailyNutritionRecord: Identifiable {
     var id: Date { date }
@@ -74,8 +73,8 @@ final class AppState: ObservableObject {
         let loadedBodyMetrics = store.load([BodyMetricLog].self, for: .bodyMetrics) ?? []
 
         profile = loadedProfile
-        foodLibrary = loadedFoods
-        exerciseLibrary = loadedExercises
+        foodLibrary = Self.mergeFoodLibrary(loadedFoods, with: SeedData.foodLibrary)
+        exerciseLibrary = Self.mergeExerciseLibrary(loadedExercises, with: SeedData.exerciseLibrary)
         foodLogs = loadedFoodLogs.sorted(by: { $0.date > $1.date })
         exerciseLogs = loadedExerciseLogs.sorted(by: { $0.date > $1.date })
         bodyMetricLogs = loadedBodyMetrics.sorted(by: { $0.date < $1.date })
@@ -90,6 +89,32 @@ final class AppState: ObservableObject {
                 )
             )
         }
+    }
+
+    private static func mergeFoodLibrary(_ existing: [FoodItem], with seed: [FoodItem]) -> [FoodItem] {
+        var merged: [FoodItem] = []
+        var seen = Set<String>()
+
+        for item in existing where seen.insert(item.id).inserted {
+            merged.append(item)
+        }
+        for item in seed where seen.insert(item.id).inserted {
+            merged.append(item)
+        }
+        return merged
+    }
+
+    private static func mergeExerciseLibrary(_ existing: [ExerciseItem], with seed: [ExerciseItem]) -> [ExerciseItem] {
+        var merged: [ExerciseItem] = []
+        var seen = Set<String>()
+
+        for item in existing where seen.insert(item.id).inserted {
+            merged.append(item)
+        }
+        for item in seed where seen.insert(item.id).inserted {
+            merged.append(item)
+        }
+        return merged
     }
 
     func addFoodLog(date: Date, item: FoodItem, grams: Double) {
@@ -151,22 +176,22 @@ final class AppState: ObservableObject {
         exerciseLogs.removeAll(where: { $0.id == log.id })
     }
 
-    func foodIcon(for food: FoodItem) -> Ph {
+    func foodIcon(for food: FoodItem) -> String {
         IconCatalog.foodIcon(id: food.id, category: food.category)
     }
 
-    func foodIcon(forFoodID foodID: String) -> Ph {
+    func foodIcon(forFoodID foodID: String) -> String {
         if let item = foodLibrary.first(where: { $0.id == foodID }) {
             return foodIcon(for: item)
         }
         return IconCatalog.foodIcon(id: foodID, category: .staple)
     }
 
-    func exerciseIcon(for exercise: ExerciseItem) -> Ph {
+    func exerciseIcon(for exercise: ExerciseItem) -> String {
         IconCatalog.exerciseIcon(id: exercise.id, category: exercise.category)
     }
 
-    func exerciseIcon(forExerciseID exerciseID: String) -> Ph {
+    func exerciseIcon(forExerciseID exerciseID: String) -> String {
         if let item = exerciseLibrary.first(where: { $0.id == exerciseID }) {
             return exerciseIcon(for: item)
         }
@@ -277,13 +302,13 @@ final class AppState: ObservableObject {
         let remaining = profile.dailyExerciseGoal - summary.caloriesBurned
 
         if summary.durationMinutes == 0 {
-            return "今天还没有运动记录。建议先完成30分钟快走或20分钟间歇训练。"
+            return "今天还没有运动记录。建议先完成 30 min 快走或 20 min 间歇训练。"
         }
         if remaining > 120 {
-            return "距离今日运动目标还差约 \(Int(remaining)) kcal，可加 20-30 分钟有氧。"
+            return "距离今日运动目标还差约 \(Int(remaining)) kcal，可加 20-30 min 有氧。"
         }
         if remaining > 0 {
-            return "你已接近目标，再补 10-15 分钟拉伸或轻有氧即可。"
+            return "你已接近目标，再补 10-15 min 拉伸或轻有氧即可。"
         }
         return "今日运动目标已达成，建议做低强度拉伸帮助恢复。"
     }

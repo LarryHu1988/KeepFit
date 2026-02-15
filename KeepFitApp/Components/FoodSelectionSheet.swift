@@ -1,9 +1,8 @@
-import PhosphorSwift
 import SwiftUI
 
 struct FoodSelectionSheet: View {
     let items: [FoodItem]
-    let iconForItem: (FoodItem) -> Ph
+    let iconForItem: (FoodItem) -> String
     let onSelect: (FoodItem) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -27,11 +26,11 @@ struct FoodSelectionSheet: View {
                                     dismiss()
                                 } label: {
                                     HStack(spacing: 12) {
-                                        AppIconBadge(icon: iconForItem(item), tint: .orange, size: 30)
+                                        AppIconBadge(icon: iconForItem(item), seed: item.id, size: 30)
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(item.name)
                                                 .foregroundStyle(.primary)
-                                            Text("\(Int(item.caloriesPer100g)) kcal/100g")
+                                            Text("\(Int(item.caloriesPer100g)) kcal/100\(IconCatalog.foodUnit(id: item.id, category: item.category).symbol)")
                                                 .font(.caption)
                                                 .foregroundStyle(.secondary)
                                         }

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct CalendarHeatmapView: View {
-    let month: Date
     let cells: [Date?]
     @Binding var selectedDate: Date
     let dayBalance: (Date) -> Double
@@ -12,9 +11,6 @@ struct CalendarHeatmapView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(Formatters.monthTitle.string(from: month))
-                .font(.headline)
-
             HStack {
                 ForEach(weekTitles, id: \.self) { day in
                     Text(day)

@@ -9,7 +9,9 @@ struct MoveMoreView: View {
     @State private var durationText = "30"
     @State private var showExerciseSheet = false
 
-    private let cardSpacing: CGFloat = 14
+    private let cardSpacing: CGFloat = 24
+    private let fieldHeight: CGFloat = 44
+    private let compactFieldWidth: CGFloat = 112
 
     private var todaySummary: DayFitnessSummary {
         appState.dayExercise(on: Date())
@@ -24,15 +26,21 @@ struct MoveMoreView: View {
             ScrollView {
                 VStack(spacing: cardSpacing) {
                     exerciseProgressCard
+                    exerciseMetricsCard
                     todayExerciseCard
                     adviceCard
                     dailyHistoryCard
                 }
                 .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                .padding(.top, 56)
+                .padding(.bottom, 18)
+                .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .green))
             .navigationTitle("迈开腿")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(Color(.systemBackground), for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -59,46 +67,49 @@ struct MoveMoreView: View {
     }
 
     private var exerciseProgressCard: some View {
-        let remaining = appState.profile.dailyExerciseGoal - todaySummary.caloriesBurned
+        let goal = max(appState.profile.dailyExerciseGoal, 1)
+        let burned = todaySummary.caloriesBurned
+        let remaining = goal - burned
         let centerMain = remaining >= 0 ? "剩余\n\(Int(remaining))" : "超额\n\(Int(abs(remaining)))"
 
         return CardContainer(
             title: "今日运动消耗",
             subtitle: nil,
-            icon: "figure.run.circle.fill",
             accent: .green
         ) {
-            HStack(spacing: 16) {
-                ProgressRing(
-                    progress: appState.exerciseProgress(on: Date()),
-                    lineWidth: 12,
-                    gradient: LinearGradient(colors: [.green, .mint], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    valueText: centerMain,
-                    caption: "目标 \(Int(appState.profile.dailyExerciseGoal)) kcal"
-                )
-                .frame(width: 150, height: 150)
+            ProgressRing(
+                progress: appState.exerciseProgress(on: Date()),
+                lineWidth: 12,
+                gradient: LinearGradient(colors: [.green, .mint], startPoint: .topLeading, endPoint: .bottomTrailing),
+                valueText: centerMain,
+                caption: "目标 \(Int(goal)) kcal"
+            )
+            .frame(width: 186, height: 186)
+            .frame(maxWidth: .infinity)
+        }
+    }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Image(systemName: "timer")
-                            .foregroundStyle(.green)
-                        Text("时长: \(Int(todaySummary.durationMinutes)) 分钟")
-                            .font(.subheadline)
-                    }
+    private var exerciseMetricsCard: some View {
+        let goal = max(appState.profile.dailyExerciseGoal, 1)
+        let burned = todaySummary.caloriesBurned
+        let duration = todaySummary.durationMinutes
 
-                    HStack {
-                        Image(systemName: "flame.fill")
-                            .foregroundStyle(.orange)
-                        Text("消耗: \(Int(todaySummary.caloriesBurned)) kcal")
-                            .font(.subheadline)
-                    }
-
-                    Text(remaining > 0 ? "继续完成今日目标" : "今日目标已达成")
-                        .font(.caption)
-                        .foregroundStyle(remaining > 0 ? Color.secondary : Color.green)
-                        .padding(.top, 6)
-                }
+        return CardContainer(
+            title: "运动指标",
+            subtitle: nil,
+            accent: .green
+        ) {
+            HStack(spacing: 0) {
+                metricColumn(symbol: "flame.fill", color: .orange, name: "消耗", value: "\(Int(burned)) kcal")
+                metricColumn(symbol: "clock.fill", color: .blue, name: "时长", value: "\(Int(duration)) min")
+                metricColumn(symbol: "target", color: .green, name: "目标", value: "\(Int(goal)) kcal")
             }
+            .frame(maxWidth: .infinity)
+
+            Text(burned >= goal ? "今日目标已达成" : "继续完成今日目标")
+                .font(.caption)
+                .foregroundStyle(burned >= goal ? Color.green : Color.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
     }
 
@@ -106,7 +117,6 @@ struct MoveMoreView: View {
         CardContainer(
             title: "今日锻炼记录",
             subtitle: nil,
-            icon: "list.bullet.rectangle.portrait",
             accent: .green
         ) {
             VStack(spacing: 12) {
@@ -114,10 +124,10 @@ struct MoveMoreView: View {
                     Button {
                         showExerciseSheet = true
                     } label: {
-                        HStack {
+                        HStack(spacing: 8) {
                             AppIconBadge(
                                 icon: appState.exerciseIcon(for: selectedExercise ?? appState.exerciseLibrary.first ?? SeedData.exerciseLibrary[0]),
-                                tint: .green,
+                                seed: selectedExercise?.id ?? "exercise_selector",
                                 size: 30
                             )
                             Text(selectedExercise?.name ?? "选择运动项目")
@@ -128,27 +138,40 @@ struct MoveMoreView: View {
                                 .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity, minHeight: fieldHeight, alignment: .leading)
                         .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
                     .buttonStyle(.plain)
 
-                    TextField("分钟", text: $durationText)
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 78)
+                    HStack(spacing: 6) {
+                        TextField("duration", text: $durationText)
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                        Text("min")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal, 10)
+                    .frame(width: compactFieldWidth, height: fieldHeight)
+                    .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                 }
 
                 HStack(spacing: 10) {
-                    DatePicker("锻炼时间", selection: $exerciseTime, displayedComponents: [.hourAndMinute])
-                        .labelsHidden()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    HStack {
+                        DatePicker("锻炼时间", selection: $exerciseTime, displayedComponents: [.hourAndMinute])
+                            .labelsHidden()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.horizontal, 10)
+                    .frame(maxWidth: .infinity, minHeight: fieldHeight)
+                    .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
 
                     Button("添加") {
                         addExerciseLog()
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.green)
+                    .frame(width: compactFieldWidth, height: fieldHeight)
                 }
 
                 Divider()
@@ -161,14 +184,16 @@ struct MoveMoreView: View {
                 } else {
                     ForEach(todayLogs) { log in
                         HStack(spacing: 10) {
-                            AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), tint: .green, size: 24)
+                            AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), seed: log.exerciseID, size: 24)
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(log.exerciseName)
                                     .font(.subheadline.weight(.semibold))
-                                Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(Int(log.durationMinutes)) 分钟")
+                                    .lineLimit(1)
+                                Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(formattedNumber(log.durationMinutes)) min")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
+                                    .lineLimit(1)
                             }
 
                             Spacer()
@@ -195,7 +220,6 @@ struct MoveMoreView: View {
         CardContainer(
             title: "今日锻炼建议",
             subtitle: nil,
-            icon: "lightbulb.fill",
             accent: .yellow
         ) {
             Text(appState.exerciseAdvice(on: Date()))
@@ -206,9 +230,8 @@ struct MoveMoreView: View {
     private var dailyHistoryCard: some View {
         let records = appState.dailyExerciseRecords(limit: 21)
         return CardContainer(
-            title: "每天的锻炼记录",
+            title: "每日锻炼记录",
             subtitle: nil,
-            icon: "calendar.badge.clock",
             accent: .teal
         ) {
             if records.isEmpty {
@@ -224,14 +247,39 @@ struct MoveMoreView: View {
                             Label("\(Int(record.caloriesBurned)) kcal", systemImage: "flame.fill")
                                 .font(.caption)
                                 .foregroundStyle(.green)
-                            Label("\(Int(record.minutes)) 分钟", systemImage: "timer")
+                            Label("\(Int(record.minutes)) min", systemImage: "timer")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                                .lineLimit(1)
                         }
                     }
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func metricColumn(symbol: String, color: Color, name: String, value: String) -> some View {
+        VStack(spacing: 5) {
+            Image(systemName: symbol)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(color)
+            Text(name)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .monospacedDigit()
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func formattedNumber(_ value: Double) -> String {
+        if abs(value.rounded() - value) < 0.05 {
+            return String(Int(value.rounded()))
+        }
+        return String(format: "%.1f", value)
     }
 
     private func addExerciseLog() {

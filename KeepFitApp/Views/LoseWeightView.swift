@@ -9,7 +9,8 @@ struct LoseWeightView: View {
     @State private var weightText = ""
     @State private var bodyFatText = ""
 
-    private let cardSpacing: CGFloat = 14
+    private let cardSpacing: CGFloat = 24
+    private let fieldHeight: CGFloat = 44
     private let deficitGoal: Double = 450
 
     private var todayNutrition: DayNutritionSummary {
@@ -41,6 +42,7 @@ struct LoseWeightView: View {
             ScrollView {
                 VStack(spacing: cardSpacing) {
                     summaryRingCard
+                    summaryMetricsCard
                     calendarCard
                     selectedDayCard
                     bodyMetricInputCard
@@ -49,10 +51,15 @@ struct LoseWeightView: View {
                     bodyFatTrendCard
                 }
                 .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                .padding(.top, 56)
+                .padding(.bottom, 18)
+                .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .yellow))
             .navigationTitle("减个肥")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(Color(.systemBackground), for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -92,34 +99,43 @@ struct LoseWeightView: View {
         return CardContainer(
             title: "今日综合热量",
             subtitle: nil,
-            icon: "sun.max.fill",
             accent: .orange
         ) {
-            HStack(spacing: 16) {
-                ProgressRing(
-                    progress: progress,
-                    lineWidth: 12,
-                    gradient: LinearGradient(
-                        colors: surplus > 0 ? [.red, .pink] : [.orange, .yellow],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    valueText: centerMain,
-                    caption: "目标 \(Int(deficitGoal)) kcal"
-                )
-                .frame(width: 150, height: 150)
+            ProgressRing(
+                progress: progress,
+                lineWidth: 12,
+                gradient: LinearGradient(
+                    colors: surplus > 0 ? [.red, .pink] : [.orange, .yellow],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                valueText: centerMain,
+                caption: "目标 \(Int(deficitGoal)) kcal"
+            )
+            .frame(width: 186, height: 186)
+            .frame(maxWidth: .infinity)
+        }
+    }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    row(icon: "flame", title: "基础代谢+日常", value: appState.profile.dailyMaintenanceCalories)
-                    row(icon: "figure.run", title: "运动消耗", value: todayExercise.caloriesBurned)
-                    row(icon: "fork.knife", title: "饮食摄入", value: todayNutrition.calories)
+    private var summaryMetricsCard: some View {
+        let surplus = max(0, todayBalance)
 
-                    Text(surplus > 0 ? "今天处于热量超量，建议补充有氧。" : "今天处于热量赤字，继续保持。")
-                        .font(.caption)
-                        .foregroundStyle(surplus > 0 ? Color.red : Color.green)
-                        .padding(.top, 6)
-                }
+        return CardContainer(
+            title: "热量构成",
+            subtitle: nil,
+            accent: .orange
+        ) {
+            HStack(spacing: 0) {
+                summaryColumn(symbol: "bolt.fill", color: .orange, title: "基础消耗", value: "\(Int(appState.profile.dailyMaintenanceCalories)) kcal")
+                summaryColumn(symbol: "figure.run", color: .green, title: "运动消耗", value: "\(Int(todayExercise.caloriesBurned)) kcal")
+                summaryColumn(symbol: "fork.knife", color: .red, title: "饮食摄入", value: "\(Int(todayNutrition.calories)) kcal")
             }
+            .frame(maxWidth: .infinity)
+
+            Text(surplus > 0 ? "今天处于热量超量，建议补充有氧。" : "今天处于热量赤字，继续保持。")
+                .font(.caption)
+                .foregroundStyle(surplus > 0 ? Color.red : Color.green)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
     }
 
@@ -127,7 +143,6 @@ struct LoseWeightView: View {
         CardContainer(
             title: "当月赤字日历",
             subtitle: nil,
-            icon: "calendar.badge.plus",
             accent: .yellow
         ) {
             VStack(spacing: 12) {
@@ -151,7 +166,6 @@ struct LoseWeightView: View {
                 }
 
                 CalendarHeatmapView(
-                    month: monthCursor,
                     cells: appState.monthlyGrid(for: monthCursor),
                     selectedDate: $selectedDate,
                     dayBalance: { date in
@@ -172,7 +186,6 @@ struct LoseWeightView: View {
         return CardContainer(
             title: "\(Formatters.monthDay.string(from: selectedDate)) 记录",
             subtitle: nil,
-            icon: "list.bullet.below.rectangle",
             accent: .blue
         ) {
             VStack(alignment: .leading, spacing: 10) {
@@ -197,11 +210,12 @@ struct LoseWeightView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         ForEach(foodLogs.prefix(4)) { log in
                             HStack {
-                                AppIconBadge(icon: appState.foodIcon(forFoodID: log.foodID), tint: .orange, size: 22)
-                                Text("\(Formatters.hourMinute.string(from: log.date)) \(log.foodName) \(Int(log.weightGrams))\(appState.foodUnitSymbol(forFoodID: log.foodID))")
+                                AppIconBadge(icon: appState.foodIcon(forFoodID: log.foodID), seed: log.foodID, size: 22)
+                                Text("\(Formatters.hourMinute.string(from: log.date)) \(log.foodName) \(formattedNumber(log.weightGrams))\(appState.foodUnitSymbol(forFoodID: log.foodID))")
                                     .font(.caption)
+                                    .lineLimit(1)
                                 Spacer()
-                                Text("+\(Int(log.calories))")
+                                Text("+\(Int(log.calories)) kcal")
                                     .font(.caption)
                                     .foregroundStyle(.orange)
                             }
@@ -209,11 +223,12 @@ struct LoseWeightView: View {
 
                         ForEach(exerciseLogs.prefix(4)) { log in
                             HStack {
-                                AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), tint: .green, size: 22)
-                                Text("\(Formatters.hourMinute.string(from: log.date)) \(log.exerciseName) \(Int(log.durationMinutes))分")
+                                AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), seed: log.exerciseID, size: 22)
+                                Text("\(Formatters.hourMinute.string(from: log.date)) \(log.exerciseName) \(formattedNumber(log.durationMinutes)) min")
                                     .font(.caption)
+                                    .lineLimit(1)
                                 Spacer()
-                                Text("-\(Int(log.caloriesBurned(weightKg: appState.profile.weightKg)))")
+                                Text("-\(Int(log.caloriesBurned(weightKg: appState.profile.weightKg))) kcal")
                                     .font(.caption)
                                     .foregroundStyle(.green)
                             }
@@ -228,7 +243,6 @@ struct LoseWeightView: View {
         CardContainer(
             title: "记录体重与体脂",
             subtitle: nil,
-            icon: "person.crop.circle.badge.checkmark",
             accent: .mint
         ) {
             VStack(spacing: 10) {
@@ -236,36 +250,43 @@ struct LoseWeightView: View {
                     Label(Formatters.monthDay.string(from: selectedDate), systemImage: "calendar")
                         .font(.subheadline)
                     Spacer()
+                    Button("保存") {
+                        saveBodyMetric()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.mint)
+                    .controlSize(.small)
                 }
 
                 HStack(spacing: 10) {
-                    HStack {
+                    HStack(spacing: 6) {
                         Image(systemName: "scalemass")
                             .foregroundStyle(.mint)
-                        TextField("体重 kg", text: $weightText)
+                        TextField("weight", text: $weightText)
                             .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                        Text("kg")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
                     }
                     .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity, minHeight: fieldHeight)
                     .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
 
-                    HStack {
+                    HStack(spacing: 6) {
                         Image(systemName: "drop.circle")
                             .foregroundStyle(.pink)
-                        TextField("体脂 %", text: $bodyFatText)
+                        TextField("body fat", text: $bodyFatText)
                             .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                        Text("%")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
                     }
                     .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity, minHeight: fieldHeight)
                     .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                 }
-
-                Button("保存体测数据") {
-                    saveBodyMetric()
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.mint)
-                .frame(maxWidth: .infinity, alignment: .trailing)
             }
         }
     }
@@ -274,7 +295,6 @@ struct LoseWeightView: View {
         CardContainer(
             title: "每日卡路里趋势",
             subtitle: nil,
-            icon: "chart.xyaxis.line",
             accent: .blue
         ) {
             CalorieTrendChartView(calorieTrends: appState.calorieTrends(days: 45))
@@ -285,7 +305,6 @@ struct LoseWeightView: View {
         CardContainer(
             title: "体重趋势",
             subtitle: nil,
-            icon: "figure.stand",
             accent: .mint
         ) {
             WeightTrendChartView(bodyMetrics: appState.weightTrends(limit: 45))
@@ -296,7 +315,6 @@ struct LoseWeightView: View {
         CardContainer(
             title: "体脂趋势",
             subtitle: nil,
-            icon: "drop.fill",
             accent: .pink
         ) {
             BodyFatTrendChartView(bodyMetrics: appState.weightTrends(limit: 45))
@@ -304,17 +322,20 @@ struct LoseWeightView: View {
     }
 
     @ViewBuilder
-    private func row(icon: String, title: String, value: Double) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon)
-                .foregroundStyle(.secondary)
+    private func summaryColumn(symbol: String, color: Color, title: String, value: String) -> some View {
+        VStack(spacing: 5) {
+            Image(systemName: symbol)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(color)
             Text(title)
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Spacer()
-            Text("\(Int(value)) kcal")
-                .font(.caption.weight(.semibold))
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .monospacedDigit()
+                .lineLimit(1)
         }
+        .frame(maxWidth: .infinity)
     }
 
     private func syncBodyMetricInputs(for date: Date) {
@@ -326,6 +347,13 @@ struct LoseWeightView: View {
             weightText = String(format: "%.1f", latest.weightKg)
             bodyFatText = String(format: "%.1f", latest.bodyFatPercent)
         }
+    }
+
+    private func formattedNumber(_ value: Double) -> String {
+        if abs(value.rounded() - value) < 0.05 {
+            return String(Int(value.rounded()))
+        }
+        return String(format: "%.1f", value)
     }
 
     private func saveBodyMetric() {

@@ -28,25 +28,39 @@ struct SettingsView: View {
                     }
 
                     PhotosPicker(selection: $selectedAvatarItem, matching: .images) {
-                        Label("选择头像", systemImage: "person.crop.circle.badge.plus")
+                        HStack(spacing: 10) {
+                            rowIcon("person.crop.circle.badge.plus", .purple)
+                            Text("选择头像")
+                        }
                     }
                 } header: {
                     Label("个人头像", systemImage: "person.crop.circle")
                 }
 
                 Section {
-                    iconTextFieldRow(icon: "ruler", title: "身高(cm)", text: bindingDouble(\.heightCm, format: "%.0f"), keyboard: .decimalPad)
-                    iconTextFieldRow(icon: "scalemass", title: "体重(kg)", text: bindingDouble(\.weightKg, format: "%.1f"), keyboard: .decimalPad)
+                    iconTextFieldRow(icon: "ruler", title: "身高", text: bindingDouble(\.heightCm, format: "%.0f"), unit: "cm", keyboard: .decimalPad, color: .blue)
+                    iconTextFieldRow(icon: "scalemass", title: "体重", text: bindingDouble(\.weightKg, format: "%.1f"), unit: "kg", keyboard: .decimalPad, color: .mint)
 
                     HStack {
-                        Label("年龄", systemImage: "calendar")
+                        HStack(spacing: 10) {
+                            rowIcon("calendar", .orange)
+                            Text("年龄")
+                        }
                         Spacer()
-                        Stepper("\(appState.profile.age)", value: binding(\.age), in: 10...90)
-                            .labelsHidden()
+                        HStack(spacing: 8) {
+                            Text("\(appState.profile.age) yr")
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                            Stepper("", value: binding(\.age), in: 10...90)
+                                .labelsHidden()
+                        }
                     }
 
                     HStack {
-                        Label("性别", systemImage: "person.fill")
+                        HStack(spacing: 10) {
+                            rowIcon("person.fill", .pink)
+                            Text("性别")
+                        }
                         Spacer()
                         Menu {
                             ForEach(BiologicalSex.allCases) { sex in
@@ -65,7 +79,10 @@ struct SettingsView: View {
                     }
 
                     HStack {
-                        Label("活动水平", systemImage: "figure.walk")
+                        HStack(spacing: 10) {
+                            rowIcon("figure.walk", .green)
+                            Text("活动水平")
+                        }
                         Spacer()
                         Menu {
                             ForEach(ActivityLevel.allCases) { level in
@@ -87,22 +104,26 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    iconTextFieldRow(icon: "target", title: "目标体重(kg)", text: bindingDouble(\.targetWeightKg, format: "%.1f"), keyboard: .decimalPad)
-                    iconTextFieldRow(icon: "drop", title: "目标体脂(%)", text: bindingDouble(\.targetBodyFat, format: "%.1f"), keyboard: .decimalPad)
-                    iconTextFieldRow(icon: "flame", title: "每日运动目标(kcal)", text: bindingDouble(\.dailyExerciseGoal, format: "%.0f"), keyboard: .decimalPad)
+                    iconTextFieldRow(icon: "target", title: "目标体重", text: bindingDouble(\.targetWeightKg, format: "%.1f"), unit: "kg", keyboard: .decimalPad, color: .teal)
+                    iconTextFieldRow(icon: "drop", title: "目标体脂", text: bindingDouble(\.targetBodyFat, format: "%.1f"), unit: "%", keyboard: .decimalPad, color: .cyan)
+                    iconTextFieldRow(icon: "flame", title: "每日运动目标", text: bindingDouble(\.dailyExerciseGoal, format: "%.0f"), unit: "kcal", keyboard: .decimalPad, color: .orange)
 
                     HStack {
-                        Label("维持消耗", systemImage: "bolt.heart")
+                        HStack(spacing: 10) {
+                            rowIcon("bolt.heart", .indigo)
+                            Text("维持消耗")
+                        }
                         Spacer()
-                        Text("\(Int(appState.profile.dailyMaintenanceCalories)) kcal")
-                            .foregroundStyle(.secondary)
+                        valueWithUnit(value: "\(Int(appState.profile.dailyMaintenanceCalories))", unit: "kcal")
                     }
 
                     HStack {
-                        Label("减脂建议摄入", systemImage: "leaf")
+                        HStack(spacing: 10) {
+                            rowIcon("leaf", .green)
+                            Text("减脂建议摄入")
+                        }
                         Spacer()
-                        Text("\(Int(appState.profile.recommendedIntakeForFatLoss)) kcal")
-                            .foregroundStyle(.secondary)
+                        valueWithUnit(value: "\(Int(appState.profile.recommendedIntakeForFatLoss))", unit: "kcal")
                     }
                 } header: {
                     Label("目标与建议", systemImage: "chart.line.uptrend.xyaxis")
@@ -110,8 +131,11 @@ struct SettingsView: View {
 
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
-                        Label("基础代谢 BMR (Mifflin-St Jeor)", systemImage: "scalemass")
-                            .font(.subheadline.weight(.semibold))
+                        HStack(spacing: 10) {
+                            rowIcon("scalemass", .mint)
+                            Text("基础代谢 BMR (Mifflin-St Jeor)")
+                                .font(.subheadline.weight(.semibold))
+                        }
                         Text("男: 10×体重(kg) + 6.25×身高(cm) - 5×年龄 + 5")
                             .font(.caption)
                         Text("女: 10×体重(kg) + 6.25×身高(cm) - 5×年龄 - 161")
@@ -122,8 +146,11 @@ struct SettingsView: View {
 
                         Divider()
 
-                        Label("维持消耗 TDEE", systemImage: "flame")
-                            .font(.subheadline.weight(.semibold))
+                        HStack(spacing: 10) {
+                            rowIcon("flame", .orange)
+                            Text("维持消耗 TDEE")
+                                .font(.subheadline.weight(.semibold))
+                        }
                         Text("TDEE = BMR × 活动系数")
                             .font(.caption)
                         Text("活动系数: 久坐 1.2 / 轻度 1.375 / 中度 1.55 / 高强度 1.725")
@@ -134,8 +161,11 @@ struct SettingsView: View {
 
                         Divider()
 
-                        Label("建议摄入与净差计算", systemImage: "function")
-                            .font(.subheadline.weight(.semibold))
+                        HStack(spacing: 10) {
+                            rowIcon("function", .purple)
+                            Text("建议摄入与净差计算")
+                                .font(.subheadline.weight(.semibold))
+                        }
                         Text("减脂建议摄入 = max(1200, TDEE - 450)")
                             .font(.caption)
                         Text("当前建议摄入 ≈ \(Int(appState.profile.recommendedIntakeForFatLoss)) kcal")
@@ -151,15 +181,24 @@ struct SettingsView: View {
 
                 Section {
                     Toggle(isOn: $reminderEnabled) {
-                        Label("饮食/运动提醒", systemImage: "bell")
+                        HStack(spacing: 10) {
+                            rowIcon("bell", .orange)
+                            Text("饮食/运动提醒")
+                        }
                     }
 
                     Toggle(isOn: $hapticEnabled) {
-                        Label("触感反馈", systemImage: "hand.tap")
+                        HStack(spacing: 10) {
+                            rowIcon("hand.tap", .blue)
+                            Text("触感反馈")
+                        }
                     }
 
                     Toggle(isOn: $autoSyncEnabled) {
-                        Label("自动同步健康数据", systemImage: "arrow.triangle.2.circlepath")
+                        HStack(spacing: 10) {
+                            rowIcon("arrow.triangle.2.circlepath", .green)
+                            Text("自动同步健康数据")
+                        }
                     }
                 } header: {
                     Label("常用设置", systemImage: "gearshape.2")
@@ -208,15 +247,42 @@ struct SettingsView: View {
         .clipShape(Circle())
     }
 
-    private func iconTextFieldRow(icon: String, title: String, text: Binding<String>, keyboard: UIKeyboardType) -> some View {
+    private func rowIcon(_ icon: String, _ color: Color) -> some View {
+        Image(systemName: icon)
+            .foregroundStyle(color)
+            .frame(width: 18)
+    }
+
+    private func iconTextFieldRow(icon: String, title: String, text: Binding<String>, unit: String, keyboard: UIKeyboardType, color: Color) -> some View {
         HStack {
-            Label(title, systemImage: icon)
+            HStack(spacing: 10) {
+                rowIcon(icon, color)
+                Text(title)
+            }
             Spacer()
-            TextField(title, text: text)
-                .keyboardType(keyboard)
-                .multilineTextAlignment(.trailing)
-                .frame(width: 120)
+            HStack(spacing: 6) {
+                TextField(title, text: text)
+                    .keyboardType(keyboard)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 84)
+                Text(unit)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+            .frame(width: 130, alignment: .trailing)
         }
+    }
+
+    private func valueWithUnit(value: String, unit: String) -> some View {
+        HStack(spacing: 6) {
+            Text(value)
+                .monospacedDigit()
+                .frame(width: 84, alignment: .trailing)
+            Text(unit)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+        }
+        .frame(width: 130, alignment: .trailing)
     }
 
     private func binding<T>(_ keyPath: WritableKeyPath<UserProfile, T>) -> Binding<T> {

@@ -39,10 +39,14 @@ struct ProgressRing: View {
 
             VStack(spacing: 4) {
                 Text(valueText)
-                    .font(.title3.weight(.bold))
+                    .font(.title3.weight(.semibold))
+                    .minimumScaleFactor(0.75)
+                    .lineLimit(2)
                     .multilineTextAlignment(.center)
                 Text(caption)
-                    .font(.caption)
+                    .font(.caption2)
+                    .minimumScaleFactor(0.8)
+                    .lineLimit(1)
                     .foregroundStyle(.secondary)
             }
             .padding(.horizontal, 6)
