@@ -31,14 +31,7 @@ struct MoveMoreView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             }
-            .background(
-                LinearGradient(
-                    colors: [Color.green.opacity(0.10), Color.cyan.opacity(0.08), Color.white],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
-            )
+            .background(GrowPageBackground(accent: .green))
             .navigationTitle("迈开腿")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -56,7 +49,9 @@ struct MoveMoreView: View {
                 }
             }
             .sheet(isPresented: $showExerciseSheet) {
-                ExerciseSelectionSheet(items: appState.exerciseLibrary) { item in
+                ExerciseSelectionSheet(items: appState.exerciseLibrary, iconForItem: { item in
+                    appState.exerciseIcon(for: item)
+                }) { item in
                     selectedExercise = item
                 }
             }
@@ -64,9 +59,12 @@ struct MoveMoreView: View {
     }
 
     private var exerciseProgressCard: some View {
-        CardContainer(
+        let remaining = appState.profile.dailyExerciseGoal - todaySummary.caloriesBurned
+        let centerMain = remaining >= 0 ? "剩余\n\(Int(remaining))" : "超额\n\(Int(abs(remaining)))"
+
+        return CardContainer(
             title: "今日运动消耗",
-            subtitle: "目标 \(Int(appState.profile.dailyExerciseGoal)) kcal",
+            subtitle: nil,
             icon: "figure.run.circle.fill",
             accent: .green
         ) {
@@ -75,10 +73,10 @@ struct MoveMoreView: View {
                     progress: appState.exerciseProgress(on: Date()),
                     lineWidth: 12,
                     gradient: LinearGradient(colors: [.green, .mint], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    valueText: "\(Int(todaySummary.caloriesBurned)) kcal",
-                    caption: "已消耗"
+                    valueText: centerMain,
+                    caption: "目标 \(Int(appState.profile.dailyExerciseGoal)) kcal"
                 )
-                .frame(width: 140, height: 140)
+                .frame(width: 150, height: 150)
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
@@ -95,8 +93,7 @@ struct MoveMoreView: View {
                             .font(.subheadline)
                     }
 
-                    let remaining = appState.profile.dailyExerciseGoal - todaySummary.caloriesBurned
-                    Text(remaining > 0 ? "剩余目标: \(Int(remaining)) kcal" : "已超额完成: \(Int(abs(remaining))) kcal")
+                    Text(remaining > 0 ? "继续完成今日目标" : "今日目标已达成")
                         .font(.caption)
                         .foregroundStyle(remaining > 0 ? Color.secondary : Color.green)
                         .padding(.top, 6)
@@ -108,7 +105,7 @@ struct MoveMoreView: View {
     private var todayExerciseCard: some View {
         CardContainer(
             title: "今日锻炼记录",
-            subtitle: "输入时间和项目，自动换算消耗",
+            subtitle: nil,
             icon: "list.bullet.rectangle.portrait",
             accent: .green
         ) {
@@ -118,7 +115,11 @@ struct MoveMoreView: View {
                         showExerciseSheet = true
                     } label: {
                         HStack {
-                            Image(systemName: selectedExercise?.icon ?? "figure.run")
+                            AppIconBadge(
+                                icon: appState.exerciseIcon(for: selectedExercise ?? appState.exerciseLibrary.first ?? SeedData.exerciseLibrary[0]),
+                                tint: .green,
+                                size: 30
+                            )
                             Text(selectedExercise?.name ?? "选择运动项目")
                                 .lineLimit(1)
                             Spacer()
@@ -160,9 +161,7 @@ struct MoveMoreView: View {
                 } else {
                     ForEach(todayLogs) { log in
                         HStack(spacing: 10) {
-                            Image(systemName: log.exerciseIcon)
-                                .foregroundStyle(.green)
-                                .frame(width: 20)
+                            AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), tint: .green, size: 24)
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(log.exerciseName)
@@ -195,7 +194,7 @@ struct MoveMoreView: View {
     private var adviceCard: some View {
         CardContainer(
             title: "今日锻炼建议",
-            subtitle: "根据运动时长与消耗生成总结",
+            subtitle: nil,
             icon: "lightbulb.fill",
             accent: .yellow
         ) {
@@ -208,7 +207,7 @@ struct MoveMoreView: View {
         let records = appState.dailyExerciseRecords(limit: 21)
         return CardContainer(
             title: "每天的锻炼记录",
-            subtitle: "最近 21 天",
+            subtitle: nil,
             icon: "calendar.badge.clock",
             accent: .teal
         ) {

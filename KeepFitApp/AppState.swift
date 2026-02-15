@@ -1,4 +1,5 @@
 import Foundation
+import PhosphorSwift
 
 struct DailyNutritionRecord: Identifiable {
     var id: Date { date }
@@ -148,6 +149,43 @@ final class AppState: ObservableObject {
 
     func deleteExerciseLog(_ log: ExerciseLog) {
         exerciseLogs.removeAll(where: { $0.id == log.id })
+    }
+
+    func foodIcon(for food: FoodItem) -> Ph {
+        IconCatalog.foodIcon(id: food.id, category: food.category)
+    }
+
+    func foodIcon(forFoodID foodID: String) -> Ph {
+        if let item = foodLibrary.first(where: { $0.id == foodID }) {
+            return foodIcon(for: item)
+        }
+        return IconCatalog.foodIcon(id: foodID, category: .staple)
+    }
+
+    func exerciseIcon(for exercise: ExerciseItem) -> Ph {
+        IconCatalog.exerciseIcon(id: exercise.id, category: exercise.category)
+    }
+
+    func exerciseIcon(forExerciseID exerciseID: String) -> Ph {
+        if let item = exerciseLibrary.first(where: { $0.id == exerciseID }) {
+            return exerciseIcon(for: item)
+        }
+        return IconCatalog.exerciseIcon(id: exerciseID, category: .cardio)
+    }
+
+    func foodUnitSymbol(for food: FoodItem) -> String {
+        IconCatalog.foodUnit(id: food.id, category: food.category).symbol
+    }
+
+    func foodUnitSymbol(forFoodID foodID: String) -> String {
+        if let item = foodLibrary.first(where: { $0.id == foodID }) {
+            return foodUnitSymbol(for: item)
+        }
+        return IconCatalog.foodUnit(id: foodID, category: nil).symbol
+    }
+
+    func defaultEntryAmount(for food: FoodItem) -> Double {
+        IconCatalog.foodUnit(id: food.id, category: food.category).defaultAmount
     }
 
     func foodLogs(on date: Date) -> [FoodLog] {

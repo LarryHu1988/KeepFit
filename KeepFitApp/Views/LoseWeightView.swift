@@ -10,6 +10,7 @@ struct LoseWeightView: View {
     @State private var bodyFatText = ""
 
     private let cardSpacing: CGFloat = 14
+    private let deficitGoal: Double = 450
 
     private var todayNutrition: DayNutritionSummary {
         appState.dayNutrition(on: Date())
@@ -43,19 +44,14 @@ struct LoseWeightView: View {
                     calendarCard
                     selectedDayCard
                     bodyMetricInputCard
-                    trendCard
+                    calorieTrendCard
+                    weightTrendCard
+                    bodyFatTrendCard
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             }
-            .background(
-                LinearGradient(
-                    colors: [Color.yellow.opacity(0.1), Color.orange.opacity(0.06), Color.white],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
-            )
+            .background(GrowPageBackground(accent: .yellow))
             .navigationTitle("减个肥")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -81,11 +77,21 @@ struct LoseWeightView: View {
         let deficit = max(0, -todayBalance)
         let surplus = max(0, todayBalance)
         let isDeficit = deficit > 0
-        let progress = min((isDeficit ? deficit : surplus) / 450, 1)
+        let progress = min((isDeficit ? deficit : surplus) / deficitGoal, 1)
+
+        let centerMain: String = {
+            if surplus > 0 {
+                return "超量\n\(Int(surplus))"
+            }
+            if deficit >= deficitGoal {
+                return "达成\n\(Int(deficit))"
+            }
+            return "剩余\n\(Int(deficitGoal - deficit))"
+        }()
 
         return CardContainer(
             title: "今日综合热量",
-            subtitle: "基础消耗 + 运动消耗 vs 摄入热量",
+            subtitle: nil,
             icon: "sun.max.fill",
             accent: .orange
         ) {
@@ -94,23 +100,23 @@ struct LoseWeightView: View {
                     progress: progress,
                     lineWidth: 12,
                     gradient: LinearGradient(
-                        colors: isDeficit ? [.orange, .yellow] : [.red, .pink],
+                        colors: surplus > 0 ? [.red, .pink] : [.orange, .yellow],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
-                    valueText: isDeficit ? "赤字 \(Int(deficit))" : "超量 \(Int(surplus))",
-                    caption: "kcal"
+                    valueText: centerMain,
+                    caption: "目标 \(Int(deficitGoal)) kcal"
                 )
-                .frame(width: 140, height: 140)
+                .frame(width: 150, height: 150)
 
                 VStack(alignment: .leading, spacing: 8) {
                     row(icon: "flame", title: "基础代谢+日常", value: appState.profile.dailyMaintenanceCalories)
                     row(icon: "figure.run", title: "运动消耗", value: todayExercise.caloriesBurned)
                     row(icon: "fork.knife", title: "饮食摄入", value: todayNutrition.calories)
 
-                    Text(isDeficit ? "今天处于热量赤字，方向正确。" : "今天处于热量超量，建议晚间增加活动。")
+                    Text(surplus > 0 ? "今天处于热量超量，建议补充有氧。" : "今天处于热量赤字，继续保持。")
                         .font(.caption)
-                        .foregroundStyle(isDeficit ? Color.green : Color.red)
+                        .foregroundStyle(surplus > 0 ? Color.red : Color.green)
                         .padding(.top, 6)
                 }
             }
@@ -120,7 +126,7 @@ struct LoseWeightView: View {
     private var calendarCard: some View {
         CardContainer(
             title: "当月赤字日历",
-            subtitle: "参考 Grow 小太阳累计模式",
+            subtitle: nil,
             icon: "calendar.badge.plus",
             accent: .yellow
         ) {
@@ -148,8 +154,8 @@ struct LoseWeightView: View {
                     month: monthCursor,
                     cells: appState.monthlyGrid(for: monthCursor),
                     selectedDate: $selectedDate,
-                    deficitSunCount: { date in
-                        appState.deficitSunCount(on: date)
+                    dayBalance: { date in
+                        appState.dailyBalance(on: date)
                     },
                     hasRecord: { date in
                         !appState.foodLogs(on: date).isEmpty || !appState.exerciseLogs(on: date).isEmpty
@@ -165,11 +171,15 @@ struct LoseWeightView: View {
 
         return CardContainer(
             title: "\(Formatters.monthDay.string(from: selectedDate)) 记录",
-            subtitle: selectedBalance <= 0 ? "赤字 \(Int(-selectedBalance)) kcal" : "超量 \(Int(selectedBalance)) kcal",
+            subtitle: nil,
             icon: "list.bullet.below.rectangle",
             accent: .blue
         ) {
             VStack(alignment: .leading, spacing: 10) {
+                Text(selectedBalance <= 0 ? "赤字 \(Int(-selectedBalance)) kcal" : "超量 \(Int(selectedBalance)) kcal")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(selectedBalance <= 0 ? Color.green : Color.red)
+
                 HStack {
                     Label("摄入 \(Int(selectedNutrition.calories)) kcal", systemImage: "fork.knife")
                     Spacer()
@@ -187,9 +197,8 @@ struct LoseWeightView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         ForEach(foodLogs.prefix(4)) { log in
                             HStack {
-                                Image(systemName: log.foodIcon)
-                                    .foregroundStyle(.orange)
-                                Text("\(Formatters.hourMinute.string(from: log.date)) \(log.foodName) \(Int(log.weightGrams))g")
+                                AppIconBadge(icon: appState.foodIcon(forFoodID: log.foodID), tint: .orange, size: 22)
+                                Text("\(Formatters.hourMinute.string(from: log.date)) \(log.foodName) \(Int(log.weightGrams))\(appState.foodUnitSymbol(forFoodID: log.foodID))")
                                     .font(.caption)
                                 Spacer()
                                 Text("+\(Int(log.calories))")
@@ -200,8 +209,7 @@ struct LoseWeightView: View {
 
                         ForEach(exerciseLogs.prefix(4)) { log in
                             HStack {
-                                Image(systemName: log.exerciseIcon)
-                                    .foregroundStyle(.green)
+                                AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), tint: .green, size: 22)
                                 Text("\(Formatters.hourMinute.string(from: log.date)) \(log.exerciseName) \(Int(log.durationMinutes))分")
                                     .font(.caption)
                                 Spacer()
@@ -219,7 +227,7 @@ struct LoseWeightView: View {
     private var bodyMetricInputCard: some View {
         CardContainer(
             title: "记录体重与体脂",
-            subtitle: "用于长期趋势和赤字策略调整",
+            subtitle: nil,
             icon: "person.crop.circle.badge.checkmark",
             accent: .mint
         ) {
@@ -262,17 +270,36 @@ struct LoseWeightView: View {
         }
     }
 
-    private var trendCard: some View {
+    private var calorieTrendCard: some View {
         CardContainer(
-            title: "长期趋势图",
-            subtitle: "每日卡路里、体重、体脂",
+            title: "每日卡路里趋势",
+            subtitle: nil,
             icon: "chart.xyaxis.line",
             accent: .blue
         ) {
-            TrendChartsView(
-                calorieTrends: appState.calorieTrends(days: 45),
-                bodyMetrics: appState.weightTrends(limit: 45)
-            )
+            CalorieTrendChartView(calorieTrends: appState.calorieTrends(days: 45))
+        }
+    }
+
+    private var weightTrendCard: some View {
+        CardContainer(
+            title: "体重趋势",
+            subtitle: nil,
+            icon: "figure.stand",
+            accent: .mint
+        ) {
+            WeightTrendChartView(bodyMetrics: appState.weightTrends(limit: 45))
+        }
+    }
+
+    private var bodyFatTrendCard: some View {
+        CardContainer(
+            title: "体脂趋势",
+            subtitle: nil,
+            icon: "drop.fill",
+            accent: .pink
+        ) {
+            BodyFatTrendChartView(bodyMetrics: appState.weightTrends(limit: 45))
         }
     }
 

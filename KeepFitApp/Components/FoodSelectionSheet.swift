@@ -1,7 +1,9 @@
+import PhosphorSwift
 import SwiftUI
 
 struct FoodSelectionSheet: View {
     let items: [FoodItem]
+    let iconForItem: (FoodItem) -> Ph
     let onSelect: (FoodItem) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -25,9 +27,7 @@ struct FoodSelectionSheet: View {
                                     dismiss()
                                 } label: {
                                     HStack(spacing: 12) {
-                                        Image(systemName: item.icon)
-                                            .foregroundStyle(.orange)
-                                            .frame(width: 22)
+                                        AppIconBadge(icon: iconForItem(item), tint: .orange, size: 30)
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(item.name)
                                                 .foregroundStyle(.primary)

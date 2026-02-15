@@ -14,7 +14,14 @@ struct ProgressRing: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(Color(.systemGray5), lineWidth: lineWidth)
+                .stroke(
+                    LinearGradient(
+                        colors: [Color(.systemGray5), Color(.systemGray4)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ),
+                    lineWidth: lineWidth
+                )
 
             Circle()
                 .trim(from: 0, to: clampedProgress)
@@ -24,6 +31,11 @@ struct ProgressRing: View {
                 )
                 .rotationEffect(.degrees(-90))
                 .animation(.spring(duration: 0.5), value: clampedProgress)
+                .shadow(color: .orange.opacity(0.22), radius: 6, x: 0, y: 3)
+
+            Circle()
+                .fill(Color.white.opacity(0.8))
+                .padding(lineWidth + 10)
 
             VStack(spacing: 4) {
                 Text(valueText)

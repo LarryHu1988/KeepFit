@@ -6,7 +6,7 @@ struct EatWellView: View {
 
     @State private var selectedFood: FoodItem?
     @State private var intakeTime = Date()
-    @State private var gramsText = "120"
+    @State private var amountText = "120"
     @State private var showFoodSheet = false
 
     private let cardSpacing: CGFloat = 14
@@ -23,6 +23,11 @@ struct EatWellView: View {
         appState.foodLogs(on: Date())
     }
 
+    private var selectedUnitSymbol: String {
+        guard let selectedFood else { return "g" }
+        return appState.foodUnitSymbol(for: selectedFood)
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -35,14 +40,7 @@ struct EatWellView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             }
-            .background(
-                LinearGradient(
-                    colors: [Color.orange.opacity(0.10), Color.yellow.opacity(0.08), Color.white],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
-            )
+            .background(GrowPageBackground(accent: .orange))
             .navigationTitle("管住嘴")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -59,19 +57,28 @@ struct EatWellView: View {
                 if selectedFood == nil {
                     selectedFood = appState.foodLibrary.first
                 }
+                if let selectedFood {
+                    amountText = String(Int(appState.defaultEntryAmount(for: selectedFood)))
+                }
             }
             .sheet(isPresented: $showFoodSheet) {
-                FoodSelectionSheet(items: appState.foodLibrary) { item in
+                FoodSelectionSheet(items: appState.foodLibrary, iconForItem: { item in
+                    appState.foodIcon(for: item)
+                }) { item in
                     selectedFood = item
+                    amountText = String(Int(appState.defaultEntryAmount(for: item)))
                 }
             }
         }
     }
 
     private var intakeProgressCard: some View {
-        CardContainer(
+        let remain = targetCalories - todayNutrition.calories
+        let centerMain = remain >= 0 ? "剩余\n\(Int(remain))" : "超出\n\(Int(abs(remain)))"
+
+        return CardContainer(
             title: "今日摄入进度",
-            subtitle: "目标 \(Int(targetCalories)) kcal",
+            subtitle: nil,
             icon: "chart.pie.fill",
             accent: .orange
         ) {
@@ -80,20 +87,19 @@ struct EatWellView: View {
                     progress: appState.intakeProgress(on: Date()),
                     lineWidth: 12,
                     gradient: LinearGradient(colors: [.orange, .red], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    valueText: "\(Int(todayNutrition.calories)) kcal",
-                    caption: "已摄入"
+                    valueText: centerMain,
+                    caption: "目标 \(Int(targetCalories)) kcal"
                 )
-                .frame(width: 140, height: 140)
+                .frame(width: 150, height: 150)
 
                 VStack(alignment: .leading, spacing: 8) {
                     nutrientRow(icon: "fish", name: "蛋白", value: todayNutrition.protein, color: .blue)
                     nutrientRow(icon: "leaf", name: "碳水", value: todayNutrition.carbs, color: .green)
                     nutrientRow(icon: "drop.fill", name: "脂肪", value: todayNutrition.fat, color: .pink)
 
-                    let remain = targetCalories - todayNutrition.calories
-                    Text(remain >= 0 ? "剩余: \(Int(remain)) kcal" : "超出: \(Int(abs(remain))) kcal")
+                    Text("已摄入: \(Int(todayNutrition.calories)) kcal")
                         .font(.caption)
-                        .foregroundStyle(remain >= 0 ? Color.secondary : Color.red)
+                        .foregroundStyle(.secondary)
                         .padding(.top, 6)
                 }
             }
@@ -103,7 +109,7 @@ struct EatWellView: View {
     private var todayIntakeCard: some View {
         CardContainer(
             title: "今日进食记录",
-            subtitle: "输入时间、食物和重量，自动换算热量",
+            subtitle: nil,
             icon: "list.bullet.clipboard",
             accent: .orange
         ) {
@@ -113,7 +119,11 @@ struct EatWellView: View {
                         showFoodSheet = true
                     } label: {
                         HStack {
-                            Image(systemName: selectedFood?.icon ?? "fork.knife")
+                            AppIconBadge(
+                                icon: appState.foodIcon(for: selectedFood ?? appState.foodLibrary.first ?? SeedData.foodLibrary[0]),
+                                tint: .orange,
+                                size: 30
+                            )
                             Text(selectedFood?.name ?? "选择食物")
                                 .lineLimit(1)
                             Spacer()
@@ -127,10 +137,10 @@ struct EatWellView: View {
                     }
                     .buttonStyle(.plain)
 
-                    TextField("克重", text: $gramsText)
+                    TextField("数量(\(selectedUnitSymbol))", text: $amountText)
                         .keyboardType(.decimalPad)
                         .textFieldStyle(.roundedBorder)
-                        .frame(width: 78)
+                        .frame(width: 110)
                 }
 
                 HStack(spacing: 10) {
@@ -155,14 +165,12 @@ struct EatWellView: View {
                 } else {
                     ForEach(todayLogs) { log in
                         HStack(spacing: 10) {
-                            Image(systemName: log.foodIcon)
-                                .foregroundStyle(.orange)
-                                .frame(width: 20)
+                            AppIconBadge(icon: appState.foodIcon(forFoodID: log.foodID), tint: .orange, size: 24)
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(log.foodName)
                                     .font(.subheadline.weight(.semibold))
-                                Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(Int(log.weightGrams))g")
+                                Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(Int(log.weightGrams))\(appState.foodUnitSymbol(forFoodID: log.foodID))")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -190,7 +198,7 @@ struct EatWellView: View {
     private var adviceCard: some View {
         CardContainer(
             title: "今日进食建议",
-            subtitle: "根据摄入和营养结构给出建议",
+            subtitle: nil,
             icon: "lightbulb.max.fill",
             accent: .yellow
         ) {
@@ -205,7 +213,7 @@ struct EatWellView: View {
         let records = appState.dailyNutritionRecords(limit: 21)
         return CardContainer(
             title: "每天的进食记录",
-            subtitle: "最近 21 天",
+            subtitle: nil,
             icon: "calendar",
             accent: .teal
         ) {
@@ -249,14 +257,14 @@ struct EatWellView: View {
 
     private func addFoodLog() {
         guard let food = selectedFood else { return }
-        guard let grams = Double(gramsText), grams > 0 else { return }
+        guard let amount = Double(amountText), amount > 0 else { return }
 
         let now = Date()
         let calendar = Calendar.current
         let selectedComponents = calendar.dateComponents([.hour, .minute], from: intakeTime)
         let date = calendar.date(bySettingHour: selectedComponents.hour ?? 0, minute: selectedComponents.minute ?? 0, second: 0, of: now) ?? now
 
-        appState.addFoodLog(date: date, item: food, grams: grams)
-        gramsText = "120"
+        appState.addFoodLog(date: date, item: food, grams: amount)
+        amountText = String(Int(appState.defaultEntryAmount(for: food)))
     }
 }

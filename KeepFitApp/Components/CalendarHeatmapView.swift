@@ -4,7 +4,7 @@ struct CalendarHeatmapView: View {
     let month: Date
     let cells: [Date?]
     @Binding var selectedDate: Date
-    let deficitSunCount: (Date) -> Int
+    let dayBalance: (Date) -> Double
     let hasRecord: (Date) -> Bool
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
@@ -35,18 +35,19 @@ struct CalendarHeatmapView: View {
                     }
                 }
             }
-
-            Text("点击任意日期查看当天记录")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
     }
 
     @ViewBuilder
     private func calendarCell(for date: Date) -> some View {
         let isSelected = date.isSameDay(as: selectedDate)
-        let sunCount = deficitSunCount(date)
+        let balance = dayBalance(date)
         let hasData = hasRecord(date)
+        let balanceDotColor: Color = {
+            if balance <= -80 { return .green }
+            if balance >= 80 { return .red }
+            return .orange
+        }()
 
         Button {
             selectedDate = date
@@ -56,23 +57,12 @@ struct CalendarHeatmapView: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(isSelected ? Color.white : Color.primary)
 
-                if sunCount > 0 {
-                    HStack(spacing: 1) {
-                        Image(systemName: "sun.max.fill")
-                            .font(.system(size: 8))
-                            .foregroundStyle(.orange)
-                        if sunCount > 1 {
-                            Text("x\(sunCount)")
-                                .font(.system(size: 8, weight: .semibold))
-                                .foregroundStyle(.orange)
-                        }
-                    }
-                } else if hasData {
+                if hasData {
                     Circle()
-                        .fill(Color.blue)
-                        .frame(width: 4, height: 4)
+                        .fill(balanceDotColor)
+                        .frame(width: 6, height: 6)
                 } else {
-                    Color.clear.frame(height: 8)
+                    Color.clear.frame(height: 10)
                 }
             }
             .frame(maxWidth: .infinity)

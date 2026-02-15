@@ -48,23 +48,39 @@ struct SettingsView: View {
                     HStack {
                         Label("性别", systemImage: "person.fill")
                         Spacer()
-                        Picker("性别", selection: binding(\.sex)) {
+                        Menu {
                             ForEach(BiologicalSex.allCases) { sex in
-                                Text(sex.title).tag(sex)
+                                Button(sex.title) {
+                                    appState.profile.sex = sex
+                                }
+                            }
+                        } label: {
+                            HStack(spacing: 6) {
+                                Text(appState.profile.sex.title)
+                                Image(systemName: "chevron.down")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
                             }
                         }
-                        .pickerStyle(.menu)
                     }
 
                     HStack {
                         Label("活动水平", systemImage: "figure.walk")
                         Spacer()
-                        Picker("活动水平", selection: binding(\.activityLevel)) {
+                        Menu {
                             ForEach(ActivityLevel.allCases) { level in
-                                Text(level.title).tag(level)
+                                Button(level.title) {
+                                    appState.profile.activityLevel = level
+                                }
+                            }
+                        } label: {
+                            HStack(spacing: 6) {
+                                Text(appState.profile.activityLevel.title)
+                                Image(systemName: "chevron.down")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
                             }
                         }
-                        .pickerStyle(.menu)
                     }
                 } header: {
                     Label("基础信息", systemImage: "person.text.rectangle")
@@ -90,6 +106,47 @@ struct SettingsView: View {
                     }
                 } header: {
                     Label("目标与建议", systemImage: "chart.line.uptrend.xyaxis")
+                }
+
+                Section {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("基础代谢 BMR (Mifflin-St Jeor)", systemImage: "scalemass")
+                            .font(.subheadline.weight(.semibold))
+                        Text("男: 10×体重(kg) + 6.25×身高(cm) - 5×年龄 + 5")
+                            .font(.caption)
+                        Text("女: 10×体重(kg) + 6.25×身高(cm) - 5×年龄 - 161")
+                            .font(.caption)
+                        Text("当前 BMR ≈ \(Int(appState.profile.bmr)) kcal")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                        Divider()
+
+                        Label("维持消耗 TDEE", systemImage: "flame")
+                            .font(.subheadline.weight(.semibold))
+                        Text("TDEE = BMR × 活动系数")
+                            .font(.caption)
+                        Text("活动系数: 久坐 1.2 / 轻度 1.375 / 中度 1.55 / 高强度 1.725")
+                            .font(.caption)
+                        Text("当前 TDEE ≈ \(Int(appState.profile.dailyMaintenanceCalories)) kcal")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                        Divider()
+
+                        Label("建议摄入与净差计算", systemImage: "function")
+                            .font(.subheadline.weight(.semibold))
+                        Text("减脂建议摄入 = max(1200, TDEE - 450)")
+                            .font(.caption)
+                        Text("当前建议摄入 ≈ \(Int(appState.profile.recommendedIntakeForFatLoss)) kcal")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text("当日净差 = 摄入 - (TDEE + 运动消耗)，负值为赤字，正值为超量。")
+                            .font(.caption)
+                    }
+                    .padding(.vertical, 2)
+                } header: {
+                    Label("科学计算说明", systemImage: "function")
                 }
 
                 Section {
