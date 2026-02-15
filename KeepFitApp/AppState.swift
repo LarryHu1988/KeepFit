@@ -1,0 +1,345 @@
+import Foundation
+
+struct DailyNutritionRecord: Identifiable {
+    var id: Date { date }
+    let date: Date
+    let calories: Double
+    let protein: Double
+    let carbs: Double
+    let fat: Double
+}
+
+struct DailyExerciseRecord: Identifiable {
+    var id: Date { date }
+    let date: Date
+    let caloriesBurned: Double
+    let minutes: Double
+}
+
+struct DailyCalorieTrend: Identifiable {
+    var id: Date { date }
+    let date: Date
+    let intake: Double
+    let exerciseBurn: Double
+    let balance: Double
+}
+
+@MainActor
+final class AppState: ObservableObject {
+    @Published var profile: UserProfile {
+        didSet {
+            store.save(profile, for: .profile)
+        }
+    }
+
+    @Published var foodLibrary: [FoodItem] {
+        didSet {
+            store.save(foodLibrary, for: .foods)
+        }
+    }
+
+    @Published var exerciseLibrary: [ExerciseItem] {
+        didSet {
+            store.save(exerciseLibrary, for: .exercises)
+        }
+    }
+
+    @Published var foodLogs: [FoodLog] {
+        didSet {
+            store.save(foodLogs, for: .foodLogs)
+        }
+    }
+
+    @Published var exerciseLogs: [ExerciseLog] {
+        didSet {
+            store.save(exerciseLogs, for: .exerciseLogs)
+        }
+    }
+
+    @Published var bodyMetricLogs: [BodyMetricLog] {
+        didSet {
+            store.save(bodyMetricLogs, for: .bodyMetrics)
+        }
+    }
+
+    private let store = DataStore()
+
+    init() {
+        let loadedProfile = store.load(UserProfile.self, for: .profile) ?? .default
+        let loadedFoods = store.load([FoodItem].self, for: .foods) ?? SeedData.foodLibrary
+        let loadedExercises = store.load([ExerciseItem].self, for: .exercises) ?? SeedData.exerciseLibrary
+        let loadedFoodLogs = store.load([FoodLog].self, for: .foodLogs) ?? []
+        let loadedExerciseLogs = store.load([ExerciseLog].self, for: .exerciseLogs) ?? []
+        let loadedBodyMetrics = store.load([BodyMetricLog].self, for: .bodyMetrics) ?? []
+
+        profile = loadedProfile
+        foodLibrary = loadedFoods
+        exerciseLibrary = loadedExercises
+        foodLogs = loadedFoodLogs.sorted(by: { $0.date > $1.date })
+        exerciseLogs = loadedExerciseLogs.sorted(by: { $0.date > $1.date })
+        bodyMetricLogs = loadedBodyMetrics.sorted(by: { $0.date < $1.date })
+
+        if bodyMetricLogs.isEmpty {
+            bodyMetricLogs.append(
+                BodyMetricLog(
+                    id: UUID(),
+                    date: Date(),
+                    weightKg: profile.weightKg,
+                    bodyFatPercent: max(10, profile.targetBodyFat + 8)
+                )
+            )
+        }
+    }
+
+    func addFoodLog(date: Date, item: FoodItem, grams: Double) {
+        guard grams > 0 else { return }
+        let log = FoodLog(
+            id: UUID(),
+            date: date,
+            foodID: item.id,
+            foodName: item.name,
+            foodIcon: item.icon,
+            weightGrams: grams,
+            caloriesPer100g: item.caloriesPer100g,
+            proteinPer100g: item.proteinPer100g,
+            carbsPer100g: item.carbsPer100g,
+            fatPer100g: item.fatPer100g
+        )
+        foodLogs.append(log)
+        foodLogs.sort(by: { $0.date > $1.date })
+    }
+
+    func addExerciseLog(date: Date, item: ExerciseItem, durationMinutes: Double) {
+        guard durationMinutes > 0 else { return }
+        let log = ExerciseLog(
+            id: UUID(),
+            date: date,
+            exerciseID: item.id,
+            exerciseName: item.name,
+            exerciseIcon: item.icon,
+            durationMinutes: durationMinutes,
+            met: item.met
+        )
+        exerciseLogs.append(log)
+        exerciseLogs.sort(by: { $0.date > $1.date })
+    }
+
+    func upsertBodyMetric(date: Date, weightKg: Double, bodyFatPercent: Double) {
+        let day = date.startOfDayInCurrentCalendar
+        if let index = bodyMetricLogs.firstIndex(where: { $0.date.startOfDayInCurrentCalendar == day }) {
+            bodyMetricLogs[index].weightKg = weightKg
+            bodyMetricLogs[index].bodyFatPercent = bodyFatPercent
+        } else {
+            bodyMetricLogs.append(
+                BodyMetricLog(
+                    id: UUID(),
+                    date: date,
+                    weightKg: weightKg,
+                    bodyFatPercent: bodyFatPercent
+                )
+            )
+            bodyMetricLogs.sort(by: { $0.date < $1.date })
+        }
+    }
+
+    func deleteFoodLog(_ log: FoodLog) {
+        foodLogs.removeAll(where: { $0.id == log.id })
+    }
+
+    func deleteExerciseLog(_ log: ExerciseLog) {
+        exerciseLogs.removeAll(where: { $0.id == log.id })
+    }
+
+    func foodLogs(on date: Date) -> [FoodLog] {
+        foodLogs.filter { $0.date.isSameDay(as: date) }.sorted(by: { $0.date > $1.date })
+    }
+
+    func exerciseLogs(on date: Date) -> [ExerciseLog] {
+        exerciseLogs.filter { $0.date.isSameDay(as: date) }.sorted(by: { $0.date > $1.date })
+    }
+
+    func dayNutrition(on date: Date) -> DayNutritionSummary {
+        foodLogs(on: date).reduce(
+            DayNutritionSummary(calories: 0, protein: 0, carbs: 0, fat: 0)
+        ) { partial, log in
+            DayNutritionSummary(
+                calories: partial.calories + log.calories,
+                protein: partial.protein + log.protein,
+                carbs: partial.carbs + log.carbs,
+                fat: partial.fat + log.fat
+            )
+        }
+    }
+
+    func dayExercise(on date: Date) -> DayFitnessSummary {
+        let todayLogs = exerciseLogs(on: date)
+        let calories = todayLogs.reduce(0) { $0 + $1.caloriesBurned(weightKg: profile.weightKg) }
+        let minutes = todayLogs.reduce(0) { $0 + $1.durationMinutes }
+        return DayFitnessSummary(caloriesBurned: calories, durationMinutes: minutes)
+    }
+
+    func dailyBalance(on date: Date) -> Double {
+        let intake = dayNutrition(on: date).calories
+        let exerciseBurn = dayExercise(on: date).caloriesBurned
+        return intake - (profile.dailyMaintenanceCalories + exerciseBurn)
+    }
+
+    func deficitValue(on date: Date) -> Double {
+        max(0, -dailyBalance(on: date))
+    }
+
+    func surplusValue(on date: Date) -> Double {
+        max(0, dailyBalance(on: date))
+    }
+
+    func intakeProgress(on date: Date) -> Double {
+        let current = dayNutrition(on: date).calories
+        return min(max(current / profile.recommendedIntakeForFatLoss, 0), 1.5)
+    }
+
+    func exerciseProgress(on date: Date) -> Double {
+        let current = dayExercise(on: date).caloriesBurned
+        return min(max(current / max(profile.dailyExerciseGoal, 1), 0), 1.5)
+    }
+
+    func foodAdvice(on date: Date) -> String {
+        let nutrition = dayNutrition(on: date)
+        let remaining = profile.recommendedIntakeForFatLoss - nutrition.calories
+        let proteinKcal = nutrition.protein * 4
+        let carbKcal = nutrition.carbs * 4
+        let fatKcal = nutrition.fat * 9
+        let totalMacroKcal = max(1, proteinKcal + carbKcal + fatKcal)
+
+        let proteinRatio = proteinKcal / totalMacroKcal
+        let fatRatio = fatKcal / totalMacroKcal
+
+        if nutrition.calories == 0 {
+            return "今天还没记录饮食。建议先补充优质蛋白与蔬菜，再安排主食。"
+        }
+        if remaining > 350 {
+            return "今日仍可摄入约 \(Int(remaining)) kcal，优先补充蛋白质和高纤维碳水。"
+        }
+        if remaining >= 0 {
+            return "当前摄入接近目标，晚餐以清淡高蛋白为主，避免额外甜饮。"
+        }
+        if remaining < -250 {
+            return "已超目标 \(Int(abs(remaining))) kcal，建议晚间不再加餐并增加步行。"
+        }
+        if proteinRatio < 0.2 {
+            return "蛋白质占比偏低，下一餐可加鸡胸肉、鱼虾或豆制品。"
+        }
+        if fatRatio > 0.35 {
+            return "脂肪占比较高，下一餐优先蒸煮食物并减少坚果/油炸。"
+        }
+        return "营养结构整体平衡，继续保持。"
+    }
+
+    func exerciseAdvice(on date: Date) -> String {
+        let summary = dayExercise(on: date)
+        let remaining = profile.dailyExerciseGoal - summary.caloriesBurned
+
+        if summary.durationMinutes == 0 {
+            return "今天还没有运动记录。建议先完成30分钟快走或20分钟间歇训练。"
+        }
+        if remaining > 120 {
+            return "距离今日运动目标还差约 \(Int(remaining)) kcal，可加 20-30 分钟有氧。"
+        }
+        if remaining > 0 {
+            return "你已接近目标，再补 10-15 分钟拉伸或轻有氧即可。"
+        }
+        return "今日运动目标已达成，建议做低强度拉伸帮助恢复。"
+    }
+
+    func monthlyGrid(for month: Date) -> [Date?] {
+        let calendar = Calendar.current
+        guard
+            let monthInterval = calendar.dateInterval(of: .month, for: month),
+            let dayRange = calendar.range(of: .day, in: .month, for: monthInterval.start)
+        else {
+            return []
+        }
+
+        let firstDay = monthInterval.start
+        let leadingBlank = calendar.component(.weekday, from: firstDay) - 1
+
+        var cells: [Date?] = Array(repeating: nil, count: leadingBlank)
+        for day in dayRange {
+            if let date = calendar.date(byAdding: .day, value: day - 1, to: firstDay) {
+                cells.append(date)
+            }
+        }
+
+        let trailing = (7 - cells.count % 7) % 7
+        cells.append(contentsOf: Array(repeating: nil, count: trailing))
+        return cells
+    }
+
+    func deficitSunCount(on date: Date) -> Int {
+        let deficit = deficitValue(on: date)
+        switch deficit {
+        case 0..<80:
+            return 0
+        case 80..<200:
+            return 1
+        case 200..<350:
+            return 2
+        case 350..<500:
+            return 3
+        default:
+            return 4
+        }
+    }
+
+    func dailyNutritionRecords(limit: Int = 30) -> [DailyNutritionRecord] {
+        let grouped = Dictionary(grouping: foodLogs) { $0.date.startOfDayInCurrentCalendar }
+        return grouped
+            .map { day, logs in
+                DailyNutritionRecord(
+                    date: day,
+                    calories: logs.reduce(0) { $0 + $1.calories },
+                    protein: logs.reduce(0) { $0 + $1.protein },
+                    carbs: logs.reduce(0) { $0 + $1.carbs },
+                    fat: logs.reduce(0) { $0 + $1.fat }
+                )
+            }
+            .sorted(by: { $0.date > $1.date })
+            .prefix(limit)
+            .map { $0 }
+    }
+
+    func dailyExerciseRecords(limit: Int = 30) -> [DailyExerciseRecord] {
+        let grouped = Dictionary(grouping: exerciseLogs) { $0.date.startOfDayInCurrentCalendar }
+        return grouped
+            .map { day, logs in
+                DailyExerciseRecord(
+                    date: day,
+                    caloriesBurned: logs.reduce(0) { $0 + $1.caloriesBurned(weightKg: profile.weightKg) },
+                    minutes: logs.reduce(0) { $0 + $1.durationMinutes }
+                )
+            }
+            .sorted(by: { $0.date > $1.date })
+            .prefix(limit)
+            .map { $0 }
+    }
+
+    func calorieTrends(days: Int = 30) -> [DailyCalorieTrend] {
+        let calendar = Calendar.current
+        let today = Date().startOfDayInCurrentCalendar
+        return (0..<days).reversed().compactMap { offset in
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
+            let nutrition = dayNutrition(on: day)
+            let exercise = dayExercise(on: day)
+            let balance = nutrition.calories - (profile.dailyMaintenanceCalories + exercise.caloriesBurned)
+            return DailyCalorieTrend(date: day, intake: nutrition.calories, exerciseBurn: exercise.caloriesBurned, balance: balance)
+        }
+    }
+
+    func weightTrends(limit: Int = 60) -> [BodyMetricLog] {
+        Array(bodyMetricLogs.sorted(by: { $0.date < $1.date }).suffix(limit))
+    }
+
+    func latestBodyMetric() -> BodyMetricLog {
+        bodyMetricLogs.sorted(by: { $0.date > $1.date }).first
+            ?? BodyMetricLog(id: UUID(), date: Date(), weightKg: profile.weightKg, bodyFatPercent: profile.targetBodyFat + 8)
+    }
+}

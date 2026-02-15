@@ -1,0 +1,39 @@
+import SwiftUI
+
+struct ProgressRing: View {
+    let progress: Double
+    let lineWidth: CGFloat
+    let gradient: LinearGradient
+    let valueText: String
+    let caption: String
+
+    private var clampedProgress: Double {
+        min(max(progress, 0), 1)
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color(.systemGray5), lineWidth: lineWidth)
+
+            Circle()
+                .trim(from: 0, to: clampedProgress)
+                .stroke(
+                    gradient,
+                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+                .animation(.spring(duration: 0.5), value: clampedProgress)
+
+            VStack(spacing: 4) {
+                Text(valueText)
+                    .font(.title3.weight(.bold))
+                    .multilineTextAlignment(.center)
+                Text(caption)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 6)
+        }
+    }
+}

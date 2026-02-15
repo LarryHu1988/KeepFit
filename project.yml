@@ -1,0 +1,47 @@
+name: KeepFit
+options:
+  minimumXcodeGenVersion: 2.37.0
+  createIntermediateGroups: true
+configs:
+  Debug: debug
+  Release: release
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+    INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+    INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+    INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleDefault
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  KeepFit:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: KeepFitApp
+        excludes:
+          - "**/*.md"
+    resources:
+      - path: KeepFitApp/Assets.xcassets
+    dependencies:
+      - sdk: Charts.framework
+      - sdk: PhotosUI.framework
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.larry.keepfit
+        MARKETING_VERSION: 0.1.0
+        CURRENT_PROJECT_VERSION: 1
+        INFOPLIST_KEY_CFBundleDisplayName: KeepFit
+        INFOPLIST_KEY_NSPhotoLibraryUsageDescription: 允许你选择头像图片
+    info:
+      path: KeepFitApp/Info.plist
+      properties:
+        CFBundleDisplayName: KeepFit
+        NSPhotoLibraryUsageDescription: 允许你选择头像图片
+        UIApplicationSceneManifest: {}
+        UILaunchScreen: {}
+    scheme:
+      gatherCoverageData: false
+      environmentVariables: {}

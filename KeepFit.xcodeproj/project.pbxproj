@@ -1,0 +1,425 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04E2FF565670202114D0E6E7 /* FoodSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B83F5D62545723A41830C1C /* FoodSelectionSheet.swift */; };
+		1A7289EEAA97A97861AEE696 /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6FC897B48E96407C12C5EC4 /* PhotosUI.framework */; };
+		228763CB6F3AF81A202D9AAD /* LoseWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE90823EF06872E7EE88EE1 /* LoseWeightView.swift */; };
+		235B325C6AC60198DD92633A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5417EDF38E8D0DBF95815D5A /* Assets.xcassets */; };
+		2C88E23DDBEE76F16BE9256C /* KeepFitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F14750CBF2007A15F6A8A1 /* KeepFitApp.swift */; };
+		3F2B6B9661087537EF926259 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F63579A64BF882980F592BA /* Utilities.swift */; };
+		40AC5F1CF5214C54A799BE8E /* TrendChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB13C14A33C7376BA421BCE /* TrendChartsView.swift */; };
+		46298DE0C70D5FAF18E67FB5 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98139737892CE26183CEC3D7 /* ProgressRing.swift */; };
+		4F915D7AF25B3F616EDFCFDB /* SeedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF892893C1E9CF1A30CD916C /* SeedData.swift */; };
+		5E3120E0D6AAFCFB65C32891 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD9ACF251ABC91A14A3F0EF /* SettingsView.swift */; };
+		751FBDF5D02D3A662B3FAC4C /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB10A52C474FB9542C968139 /* CardContainer.swift */; };
+		756B796EA4E81FE32D07B9D5 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A500D23BE43C3BBAD0D898D /* AppState.swift */; };
+		875C08EDE306171B1D664DB2 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6C2A653B75FFF28C2E13A25 /* Charts.framework */; };
+		8D890305FC46704ED2CF9700 /* MoveMoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB036398535B1B6709C4308 /* MoveMoreView.swift */; };
+		C0B7FE0D911D5A50B2621A89 /* EatWellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C1B8F1412FA0397259A796 /* EatWellView.swift */; };
+		D1294ADD72A97F8DE7853993 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AA68ACA16626ED88D65D5B /* DataStore.swift */; };
+		D7E72F6BDD1E252282D03E7B /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782711AA16C33058140223EA /* MainTabView.swift */; };
+		DDFAD0C4AE97EC3E2A7E55D5 /* CalendarHeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2F213427C091094F6088EE2 /* CalendarHeatmapView.swift */; };
+		E991DF3AB63226E4BC06920B /* ExerciseSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974512BAA2E9B3255EBCFB93 /* ExerciseSelectionSheet.swift */; };
+		FF385BFD74D139DF708768BE /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52FD3FA91C2FAAC74F058A48 /* Models.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		07C1B8F1412FA0397259A796 /* EatWellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatWellView.swift; sourceTree = "<group>"; };
+		23879382716B923C6B194CBE /* KeepFit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = KeepFit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		52FD3FA91C2FAAC74F058A48 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		5417EDF38E8D0DBF95815D5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		57A80B74BFC79554A25F2228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		782711AA16C33058140223EA /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		7B83F5D62545723A41830C1C /* FoodSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodSelectionSheet.swift; sourceTree = "<group>"; };
+		8AB13C14A33C7376BA421BCE /* TrendChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendChartsView.swift; sourceTree = "<group>"; };
+		8F63579A64BF882980F592BA /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		974512BAA2E9B3255EBCFB93 /* ExerciseSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSelectionSheet.swift; sourceTree = "<group>"; };
+		98139737892CE26183CEC3D7 /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
+		9A500D23BE43C3BBAD0D898D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		AB10A52C474FB9542C968139 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
+		ADE90823EF06872E7EE88EE1 /* LoseWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoseWeightView.swift; sourceTree = "<group>"; };
+		B8F14750CBF2007A15F6A8A1 /* KeepFitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepFitApp.swift; sourceTree = "<group>"; };
+		C6FC897B48E96407C12C5EC4 /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
+		CAB036398535B1B6709C4308 /* MoveMoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveMoreView.swift; sourceTree = "<group>"; };
+		D6C2A653B75FFF28C2E13A25 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
+		DF892893C1E9CF1A30CD916C /* SeedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedData.swift; sourceTree = "<group>"; };
+		E9AA68ACA16626ED88D65D5B /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		F2F213427C091094F6088EE2 /* CalendarHeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarHeatmapView.swift; sourceTree = "<group>"; };
+		FCD9ACF251ABC91A14A3F0EF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FAE8DDA34EB168255BF4DB53 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				875C08EDE306171B1D664DB2 /* Charts.framework in Frameworks */,
+				1A7289EEAA97A97861AEE696 /* PhotosUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0713C0688979B88561C1385A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D6C2A653B75FFF28C2E13A25 /* Charts.framework */,
+				C6FC897B48E96407C12C5EC4 /* PhotosUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		437C75D74234A61333740A3E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				23879382716B923C6B194CBE /* KeepFit.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		57FDEC604B9BB0F264840A60 /* KeepFitApp */ = {
+			isa = PBXGroup;
+			children = (
+				9A500D23BE43C3BBAD0D898D /* AppState.swift */,
+				5417EDF38E8D0DBF95815D5A /* Assets.xcassets */,
+				E9AA68ACA16626ED88D65D5B /* DataStore.swift */,
+				57A80B74BFC79554A25F2228 /* Info.plist */,
+				B8F14750CBF2007A15F6A8A1 /* KeepFitApp.swift */,
+				52FD3FA91C2FAAC74F058A48 /* Models.swift */,
+				DF892893C1E9CF1A30CD916C /* SeedData.swift */,
+				8F63579A64BF882980F592BA /* Utilities.swift */,
+				A83A5E33CAD50C61BC75DC4E /* Components */,
+				E5FE5B760B1D193073B64870 /* Views */,
+			);
+			path = KeepFitApp;
+			sourceTree = "<group>";
+		};
+		A747E69AF654F804E38063DC = {
+			isa = PBXGroup;
+			children = (
+				57FDEC604B9BB0F264840A60 /* KeepFitApp */,
+				0713C0688979B88561C1385A /* Frameworks */,
+				437C75D74234A61333740A3E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A83A5E33CAD50C61BC75DC4E /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F2F213427C091094F6088EE2 /* CalendarHeatmapView.swift */,
+				AB10A52C474FB9542C968139 /* CardContainer.swift */,
+				974512BAA2E9B3255EBCFB93 /* ExerciseSelectionSheet.swift */,
+				7B83F5D62545723A41830C1C /* FoodSelectionSheet.swift */,
+				98139737892CE26183CEC3D7 /* ProgressRing.swift */,
+				8AB13C14A33C7376BA421BCE /* TrendChartsView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E5FE5B760B1D193073B64870 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				07C1B8F1412FA0397259A796 /* EatWellView.swift */,
+				ADE90823EF06872E7EE88EE1 /* LoseWeightView.swift */,
+				782711AA16C33058140223EA /* MainTabView.swift */,
+				CAB036398535B1B6709C4308 /* MoveMoreView.swift */,
+				FCD9ACF251ABC91A14A3F0EF /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4125CD96C28B86E6AFE5097E /* KeepFit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD556D33689C4FF0B2DF0E63 /* Build configuration list for PBXNativeTarget "KeepFit" */;
+			buildPhases = (
+				68C2E12437295BFE6206D587 /* Sources */,
+				E7BD68208462D3D50DA420EC /* Resources */,
+				FAE8DDA34EB168255BF4DB53 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KeepFit;
+			packageProductDependencies = (
+			);
+			productName = KeepFit;
+			productReference = 23879382716B923C6B194CBE /* KeepFit.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		147C5D30B52CAA0F4B2B3AA8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					4125CD96C28B86E6AFE5097E = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 067F4D85FAE2476D61D1519C /* Build configuration list for PBXProject "KeepFit" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = A747E69AF654F804E38063DC;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4125CD96C28B86E6AFE5097E /* KeepFit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E7BD68208462D3D50DA420EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				235B325C6AC60198DD92633A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		68C2E12437295BFE6206D587 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				756B796EA4E81FE32D07B9D5 /* AppState.swift in Sources */,
+				DDFAD0C4AE97EC3E2A7E55D5 /* CalendarHeatmapView.swift in Sources */,
+				751FBDF5D02D3A662B3FAC4C /* CardContainer.swift in Sources */,
+				D1294ADD72A97F8DE7853993 /* DataStore.swift in Sources */,
+				C0B7FE0D911D5A50B2621A89 /* EatWellView.swift in Sources */,
+				E991DF3AB63226E4BC06920B /* ExerciseSelectionSheet.swift in Sources */,
+				04E2FF565670202114D0E6E7 /* FoodSelectionSheet.swift in Sources */,
+				2C88E23DDBEE76F16BE9256C /* KeepFitApp.swift in Sources */,
+				228763CB6F3AF81A202D9AAD /* LoseWeightView.swift in Sources */,
+				D7E72F6BDD1E252282D03E7B /* MainTabView.swift in Sources */,
+				FF385BFD74D139DF708768BE /* Models.swift in Sources */,
+				8D890305FC46704ED2CF9700 /* MoveMoreView.swift in Sources */,
+				46298DE0C70D5FAF18E67FB5 /* ProgressRing.swift in Sources */,
+				4F915D7AF25B3F616EDFCFDB /* SeedData.swift in Sources */,
+				5E3120E0D6AAFCFB65C32891 /* SettingsView.swift in Sources */,
+				40AC5F1CF5214C54A799BE8E /* TrendChartsView.swift in Sources */,
+				3F2B6B9661087537EF926259 /* Utilities.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		79034D01846237A3D262D543 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = KeepFitApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "允许你选择头像图片";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.larry.keepfit;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		932C037D72AFFEF89860AB6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = KeepFitApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "允许你选择头像图片";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.larry.keepfit;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E4974234BBA4AEC29D72E61E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDefault;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		E4A208A845C6625FD99774D8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDefault;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		067F4D85FAE2476D61D1519C /* Build configuration list for PBXProject "KeepFit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4A208A845C6625FD99774D8 /* Debug */,
+				E4974234BBA4AEC29D72E61E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AD556D33689C4FF0B2DF0E63 /* Build configuration list for PBXNativeTarget "KeepFit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79034D01846237A3D262D543 /* Debug */,
+				932C037D72AFFEF89860AB6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 147C5D30B52CAA0F4B2B3AA8 /* Project object */;
+}
