@@ -74,15 +74,14 @@ struct CalendarHeatmapView: View {
 
 struct WeekStripCalendarView: View {
     @Binding var selectedDate: Date
+    let accent: Color
     let indicatorColor: (Date) -> Color?
 
     private let weekTitles = ["日", "一", "二", "三", "四", "五", "六"]
 
     private var weekDates: [Date] {
         let calendar = Calendar.current
-        let dayStart = calendar.startOfDay(for: selectedDate)
-        let weekday = calendar.component(.weekday, from: dayStart)
-        let weekStart = calendar.date(byAdding: .day, value: -(weekday - 1), to: dayStart) ?? dayStart
+        let weekStart = selectedDate.startOfWeekInCurrentCalendar
         return (0..<7).compactMap { offset in
             calendar.date(byAdding: .day, value: offset, to: weekStart)
         }
@@ -94,19 +93,40 @@ struct WeekStripCalendarView: View {
                 weekCell(for: date)
             }
         }
-        .padding(10)
+        .padding(9)
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(.systemBackground))
+                .fill(.ultraThinMaterial)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(Color.accentColor.opacity(0.04))
+                        .fill(
+                            LinearGradient(
+                                colors: [accent.opacity(0.2), .white.opacity(0.08)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .stroke(Color.white.opacity(0.9), lineWidth: 1)
+                        .stroke(.white.opacity(0.28), lineWidth: 1)
                 )
+        )
+        .shadow(color: accent.opacity(0.12), radius: 8, x: 0, y: 4)
+        .contentShape(Rectangle())
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 16)
+                .onEnded { value in
+                    let horizontal = value.translation.width
+                    let vertical = value.translation.height
+                    guard abs(horizontal) > abs(vertical), abs(horizontal) > 30 else { return }
+                    if horizontal < 0 {
+                        shiftWeek(by: 1)
+                    } else {
+                        shiftWeek(by: -1)
+                    }
+                }
         )
     }
 
@@ -139,9 +159,37 @@ struct WeekStripCalendarView: View {
             .frame(maxWidth: .infinity, minHeight: 52)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(isSelected ? Color.accentColor : Color(.tertiarySystemBackground))
+                    .fill(
+                        isSelected
+                            ? LinearGradient(
+                                colors: [accent.opacity(0.88), accent.opacity(0.68)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                            : LinearGradient(
+                                colors: [.white.opacity(0.16), .white.opacity(0.08)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(isSelected ? .white.opacity(0.45) : .white.opacity(0.2), lineWidth: 1)
+                    )
             )
         }
         .buttonStyle(.plain)
+    }
+
+    private func shiftWeek(by offset: Int) {
+        let calendar = Calendar.current
+        let currentWeekStart = selectedDate.startOfWeekInCurrentCalendar
+        guard let targetWeekStart = calendar.date(byAdding: .day, value: offset * 7, to: currentWeekStart) else { return }
+        let today = Date().startOfDayInCurrentCalendar
+        let todayWeekStart = today.startOfWeekInCurrentCalendar
+        let targetSelectedDate = targetWeekStart.isSameDay(as: todayWeekStart) ? today : targetWeekStart
+        withAnimation(.spring(response: 0.24, dampingFraction: 0.9)) {
+            selectedDate = targetSelectedDate
+        }
     }
 }

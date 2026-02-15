@@ -43,21 +43,7 @@ struct SettingsView: View {
                 Section {
                     iconTextFieldRow(icon: "ruler", title: "身高", text: bindingDouble(\.heightCm, format: "%.0f"), unit: "cm", keyboard: .decimalPad, color: .blue)
                     iconTextFieldRow(icon: "scalemass", title: "体重", text: bindingDouble(\.weightKg, format: "%.1f"), unit: "kg", keyboard: .decimalPad, color: .mint)
-
-                    HStack {
-                        HStack(spacing: 10) {
-                            rowIcon("calendar", .orange)
-                            Text("年龄")
-                        }
-                        Spacer()
-                        HStack(spacing: 8) {
-                            Text("\(appState.profile.age) yr")
-                                .foregroundStyle(.secondary)
-                                .monospacedDigit()
-                            Stepper("", value: binding(\.age), in: 10...90)
-                                .labelsHidden()
-                        }
-                    }
+                    iconTextFieldRow(icon: "calendar", title: "年龄", text: bindingInt(\.age), unit: "yr", keyboard: .numberPad, color: .orange)
 
                     HStack {
                         HStack(spacing: 10) {
@@ -102,7 +88,7 @@ struct SettingsView: View {
 
                 Section {
                     iconTextFieldRow(icon: "target", title: "目标体重", text: bindingDouble(\.targetWeightKg, format: "%.1f"), unit: "kg", keyboard: .decimalPad, color: .teal)
-                    iconTextFieldRow(icon: "drop", title: "目标体脂", text: bindingDouble(\.targetBodyFat, format: "%.1f"), unit: "%", keyboard: .decimalPad, color: .cyan)
+                    iconTextFieldRow(icon: "chart.pie.fill", title: "目标体脂", text: bindingDouble(\.targetBodyFat, format: "%.1f"), unit: "%", keyboard: .decimalPad, color: .pink)
                     iconTextFieldRow(icon: "figure.run.circle.fill", title: "每日运动目标", text: bindingDouble(\.dailyExerciseGoal, format: "%.0f"), unit: "kcal", keyboard: .decimalPad, color: .green)
 
                     HStack {
@@ -186,7 +172,7 @@ struct SettingsView: View {
             .sheet(isPresented: $showSexSheet) {
                 selectionSheet(
                     title: "选择性别",
-                    options: BiologicalSex.allCases,
+                    options: [.male, .female],
                     selectedTitle: appState.profile.sex.title,
                     label: { $0.title },
                     onSelect: { value in
@@ -198,6 +184,8 @@ struct SettingsView: View {
                 )
                 .presentationDetents([.fraction(0.35)])
                 .presentationDragIndicator(.visible)
+                .presentationCornerRadius(24)
+                .presentationBackground(.ultraThinMaterial)
             }
             .sheet(isPresented: $showActivitySheet) {
                 selectionSheet(
@@ -214,13 +202,15 @@ struct SettingsView: View {
                 )
                 .presentationDetents([.fraction(0.45)])
                 .presentationDragIndicator(.visible)
+                .presentationCornerRadius(24)
+                .presentationBackground(.ultraThinMaterial)
             }
-            .alert(item: $activeInfo) { topic in
-                Alert(
-                    title: Text(topic.title),
-                    message: Text(topic.message),
-                    dismissButton: .default(Text("知道了"))
-                )
+            .sheet(item: $activeInfo) { topic in
+                infoSheet(topic: topic)
+                    .presentationDetents([.height(topic.sheetHeight)])
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(28)
+                    .presentationBackground(.ultraThinMaterial)
             }
         }
     }
@@ -334,6 +324,50 @@ struct SettingsView: View {
         }
     }
 
+    private func infoSheet(topic: SettingsInfoTopic) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Text(topic.title)
+                    .font(.headline.weight(.semibold))
+                Spacer()
+                Button("完成") {
+                    activeInfo = nil
+                }
+                .font(.subheadline)
+            }
+
+            ForEach(Array(topic.paragraphs.enumerated()), id: \.offset) { _, paragraph in
+                Text(paragraph)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(.white.opacity(0.35), lineWidth: 1)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [.white.opacity(0.18), .clear],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                )
+        )
+        .padding(.horizontal, 12)
+        .padding(.top, 6)
+        .padding(.bottom, 2)
+    }
+
     private func binding<T>(_ keyPath: WritableKeyPath<UserProfile, T>) -> Binding<T> {
         Binding(
             get: { appState.profile[keyPath: keyPath] },
@@ -347,6 +381,18 @@ struct SettingsView: View {
             set: { input in
                 if let value = Double(input.filter { "0123456789.".contains($0) }) {
                     appState.profile[keyPath: keyPath] = value
+                }
+            }
+        )
+    }
+
+    private func bindingInt(_ keyPath: WritableKeyPath<UserProfile, Int>) -> Binding<String> {
+        Binding(
+            get: { String(appState.profile[keyPath: keyPath]) },
+            set: { input in
+                let digits = input.filter(\.isNumber)
+                if let value = Int(digits) {
+                    appState.profile[keyPath: keyPath] = min(max(value, 10), 90)
                 }
             }
         )
@@ -371,14 +417,36 @@ private enum SettingsInfoTopic: String, Identifiable {
         }
     }
 
-    var message: String {
+    var sheetHeight: CGFloat {
         switch self {
         case .bmr:
-            return "Mifflin-St Jeor 公式: 男 = 10×体重(kg) + 6.25×身高(cm) - 5×年龄 + 5; 女 = 10×体重(kg) + 6.25×身高(cm) - 5×年龄 - 161。"
+            return 220
         case .tdee:
-            return "TDEE = BMR × 活动系数。活动系数: 久坐 1.2 / 轻度活动 1.375 / 中度活动 1.55 / 高强度活动 1.725。"
+            return 194
         case .intake:
-            return "减脂建议摄入 = max(1200, TDEE - 450)。当日净差 = 摄入 - (TDEE + 运动消耗)，负值为赤字，正值为超量。"
+            return 208
+        }
+    }
+
+    var paragraphs: [String] {
+        switch self {
+        case .bmr:
+            return [
+                "Mifflin-St Jeor 公式。",
+                "男性: 10×体重(kg) + 6.25×身高(cm) - 5×年龄 + 5。",
+                "女性: 10×体重(kg) + 6.25×身高(cm) - 5×年龄 - 161。"
+            ]
+        case .tdee:
+            return [
+                "TDEE = BMR × 活动系数。",
+                "活动系数: 久坐 1.2 / 轻度活动 1.375 / 中度活动 1.55 / 高强度活动 1.725。"
+            ]
+        case .intake:
+            return [
+                "减脂建议摄入 = max(1200, TDEE - 450)。",
+                "当日净差 = 摄入 - (TDEE + 运动消耗)。",
+                "负值为赤字，正值为超量。"
+            ]
         }
     }
 }

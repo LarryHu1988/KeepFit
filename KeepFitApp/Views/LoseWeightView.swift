@@ -4,25 +4,27 @@ struct LoseWeightView: View {
     @EnvironmentObject private var appState: AppState
     let onSettingsTap: () -> Void
 
-    @State private var selectedDate = Date()
+    @State private var selectedDate = Date().startOfDayInCurrentCalendar
     @State private var monthCursor = Date()
     @State private var weightText = ""
     @State private var bodyFatText = ""
+    @State private var showBodyMetricDatePicker = false
+    @State private var bodyMetricDateDraft = Date()
 
     private let cardSpacing: CGFloat = 24
-    private let fieldHeight: CGFloat = 44
+    private let fieldHeight: CGFloat = 40
     private let deficitGoal: Double = 450
 
     private var todayNutrition: DayNutritionSummary {
-        appState.dayNutrition(on: Date())
+        appState.dayNutrition(on: selectedDate)
     }
 
     private var todayExercise: DayFitnessSummary {
-        appState.dayExercise(on: Date())
+        appState.dayExercise(on: selectedDate)
     }
 
     private var todayBalance: Double {
-        appState.dailyBalance(on: Date())
+        appState.dailyBalance(on: selectedDate)
     }
 
     private var selectedNutrition: DayNutritionSummary {
@@ -78,19 +80,24 @@ struct LoseWeightView: View {
                 monthCursor = newValue
                 syncBodyMetricInputs(for: newValue)
             }
+            .sheet(isPresented: $showBodyMetricDatePicker) {
+                bodyMetricDateSheet
+                    .presentationDetents([.height(388)])
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(24)
+                    .presentationBackground(.ultraThinMaterial)
+            }
         }
     }
 
     private var weekCalendarStrip: some View {
         WeekStripCalendarView(
             selectedDate: $selectedDate,
+            accent: .yellow,
             indicatorColor: { date in
                 let hasData = !appState.foodLogs(on: date).isEmpty || !appState.exerciseLogs(on: date).isEmpty
                 guard hasData else { return nil }
-                let balance = appState.dailyBalance(on: date)
-                if balance <= -80 { return .green }
-                if balance >= 80 { return .red }
-                return .orange
+                return appState.dailyBalance(on: date) <= 0 ? .green : .red
             }
         )
     }
@@ -112,7 +119,7 @@ struct LoseWeightView: View {
         }()
 
         return CardContainer(
-            title: "今日综合热量",
+            title: "综合热量",
             subtitle: nil,
             accent: .orange
         ) {
@@ -156,7 +163,7 @@ struct LoseWeightView: View {
 
     private var calendarCard: some View {
         CardContainer(
-            title: "当月赤字日历",
+            title: "赤字日历",
             subtitle: nil,
             accent: .yellow
         ) {
@@ -256,80 +263,137 @@ struct LoseWeightView: View {
 
     private var bodyMetricInputCard: some View {
         CardContainer(
-            title: "记录体重体脂",
+            title: "体重体脂",
             subtitle: nil,
             accent: .mint
         ) {
-            VStack(spacing: 10) {
-                HStack(spacing: 10) {
-                    HStack(spacing: 6) {
-                        Button {
-                            shiftSelectedDate(by: -1)
-                        } label: {
-                            Image(systemName: "chevron.left.circle.fill")
-                                .foregroundStyle(.secondary)
-                        }
-                        .buttonStyle(.plain)
+            let entryFont = Font.caption.weight(.medium)
 
-                        Image(systemName: "calendar")
-                            .foregroundStyle(.secondary)
+            HStack(spacing: 8) {
+                Button {
+                    bodyMetricDateDraft = selectedDate
+                    showBodyMetricDatePicker = true
+                } label: {
+                    HStack(spacing: 6) {
                         Text(Formatters.monthDay.string(from: selectedDate))
-
-                        Button {
-                            shiftSelectedDate(by: 1)
-                        } label: {
-                            Image(systemName: "chevron.right.circle.fill")
-                                .foregroundStyle(.secondary)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .font(.subheadline)
-
-                    Spacer()
-                    Button("保存") {
-                        saveBodyMetric()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.mint)
-                    .controlSize(.small)
-                }
-
-                HStack(spacing: 10) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "scalemass")
-                            .foregroundStyle(.mint)
-                        TextField("weight", text: $weightText)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                        Text("kg")
-                            .font(.caption.weight(.semibold))
+                            .font(entryFont)
+                            .monospacedDigit()
+                            .lineLimit(1)
+                        Spacer(minLength: 0)
+                        Image(systemName: "chevron.up.chevron.down")
+                            .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
                     .padding(.horizontal, 10)
-                    .frame(maxWidth: .infinity, minHeight: fieldHeight)
-                    .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "drop.circle")
-                            .foregroundStyle(.pink)
-                        TextField("body fat", text: $bodyFatText)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                        Text("%")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.horizontal, 10)
-                    .frame(maxWidth: .infinity, minHeight: fieldHeight)
-                    .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .frame(width: 94, height: fieldHeight)
+                    .background(metricFieldBackground)
                 }
+                .buttonStyle(.plain)
+
+                HStack(spacing: 5) {
+                    Image(systemName: "scalemass.fill")
+                        .foregroundStyle(.mint)
+                    TextField("weight", text: $weightText)
+                        .keyboardType(.decimalPad)
+                        .font(entryFont)
+                        .minimumScaleFactor(0.8)
+                        .lineLimit(1)
+                        .multilineTextAlignment(.trailing)
+                    Text("kg")
+                        .font(entryFont)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 8)
+                .frame(maxWidth: .infinity, minHeight: fieldHeight)
+                .background(metricFieldBackground)
+
+                HStack(spacing: 5) {
+                    Image(systemName: "chart.pie.fill")
+                        .foregroundStyle(.pink)
+                    TextField("body fat", text: $bodyFatText)
+                        .keyboardType(.decimalPad)
+                        .font(entryFont)
+                        .minimumScaleFactor(0.8)
+                        .lineLimit(1)
+                        .multilineTextAlignment(.trailing)
+                    Text("%")
+                        .font(entryFont)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 8)
+                .frame(maxWidth: .infinity, minHeight: fieldHeight)
+                .background(metricFieldBackground)
+
+                Button {
+                    saveBodyMetric()
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 14, height: 14)
+                        .padding(9)
+                        .background(
+                            Circle()
+                                .fill(Color.mint.opacity(0.9))
+                                .overlay(
+                                    Circle()
+                                        .stroke(.white.opacity(0.8), lineWidth: 1)
+                                )
+                        )
+                }
+                .buttonStyle(.plain)
+                .frame(width: 34, height: fieldHeight)
             }
         }
     }
 
+    private var bodyMetricDateSheet: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("选择记录日期")
+                    .font(.headline.weight(.semibold))
+                Spacer()
+                Button("关闭") {
+                    showBodyMetricDatePicker = false
+                }
+                .font(.subheadline)
+            }
+
+            DatePicker(
+                "记录日期",
+                selection: Binding(
+                    get: { bodyMetricDateDraft },
+                    set: { newValue in
+                        bodyMetricDateDraft = newValue
+                        selectedDate = newValue
+                        showBodyMetricDatePicker = false
+                    }
+                ),
+                displayedComponents: [.date]
+            )
+            .datePickerStyle(.graphical)
+            .labelsHidden()
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+
+    private var metricFieldBackground: some View {
+        RoundedRectangle(cornerRadius: 10, style: .continuous)
+            .fill(Color.white.opacity(0.35))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.mint.opacity(0.08))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(.white.opacity(0.8), lineWidth: 1)
+            )
+    }
+
     private var calorieTrendCard: some View {
         CardContainer(
-            title: "每日卡路里趋势",
+            title: "热量趋势",
             subtitle: nil,
             accent: .blue
         ) {
@@ -400,8 +464,4 @@ struct LoseWeightView: View {
         appState.profile.weightKg = weight
     }
 
-    private func shiftSelectedDate(by dayDelta: Int) {
-        let calendar = Calendar.current
-        selectedDate = calendar.date(byAdding: .day, value: dayDelta, to: selectedDate) ?? selectedDate
-    }
 }

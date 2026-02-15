@@ -5,14 +5,16 @@ struct MoveMoreView: View {
     let onSettingsTap: () -> Void
 
     @State private var selectedExercise: ExerciseItem?
-    @State private var selectedDate = Date()
+    @State private var selectedDate = Date().startOfDayInCurrentCalendar
     @State private var exerciseTime = Date()
     @State private var durationText = "30"
     @State private var showExerciseSheet = false
+    @State private var showExerciseTimeSheet = false
 
     private let cardSpacing: CGFloat = 24
-    private let fieldHeight: CGFloat = 44
-    private let compactFieldWidth: CGFloat = 112
+    private let fieldHeight: CGFloat = 36
+    private let timeFieldWidth: CGFloat = 82
+    private let compactFieldWidth: CGFloat = 60
 
     private var todaySummary: DayFitnessSummary {
         appState.dayExercise(on: selectedDate)
@@ -30,7 +32,6 @@ struct MoveMoreView: View {
                     exerciseProgressCard
                     exerciseMetricsCard
                     todayExerciseCard
-                    adviceCard
                     dailyHistoryCard
                 }
                 .padding(.horizontal, 16)
@@ -64,14 +65,25 @@ struct MoveMoreView: View {
                     selectedExercise = item
                 }
             }
+            .sheet(isPresented: $showExerciseTimeSheet) {
+                exerciseTimeSheet
+                    .presentationDetents([.height(320)])
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(24)
+                    .presentationBackground(.ultraThinMaterial)
+            }
         }
     }
 
     private var weekCalendarStrip: some View {
         WeekStripCalendarView(
             selectedDate: $selectedDate,
+            accent: .green,
             indicatorColor: { date in
-                appState.exerciseLogs(on: date).isEmpty ? nil : .green
+                let logs = appState.exerciseLogs(on: date)
+                guard !logs.isEmpty else { return nil }
+                let burned = appState.dayExercise(on: date).caloriesBurned
+                return burned >= appState.profile.dailyExerciseGoal ? .green : .red
             }
         )
     }
@@ -83,7 +95,7 @@ struct MoveMoreView: View {
         let centerMain = remaining >= 0 ? "剩余\n\(Int(remaining))" : "超额\n\(Int(abs(remaining)))"
 
         return CardContainer(
-            title: "今日运动消耗",
+            title: "运动消耗",
             subtitle: nil,
             accent: .green
         ) {
@@ -103,6 +115,7 @@ struct MoveMoreView: View {
         let goal = max(appState.profile.dailyExerciseGoal, 1)
         let burned = todaySummary.caloriesBurned
         let duration = todaySummary.durationMinutes
+        let isWarning = burned < goal
 
         return CardContainer(
             title: "运动指标",
@@ -116,21 +129,44 @@ struct MoveMoreView: View {
             }
             .frame(maxWidth: .infinity)
 
-            Text(burned >= goal ? "今日目标已达成" : "继续完成今日目标")
+            Text(appState.exerciseAdvice(on: selectedDate))
                 .font(.caption)
-                .foregroundStyle(burned >= goal ? Color.green : Color.secondary)
+                .foregroundStyle(isWarning ? Color.red : Color.green)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .multilineTextAlignment(.center)
         }
     }
 
     private var todayExerciseCard: some View {
         CardContainer(
-            title: "今日锻炼记录",
+            title: "锻炼记录",
             subtitle: nil,
             accent: .green
         ) {
-            VStack(spacing: 12) {
-                HStack(spacing: 10) {
+            let entryFont = Font.caption.weight(.medium)
+
+            VStack(spacing: 10) {
+                HStack(spacing: 6) {
+                    Button {
+                        showExerciseTimeSheet = true
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text(Formatters.hourMinute.string(from: exerciseTime))
+                                .font(entryFont)
+                                .monospacedDigit()
+                                .lineLimit(1)
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 10)
+                        .frame(width: timeFieldWidth, height: fieldHeight)
+                        .background(inputFieldBackground)
+                    }
+                    .buttonStyle(.plain)
+
                     Button {
                         showExerciseSheet = true
                     } label: {
@@ -138,50 +174,60 @@ struct MoveMoreView: View {
                             AppIconBadge(
                                 icon: appState.exerciseIcon(for: selectedExercise ?? appState.exerciseLibrary.first ?? SeedData.exerciseLibrary[0]),
                                 seed: selectedExercise?.id ?? "exercise_selector",
-                                size: 30
+                                size: 20
                             )
                             Text(selectedExercise?.name ?? "选择运动项目")
+                                .font(entryFont)
                                 .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                             Spacer()
                             Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption)
+                                .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
-                        .padding(.horizontal, 12)
+                        .padding(.horizontal, 8)
                         .frame(maxWidth: .infinity, minHeight: fieldHeight, alignment: .leading)
-                        .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .background(inputFieldBackground)
                     }
                     .buttonStyle(.plain)
+                    .layoutPriority(1)
 
                     HStack(spacing: 6) {
                         TextField("duration", text: $durationText)
+                            .font(entryFont)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                         Text("min")
-                            .font(.caption.weight(.semibold))
+                            .font(entryFont)
                             .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
                     }
-                    .padding(.horizontal, 10)
+                    .padding(.horizontal, 8)
                     .frame(width: compactFieldWidth, height: fieldHeight)
-                    .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                }
+                    .background(inputFieldBackground)
 
-                HStack(spacing: 10) {
-                    HStack {
-                        DatePicker("锻炼时间", selection: $exerciseTime, displayedComponents: [.hourAndMinute])
-                            .labelsHidden()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .padding(.horizontal, 10)
-                    .frame(maxWidth: .infinity, minHeight: fieldHeight)
-                    .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-
-                    Button("添加") {
+                    Button {
                         addExerciseLog()
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 14, height: 14)
+                            .padding(9)
+                            .background(
+                                Circle()
+                                    .fill(Color.green.opacity(0.9))
+                                    .overlay(
+                                        Circle()
+                                            .stroke(.white.opacity(0.8), lineWidth: 1)
+                                    )
+                            )
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.green)
-                    .frame(width: compactFieldWidth, height: fieldHeight)
+                    .buttonStyle(.plain)
+                    .frame(width: 34, height: fieldHeight)
                 }
 
                 Divider()
@@ -226,21 +272,10 @@ struct MoveMoreView: View {
         }
     }
 
-    private var adviceCard: some View {
-        CardContainer(
-            title: "今日锻炼建议",
-            subtitle: nil,
-            accent: .yellow
-        ) {
-            Text(appState.exerciseAdvice(on: selectedDate))
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
     private var dailyHistoryCard: some View {
         let records = appState.dailyExerciseRecords(limit: 21)
         return CardContainer(
-            title: "每日锻炼记录",
+            title: "历史锻炼",
             subtitle: nil,
             accent: .teal
         ) {
@@ -303,5 +338,41 @@ struct MoveMoreView: View {
 
         appState.addExerciseLog(date: date, item: exercise, durationMinutes: minutes)
         durationText = "30"
+    }
+
+    private var exerciseTimeSheet: some View {
+        NavigationStack {
+            VStack(spacing: 10) {
+                DatePicker(
+                    "锻炼时间",
+                    selection: $exerciseTime,
+                    displayedComponents: [.hourAndMinute]
+                )
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+
+                Button("完成") {
+                    showExerciseTimeSheet = false
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+            }
+            .padding()
+            .navigationTitle("选择锻炼时间")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    private var inputFieldBackground: some View {
+        RoundedRectangle(cornerRadius: 10, style: .continuous)
+            .fill(Color.white.opacity(0.35))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.green.opacity(0.08))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(.white.opacity(0.8), lineWidth: 1)
+            )
     }
 }

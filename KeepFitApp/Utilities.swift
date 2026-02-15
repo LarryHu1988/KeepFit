@@ -5,6 +5,13 @@ extension Date {
         Calendar.current.startOfDay(for: self)
     }
 
+    var startOfWeekInCurrentCalendar: Date {
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: self)
+        let weekday = calendar.component(.weekday, from: dayStart)
+        return calendar.date(byAdding: .day, value: -(weekday - 1), to: dayStart) ?? dayStart
+    }
+
     func isSameDay(as other: Date) -> Bool {
         Calendar.current.isDate(self, inSameDayAs: other)
     }

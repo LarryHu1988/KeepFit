@@ -5,14 +5,16 @@ struct EatWellView: View {
     let onSettingsTap: () -> Void
 
     @State private var selectedFood: FoodItem?
-    @State private var selectedDate = Date()
+    @State private var selectedDate = Date().startOfDayInCurrentCalendar
     @State private var intakeTime = Date()
     @State private var amountText = "120"
     @State private var showFoodSheet = false
+    @State private var showIntakeTimeSheet = false
 
     private let cardSpacing: CGFloat = 24
-    private let fieldHeight: CGFloat = 44
-    private let compactFieldWidth: CGFloat = 112
+    private let fieldHeight: CGFloat = 36
+    private let timeFieldWidth: CGFloat = 82
+    private let compactFieldWidth: CGFloat = 58
 
     private var todayNutrition: DayNutritionSummary {
         appState.dayNutrition(on: selectedDate)
@@ -43,7 +45,6 @@ struct EatWellView: View {
                     intakeProgressCard
                     intakeMacroCard
                     todayIntakeCard
-                    adviceCard
                     dailyHistoryCard
                 }
                 .padding(.horizontal, 16)
@@ -82,14 +83,25 @@ struct EatWellView: View {
                     amountText = String(Int(appState.defaultEntryAmount(for: item)))
                 }
             }
+            .sheet(isPresented: $showIntakeTimeSheet) {
+                intakeTimeSheet
+                    .presentationDetents([.height(320)])
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(24)
+                    .presentationBackground(.ultraThinMaterial)
+            }
         }
     }
 
     private var weekCalendarStrip: some View {
         WeekStripCalendarView(
             selectedDate: $selectedDate,
+            accent: .orange,
             indicatorColor: { date in
-                appState.foodLogs(on: date).isEmpty ? nil : .orange
+                let logs = appState.foodLogs(on: date)
+                guard !logs.isEmpty else { return nil }
+                let intake = appState.dayNutrition(on: date).calories
+                return intake > appState.profile.recommendedIntakeForFatLoss ? .red : .green
             }
         )
     }
@@ -99,7 +111,7 @@ struct EatWellView: View {
         let centerMain = remain >= 0 ? "剩余\n\(Int(remain))" : "超出\n\(Int(abs(remain)))"
 
         return CardContainer(
-            title: "今日摄入进度",
+            title: "摄入进度",
             subtitle: nil,
             accent: .orange
         ) {
@@ -116,7 +128,11 @@ struct EatWellView: View {
     }
 
     private var intakeMacroCard: some View {
-        CardContainer(
+        let advice = appState.foodAdvice(on: selectedDate)
+        let warningKeywords = ["超目标", "偏低", "偏高", "不再加餐"]
+        let isWarning = warningKeywords.contains { advice.contains($0) } || todayNutrition.calories > targetCalories
+
+        return CardContainer(
             title: "营养结构",
             subtitle: nil,
             accent: .orange
@@ -128,21 +144,44 @@ struct EatWellView: View {
             }
             .frame(maxWidth: .infinity)
 
-            Text("已摄入 \(Int(todayNutrition.calories)) kcal")
+            Text(advice)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(isWarning ? Color.red : Color.green)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .multilineTextAlignment(.center)
         }
     }
 
     private var todayIntakeCard: some View {
         CardContainer(
-            title: "今日进食记录",
+            title: "进食记录",
             subtitle: nil,
             accent: .orange
         ) {
-            VStack(spacing: 12) {
-                HStack(spacing: 10) {
+            let entryFont = Font.caption.weight(.medium)
+
+            VStack(spacing: 10) {
+                HStack(spacing: 6) {
+                    Button {
+                        showIntakeTimeSheet = true
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text(Formatters.hourMinute.string(from: intakeTime))
+                                .font(entryFont)
+                                .monospacedDigit()
+                                .lineLimit(1)
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 10)
+                        .frame(width: timeFieldWidth, height: fieldHeight)
+                        .background(inputFieldBackground)
+                    }
+                    .buttonStyle(.plain)
+
                     Button {
                         showFoodSheet = true
                     } label: {
@@ -150,50 +189,60 @@ struct EatWellView: View {
                             AppIconBadge(
                                 icon: appState.foodIcon(for: selectedFood ?? appState.foodLibrary.first ?? SeedData.foodLibrary[0]),
                                 seed: selectedFood?.id ?? "food_selector",
-                                size: 30
+                                size: 20
                             )
                             Text(selectedFood?.name ?? "选择食物")
+                                .font(entryFont)
                                 .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                             Spacer()
                             Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption)
+                                .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
-                        .padding(.horizontal, 12)
+                        .padding(.horizontal, 8)
                         .frame(maxWidth: .infinity, minHeight: fieldHeight, alignment: .leading)
-                        .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .background(inputFieldBackground)
                     }
                     .buttonStyle(.plain)
+                    .layoutPriority(1)
 
                     HStack(spacing: 6) {
                         TextField("amount", text: $amountText)
+                            .font(entryFont)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                         Text(selectedUnitSymbol)
-                            .font(.caption.weight(.semibold))
+                            .font(entryFont)
                             .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
                     }
-                    .padding(.horizontal, 10)
+                    .padding(.horizontal, 8)
                     .frame(width: compactFieldWidth, height: fieldHeight)
-                    .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                }
+                    .background(inputFieldBackground)
 
-                HStack(spacing: 10) {
-                    HStack {
-                        DatePicker("进食时间", selection: $intakeTime, displayedComponents: [.hourAndMinute])
-                            .labelsHidden()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .padding(.horizontal, 10)
-                    .frame(maxWidth: .infinity, minHeight: fieldHeight)
-                    .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-
-                    Button("添加") {
+                    Button {
                         addFoodLog()
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 14, height: 14)
+                            .padding(9)
+                            .background(
+                                Circle()
+                                    .fill(Color.orange.opacity(0.9))
+                                    .overlay(
+                                        Circle()
+                                            .stroke(.white.opacity(0.8), lineWidth: 1)
+                                    )
+                            )
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.orange)
-                    .frame(width: compactFieldWidth, height: fieldHeight)
+                    .buttonStyle(.plain)
+                    .frame(width: 34, height: fieldHeight)
                 }
 
                 Divider()
@@ -238,23 +287,10 @@ struct EatWellView: View {
         }
     }
 
-    private var adviceCard: some View {
-        CardContainer(
-            title: "今日进食建议",
-            subtitle: nil,
-            accent: .yellow
-        ) {
-            Text(appState.foodAdvice(on: selectedDate))
-                .font(.body)
-                .foregroundStyle(.primary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
     private var dailyHistoryCard: some View {
         let records = appState.dailyNutritionRecords(limit: 21)
         return CardContainer(
-            title: "每日进食记录",
+            title: "历史进食",
             subtitle: nil,
             accent: .teal
         ) {
@@ -319,5 +355,41 @@ struct EatWellView: View {
 
         appState.addFoodLog(date: date, item: food, grams: amount)
         amountText = String(Int(appState.defaultEntryAmount(for: food)))
+    }
+
+    private var intakeTimeSheet: some View {
+        NavigationStack {
+            VStack(spacing: 10) {
+                DatePicker(
+                    "进食时间",
+                    selection: $intakeTime,
+                    displayedComponents: [.hourAndMinute]
+                )
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+
+                Button("完成") {
+                    showIntakeTimeSheet = false
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.orange)
+            }
+            .padding()
+            .navigationTitle("选择进食时间")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    private var inputFieldBackground: some View {
+        RoundedRectangle(cornerRadius: 10, style: .continuous)
+            .fill(Color.white.opacity(0.35))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.orange.opacity(0.08))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(.white.opacity(0.8), lineWidth: 1)
+            )
     }
 }
