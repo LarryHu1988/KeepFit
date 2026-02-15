@@ -106,11 +106,11 @@ struct SettingsView: View {
                 Section {
                     iconTextFieldRow(icon: "target", title: "目标体重", text: bindingDouble(\.targetWeightKg, format: "%.1f"), unit: "kg", keyboard: .decimalPad, color: .teal)
                     iconTextFieldRow(icon: "drop", title: "目标体脂", text: bindingDouble(\.targetBodyFat, format: "%.1f"), unit: "%", keyboard: .decimalPad, color: .cyan)
-                    iconTextFieldRow(icon: "flame", title: "每日运动目标", text: bindingDouble(\.dailyExerciseGoal, format: "%.0f"), unit: "kcal", keyboard: .decimalPad, color: .orange)
+                    iconTextFieldRow(icon: "figure.run.circle.fill", title: "每日运动目标", text: bindingDouble(\.dailyExerciseGoal, format: "%.0f"), unit: "kcal", keyboard: .decimalPad, color: .green)
 
                     HStack {
                         HStack(spacing: 10) {
-                            rowIcon("bolt.heart", .indigo)
+                            rowIcon("speedometer", .green)
                             Text("维持消耗")
                         }
                         Spacer()
@@ -119,7 +119,7 @@ struct SettingsView: View {
 
                     HStack {
                         HStack(spacing: 10) {
-                            rowIcon("leaf", .green)
+                            rowIcon("fork.knife.circle.fill", .red)
                             Text("减脂建议摄入")
                         }
                         Spacer()
@@ -132,7 +132,7 @@ struct SettingsView: View {
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(spacing: 10) {
-                            rowIcon("scalemass", .mint)
+                            rowIcon("heart.text.square.fill", .green)
                             Text("基础代谢 BMR (Mifflin-St Jeor)")
                                 .font(.subheadline.weight(.semibold))
                         }
@@ -147,7 +147,7 @@ struct SettingsView: View {
                         Divider()
 
                         HStack(spacing: 10) {
-                            rowIcon("flame", .orange)
+                            rowIcon("speedometer", .green)
                             Text("维持消耗 TDEE")
                                 .font(.subheadline.weight(.semibold))
                         }
@@ -162,7 +162,7 @@ struct SettingsView: View {
                         Divider()
 
                         HStack(spacing: 10) {
-                            rowIcon("function", .purple)
+                            rowIcon("fork.knife.circle.fill", .red)
                             Text("建议摄入与净差计算")
                                 .font(.subheadline.weight(.semibold))
                         }
@@ -176,7 +176,7 @@ struct SettingsView: View {
                     }
                     .padding(.vertical, 2)
                 } header: {
-                    Label("科学计算说明", systemImage: "function")
+                    Label("科学计算说明", systemImage: "book.closed")
                 }
 
                 Section {
@@ -205,7 +205,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("个人设置")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("完成") {

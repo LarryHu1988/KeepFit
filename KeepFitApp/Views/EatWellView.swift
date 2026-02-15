@@ -45,15 +45,14 @@ struct EatWellView: View {
                     dailyHistoryCard
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, 56)
+                .padding(.top, 8)
                 .padding(.bottom, 18)
                 .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .orange))
             .navigationTitle("管住嘴")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(Color(.systemBackground), for: .navigationBar)
+            .navigationBarTitleDisplayMode(.large)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -112,9 +111,9 @@ struct EatWellView: View {
             accent: .orange
         ) {
             HStack(spacing: 0) {
-                nutrientColumn(symbol: "bolt.heart.fill", color: .red, name: "蛋白", value: "\(Int(todayNutrition.protein)) g", percent: Int(todayNutrition.protein * 4 / macroEnergy * 100))
-                nutrientColumn(symbol: "leaf.fill", color: .green, name: "碳水", value: "\(Int(todayNutrition.carbs)) g", percent: Int(todayNutrition.carbs * 4 / macroEnergy * 100))
-                nutrientColumn(symbol: "drop.fill", color: .orange, name: "脂肪", value: "\(Int(todayNutrition.fat)) g", percent: Int(todayNutrition.fat * 9 / macroEnergy * 100))
+                nutrientColumn(icon: "🥩", name: "蛋白", value: "\(Int(todayNutrition.protein)) g", percent: Int(todayNutrition.protein * 4 / macroEnergy * 100))
+                nutrientColumn(icon: "🍚", name: "碳水", value: "\(Int(todayNutrition.carbs)) g", percent: Int(todayNutrition.carbs * 4 / macroEnergy * 100))
+                nutrientColumn(icon: "🥑", name: "脂肪", value: "\(Int(todayNutrition.fat)) g", percent: Int(todayNutrition.fat * 9 / macroEnergy * 100))
             }
             .frame(maxWidth: .infinity)
 
@@ -273,11 +272,10 @@ struct EatWellView: View {
     }
 
     @ViewBuilder
-    private func nutrientColumn(symbol: String, color: Color, name: String, value: String, percent: Int) -> some View {
+    private func nutrientColumn(icon: String, name: String, value: String, percent: Int) -> some View {
         VStack(spacing: 5) {
-            Image(systemName: symbol)
-                .font(.headline.weight(.semibold))
-                .foregroundStyle(color)
+            Text(icon)
+                .font(.title3)
             Text(name)
                 .font(.caption)
                 .foregroundStyle(.secondary)

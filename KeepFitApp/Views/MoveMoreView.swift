@@ -32,15 +32,14 @@ struct MoveMoreView: View {
                     dailyHistoryCard
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, 56)
+                .padding(.top, 8)
                 .padding(.bottom, 18)
                 .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .green))
             .navigationTitle("迈开腿")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(Color(.systemBackground), for: .navigationBar)
+            .navigationBarTitleDisplayMode(.large)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

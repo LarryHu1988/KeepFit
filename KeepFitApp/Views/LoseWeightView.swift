@@ -51,15 +51,14 @@ struct LoseWeightView: View {
                     bodyFatTrendCard
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, 56)
+                .padding(.top, 8)
                 .padding(.bottom, 18)
                 .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .yellow))
             .navigationTitle("减个肥")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(Color(.systemBackground), for: .navigationBar)
+            .navigationBarTitleDisplayMode(.large)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -75,6 +74,7 @@ struct LoseWeightView: View {
                 syncBodyMetricInputs(for: selectedDate)
             }
             .onChange(of: selectedDate) { _, newValue in
+                monthCursor = newValue
                 syncBodyMetricInputs(for: newValue)
             }
         }
@@ -246,9 +246,16 @@ struct LoseWeightView: View {
             accent: .mint
         ) {
             VStack(spacing: 10) {
-                HStack {
-                    Label(Formatters.monthDay.string(from: selectedDate), systemImage: "calendar")
-                        .font(.subheadline)
+                HStack(spacing: 10) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "calendar")
+                            .foregroundStyle(.secondary)
+                        DatePicker("日期", selection: $selectedDate, displayedComponents: [.date])
+                            .labelsHidden()
+                            .datePickerStyle(.compact)
+                    }
+                    .font(.subheadline)
+
                     Spacer()
                     Button("保存") {
                         saveBodyMetric()
