@@ -9,6 +9,7 @@ struct SettingsView: View {
     @AppStorage("keepfit.reminder") private var reminderEnabled = true
     @AppStorage("keepfit.haptic") private var hapticEnabled = true
     @AppStorage("keepfit.autoSync") private var autoSyncEnabled = false
+    @AppStorage("keepfit.themeMode") private var themeModeRaw = AppThemeMode.system.rawValue
 
     @State private var selectedAvatarItem: PhotosPickerItem?
     @State private var showSexSheet = false
@@ -125,6 +126,21 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    HStack {
+                        HStack(spacing: 10) {
+                            rowIcon("circle.lefthalf.filled", .indigo)
+                            Text("主题模式")
+                        }
+                        Spacer()
+                        Picker("", selection: $themeModeRaw) {
+                            ForEach(AppThemeMode.allCases) { mode in
+                                Text(mode.title).tag(mode.rawValue)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                    }
+
                     Toggle(isOn: $reminderEnabled) {
                         HStack(spacing: 10) {
                             rowIcon("bell", .orange)

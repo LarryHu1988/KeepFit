@@ -2,6 +2,7 @@ import SwiftUI
 
 struct EatWellView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.tabSwitchToken) private var tabSwitchToken
     let onSettingsTap: () -> Void
 
     @State private var selectedFood: FoodItem?
@@ -75,6 +76,9 @@ struct EatWellView: View {
                     amountText = String(Int(appState.defaultEntryAmount(for: selectedFood)))
                 }
             }
+            .onChange(of: tabSwitchToken) { _, _ in
+                selectedDate = Date().startOfDayInCurrentCalendar
+            }
             .sheet(isPresented: $showFoodSheet) {
                 FoodSelectionSheet(items: appState.foodLibrary, iconForItem: { item in
                     appState.foodIcon(for: item)
@@ -119,6 +123,7 @@ struct EatWellView: View {
                 progress: appState.intakeProgress(on: selectedDate),
                 lineWidth: 12,
                 gradient: LinearGradient(colors: [.orange, .red], startPoint: .topLeading, endPoint: .bottomTrailing),
+                accent: .orange,
                 valueText: centerMain,
                 caption: "目标 \(Int(targetCalories)) kcal"
             )
@@ -138,9 +143,9 @@ struct EatWellView: View {
             accent: .orange
         ) {
             HStack(spacing: 0) {
-                nutrientColumn(icon: "🥩", name: "蛋白", value: "\(Int(todayNutrition.protein)) g", percent: Int(todayNutrition.protein * 4 / macroEnergy * 100))
-                nutrientColumn(icon: "🍚", name: "碳水", value: "\(Int(todayNutrition.carbs)) g", percent: Int(todayNutrition.carbs * 4 / macroEnergy * 100))
-                nutrientColumn(icon: "🥑", name: "脂肪", value: "\(Int(todayNutrition.fat)) g", percent: Int(todayNutrition.fat * 9 / macroEnergy * 100))
+                nutrientColumn(icon: "fish.fill", iconColor: .red, name: "蛋白", value: "\(Int(todayNutrition.protein)) g", percent: Int(todayNutrition.protein * 4 / macroEnergy * 100))
+                nutrientColumn(icon: "leaf.fill", iconColor: .green, name: "碳水", value: "\(Int(todayNutrition.carbs)) g", percent: Int(todayNutrition.carbs * 4 / macroEnergy * 100))
+                nutrientColumn(icon: "drop.fill", iconColor: .orange, name: "脂肪", value: "\(Int(todayNutrition.fat)) g", percent: Int(todayNutrition.fat * 9 / macroEnergy * 100))
             }
             .frame(maxWidth: .infinity)
 
@@ -292,7 +297,7 @@ struct EatWellView: View {
         return CardContainer(
             title: "历史进食",
             subtitle: nil,
-            accent: .teal
+            accent: .orange
         ) {
             if records.isEmpty {
                 Text("暂无历史记录")
@@ -319,10 +324,16 @@ struct EatWellView: View {
     }
 
     @ViewBuilder
-    private func nutrientColumn(icon: String, name: String, value: String, percent: Int) -> some View {
+    private func nutrientColumn(icon: String, iconColor: Color, name: String, value: String, percent: Int) -> some View {
         VStack(spacing: 5) {
-            Text(icon)
-                .font(.title3)
+            Image(systemName: icon)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(iconColor)
+                .frame(width: 24, height: 24)
+                .background(
+                    Circle()
+                        .fill(iconColor.opacity(0.15))
+                )
             Text(name)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -382,14 +393,20 @@ struct EatWellView: View {
 
     private var inputFieldBackground: some View {
         RoundedRectangle(cornerRadius: 10, style: .continuous)
-            .fill(Color.white.opacity(0.35))
+            .fill(Color.primary.opacity(0.05))
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(Color.orange.opacity(0.08))
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.orange.opacity(0.12), Color.orange.opacity(0.04)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(.white.opacity(0.8), lineWidth: 1)
+                    .stroke(.white.opacity(0.28), lineWidth: 1)
             )
     }
 }

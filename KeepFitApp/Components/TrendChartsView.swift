@@ -12,29 +12,57 @@ struct CalorieTrendChartView: View {
         }
     }
 
+    private var xAxisDates: [Date] {
+        evenlySpacedAxisDates(from: calorieTrends.map(\.date), maxLabelCount: 6)
+    }
+
+    private var yDomain: ClosedRange<Double> {
+        let minBalance = calorieTrends.map(\.balance).min() ?? 0
+        let maxValue = [
+            calorieTrends.map(\.intake).max() ?? 0,
+            calorieTrends.map(\.exerciseBurn).max() ?? 0,
+            calorieTrends.map(\.balance).max() ?? 0
+        ].max() ?? 0
+        let lower = min(0, minBalance * 1.08)
+        let upper = max(200, maxValue * 1.12)
+        return lower...upper
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Chart {
                 ForEach(calorieTrends) { entry in
+                    BarMark(
+                        x: .value("日期", entry.date),
+                        y: .value("净差", entry.balance),
+                        width: .fixed(7)
+                    )
+                    .foregroundStyle(entry.balance <= 0 ? Color.blue.opacity(0.28) : Color.red.opacity(0.30))
+
                     LineMark(
                         x: .value("日期", entry.date),
                         y: .value("摄入", entry.intake)
                     )
                     .foregroundStyle(.orange)
                     .lineStyle(StrokeStyle(lineWidth: 2.5))
+                    .interpolationMethod(.catmullRom)
 
                     LineMark(
                         x: .value("日期", entry.date),
                         y: .value("运动消耗", entry.exerciseBurn)
                     )
                     .foregroundStyle(.green)
-                    .lineStyle(StrokeStyle(lineWidth: 2.5))
+                    .lineStyle(StrokeStyle(lineWidth: 3))
+                    .interpolationMethod(.catmullRom)
 
-                    BarMark(
-                        x: .value("日期", entry.date),
-                        y: .value("净差", entry.balance)
-                    )
-                    .foregroundStyle(entry.balance <= 0 ? Color.blue.opacity(0.35) : Color.red.opacity(0.35))
+                    if entry.exerciseBurn > 0 {
+                        PointMark(
+                            x: .value("日期", entry.date),
+                            y: .value("运动消耗", entry.exerciseBurn)
+                        )
+                        .foregroundStyle(.green)
+                        .symbolSize(20)
+                    }
                 }
 
                 if let selectedEntry {
@@ -44,6 +72,20 @@ struct CalorieTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedDate)
+            .chartXAxis {
+                AxisMarks(values: xAxisDates) { value in
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
+                        .foregroundStyle(.secondary.opacity(0.18))
+                    AxisTick()
+                        .foregroundStyle(.secondary.opacity(0.32))
+                    AxisValueLabel {
+                        if let date = value.as(Date.self) {
+                            Text(Formatters.trendDate.string(from: date))
+                        }
+                    }
+                }
+            }
+            .chartYScale(domain: yDomain)
             .chartYAxisLabel("kcal")
             .frame(height: 190)
 
@@ -86,6 +128,10 @@ struct WeightTrendChartView: View {
         }
     }
 
+    private var xAxisDates: [Date] {
+        evenlySpacedAxisDates(from: bodyMetrics.map(\.date), maxLabelCount: 6)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Chart {
@@ -111,6 +157,19 @@ struct WeightTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedDate)
+            .chartXAxis {
+                AxisMarks(values: xAxisDates) { value in
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
+                        .foregroundStyle(.secondary.opacity(0.18))
+                    AxisTick()
+                        .foregroundStyle(.secondary.opacity(0.32))
+                    AxisValueLabel {
+                        if let date = value.as(Date.self) {
+                            Text(Formatters.trendDate.string(from: date))
+                        }
+                    }
+                }
+            }
             .chartYAxisLabel("kg")
             .frame(height: 170)
 
@@ -134,6 +193,10 @@ struct BodyFatTrendChartView: View {
         }
     }
 
+    private var xAxisDates: [Date] {
+        evenlySpacedAxisDates(from: bodyMetrics.map(\.date), maxLabelCount: 6)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Chart {
@@ -159,6 +222,19 @@ struct BodyFatTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedDate)
+            .chartXAxis {
+                AxisMarks(values: xAxisDates) { value in
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
+                        .foregroundStyle(.secondary.opacity(0.18))
+                    AxisTick()
+                        .foregroundStyle(.secondary.opacity(0.32))
+                    AxisValueLabel {
+                        if let date = value.as(Date.self) {
+                            Text(Formatters.trendDate.string(from: date))
+                        }
+                    }
+                }
+            }
             .chartYAxisLabel("%")
             .frame(height: 170)
 
@@ -169,4 +245,24 @@ struct BodyFatTrendChartView: View {
             }
         }
     }
+}
+
+private func evenlySpacedAxisDates(from dates: [Date], maxLabelCount: Int) -> [Date] {
+    let sortedDates = dates.sorted()
+    guard !sortedDates.isEmpty else { return [] }
+    guard maxLabelCount > 1, sortedDates.count > maxLabelCount else {
+        return sortedDates
+    }
+
+    let step = max(1, Int(ceil(Double(sortedDates.count - 1) / Double(maxLabelCount - 1))))
+    var values: [Date] = []
+    var index = 0
+    while index < sortedDates.count {
+        values.append(sortedDates[index])
+        index += step
+    }
+    if let last = sortedDates.last, !(values.last?.isSameDay(as: last) ?? false) {
+        values.append(last)
+    }
+    return values
 }

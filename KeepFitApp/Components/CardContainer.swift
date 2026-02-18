@@ -28,16 +28,22 @@ struct CardContainer<Content: View>: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(Color(.systemBackground))
+                    .fill(.ultraThinMaterial)
                     .overlay(
                         RoundedRectangle(cornerRadius: 24, style: .continuous)
-                            .fill(accent.opacity(0.06))
+                            .fill(
+                                LinearGradient(
+                                    colors: [accent.opacity(0.16), accent.opacity(0.07), .white.opacity(0.04)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 24, style: .continuous)
-                            .stroke(Color.white.opacity(0.9), lineWidth: 1)
+                            .stroke(.white.opacity(0.42), lineWidth: 1)
                     )
-                    .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
+                    .shadow(color: accent.opacity(0.1), radius: 8, x: 0, y: 4)
             )
         }
         .frame(maxWidth: .infinity, alignment: .leading)

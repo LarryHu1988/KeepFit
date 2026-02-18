@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MoveMoreView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.tabSwitchToken) private var tabSwitchToken
     let onSettingsTap: () -> Void
 
     @State private var selectedExercise: ExerciseItem?
@@ -58,6 +59,9 @@ struct MoveMoreView: View {
                     selectedExercise = appState.exerciseLibrary.first
                 }
             }
+            .onChange(of: tabSwitchToken) { _, _ in
+                selectedDate = Date().startOfDayInCurrentCalendar
+            }
             .sheet(isPresented: $showExerciseSheet) {
                 ExerciseSelectionSheet(items: appState.exerciseLibrary, iconForItem: { item in
                     appState.exerciseIcon(for: item)
@@ -103,6 +107,7 @@ struct MoveMoreView: View {
                 progress: appState.exerciseProgress(on: selectedDate),
                 lineWidth: 12,
                 gradient: LinearGradient(colors: [.green, .mint], startPoint: .topLeading, endPoint: .bottomTrailing),
+                accent: .green,
                 valueText: centerMain,
                 caption: "目标 \(Int(goal)) kcal"
             )
@@ -277,7 +282,7 @@ struct MoveMoreView: View {
         return CardContainer(
             title: "历史锻炼",
             subtitle: nil,
-            accent: .teal
+            accent: .green
         ) {
             if records.isEmpty {
                 Text("暂无历史记录")
@@ -365,14 +370,20 @@ struct MoveMoreView: View {
 
     private var inputFieldBackground: some View {
         RoundedRectangle(cornerRadius: 10, style: .continuous)
-            .fill(Color.white.opacity(0.35))
+            .fill(Color.primary.opacity(0.05))
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(Color.green.opacity(0.08))
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.green.opacity(0.12), Color.green.opacity(0.04)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(.white.opacity(0.8), lineWidth: 1)
+                    .stroke(.white.opacity(0.28), lineWidth: 1)
             )
     }
 }

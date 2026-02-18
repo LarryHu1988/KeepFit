@@ -1,9 +1,12 @@
 import SwiftUI
 
 struct ProgressRing: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     let progress: Double
     let lineWidth: CGFloat
     let gradient: LinearGradient
+    let accent: Color
     let valueText: String
     let caption: String
 
@@ -31,10 +34,22 @@ struct ProgressRing: View {
                 )
                 .rotationEffect(.degrees(-90))
                 .animation(.spring(duration: 0.5), value: clampedProgress)
-                .shadow(color: .orange.opacity(0.22), radius: 6, x: 0, y: 3)
+                .shadow(color: accent.opacity(0.24), radius: 6, x: 0, y: 3)
 
             Circle()
-                .fill(Color.white.opacity(0.8))
+                .fill(
+                    colorScheme == .dark
+                        ? Color.white.opacity(0.06)
+                        : Color.white.opacity(0.55)
+                )
+                .overlay(
+                    Circle()
+                        .fill(accent.opacity(colorScheme == .dark ? 0.20 : 0.10))
+                )
+                .overlay(
+                    Circle()
+                        .stroke(.white.opacity(colorScheme == .dark ? 0.18 : 0.44), lineWidth: 1)
+                )
                 .padding(lineWidth + 10)
 
             VStack(spacing: 4) {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LoseWeightView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.tabSwitchToken) private var tabSwitchToken
     let onSettingsTap: () -> Void
 
     @State private var selectedDate = Date().startOfDayInCurrentCalendar
@@ -58,7 +59,7 @@ struct LoseWeightView: View {
                 .padding(.bottom, 18)
                 .frame(maxWidth: .infinity)
             }
-            .background(GrowPageBackground(accent: .yellow))
+            .background(GrowPageBackground(accent: .blue))
             .navigationTitle("减个肥")
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -80,6 +81,9 @@ struct LoseWeightView: View {
                 monthCursor = newValue
                 syncBodyMetricInputs(for: newValue)
             }
+            .onChange(of: tabSwitchToken) { _, _ in
+                selectedDate = Date().startOfDayInCurrentCalendar
+            }
             .sheet(isPresented: $showBodyMetricDatePicker) {
                 bodyMetricDateSheet
                     .presentationDetents([.height(388)])
@@ -93,7 +97,7 @@ struct LoseWeightView: View {
     private var weekCalendarStrip: some View {
         WeekStripCalendarView(
             selectedDate: $selectedDate,
-            accent: .yellow,
+            accent: .blue,
             indicatorColor: { date in
                 let hasData = !appState.foodLogs(on: date).isEmpty || !appState.exerciseLogs(on: date).isEmpty
                 guard hasData else { return nil }
@@ -121,16 +125,17 @@ struct LoseWeightView: View {
         return CardContainer(
             title: "综合热量",
             subtitle: nil,
-            accent: .orange
+            accent: .blue
         ) {
             ProgressRing(
                 progress: progress,
                 lineWidth: 12,
                 gradient: LinearGradient(
-                    colors: surplus > 0 ? [.red, .pink] : [.orange, .yellow],
+                    colors: surplus > 0 ? [.red, .pink] : [.blue, .cyan],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 ),
+                accent: surplus > 0 ? .red : .blue,
                 valueText: centerMain,
                 caption: "目标 \(Int(deficitGoal)) kcal"
             )
@@ -145,7 +150,7 @@ struct LoseWeightView: View {
         return CardContainer(
             title: "热量构成",
             subtitle: nil,
-            accent: .orange
+            accent: .blue
         ) {
             HStack(spacing: 0) {
                 summaryColumn(symbol: "bolt.fill", color: .orange, title: "基础消耗", value: "\(Int(appState.profile.dailyMaintenanceCalories)) kcal")
@@ -165,7 +170,7 @@ struct LoseWeightView: View {
         CardContainer(
             title: "赤字日历",
             subtitle: nil,
-            accent: .yellow
+            accent: .blue
         ) {
             VStack(spacing: 12) {
                 HStack {
@@ -265,7 +270,7 @@ struct LoseWeightView: View {
         CardContainer(
             title: "体重体脂",
             subtitle: nil,
-            accent: .mint
+            accent: .blue
         ) {
             let entryFont = Font.caption.weight(.medium)
 
@@ -292,7 +297,7 @@ struct LoseWeightView: View {
 
                 HStack(spacing: 5) {
                     Image(systemName: "scalemass.fill")
-                        .foregroundStyle(.mint)
+                        .foregroundStyle(.blue)
                     TextField("weight", text: $weightText)
                         .keyboardType(.decimalPad)
                         .font(entryFont)
@@ -309,7 +314,7 @@ struct LoseWeightView: View {
 
                 HStack(spacing: 5) {
                     Image(systemName: "chart.pie.fill")
-                        .foregroundStyle(.pink)
+                        .foregroundStyle(.cyan)
                     TextField("body fat", text: $bodyFatText)
                         .keyboardType(.decimalPad)
                         .font(entryFont)
@@ -334,7 +339,7 @@ struct LoseWeightView: View {
                         .padding(9)
                         .background(
                             Circle()
-                                .fill(Color.mint.opacity(0.9))
+                                .fill(Color.blue.opacity(0.9))
                                 .overlay(
                                     Circle()
                                         .stroke(.white.opacity(0.8), lineWidth: 1)
@@ -380,14 +385,20 @@ struct LoseWeightView: View {
 
     private var metricFieldBackground: some View {
         RoundedRectangle(cornerRadius: 10, style: .continuous)
-            .fill(Color.white.opacity(0.35))
+            .fill(Color.primary.opacity(0.05))
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(Color.mint.opacity(0.08))
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.blue.opacity(0.12), Color.cyan.opacity(0.04)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(.white.opacity(0.8), lineWidth: 1)
+                    .stroke(.white.opacity(0.28), lineWidth: 1)
             )
     }
 
@@ -405,7 +416,7 @@ struct LoseWeightView: View {
         CardContainer(
             title: "体重趋势",
             subtitle: nil,
-            accent: .mint
+            accent: .blue
         ) {
             WeightTrendChartView(bodyMetrics: appState.weightTrends(limit: 45))
         }
@@ -415,7 +426,7 @@ struct LoseWeightView: View {
         CardContainer(
             title: "体脂趋势",
             subtitle: nil,
-            accent: .pink
+            accent: .blue
         ) {
             BodyFatTrendChartView(bodyMetrics: appState.weightTrends(limit: 45))
         }
