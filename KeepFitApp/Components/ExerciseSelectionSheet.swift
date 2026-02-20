@@ -3,6 +3,7 @@ import SwiftUI
 struct ExerciseSelectionSheet: View {
     let items: [ExerciseItem]
     let iconForItem: (ExerciseItem) -> String
+    let displayName: (ExerciseItem) -> String
     let onSelect: (ExerciseItem) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -10,7 +11,10 @@ struct ExerciseSelectionSheet: View {
 
     private var filtered: [ExerciseItem] {
         if keyword.isEmpty { return items }
-        return items.filter { $0.name.localizedCaseInsensitiveContains(keyword) }
+        return items.filter { item in
+            let candidate = "\(item.name) \(displayName(item))"
+            return candidate.localizedCaseInsensitiveContains(keyword)
+        }
     }
 
     var body: some View {
@@ -28,7 +32,7 @@ struct ExerciseSelectionSheet: View {
                                     HStack(spacing: 12) {
                                         AppIconBadge(icon: iconForItem(item), seed: item.id, size: 30)
                                         VStack(alignment: .leading, spacing: 4) {
-                                            Text(item.name)
+                                            Text(displayName(item))
                                                 .foregroundStyle(.primary)
                                             Text("MET \(String(format: "%.1f", item.met))")
                                                 .font(.caption)

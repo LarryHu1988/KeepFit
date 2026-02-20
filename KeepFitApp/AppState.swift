@@ -180,6 +180,15 @@ final class AppState: ObservableObject {
         IconCatalog.foodIcon(id: food.id, category: food.category)
     }
 
+    func foodDisplayName(for food: FoodItem) -> String {
+        displayName(id: food.id, chinese: food.name)
+    }
+
+    func foodDisplayName(forFoodID foodID: String, fallback: String? = nil) -> String {
+        let chinese = foodLibrary.first(where: { $0.id == foodID })?.name ?? fallback ?? foodID
+        return displayName(id: foodID, chinese: chinese)
+    }
+
     func foodIcon(forFoodID foodID: String) -> String {
         if let item = foodLibrary.first(where: { $0.id == foodID }) {
             return foodIcon(for: item)
@@ -191,11 +200,27 @@ final class AppState: ObservableObject {
         IconCatalog.exerciseIcon(id: exercise.id, category: exercise.category)
     }
 
+    func exerciseDisplayName(for exercise: ExerciseItem) -> String {
+        displayName(id: exercise.id, chinese: exercise.name)
+    }
+
+    func exerciseDisplayName(forExerciseID exerciseID: String, fallback: String? = nil) -> String {
+        let chinese = exerciseLibrary.first(where: { $0.id == exerciseID })?.name ?? fallback ?? exerciseID
+        return displayName(id: exerciseID, chinese: chinese)
+    }
+
     func exerciseIcon(forExerciseID exerciseID: String) -> String {
         if let item = exerciseLibrary.first(where: { $0.id == exerciseID }) {
             return exerciseIcon(for: item)
         }
         return IconCatalog.exerciseIcon(id: exerciseID, category: .cardio)
+    }
+
+    private func displayName(id: String, chinese: String) -> String {
+        if AppPreferences.language == .english {
+            return englishDisplayName(from: id)
+        }
+        return chinese
     }
 
     func foodUnitSymbol(for food: FoodItem) -> String {

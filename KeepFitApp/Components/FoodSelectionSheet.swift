@@ -3,6 +3,7 @@ import SwiftUI
 struct FoodSelectionSheet: View {
     let items: [FoodItem]
     let iconForItem: (FoodItem) -> String
+    let displayName: (FoodItem) -> String
     let onSelect: (FoodItem) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -15,7 +16,10 @@ struct FoodSelectionSheet: View {
 
     private var filtered: [FoodItem] {
         if keyword.isEmpty { return items }
-        return items.filter { $0.name.localizedCaseInsensitiveContains(keyword) }
+        return items.filter { item in
+            let candidate = "\(item.name) \(displayName(item))"
+            return candidate.localizedCaseInsensitiveContains(keyword)
+        }
     }
 
     var body: some View {
@@ -33,7 +37,7 @@ struct FoodSelectionSheet: View {
                                     HStack(spacing: 12) {
                                         AppIconBadge(icon: iconForItem(item), seed: item.id, size: 30)
                                         VStack(alignment: .leading, spacing: 4) {
-                                            Text(item.name)
+                                            Text(displayName(item))
                                                 .foregroundStyle(.primary)
                                             Text(
                                                 "\(energyText(fromKcal: item.caloriesPer100g, includeUnit: true, unit: energyUnit))/100\(IconCatalog.foodUnit(id: item.id, category: item.category).symbol)"

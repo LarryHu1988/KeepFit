@@ -193,15 +193,21 @@ struct CalorieTrendChartView: View {
         Button {
             focusedSeries = focusedSeries == series ? nil : series
         } label: {
-            Label(title, systemImage: systemImage)
-                .font(.caption)
-                .foregroundStyle(color)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(isSeriesActive(series) ? color.opacity(0.12) : .clear)
-                )
+            HStack(spacing: 4) {
+                Image(systemName: systemImage)
+                Text(title)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.82)
+            }
+            .font(.caption2)
+            .foregroundStyle(color)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 4)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(isSeriesActive(series) ? color.opacity(0.12) : .clear)
+            )
+            .fixedSize(horizontal: true, vertical: false)
         }
         .buttonStyle(.plain)
         .opacity(seriesOpacity(series))

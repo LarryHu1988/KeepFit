@@ -71,6 +71,8 @@ struct MoveMoreView: View {
             .sheet(isPresented: $showExerciseSheet) {
                 ExerciseSelectionSheet(items: appState.exerciseLibrary, iconForItem: { item in
                     appState.exerciseIcon(for: item)
+                }, displayName: { item in
+                    appState.exerciseDisplayName(for: item)
                 }) { item in
                     selectedExercise = item
                 }
@@ -190,7 +192,7 @@ struct MoveMoreView: View {
                                 seed: selectedExercise?.id ?? "exercise_selector",
                                 size: 20
                             )
-                            Text(selectedExercise?.name ?? localized("选择运动项目", "Select Exercise"))
+                            Text(selectedExercise.map { appState.exerciseDisplayName(for: $0) } ?? localized("选择运动项目", "Select Exercise"))
                                 .font(entryFont)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
@@ -257,7 +259,7 @@ struct MoveMoreView: View {
                             AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), seed: log.exerciseID, size: 24)
 
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(log.exerciseName)
+                                Text(appState.exerciseDisplayName(forExerciseID: log.exerciseID, fallback: log.exerciseName))
                                     .font(.caption.weight(.semibold))
                                     .lineLimit(1)
                                 Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(formattedNumber(log.durationMinutes)) min")

@@ -273,7 +273,7 @@ struct LoseWeightView: View {
                             HStack(spacing: 10) {
                                 AppIconBadge(icon: appState.foodIcon(forFoodID: log.foodID), seed: log.foodID, size: 22)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(log.foodName)
+                                    Text(appState.foodDisplayName(forFoodID: log.foodID, fallback: log.foodName))
                                         .font(.caption2.weight(.semibold))
                                         .lineLimit(1)
                                     Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(formattedNumber(log.weightGrams))\(appState.foodUnitSymbol(forFoodID: log.foodID))")
@@ -292,7 +292,7 @@ struct LoseWeightView: View {
                             HStack(spacing: 10) {
                                 AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), seed: log.exerciseID, size: 22)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(log.exerciseName)
+                                    Text(appState.exerciseDisplayName(forExerciseID: log.exerciseID, fallback: log.exerciseName))
                                         .font(.caption2.weight(.semibold))
                                         .lineLimit(1)
                                     Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(durationDisplayText(fromMinutes: log.durationMinutes))")

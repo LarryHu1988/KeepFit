@@ -101,6 +101,8 @@ struct EatWellView: View {
             .sheet(isPresented: $showFoodSheet) {
                 FoodSelectionSheet(items: appState.foodLibrary, iconForItem: { item in
                     appState.foodIcon(for: item)
+                }, displayName: { item in
+                    appState.foodDisplayName(for: item)
                 }) { item in
                     selectedFood = item
                     amountText = String(Int(appState.defaultEntryAmount(for: item)))
@@ -218,7 +220,7 @@ struct EatWellView: View {
                                 seed: selectedFood?.id ?? "food_selector",
                                 size: 20
                             )
-                            Text(selectedFood?.name ?? localized("选择食物", "Select Food"))
+                            Text(selectedFood.map { appState.foodDisplayName(for: $0) } ?? localized("选择食物", "Select Food"))
                                 .font(entryFont)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
@@ -285,7 +287,7 @@ struct EatWellView: View {
                             AppIconBadge(icon: appState.foodIcon(forFoodID: log.foodID), seed: log.foodID, size: 24)
 
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(log.foodName)
+                                Text(appState.foodDisplayName(forFoodID: log.foodID, fallback: log.foodName))
                                     .font(.caption.weight(.semibold))
                                     .lineLimit(1)
                                 Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(formattedAmount(log.weightGrams))\(appState.foodUnitSymbol(forFoodID: log.foodID))")

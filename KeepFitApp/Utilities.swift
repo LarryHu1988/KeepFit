@@ -410,3 +410,22 @@ func durationDisplayText(fromMinutes minutes: Double, includeUnit: Bool = true) 
 func localized(_ chinese: String, _ english: String) -> String {
     AppPreferences.language == .english ? english : chinese
 }
+
+func englishDisplayName(from identifier: String) -> String {
+    let acronyms: [String: String] = [
+        "hiit": "HIIT",
+        "trx": "TRX"
+    ]
+
+    return identifier
+        .split(separator: "_")
+        .map { token in
+            let lower = token.lowercased()
+            if let mapped = acronyms[lower] {
+                return mapped
+            }
+            guard let first = lower.first else { return "" }
+            return first.uppercased() + lower.dropFirst()
+        }
+        .joined(separator: " ")
+}

@@ -703,6 +703,7 @@ struct SettingsView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             content()
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(12)
         .frame(width: width, alignment: .leading)
@@ -731,8 +732,9 @@ struct SettingsView: View {
                         .foregroundStyle(accent)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(minHeight: 44)
             .padding(.horizontal, 12)
-            .padding(.vertical, 9)
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(selected ? accent.opacity(0.16) : .clear)
@@ -741,8 +743,11 @@ struct SettingsView: View {
                             .stroke(selected ? accent.opacity(0.34) : .white.opacity(0.10), lineWidth: 0.8)
                     )
             )
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
 
     private func popoverDoneButton(action: @escaping () -> Void) -> some View {
