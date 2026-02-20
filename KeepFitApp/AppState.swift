@@ -100,9 +100,11 @@ final class AppState: ObservableObject {
         }
     }
 
+    @Published private(set) var iCloudAccountAvailable = FileManager.default.ubiquityIdentityToken != nil
+
     private let store = DataStore()
     private let defaults = UserDefaults.standard
-    private let iCloudStore = NSUbiquitousKeyValueStore.default
+    private lazy var iCloudStore = NSUbiquitousKeyValueStore.default
     private let healthStore = HKHealthStore()
     private let cloudEncoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -116,6 +118,7 @@ final class AppState: ObservableObject {
     }()
     private var cloudObserver: NSObjectProtocol?
     private var foregroundObserver: NSObjectProtocol?
+    private var ubiquityIdentityObserver: NSObjectProtocol?
     private var pendingCloudPushTask: Task<Void, Never>?
     private var pendingHealthSyncTask: Task<Void, Never>?
     private var isApplyingCloudSnapshot = false
@@ -150,6 +153,8 @@ final class AppState: ObservableObject {
 
         let savedLocalMutationTS = defaults.double(forKey: SyncKeys.localMutationTS)
         localMutationAt = savedLocalMutationTS > 0 ? Date(timeIntervalSince1970: savedLocalMutationTS) : .distantPast
+        refreshICloudAccountAvailability()
+        setupUbiquityIdentityObserver()
         setupForegroundObserver()
         if isICloudSyncEnabled {
             startICloudSync()
@@ -167,6 +172,9 @@ final class AppState: ObservableObject {
         }
         if let foregroundObserver {
             NotificationCenter.default.removeObserver(foregroundObserver)
+        }
+        if let ubiquityIdentityObserver {
+            NotificationCenter.default.removeObserver(ubiquityIdentityObserver)
         }
         pendingCloudPushTask?.cancel()
         pendingHealthSyncTask?.cancel()
@@ -206,13 +214,24 @@ final class AppState: ObservableObject {
         defaults.bool(forKey: SyncKeys.healthEnabled)
     }
 
+    func refreshICloudAvailability() {
+        refreshICloudAccountAvailability()
+    }
+
     func setICloudSyncEnabled(_ enabled: Bool) {
-        defaults.set(enabled, forKey: SyncKeys.iCloudEnabled)
         if enabled {
+            refreshICloudAccountAvailability()
+            guard iCloudAccountAvailable else {
+                defaults.set(false, forKey: SyncKeys.iCloudEnabled)
+                stopICloudSync()
+                return
+            }
+            defaults.set(true, forKey: SyncKeys.iCloudEnabled)
             startICloudSync()
             pullCloudSnapshotIfNeeded(force: true)
             queueCloudPush(immediate: true)
         } else {
+            defaults.set(false, forKey: SyncKeys.iCloudEnabled)
             stopICloudSync()
         }
     }
@@ -578,13 +597,35 @@ final class AppState: ObservableObject {
         ) { [weak self] _ in
             Task { @MainActor [weak self] in
                 guard let self else { return }
+                self.refreshICloudAccountAvailability()
                 self.pullCloudSnapshotIfNeeded(force: false)
                 await self.syncHealthDataIfEnabled()
             }
         }
     }
 
+    private func setupUbiquityIdentityObserver() {
+        ubiquityIdentityObserver = NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.NSUbiquityIdentityDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.refreshICloudAccountAvailability()
+            }
+        }
+    }
+
+    private func refreshICloudAccountAvailability() {
+        iCloudAccountAvailable = FileManager.default.ubiquityIdentityToken != nil
+        if !iCloudAccountAvailable, isICloudSyncEnabled {
+            defaults.set(false, forKey: SyncKeys.iCloudEnabled)
+            stopICloudSync()
+        }
+    }
+
     private func startICloudSync() {
+        guard iCloudAccountAvailable else { return }
         guard cloudObserver == nil else { return }
         cloudObserver = NotificationCenter.default.addObserver(
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
@@ -609,7 +650,7 @@ final class AppState: ObservableObject {
     }
 
     private func queueCloudPush(immediate: Bool = false) {
-        guard isICloudSyncEnabled, !isApplyingCloudSnapshot else { return }
+        guard isICloudSyncEnabled, iCloudAccountAvailable, !isApplyingCloudSnapshot else { return }
         pendingCloudPushTask?.cancel()
         if immediate {
             pushCloudSnapshotToICloud()
@@ -625,7 +666,7 @@ final class AppState: ObservableObject {
     }
 
     private func pushCloudSnapshotToICloud() {
-        guard isICloudSyncEnabled, !isApplyingCloudSnapshot else { return }
+        guard isICloudSyncEnabled, iCloudAccountAvailable, !isApplyingCloudSnapshot else { return }
         let snapshot = KeepFitCloudSnapshot(
             version: 1,
             modifiedAt: localMutationAt == .distantPast ? Date() : localMutationAt,
@@ -642,7 +683,7 @@ final class AppState: ObservableObject {
     }
 
     private func pullCloudSnapshotIfNeeded(force: Bool) {
-        guard isICloudSyncEnabled else { return }
+        guard isICloudSyncEnabled, iCloudAccountAvailable else { return }
         guard let data = iCloudStore.data(forKey: SyncKeys.cloudSnapshot) else { return }
         guard let snapshot = try? cloudDecoder.decode(KeepFitCloudSnapshot.self, from: data) else { return }
         guard snapshot.version == 1 else { return }
@@ -721,6 +762,7 @@ final class AppState: ObservableObject {
     private var healthWriteTypes: Set<HKSampleType> {
         var types: Set<HKSampleType> = [HKObjectType.workoutType()]
         if let dietary = HKObjectType.quantityType(forIdentifier: .dietaryEnergyConsumed) { types.insert(dietary) }
+        if let activeEnergy = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) { types.insert(activeEnergy) }
         if let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass) { types.insert(bodyMass) }
         if let bodyFat = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage) { types.insert(bodyFat) }
         return types
@@ -767,16 +809,12 @@ final class AppState: ObservableObject {
                 HKMetadataKeyExternalUUID: logID,
                 SyncKeys.healthMetadataSource: SyncKeys.healthMetadataSourceValue
             ]
-            let workout = HKWorkout(
-                activityType: .other,
-                start: log.date,
-                end: endDate,
-                duration: durationSeconds,
-                totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: calories),
-                totalDistance: nil,
+            try await saveWorkoutWithBuilder(
+                startDate: log.date,
+                endDate: endDate,
+                calories: calories,
                 metadata: metadata
             )
-            try await saveHealthObject(workout)
             exportedExerciseIDs.insert(logID)
         }
 
@@ -946,6 +984,62 @@ final class AppState: ObservableObject {
                 } else {
                     continuation.resume(throwing: NSError(domain: "KeepFit.HealthKit", code: -1))
                 }
+            }
+        }
+    }
+
+    private func saveWorkoutWithBuilder(
+        startDate: Date,
+        endDate: Date,
+        calories: Double,
+        metadata: [String: Any]
+    ) async throws {
+        let configuration = HKWorkoutConfiguration()
+        configuration.activityType = .other
+        configuration.locationType = .unknown
+
+        let builder = HKWorkoutBuilder(
+            healthStore: healthStore,
+            configuration: configuration,
+            device: nil
+        )
+
+        do {
+            try await builder.beginCollection(at: startDate)
+            try await builder.addMetadata(metadata)
+
+            if calories > 0,
+               let activeEnergyType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) {
+                let activeEnergySample = HKQuantitySample(
+                    type: activeEnergyType,
+                    quantity: HKQuantity(unit: .kilocalorie(), doubleValue: calories),
+                    start: startDate,
+                    end: endDate,
+                    metadata: metadata
+                )
+                try await builder.addSamples([activeEnergySample])
+            }
+
+            try await builder.endCollection(at: endDate)
+            _ = try await finishWorkout(builder)
+        } catch {
+            builder.discardWorkout()
+            throw error
+        }
+    }
+
+    private func finishWorkout(_ builder: HKWorkoutBuilder) async throws -> HKWorkout {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<HKWorkout, Error>) in
+            builder.finishWorkout { workout, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                guard let workout else {
+                    continuation.resume(throwing: NSError(domain: "KeepFit.HealthKit", code: -2))
+                    return
+                }
+                continuation.resume(returning: workout)
             }
         }
     }

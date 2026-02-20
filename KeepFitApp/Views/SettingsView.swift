@@ -9,6 +9,8 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.requestReview) private var requestReview
     @Environment(\.openURL) private var openURL
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("keepfit.haptic") private var hapticEnabled = true
     @AppStorage("keepfit.reminder.food") private var foodReminderEnabled = true
@@ -139,6 +141,10 @@ struct SettingsView: View {
         }
     }
 
+    private var settingsSeparatorTint: Color {
+        colorScheme == .dark ? .white.opacity(0.18) : .black.opacity(0.12)
+    }
+
     private var foodReminderTimeText: String {
         Formatters.hourMinute.string(from: date(fromMinuteOfDay: foodReminderMinuteOfDay))
     }
@@ -153,32 +159,47 @@ struct SettingsView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                basicInfoSection
-                goalsAdviceSection
-                generalSettingsSection
-                unitsSection
-                dataSection
-                remindersSection
-                otherSection
-                rateKeepFitSection
-            }
-            .navigationTitle(localized("个人设置", "Settings"))
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(localized("完成", "Done")) {
-                        dismiss()
-                    }
+            settingsPresentedView
+        }
+        .preferredColorScheme(themeMode.preferredColorScheme)
+    }
+
+    private var settingsFormView: some View {
+        Form {
+            basicInfoSection
+            goalsAdviceSection
+            generalSettingsSection
+            unitsSection
+            dataSection
+            remindersSection
+            otherSection
+            rateKeepFitSection
+        }
+        .listStyle(.insetGrouped)
+        .listRowSeparator(.hidden, edges: .all)
+        .listRowSeparatorTint(.clear)
+        .listSectionSeparator(.hidden, edges: .all)
+        .listSectionSeparatorTint(.clear)
+        .navigationTitle(localized("设置", "Settings"))
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(localized("完成", "Done")) {
+                    dismiss()
                 }
             }
+        }
+    }
+
+    private var settingsInteractiveView: some View {
+        settingsFormView
             .onAppear {
                 ensureBirthDateSeeded()
                 syncHeightDrafts()
                 syncWeightDrafts()
                 syncBirthDrafts()
                 syncGoalDrafts()
-                appState.setICloudSyncEnabled(iCloudSyncEnabled)
+                refreshICloudSyncState()
                 Task {
                     await syncReminderSchedulesOnAppear()
                 }
@@ -207,6 +228,20 @@ struct SettingsView: View {
             .onChange(of: iCloudSyncEnabled) { _, isEnabled in
                 triggerHapticIfNeeded()
                 appState.setICloudSyncEnabled(isEnabled)
+                let effective = appState.isICloudSyncEnabled
+                if iCloudSyncEnabled != effective {
+                    iCloudSyncEnabled = effective
+                }
+            }
+            .onChange(of: appState.iCloudAccountAvailable) { _, _ in
+                let effective = appState.isICloudSyncEnabled
+                if iCloudSyncEnabled != effective {
+                    iCloudSyncEnabled = effective
+                }
+            }
+            .onChange(of: scenePhase) { _, phase in
+                guard phase == .active else { return }
+                refreshICloudSyncState()
             }
             .onChange(of: healthSyncEnabled) { _, isEnabled in
                 Task {
@@ -237,6 +272,10 @@ struct SettingsView: View {
                     triggerHapticIfNeeded()
                 }
             }
+    }
+
+    private var settingsPresentedView: some View {
+        settingsInteractiveView
             .alert(localized("健康同步", "Health Sync"), isPresented: $showHealthSyncAlert) {
                 Button(localized("知道了", "OK"), role: .cancel) {}
             } message: {
@@ -258,19 +297,24 @@ struct SettingsView: View {
             .sheet(isPresented: $showAboutSheet) {
                 aboutSheet
             }
-        }
-        .preferredColorScheme(themeMode.preferredColorScheme)
     }
 
     private var basicInfoSection: some View {
         Section {
             avatarSelectionRow
+                .keepFitSettingsSeparatorAligned()
             usernameRow
+                .keepFitSettingsSeparatorAligned()
             sexSelectionRow
+                .keepFitSettingsSeparatorAligned()
             birthSelectionRow
+                .keepFitSettingsSeparatorAligned()
             heightSelectionRow
+                .keepFitSettingsSeparatorAligned()
             weightSelectionRow
+                .keepFitSettingsSeparatorAligned()
             activitySelectionRow
+                .keepFitSettingsSeparatorAligned()
         } header: {
             Text(localized("信息", "Info"))
         }
@@ -279,11 +323,17 @@ struct SettingsView: View {
     private var goalsAdviceSection: some View {
         Section {
             targetWeightSelectionRow
+                .keepFitSettingsSeparatorAligned()
             targetBodyFatSelectionRow
+                .keepFitSettingsSeparatorAligned()
             exerciseGoalSelectionRow
+                .keepFitSettingsSeparatorAligned()
             bmrInfoRow
+                .keepFitSettingsSeparatorAligned()
             tdeeInfoRow
+                .keepFitSettingsSeparatorAligned()
             intakeInfoRow
+                .keepFitSettingsSeparatorAligned()
         } header: {
             Text(localized("目标", "Goals"))
         }
@@ -292,8 +342,11 @@ struct SettingsView: View {
     private var generalSettingsSection: some View {
         Section {
             languageSelectionRow
+                .keepFitSettingsSeparatorAligned()
             themeSelectionRow
+                .keepFitSettingsSeparatorAligned()
             weekStartSelectionRow
+                .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $hapticEnabled) {
                 HStack(spacing: 10) {
@@ -301,6 +354,7 @@ struct SettingsView: View {
                     Text(localized("触感反馈", "Haptics"))
                 }
             }
+            .keepFitSettingsSeparatorAligned()
         } header: {
             Text(localized("通用", "General"))
         }
@@ -309,8 +363,11 @@ struct SettingsView: View {
     private var unitsSection: some View {
         Section {
             energyUnitSelectionRow
+                .keepFitSettingsSeparatorAligned()
             heightUnitSelectionRow
+                .keepFitSettingsSeparatorAligned()
             weightUnitSelectionRow
+                .keepFitSettingsSeparatorAligned()
         } header: {
             Text(localized("单位", "Units"))
         }
@@ -324,6 +381,7 @@ struct SettingsView: View {
                     Text(localized("Apple 健康", "Apple Health"))
                 }
             }
+            .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $iCloudSyncEnabled) {
                 HStack(spacing: 10) {
@@ -331,8 +389,18 @@ struct SettingsView: View {
                     Text(localized("iCloud 同步", "iCloud Sync"))
                 }
             }
+            .disabled(!appState.iCloudAccountAvailable)
+            .keepFitSettingsSeparatorAligned()
         } header: {
             Text(localized("数据", "Data"))
+        } footer: {
+            if !appState.iCloudAccountAvailable {
+                Text(localized("未登录 iCloud，iCloud 同步暂不可用。", "No iCloud account signed in. iCloud sync is unavailable."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .textCase(nil)
+                    .padding(.top, 2)
+            }
         }
     }
 
@@ -344,6 +412,7 @@ struct SettingsView: View {
                     Text(localized("饮食提醒", "Diet Reminder"))
                 }
             }
+            .keepFitSettingsSeparatorAligned()
             reminderTimeSelectionRow(
                 title: localized("饮食提醒时间", "Diet Reminder Time"),
                 color: .orange,
@@ -353,6 +422,7 @@ struct SettingsView: View {
                 minuteOfDay: $foodReminderMinuteOfDay,
                 reminder: .food
             )
+            .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $exerciseReminderEnabled) {
                 HStack(spacing: 10) {
@@ -360,6 +430,7 @@ struct SettingsView: View {
                     Text(localized("运动提醒", "Exercise Reminder"))
                 }
             }
+            .keepFitSettingsSeparatorAligned()
             reminderTimeSelectionRow(
                 title: localized("运动提醒时间", "Exercise Reminder Time"),
                 color: .green,
@@ -369,6 +440,7 @@ struct SettingsView: View {
                 minuteOfDay: $exerciseReminderMinuteOfDay,
                 reminder: .exercise
             )
+            .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $dailySummaryEnabled) {
                 HStack(spacing: 10) {
@@ -376,6 +448,7 @@ struct SettingsView: View {
                     Text(localized("每日总结", "Daily Summary"))
                 }
             }
+            .keepFitSettingsSeparatorAligned()
             reminderTimeSelectionRow(
                 title: localized("每日总结时间", "Daily Summary Time"),
                 color: .indigo,
@@ -385,6 +458,7 @@ struct SettingsView: View {
                 minuteOfDay: $summaryReminderMinuteOfDay,
                 reminder: .summary
             )
+            .keepFitSettingsSeparatorAligned()
         } header: {
             Text(localized("提醒", "Reminders"))
         }
@@ -405,6 +479,7 @@ struct SettingsView: View {
                     triggerHapticIfNeeded()
                 }
             )
+            .keepFitSettingsSeparatorAligned()
 
             Button {
                 triggerHapticIfNeeded()
@@ -417,6 +492,7 @@ struct SettingsView: View {
                 }
             }
             .buttonStyle(.plain)
+            .keepFitSettingsSeparatorAligned()
 
             Button {
                 triggerHapticIfNeeded()
@@ -429,6 +505,7 @@ struct SettingsView: View {
                 }
             }
             .buttonStyle(.plain)
+            .keepFitSettingsSeparatorAligned()
         } header: {
             Text(localized("其他", "Other"))
         }
@@ -459,6 +536,7 @@ struct SettingsView: View {
                 .padding(.vertical, 4)
             }
             .buttonStyle(.plain)
+            .keepFitSettingsSeparatorAligned()
         }
     }
 
@@ -483,6 +561,8 @@ struct SettingsView: View {
             rowIcon("person.text.rectangle", .blue)
             Text(localized("用户名", "Username"))
             TextField(localized("请输入用户名", "Enter username"), text: binding(\.name))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.trailing)
         }
     }
@@ -925,7 +1005,7 @@ struct SettingsView: View {
                     }
                 }
 
-                Divider()
+                separatorLine()
 
                 infoLine(title: localized("版本", "Version"), value: appVersionLabel)
                 infoLine(title: localized("开发支持", "Support"), value: feedbackEmail)
@@ -963,12 +1043,27 @@ struct SettingsView: View {
         .font(.subheadline)
     }
 
+    private func separatorLine() -> some View {
+        Rectangle()
+            .fill(settingsSeparatorTint)
+            .frame(height: 0.8)
+            .frame(maxWidth: .infinity)
+    }
+
     private func openFeedbackEmail() {
         triggerHapticIfNeeded()
         guard let url = URL(string: "mailto:\(feedbackEmail)?subject=KeepFit%20Feedback") else {
             return
         }
         openURL(url)
+    }
+
+    private func refreshICloudSyncState() {
+        appState.refreshICloudAvailability()
+        let effective = appState.isICloudSyncEnabled
+        if iCloudSyncEnabled != effective {
+            iCloudSyncEnabled = effective
+        }
     }
 
     private func triggerHapticIfNeeded(style: UIImpactFeedbackGenerator.FeedbackStyle = .light) {
@@ -1852,8 +1947,7 @@ struct SettingsView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 if index < topic.paragraphs.count - 1 {
-                    Divider()
-                        .overlay(.white.opacity(0.10))
+                    separatorLine()
                 }
             }
         }
@@ -2156,5 +2250,30 @@ private enum SettingsInfoTopic: String, Identifiable {
                 localized("负值为赤字，正值为超量。", "Negative is deficit, positive is surplus.")
             ]
         }
+    }
+}
+
+private extension View {
+    func keepFitSettingsSeparatorAligned() -> some View {
+        keepFitSettingsRowStyle(verticalInset: 8)
+    }
+
+    private func keepFitSettingsRowStyle(verticalInset: CGFloat) -> some View {
+        let rowBackground = Color(.secondarySystemGroupedBackground)
+        return listRowSeparator(.hidden, edges: .all)
+            .listRowInsets(EdgeInsets(top: verticalInset, leading: 18, bottom: verticalInset, trailing: 16))
+            .listRowBackground(
+                rowBackground
+                    .overlay(alignment: .top) {
+                        Rectangle()
+                            .fill(rowBackground)
+                            .frame(height: 1)
+                    }
+                    .overlay(alignment: .bottom) {
+                        Rectangle()
+                            .fill(rowBackground)
+                            .frame(height: 1)
+                    }
+            )
     }
 }

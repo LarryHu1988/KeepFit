@@ -17,15 +17,15 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.6.0</string>
+	<string>0.6.1</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>允许你选择头像图片</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>允许 KeepFit 将饮食、运动与体重记录写入 Apple 健康。</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>允许你选择头像图片</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict/>
 	<key>UILaunchScreen</key>

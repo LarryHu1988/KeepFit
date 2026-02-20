@@ -24,17 +24,21 @@
 		8D890305FC46704ED2CF9700 /* MoveMoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB036398535B1B6709C4308 /* MoveMoreView.swift */; };
 		9029559AA09A6D098AB50295 /* GrowPageBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7481C6BAA0C901B0042609E /* GrowPageBackground.swift */; };
 		ADD0C74876592E9952BF6BD9 /* AppIconBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B9F9F73A975563DDBB11A6 /* AppIconBadge.swift */; };
+		B838D0BE4E3314DCABEAF936 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FBC1421ECB35C7F4D92C384 /* HealthKit.framework */; };
 		C0B7FE0D911D5A50B2621A89 /* EatWellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C1B8F1412FA0397259A796 /* EatWellView.swift */; };
 		D1294ADD72A97F8DE7853993 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AA68ACA16626ED88D65D5B /* DataStore.swift */; };
 		D7E72F6BDD1E252282D03E7B /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782711AA16C33058140223EA /* MainTabView.swift */; };
 		DDFAD0C4AE97EC3E2A7E55D5 /* CalendarHeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2F213427C091094F6088EE2 /* CalendarHeatmapView.swift */; };
 		E991DF3AB63226E4BC06920B /* ExerciseSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974512BAA2E9B3255EBCFB93 /* ExerciseSelectionSheet.swift */; };
+		F8D5144A70BB83710A35D8BA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD57C2EB641F509EDB0499A /* OnboardingView.swift */; };
 		FF385BFD74D139DF708768BE /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52FD3FA91C2FAAC74F058A48 /* Models.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		07C1B8F1412FA0397259A796 /* EatWellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatWellView.swift; sourceTree = "<group>"; };
+		0FBC1421ECB35C7F4D92C384 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		23879382716B923C6B194CBE /* KeepFit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = KeepFit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A76B5F72669A8F489F28413 /* KeepFit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeepFit.entitlements; sourceTree = "<group>"; };
 		52FD3FA91C2FAAC74F058A48 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		5417EDF38E8D0DBF95815D5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		57A80B74BFC79554A25F2228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -47,6 +51,7 @@
 		974512BAA2E9B3255EBCFB93 /* ExerciseSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSelectionSheet.swift; sourceTree = "<group>"; };
 		98139737892CE26183CEC3D7 /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
 		9A500D23BE43C3BBAD0D898D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		9AD57C2EB641F509EDB0499A /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		AB10A52C474FB9542C968139 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		ADE90823EF06872E7EE88EE1 /* LoseWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoseWeightView.swift; sourceTree = "<group>"; };
 		B7481C6BAA0C901B0042609E /* GrowPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowPageBackground.swift; sourceTree = "<group>"; };
@@ -66,6 +71,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				875C08EDE306171B1D664DB2 /* Charts.framework in Frameworks */,
+				B838D0BE4E3314DCABEAF936 /* HealthKit.framework in Frameworks */,
 				1A7289EEAA97A97861AEE696 /* PhotosUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -77,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				D6C2A653B75FFF28C2E13A25 /* Charts.framework */,
+				0FBC1421ECB35C7F4D92C384 /* HealthKit.framework */,
 				C6FC897B48E96407C12C5EC4 /* PhotosUI.framework */,
 			);
 			name = Frameworks;
@@ -98,6 +105,7 @@
 				E9AA68ACA16626ED88D65D5B /* DataStore.swift */,
 				7275DEB0F424EC1D1E0B19CB /* IconCatalog.swift */,
 				57A80B74BFC79554A25F2228 /* Info.plist */,
+				2A76B5F72669A8F489F28413 /* KeepFit.entitlements */,
 				B8F14750CBF2007A15F6A8A1 /* KeepFitApp.swift */,
 				52FD3FA91C2FAAC74F058A48 /* Models.swift */,
 				DF892893C1E9CF1A30CD916C /* SeedData.swift */,
@@ -139,6 +147,7 @@
 				ADE90823EF06872E7EE88EE1 /* LoseWeightView.swift */,
 				782711AA16C33058140223EA /* MainTabView.swift */,
 				CAB036398535B1B6709C4308 /* MoveMoreView.swift */,
+				9AD57C2EB641F509EDB0499A /* OnboardingView.swift */,
 				FCD9ACF251ABC91A14A3F0EF /* SettingsView.swift */,
 			);
 			path = Views;
@@ -230,6 +239,7 @@
 				D7E72F6BDD1E252282D03E7B /* MainTabView.swift in Sources */,
 				FF385BFD74D139DF708768BE /* Models.swift in Sources */,
 				8D890305FC46704ED2CF9700 /* MoveMoreView.swift in Sources */,
+				F8D5144A70BB83710A35D8BA /* OnboardingView.swift in Sources */,
 				46298DE0C70D5FAF18E67FB5 /* ProgressRing.swift in Sources */,
 				4F915D7AF25B3F616EDFCFDB /* SeedData.swift in Sources */,
 				5E3120E0D6AAFCFB65C32891 /* SettingsView.swift in Sources */,
@@ -250,13 +260,15 @@
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = KeepFitApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "允许 KeepFit 将饮食、运动与体重记录写入 Apple 健康。";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "允许你选择头像图片";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-					MARKETING_VERSION = 0.6.0;
+				MARKETING_VERSION = 0.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.larry.keepfit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -272,13 +284,15 @@
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = KeepFitApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "允许 KeepFit 将饮食、运动与体重记录写入 Apple 健康。";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "允许你选择头像图片";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-					MARKETING_VERSION = 0.6.0;
+				MARKETING_VERSION = 0.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.larry.keepfit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
