@@ -8,6 +8,7 @@ struct ProgressRing: View {
     let gradient: LinearGradient
     let accent: Color
     let valueText: String
+    let valueUnit: String?
     let caption: String
 
     private var clampedProgress: Double {
@@ -23,6 +24,10 @@ struct ProgressRing: View {
             ],
             center: .center
         )
+    }
+
+    private var valueLines: [String] {
+        valueText.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
     }
 
     var body: some View {
@@ -51,11 +56,31 @@ struct ProgressRing: View {
                 .padding(lineWidth + 10)
 
             VStack(spacing: 4) {
-                Text(valueText)
-                    .font(.title3.weight(.semibold))
-                    .minimumScaleFactor(0.75)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
+                if let unit = valueUnit, valueLines.count == 2 {
+                    Text(valueLines[0])
+                        .font(.title3.weight(.semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                        .multilineTextAlignment(.center)
+
+                    HStack(alignment: .lastTextBaseline, spacing: 3) {
+                        Text(valueLines[1])
+                            .font(.title3.weight(.semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                        Text(unit)
+                            .font(.subheadline.weight(.semibold))
+                            .lineLimit(1)
+                            .foregroundStyle(.secondary)
+                    }
+                } else {
+                    Text(valueText)
+                        .font(.title3.weight(.semibold))
+                        .minimumScaleFactor(0.75)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                }
+
                 Text(caption)
                     .font(.caption2)
                     .minimumScaleFactor(0.8)

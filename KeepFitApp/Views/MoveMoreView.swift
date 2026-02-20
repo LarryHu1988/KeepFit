@@ -117,6 +117,7 @@ struct MoveMoreView: View {
                 gradient: LinearGradient(colors: [.green, .mint], startPoint: .topLeading, endPoint: .bottomTrailing),
                 accent: .green,
                 valueText: centerMain,
+                valueUnit: energyUnit.symbol,
                 caption: "\(localized("目标", "Target")) \(energyText(fromKcal: goal, unit: energyUnit))"
             )
             .frame(width: 186, height: 186)

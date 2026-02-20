@@ -21,7 +21,7 @@ struct DailyCalorieTrend: Identifiable {
     let date: Date
     let intake: Double
     let expenditure: Double
-    let balance: Double
+    let deficit: Double
 }
 
 @MainActor
@@ -394,8 +394,10 @@ final class AppState: ObservableObject {
             let nutrition = dayNutrition(on: day)
             let exercise = dayExercise(on: day)
             let exerciseExpenditure = exercise.caloriesBurned
-            let balance = nutrition.calories - (profile.dailyMaintenanceCalories + exerciseExpenditure)
-            return DailyCalorieTrend(date: day, intake: nutrition.calories, expenditure: exerciseExpenditure, balance: balance)
+            let totalExpenditure = profile.dailyMaintenanceCalories + exerciseExpenditure
+            // Negative means deficit achieved, positive means surplus.
+            let deficit = nutrition.calories - totalExpenditure
+            return DailyCalorieTrend(date: day, intake: nutrition.calories, expenditure: exerciseExpenditure, deficit: deficit)
         }
     }
 

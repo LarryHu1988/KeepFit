@@ -21,12 +21,18 @@ struct SettingsView: View {
     @State private var showSexSheet = false
     @State private var showActivitySheet = false
     @State private var showUnitSheet = false
+    @State private var showEnergyUnitSheet = false
+    @State private var showHeightUnitSheet = false
+    @State private var showWeightUnitSheet = false
     @State private var showHeightSheet = false
     @State private var showWeightSheet = false
     @State private var showBirthSheet = false
     @State private var showWeekStartSheet = false
     @State private var showLanguageSheet = false
     @State private var showThemeSheet = false
+    @State private var showTargetWeightSheet = false
+    @State private var showTargetBodyFatSheet = false
+    @State private var showExerciseGoalSheet = false
 
     @State private var metricHeightDraft = 170
     @State private var imperialHeightFeetDraft = 5
@@ -36,6 +42,10 @@ struct SettingsView: View {
     @State private var birthYearDraft = 1998
     @State private var birthMonthDraft = 1
     @State private var birthDayDraft = 1
+    @State private var targetMetricWeightHalfDraft = 130
+    @State private var targetImperialWeightLbDraft = 143
+    @State private var targetBodyFatTenthDraft = 180
+    @State private var exerciseGoalDraft = 300
 
     @State private var activeInfo: SettingsInfoTopic?
 
@@ -82,132 +92,34 @@ struct SettingsView: View {
         Formatters.yearMonthDay.string(from: resolvedBirthDate)
     }
 
+    private var targetWeightDisplayLabel: String {
+        weightText(fromKg: appState.profile.targetWeightKg, decimals: 1, includeUnit: true, unit: weightUnit)
+    }
+
+    private var targetBodyFatDisplayLabel: String {
+        String(format: "%.1f %%", appState.profile.targetBodyFat)
+    }
+
+    private var exerciseGoalDisplayLabel: String {
+        energyText(fromKcal: appState.profile.dailyExerciseGoal, includeUnit: true, unit: energyUnit)
+    }
+
+    private var exerciseGoalRange: [Int] {
+        switch energyUnit {
+        case .kcal:
+            return Array(stride(from: 50, through: 1500, by: 10))
+        case .kJ:
+            return Array(stride(from: 200, through: 6300, by: 40))
+        }
+    }
+
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    HStack(spacing: 14) {
-                        avatarView
-                        VStack(alignment: .leading, spacing: 4) {
-                            TextField(localized("用户名", "Username"), text: binding(\.name))
-                                .textFieldStyle(.roundedBorder)
-                            Text("KeepFit · 管住嘴迈开腿")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    PhotosPicker(selection: $selectedAvatarItem, matching: .images) {
-                        HStack(spacing: 10) {
-                            rowIcon("person.crop.circle.badge.plus", .purple)
-                            Text(localized("选择头像", "Choose Avatar"))
-                        }
-                    }
-                } header: {
-                    Text(localized("个人头像", "Avatar"))
-                }
-
-                Section {
-                    selectionRow(icon: "person.fill", title: localized("性别", "Sex"), color: .pink, value: appState.profile.sex.title) {
-                        showSexSheet = true
-                    }
-                    selectionRow(icon: "calendar", title: localized("生日", "Birthday"), color: .orange, value: birthDisplayText) {
-                        syncBirthDrafts()
-                        showBirthSheet = true
-                    }
-                    selectionRow(icon: "ruler", title: localized("身高", "Height"), color: .blue, value: heightDisplayLabel) {
-                        syncHeightDrafts()
-                        showHeightSheet = true
-                    }
-                    selectionRow(icon: "scalemass", title: localized("体重", "Weight"), color: .mint, value: weightDisplayText) {
-                        syncWeightDrafts()
-                        showWeightSheet = true
-                    }
-                    selectionRow(icon: "figure.walk", title: localized("活动水平", "Activity"), color: .green, value: appState.profile.activityLevel.title) {
-                        showActivitySheet = true
-                    }
-                } header: {
-                    Text(localized("基础信息", "Basic Info"))
-                }
-
-                Section {
-                    iconTextFieldRow(icon: "target", title: localized("目标体重", "Target Weight"), text: targetWeightBinding, unit: weightUnit.symbol, keyboard: .decimalPad, color: .teal)
-                    iconTextFieldRow(icon: "chart.pie.fill", title: localized("目标体脂", "Target Body Fat"), text: bindingDouble(\.targetBodyFat, format: "%.1f"), unit: "%", keyboard: .decimalPad, color: .pink)
-                    iconTextFieldRow(icon: "figure.run.circle.fill", title: localized("每日运动目标", "Daily Exercise Goal"), text: exerciseGoalBinding, unit: energyUnit.symbol, keyboard: .decimalPad, color: .green)
-
-                    HStack {
-                        HStack(spacing: 10) {
-                            rowIcon("heart.text.square.fill", .green)
-                            Text(localized("基础代谢 BMR", "BMR"))
-                            infoButton(.bmr)
-                        }
-                        Spacer()
-                        valueWithUnit(value: energyText(fromKcal: appState.profile.bmr, includeUnit: false, unit: energyUnit), unit: energyUnit.symbol)
-                    }
-
-                    HStack {
-                        HStack(spacing: 10) {
-                            rowIcon("speedometer", .green)
-                            Text(localized("维持消耗 TDEE", "TDEE"))
-                            infoButton(.tdee)
-                        }
-                        Spacer()
-                        valueWithUnit(value: energyText(fromKcal: appState.profile.dailyMaintenanceCalories, includeUnit: false, unit: energyUnit), unit: energyUnit.symbol)
-                    }
-
-                    HStack {
-                        HStack(spacing: 10) {
-                            rowIcon("fork.knife.circle.fill", .red)
-                            Text(localized("减脂建议摄入", "Fat-Loss Intake"))
-                            infoButton(.intake)
-                        }
-                        Spacer()
-                        valueWithUnit(value: energyText(fromKcal: appState.profile.recommendedIntakeForFatLoss, includeUnit: false, unit: energyUnit), unit: energyUnit.symbol)
-                    }
-                } header: {
-                    Text(localized("目标与建议", "Goals & Advice"))
-                }
-
-                Section {
-                    selectionRow(icon: "globe", title: localized("语言", "Language"), color: .blue, value: "\(appLanguage.flag) \(appLanguage.title)") {
-                        showLanguageSheet = true
-                    }
-
-                    selectionRow(icon: "circle.lefthalf.filled", title: localized("主题模式", "Theme"), color: .indigo, value: themeMode.title) {
-                        showThemeSheet = true
-                    }
-
-                    selectionRow(icon: "arrow.left.arrow.right", title: localized("单位", "Units"), color: .teal, value: nil) {
-                        showUnitSheet = true
-                    }
-
-                    selectionRow(icon: "calendar", title: localized("日历开始", "Week Start"), color: .orange, value: weekStart.title) {
-                        showWeekStartSheet = true
-                    }
-
-                    Toggle(isOn: $reminderEnabled) {
-                        HStack(spacing: 10) {
-                            rowIcon("bell", .orange)
-                            Text(localized("饮食/运动提醒", "Diet/Exercise Reminder"))
-                        }
-                    }
-
-                    Toggle(isOn: $hapticEnabled) {
-                        HStack(spacing: 10) {
-                            rowIcon("hand.tap", .blue)
-                            Text(localized("触感反馈", "Haptics"))
-                        }
-                    }
-
-                    Toggle(isOn: $autoSyncEnabled) {
-                        HStack(spacing: 10) {
-                            rowIcon("arrow.triangle.2.circlepath", .green)
-                            Text(localized("自动同步健康数据", "Auto Sync Health Data"))
-                        }
-                    }
-                } header: {
-                    Text(localized("常用设置", "Common Settings"))
-                }
+                avatarSection
+                basicInfoSection
+                goalsAdviceSection
+                commonSettingsSection
             }
             .navigationTitle(localized("个人设置", "Settings"))
             .navigationBarTitleDisplayMode(.large)
@@ -223,6 +135,7 @@ struct SettingsView: View {
                 syncHeightDrafts()
                 syncWeightDrafts()
                 syncBirthDrafts()
+                syncGoalDrafts()
             }
             .onChange(of: selectedAvatarItem) { _, newItem in
                 guard let newItem else { return }
@@ -240,127 +153,464 @@ struct SettingsView: View {
             }
             .onChange(of: weightUnitRaw) { _, _ in
                 syncWeightDrafts()
+                syncGoalDrafts()
             }
-            .sheet(isPresented: $showUnitSheet) {
-                unitSettingsSheet
-                    .presentationDetents([.height(sheetHeight(forOptionCount: 3))])
-                .presentationDragIndicator(.visible)
-                .presentationCornerRadius(24)
-                    .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(isPresented: $showHeightSheet) {
-                heightSelectionSheet
-                    .presentationDetents([.height(340)])
-                    .presentationDragIndicator(.visible)
-                    .presentationCornerRadius(24)
-                    .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(isPresented: $showWeightSheet) {
-                weightSelectionSheet
-                    .presentationDetents([.height(340)])
-                    .presentationDragIndicator(.visible)
-                    .presentationCornerRadius(24)
-                    .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(isPresented: $showBirthSheet) {
-                birthSelectionSheet
-                    .presentationDetents([.height(360)])
-                    .presentationDragIndicator(.visible)
-                    .presentationCornerRadius(24)
-                    .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(isPresented: $showThemeSheet) {
-                selectionSheet(
-                    title: localized("选择主题模式", "Select Theme"),
-                    options: AppThemeMode.allCases,
-                    selectedTitle: themeMode.title,
-                    accent: .indigo,
-                    label: { $0.title },
-                    onSelect: { value in
-                        themeModeRaw = value.rawValue
-                    },
-                    onClose: {
-                        showThemeSheet = false
-                    }
-                )
-                .presentationDetents([.height(sheetHeight(forOptionCount: AppThemeMode.allCases.count))])
-                .presentationDragIndicator(.visible)
-                .presentationCornerRadius(24)
-                .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(isPresented: $showWeekStartSheet) {
-                selectionSheet(
-                    title: localized("选择日历开始", "Select Week Start"),
-                    options: WeekStartOption.allCases,
-                    selectedTitle: weekStart.title,
-                    accent: .orange,
-                    label: { $0.title },
-                    onSelect: { value in
-                        weekStartRaw = value.rawValue
-                    },
-                    onClose: {
-                        showWeekStartSheet = false
-                    }
-                )
-                .presentationDetents([.height(sheetHeight(forOptionCount: WeekStartOption.allCases.count))])
-                .presentationDragIndicator(.visible)
-                .presentationCornerRadius(24)
-                .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(isPresented: $showLanguageSheet) {
-                languageSelectionSheet
-                    .presentationDetents([.height(sheetHeight(forOptionCount: AppLanguageOption.allCases.count))])
-                    .presentationDragIndicator(.visible)
-                    .presentationCornerRadius(24)
-                    .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(isPresented: $showSexSheet) {
-                selectionSheet(
-                    title: localized("选择性别", "Select Sex"),
-                    options: [.male, .female],
-                    selectedTitle: appState.profile.sex.title,
-                    accent: .pink,
-                    label: { $0.title },
-                    onSelect: { value in
-                        appState.profile.sex = value
-                    },
-                    onClose: {
-                        showSexSheet = false
-                    }
-                )
-                .presentationDetents([.height(sheetHeight(forOptionCount: 2))])
-                .presentationDragIndicator(.visible)
-                .presentationCornerRadius(24)
-                .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(isPresented: $showActivitySheet) {
-                selectionSheet(
-                    title: localized("选择活动水平", "Select Activity"),
-                    options: ActivityLevel.allCases,
-                    selectedTitle: appState.profile.activityLevel.title,
-                    accent: .green,
-                    label: { $0.title },
-                    onSelect: { value in
-                        appState.profile.activityLevel = value
-                    },
-                    onClose: {
-                        showActivitySheet = false
-                    }
-                )
-                .presentationDetents([.height(sheetHeight(forOptionCount: ActivityLevel.allCases.count))])
-                .presentationDragIndicator(.visible)
-                .presentationCornerRadius(24)
-                .presentationBackground(.ultraThinMaterial)
-            }
-            .sheet(item: $activeInfo) { topic in
-                infoSheet(topic: topic)
-                    .presentationDetents([.height(topic.sheetHeight)])
-                    .presentationDragIndicator(.visible)
-                    .presentationCornerRadius(28)
-                    .presentationBackground(.ultraThinMaterial)
+            .onChange(of: energyUnitRaw) { _, _ in
+                syncGoalDrafts()
             }
         }
         .preferredColorScheme(themeMode.preferredColorScheme)
+    }
+
+    private var avatarSection: some View {
+        Section {
+            HStack(spacing: 14) {
+                PhotosPicker(selection: $selectedAvatarItem, matching: .images) {
+                    avatarView
+                }
+                .buttonStyle(.plain)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    TextField(localized("用户名", "Username"), text: binding(\.name))
+                        .textFieldStyle(.roundedBorder)
+                    Text("KeepFit · 管住嘴迈开腿")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text(localized("个人头像", "Avatar"))
+        }
+    }
+
+    private var basicInfoSection: some View {
+        Section {
+            sexSelectionRow
+            birthSelectionRow
+            heightSelectionRow
+            weightSelectionRow
+            activitySelectionRow
+        } header: {
+            Text(localized("基础信息", "Basic Info"))
+        }
+    }
+
+    private var goalsAdviceSection: some View {
+        Section {
+            targetWeightSelectionRow
+            targetBodyFatSelectionRow
+            exerciseGoalSelectionRow
+            bmrInfoRow
+            tdeeInfoRow
+            intakeInfoRow
+        } header: {
+            Text(localized("目标与建议", "Goals & Advice"))
+        }
+    }
+
+    private var commonSettingsSection: some View {
+        Section {
+            languageSelectionRow
+            energyUnitSelectionRow
+            heightUnitSelectionRow
+            weightUnitSelectionRow
+            weekStartSelectionRow
+            themeSelectionRow
+
+            Toggle(isOn: $hapticEnabled) {
+                HStack(spacing: 10) {
+                    rowIcon("hand.tap", .blue)
+                    Text(localized("触感反馈", "Haptics"))
+                }
+            }
+
+            Toggle(isOn: $reminderEnabled) {
+                HStack(spacing: 10) {
+                    rowIcon("bell", .orange)
+                    Text(localized("饮食/运动提醒", "Diet/Exercise Reminder"))
+                }
+            }
+
+            Toggle(isOn: $autoSyncEnabled) {
+                HStack(spacing: 10) {
+                    rowIcon("arrow.triangle.2.circlepath", .green)
+                    Text(localized("自动同步健康数据", "Auto Sync Health Data"))
+                }
+            }
+        } header: {
+            Text(localized("常用设置", "Common Settings"))
+        }
+    }
+
+    private var sexSelectionRow: some View {
+        selectionPopoverRow(icon: "person.fill", title: localized("性别", "Sex"), color: .pink, value: appState.profile.sex.title, isPresented: $showSexSheet) {
+            glassOptionPopover(accent: .pink, title: localized("选择性别", "Select Sex")) {
+                ForEach([BiologicalSex.male, .female]) { option in
+                    popoverOptionCell(title: option.title, selected: appState.profile.sex == option, accent: .pink) {
+                        appState.profile.sex = option
+                        showSexSheet = false
+                    }
+                }
+            }
+        }
+    }
+
+    private var birthSelectionRow: some View {
+        selectionPopoverRow(
+            icon: "calendar",
+            title: localized("生日", "Birthday"),
+            color: .orange,
+            value: birthDisplayText,
+            isPresented: $showBirthSheet,
+            onOpen: { syncBirthDrafts() }
+        ) {
+            glassOptionPopover(accent: .orange, title: localized("选择生日", "Select Birthday"), width: 330) {
+                HStack(spacing: 0) {
+                    let currentYear = AppPreferences.calendar.component(.year, from: Date())
+                    Picker(localized("年", "Year"), selection: $birthYearDraft) {
+                        ForEach((currentYear - 100)...(currentYear - 10), id: \.self) { year in
+                            Text(localized("\(year) 年", "\(year)")).tag(year)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+
+                    Picker(localized("月", "Month"), selection: $birthMonthDraft) {
+                        ForEach(1...12, id: \.self) { month in
+                            Text(localized("\(month) 月", "\(month)")).tag(month)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+
+                    Picker(localized("日", "Day"), selection: $birthDayDraft) {
+                        ForEach(1...maxBirthDayInDraftMonth, id: \.self) { day in
+                            Text(localized("\(day) 日", "\(day)")).tag(day)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                }
+                .frame(height: 156)
+
+                popoverDoneButton {
+                    applyBirthSelection()
+                    showBirthSheet = false
+                }
+            }
+        }
+    }
+
+    private var heightSelectionRow: some View {
+        selectionPopoverRow(
+            icon: "ruler",
+            title: localized("身高", "Height"),
+            color: .blue,
+            value: heightDisplayLabel,
+            isPresented: $showHeightSheet,
+            onOpen: { syncHeightDrafts() }
+        ) {
+            glassOptionPopover(accent: .blue, title: localized("选择身高", "Select Height"), width: 330) {
+                if heightUnit == .centimeter {
+                    Picker(localized("身高", "Height"), selection: $metricHeightDraft) {
+                        ForEach(120...220, id: \.self) { value in
+                            Text("\(value) cm").tag(value)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .frame(height: 156)
+                } else {
+                    HStack(spacing: 0) {
+                        Picker("ft", selection: $imperialHeightFeetDraft) {
+                            ForEach(3...7, id: \.self) { value in
+                                Text("\(value) ft").tag(value)
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .labelsHidden()
+
+                        Picker("in", selection: $imperialHeightInchesDraft) {
+                            ForEach(0...11, id: \.self) { value in
+                                Text("\(value) in").tag(value)
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .labelsHidden()
+                    }
+                    .frame(height: 156)
+                }
+
+                popoverDoneButton {
+                    applyHeightSelection()
+                    showHeightSheet = false
+                }
+            }
+        }
+    }
+
+    private var weightSelectionRow: some View {
+        selectionPopoverRow(
+            icon: "scalemass",
+            title: localized("体重", "Weight"),
+            color: .mint,
+            value: weightDisplayText,
+            isPresented: $showWeightSheet,
+            onOpen: { syncWeightDrafts() }
+        ) {
+            glassOptionPopover(accent: .mint, title: localized("选择体重", "Select Weight"), width: 320) {
+                if weightUnit == .kilogram {
+                    Picker(localized("体重", "Weight"), selection: $metricWeightHalfDraft) {
+                        ForEach(60...400, id: \.self) { value in
+                            let kg = Double(value) / 2
+                            Text(String(format: "%.1f kg", kg)).tag(value)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .frame(height: 156)
+                } else {
+                    Picker(localized("体重", "Weight"), selection: $imperialWeightLbDraft) {
+                        ForEach(66...440, id: \.self) { value in
+                            Text("\(value) lb").tag(value)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .frame(height: 156)
+                }
+
+                popoverDoneButton {
+                    applyWeightSelection()
+                    showWeightSheet = false
+                }
+            }
+        }
+    }
+
+    private var activitySelectionRow: some View {
+        selectionPopoverRow(icon: "figure.walk", title: localized("活动水平", "Activity"), color: .green, value: appState.profile.activityLevel.title, isPresented: $showActivitySheet) {
+            glassOptionPopover(accent: .green, title: localized("选择活动水平", "Select Activity")) {
+                ForEach(ActivityLevel.allCases) { option in
+                    popoverOptionCell(title: option.title, selected: appState.profile.activityLevel == option, accent: .green) {
+                        appState.profile.activityLevel = option
+                        showActivitySheet = false
+                    }
+                }
+            }
+        }
+    }
+
+    private var targetWeightSelectionRow: some View {
+        selectionPopoverRow(
+            icon: "target",
+            title: localized("目标体重", "Target Weight"),
+            color: .teal,
+            value: targetWeightDisplayLabel,
+            isPresented: $showTargetWeightSheet,
+            onOpen: { syncGoalDrafts() }
+        ) {
+            glassOptionPopover(accent: .teal, title: localized("选择目标体重", "Select Target Weight"), width: 320) {
+                if weightUnit == .kilogram {
+                    Picker(localized("目标体重", "Target Weight"), selection: $targetMetricWeightHalfDraft) {
+                        ForEach(70...360, id: \.self) { value in
+                            let kg = Double(value) / 2
+                            Text(String(format: "%.1f kg", kg)).tag(value)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .frame(height: 156)
+                } else {
+                    Picker(localized("目标体重", "Target Weight"), selection: $targetImperialWeightLbDraft) {
+                        ForEach(88...440, id: \.self) { value in
+                            Text("\(value) lb").tag(value)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .frame(height: 156)
+                }
+
+                popoverDoneButton {
+                    applyTargetWeightSelection()
+                    showTargetWeightSheet = false
+                }
+            }
+        }
+    }
+
+    private var targetBodyFatSelectionRow: some View {
+        selectionPopoverRow(
+            icon: "chart.pie.fill",
+            title: localized("目标体脂", "Target Body Fat"),
+            color: .pink,
+            value: targetBodyFatDisplayLabel,
+            isPresented: $showTargetBodyFatSheet,
+            onOpen: { syncGoalDrafts() }
+        ) {
+            glassOptionPopover(accent: .pink, title: localized("选择目标体脂", "Select Target Body Fat"), width: 320) {
+                Picker(localized("目标体脂", "Target Body Fat"), selection: $targetBodyFatTenthDraft) {
+                    ForEach(80...450, id: \.self) { value in
+                        let percent = Double(value) / 10
+                        Text(String(format: "%.1f %%", percent)).tag(value)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .labelsHidden()
+                .frame(height: 156)
+
+                popoverDoneButton {
+                    applyTargetBodyFatSelection()
+                    showTargetBodyFatSheet = false
+                }
+            }
+        }
+    }
+
+    private var exerciseGoalSelectionRow: some View {
+        selectionPopoverRow(
+            icon: "figure.run.circle.fill",
+            title: localized("每日运动目标", "Daily Exercise Goal"),
+            color: .green,
+            value: exerciseGoalDisplayLabel,
+            isPresented: $showExerciseGoalSheet,
+            onOpen: { syncGoalDrafts() }
+        ) {
+            glassOptionPopover(accent: .green, title: localized("选择每日运动目标", "Select Daily Exercise Goal"), width: 320) {
+                Picker(localized("每日运动目标", "Daily Exercise Goal"), selection: $exerciseGoalDraft) {
+                    ForEach(exerciseGoalRange, id: \.self) { value in
+                        Text("\(value) \(energyUnit.symbol)").tag(value)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .labelsHidden()
+                .frame(height: 156)
+
+                popoverDoneButton {
+                    applyExerciseGoalSelection()
+                    showExerciseGoalSheet = false
+                }
+            }
+        }
+    }
+
+    private var bmrInfoRow: some View {
+        HStack {
+            HStack(spacing: 10) {
+                rowIcon("heart.text.square.fill", .green)
+                Text(localized("基础代谢 BMR", "BMR"))
+                infoButton(.bmr)
+            }
+            Spacer()
+            valueWithUnit(value: energyText(fromKcal: appState.profile.bmr, includeUnit: false, unit: energyUnit), unit: energyUnit.symbol)
+        }
+    }
+
+    private var tdeeInfoRow: some View {
+        HStack {
+            HStack(spacing: 10) {
+                rowIcon("speedometer", .green)
+                Text(localized("维持消耗 TDEE", "TDEE"))
+                infoButton(.tdee)
+            }
+            Spacer()
+            valueWithUnit(value: energyText(fromKcal: appState.profile.dailyMaintenanceCalories, includeUnit: false, unit: energyUnit), unit: energyUnit.symbol)
+        }
+    }
+
+    private var intakeInfoRow: some View {
+        HStack {
+            HStack(spacing: 10) {
+                rowIcon("fork.knife.circle.fill", .red)
+                Text(localized("减脂建议摄入", "Fat-Loss Intake"))
+                infoButton(.intake)
+            }
+            Spacer()
+            valueWithUnit(value: energyText(fromKcal: appState.profile.recommendedIntakeForFatLoss, includeUnit: false, unit: energyUnit), unit: energyUnit.symbol)
+        }
+    }
+
+    private var languageSelectionRow: some View {
+        selectionPopoverRow(icon: "globe", title: localized("语言选择", "Language Selection"), color: .blue, value: appLanguage.title, isPresented: $showLanguageSheet) {
+            glassOptionPopover(accent: .blue, title: localized("选择语言", "Select Language")) {
+                ForEach(AppLanguageOption.allCases) { option in
+                    popoverOptionCell(title: option.title, selected: option == appLanguage, accent: .blue) {
+                        appLanguageRaw = option.rawValue
+                        showLanguageSheet = false
+                    }
+                }
+            }
+        }
+    }
+
+    private var energyUnitSelectionRow: some View {
+        selectionPopoverRow(icon: "flame.fill", title: localized("能量单位", "Energy Unit"), color: .teal, value: energyUnit.title, isPresented: $showEnergyUnitSheet) {
+            glassOptionPopover(accent: .teal, title: localized("选择能量单位", "Select Energy Unit")) {
+                ForEach(EnergyUnitOption.allCases) { option in
+                    popoverOptionCell(title: option.title, selected: option == energyUnit, accent: .teal) {
+                        energyUnitRaw = option.rawValue
+                        syncGoalDrafts()
+                        showEnergyUnitSheet = false
+                    }
+                }
+            }
+        }
+    }
+
+    private var heightUnitSelectionRow: some View {
+        selectionPopoverRow(icon: "ruler", title: localized("身高单位", "Height Unit"), color: .blue, value: heightUnit.title, isPresented: $showHeightUnitSheet) {
+            glassOptionPopover(accent: .blue, title: localized("选择身高单位", "Select Height Unit")) {
+                ForEach(HeightUnitOption.allCases) { option in
+                    popoverOptionCell(title: option.title, selected: option == heightUnit, accent: .blue) {
+                        heightUnitRaw = option.rawValue
+                        syncHeightDrafts()
+                        showHeightUnitSheet = false
+                    }
+                }
+            }
+        }
+    }
+
+    private var weightUnitSelectionRow: some View {
+        selectionPopoverRow(icon: "scalemass", title: localized("体重单位", "Weight Unit"), color: .mint, value: weightUnit.title, isPresented: $showWeightUnitSheet) {
+            glassOptionPopover(accent: .mint, title: localized("选择体重单位", "Select Weight Unit")) {
+                ForEach(WeightUnitOption.allCases) { option in
+                    popoverOptionCell(title: option.title, selected: option == weightUnit, accent: .mint) {
+                        weightUnitRaw = option.rawValue
+                        syncWeightDrafts()
+                        syncGoalDrafts()
+                        showWeightUnitSheet = false
+                    }
+                }
+            }
+        }
+    }
+
+    private var weekStartSelectionRow: some View {
+        selectionPopoverRow(icon: "calendar", title: localized("日历开始", "Week Start"), color: .orange, value: weekStart.title, isPresented: $showWeekStartSheet) {
+            glassOptionPopover(accent: .orange, title: localized("选择日历开始", "Select Week Start")) {
+                ForEach(WeekStartOption.allCases) { option in
+                    popoverOptionCell(title: option.title, selected: option == weekStart, accent: .orange) {
+                        weekStartRaw = option.rawValue
+                        showWeekStartSheet = false
+                    }
+                }
+            }
+        }
+    }
+
+    private var themeSelectionRow: some View {
+        selectionPopoverRow(icon: "circle.lefthalf.filled", title: localized("主题模式", "Theme"), color: .indigo, value: themeMode.title, isPresented: $showThemeSheet) {
+            glassOptionPopover(accent: .indigo, title: localized("选择主题模式", "Select Theme")) {
+                ForEach(AppThemeMode.allCases) { option in
+                    popoverOptionCell(title: option.title, selected: option == themeMode, accent: .indigo) {
+                        themeModeRaw = option.rawValue
+                        showThemeSheet = false
+                    }
+                }
+            }
+        }
     }
 
     private var avatarView: some View {
@@ -389,32 +639,171 @@ struct SettingsView: View {
             .frame(width: 18)
     }
 
-    private func selectionRow(icon: String, title: String, color: Color, value: String?, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack {
-                HStack(spacing: 10) {
-                    rowIcon(icon, color)
-                    Text(title)
-                }
-                Spacer()
+    private func selectionPopoverRow<PopoverContent: View>(
+        icon: String,
+        title: String,
+        color: Color,
+        value: String?,
+        isPresented: Binding<Bool>,
+        onOpen: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping () -> PopoverContent
+    ) -> some View {
+        Button {
+            onOpen?()
+            isPresented.wrappedValue = true
+        } label: {
+            HStack(spacing: 10) {
+                rowIcon(icon, color)
+                Text(title)
+                    .foregroundStyle(.primary)
+                Spacer(minLength: 8)
                 if let value, !value.isEmpty {
-                    HStack(spacing: 6) {
-                        Text(value)
-                            .lineLimit(1)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Image(systemName: "chevron.right")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                } else {
-                    Image(systemName: "chevron.right")
-                        .font(.caption2)
+                    Text(value)
+                        .lineLimit(1)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+                Image(systemName: "chevron.down")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
             }
         }
         .buttonStyle(.plain)
+        .popover(isPresented: isPresented, attachmentAnchor: .rect(.bounds), arrowEdge: .bottom) {
+            content()
+                .presentationCompactAdaptation(.popover)
+                .presentationBackground(.clear)
+        }
+    }
+
+    private func glassRowBackground(accent: Color) -> some View {
+        RoundedRectangle(cornerRadius: 16, style: .continuous)
+            .fill(.ultraThinMaterial.opacity(0.72))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [accent.opacity(0.14), .white.opacity(0.08), .clear],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(.white.opacity(0.24), lineWidth: 0.8)
+            )
+    }
+
+    private func glassOptionPopover<Content: View>(
+        accent: Color,
+        title _: String,
+        width: CGFloat = 292,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            content()
+        }
+        .padding(12)
+        .frame(width: width, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .fill(accent.opacity(0.06))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .stroke(.white.opacity(0.22), lineWidth: 0.8)
+                )
+        )
+    }
+
+    private func popoverOptionCell(title: String, selected: Bool, accent: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                Text(title)
+                    .foregroundStyle(.primary)
+                Spacer()
+                if selected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(accent)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 9)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(selected ? accent.opacity(0.16) : .clear)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(selected ? accent.opacity(0.34) : .white.opacity(0.10), lineWidth: 0.8)
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func popoverDoneButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(localized("完成", "Done"))
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(.primary.opacity(0.86))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 7)
+                .background(
+                    Capsule(style: .continuous)
+                        .fill(.ultraThinMaterial.opacity(0.52))
+                        .overlay(
+                            Capsule(style: .continuous)
+                                .stroke(.white.opacity(0.16), lineWidth: 0.7)
+                        )
+                )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func popoverChipGroup<T: Identifiable & Equatable>(
+        title: String,
+        options: [T],
+        selected: T,
+        accent: Color,
+        label: @escaping (T) -> String,
+        onSelect: @escaping (T) -> Void
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(options) { option in
+                        let isSelected = option == selected
+                        Button {
+                            onSelect(option)
+                        } label: {
+                            Text(label(option))
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(isSelected ? .white : .primary)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 7)
+                                .background(
+                                    Capsule(style: .continuous)
+                                        .fill(isSelected ? accent.opacity(0.85) : .white.opacity(0.12))
+                                        .overlay(
+                                            Capsule(style: .continuous)
+                                                .stroke(.white.opacity(isSelected ? 0.25 : 0.14), lineWidth: 0.7)
+                                        )
+                                )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        }
     }
 
     private func sheetHeight(forOptionCount count: Int) -> CGFloat {
@@ -422,12 +811,16 @@ struct SettingsView: View {
     }
 
     private func sheetBackground(accent: Color) -> some View {
-        LinearGradient(
-            colors: [accent.opacity(0.2), .white.opacity(0.06), .clear],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .background(.ultraThinMaterial)
+        ZStack {
+            Rectangle()
+                .fill(.thinMaterial)
+            LinearGradient(
+                colors: [accent.opacity(0.20), .white.opacity(0.08), .black.opacity(0.03)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+        .compositingGroup()
         .ignoresSafeArea()
     }
 
@@ -446,14 +839,14 @@ struct SettingsView: View {
             .padding(.vertical, 12)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(.white.opacity(selected ? 0.14 : 0.08))
                     .overlay(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .fill(
                                 LinearGradient(
                                     colors: [
-                                        accent.opacity(selected ? 0.30 : 0.16),
-                                        .white.opacity(selected ? 0.14 : 0.06),
+                                        accent.opacity(selected ? 0.22 : 0.10),
+                                        .white.opacity(selected ? 0.10 : 0.03),
                                         .clear
                                     ],
                                     startPoint: .topLeading,
@@ -463,7 +856,7 @@ struct SettingsView: View {
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .stroke(.white.opacity(selected ? 0.44 : 0.24), lineWidth: 1)
+                            .stroke(.white.opacity(selected ? 0.26 : 0.14), lineWidth: 0.8)
                     )
             )
         }
@@ -476,7 +869,7 @@ struct SettingsView: View {
                 VStack(spacing: 10) {
                     NavigationLink {
                         unitOptionListView(
-                            title: localized("能量", "Energy"),
+                            title: localized("能量单位", "Energy Unit"),
                             options: EnergyUnitOption.allCases,
                             selected: energyUnit,
                             accent: .teal,
@@ -484,7 +877,7 @@ struct SettingsView: View {
                             onSelect: { value in energyUnitRaw = value.rawValue }
                         )
                     } label: {
-                        unitTopicLabel(title: localized("能量", "Energy"), value: energyUnit.title, accent: .teal)
+                        unitTopicLabel(title: localized("能量单位", "Energy Unit"), value: energyUnit.title, accent: .teal)
                     }
 
                     NavigationLink {
@@ -523,6 +916,7 @@ struct SettingsView: View {
                 .padding(.top, 10)
                 .padding(.bottom, 18)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(sheetBackground(accent: .teal))
             .navigationTitle(localized("单位", "Units"))
             .navigationBarTitleDisplayMode(.inline)
@@ -544,7 +938,7 @@ struct SettingsView: View {
                 VStack(spacing: 10) {
                     ForEach(AppLanguageOption.allCases) { option in
                         selectionCell(
-                            title: "\(option.flag) \(option.title)",
+                            title: option.title,
                             selected: option == appLanguage,
                             accent: .blue,
                             action: {
@@ -558,6 +952,7 @@ struct SettingsView: View {
                 .padding(.top, 10)
                 .padding(.bottom, 18)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(sheetBackground(accent: .blue))
             .navigationTitle(localized("选择语言", "Select Language"))
             .navigationBarTitleDisplayMode(.inline)
@@ -589,12 +984,12 @@ struct SettingsView: View {
         .padding(.vertical, 12)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(.ultraThinMaterial)
+                .fill(.white.opacity(0.09))
                 .overlay(
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .fill(
                             LinearGradient(
-                                colors: [accent.opacity(0.18), .white.opacity(0.08), .clear],
+                                colors: [accent.opacity(0.16), .white.opacity(0.06), .clear],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
@@ -602,7 +997,7 @@ struct SettingsView: View {
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .stroke(.white.opacity(0.24), lineWidth: 1)
+                        .stroke(.white.opacity(0.14), lineWidth: 0.8)
                 )
         )
     }
@@ -632,6 +1027,7 @@ struct SettingsView: View {
             .padding(.top, 10)
             .padding(.bottom, 18)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(sheetBackground(accent: .teal))
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
@@ -669,6 +1065,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(sheetBackground(accent: .blue))
             .navigationTitle(localized("选择身高", "Select Height"))
             .navigationBarTitleDisplayMode(.inline)
@@ -708,6 +1105,7 @@ struct SettingsView: View {
                     .labelsHidden()
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(sheetBackground(accent: .mint))
             .navigationTitle(localized("选择体重", "Select Weight"))
             .navigationBarTitleDisplayMode(.inline)
@@ -759,6 +1157,7 @@ struct SettingsView: View {
             .onChange(of: birthMonthDraft) { _, _ in
                 clampBirthDay()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(sheetBackground(accent: .orange))
             .navigationTitle(localized("选择生日", "Select Birthday"))
             .navigationBarTitleDisplayMode(.inline)
@@ -785,6 +1184,29 @@ struct SettingsView: View {
                 .foregroundStyle(.secondary)
         }
         .buttonStyle(.plain)
+        .popover(isPresented: infoPopoverBinding(for: topic), attachmentAnchor: .rect(.bounds), arrowEdge: infoPopoverArrowEdge(for: topic)) {
+            glassInfoPopover(topic: topic)
+                .presentationCompactAdaptation(.popover)
+                .presentationBackground(.clear)
+        }
+    }
+
+    private func infoPopoverBinding(for topic: SettingsInfoTopic) -> Binding<Bool> {
+        Binding(
+            get: { activeInfo == topic },
+            set: { isShowing in
+                activeInfo = isShowing ? topic : nil
+            }
+        )
+    }
+
+    private func infoPopoverArrowEdge(for topic: SettingsInfoTopic) -> Edge {
+        switch topic {
+        case .bmr:
+            return .top
+        case .tdee, .intake:
+            return .bottom
+        }
     }
 
     private func iconTextFieldRow(icon: String, title: String, text: Binding<String>, unit: String, keyboard: UIKeyboardType, color: Color) -> some View {
@@ -810,10 +1232,11 @@ struct SettingsView: View {
     private func valueWithUnit(value: String, unit: String) -> some View {
         HStack(spacing: 6) {
             Text(value)
+                .font(.subheadline)
                 .monospacedDigit()
                 .frame(width: 84, alignment: .trailing)
             Text(unit)
-                .font(.caption.weight(.semibold))
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
         .frame(width: 130, alignment: .trailing)
@@ -847,6 +1270,7 @@ struct SettingsView: View {
                 .padding(.top, 10)
                 .padding(.bottom, 18)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(sheetBackground(accent: accent))
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
@@ -862,48 +1286,36 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
-    private func infoSheet(topic: SettingsInfoTopic) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Text(topic.title)
-                    .font(.headline.weight(.semibold))
-                Spacer()
-                Button(localized("完成", "Done")) {
-                    activeInfo = nil
-                }
-                .font(.subheadline)
-            }
-
-            ForEach(Array(topic.paragraphs.enumerated()), id: \.offset) { _, paragraph in
+    private func glassInfoPopover(topic: SettingsInfoTopic) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(Array(topic.paragraphs.enumerated()), id: \.offset) { index, paragraph in
                 Text(paragraph)
-                    .font(.subheadline)
+                    .font(.caption)
+                    .lineSpacing(1.5)
+                    .multilineTextAlignment(.leading)
                     .foregroundStyle(.primary)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                if index < topic.paragraphs.count - 1 {
+                    Divider()
+                        .overlay(.white.opacity(0.10))
+                }
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .padding(12)
+        .frame(width: 286, alignment: .topLeading)
         .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(.ultraThinMaterial)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .stroke(.white.opacity(0.35), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(.white.opacity(0.24), lineWidth: 0.8)
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [.white.opacity(0.18), .clear],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(.white.opacity(0.02))
                 )
         )
-        .padding(.horizontal, 12)
-        .padding(.top, 6)
-        .padding(.bottom, 2)
     }
 
     private func ensureBirthDateSeeded() {
@@ -940,6 +1352,38 @@ struct SettingsView: View {
         case .pound:
             appState.profile.weightKg = Double(imperialWeightLbDraft) / 2.20462
         }
+    }
+
+    private func syncGoalDrafts() {
+        targetMetricWeightHalfDraft = min(max(Int((appState.profile.targetWeightKg * 2).rounded()), 70), 360)
+        targetImperialWeightLbDraft = min(max(Int(weightDisplayValue(fromKg: appState.profile.targetWeightKg, unit: .pound).rounded()), 88), 440)
+        targetBodyFatTenthDraft = min(max(Int((appState.profile.targetBodyFat * 10).rounded()), 80), 450)
+
+        let displayValue = energyConvertedValue(fromKcal: appState.profile.dailyExerciseGoal, unit: energyUnit)
+        let roundedDisplay = Int(displayValue.rounded())
+        switch energyUnit {
+        case .kcal:
+            exerciseGoalDraft = min(max(roundedDisplay, 50), 1500)
+        case .kJ:
+            exerciseGoalDraft = min(max(roundedDisplay, 200), 6300)
+        }
+    }
+
+    private func applyTargetWeightSelection() {
+        switch weightUnit {
+        case .kilogram:
+            appState.profile.targetWeightKg = Double(targetMetricWeightHalfDraft) / 2
+        case .pound:
+            appState.profile.targetWeightKg = weightFromDisplayValue(Double(targetImperialWeightLbDraft), unit: .pound)
+        }
+    }
+
+    private func applyTargetBodyFatSelection() {
+        appState.profile.targetBodyFat = Double(targetBodyFatTenthDraft) / 10
+    }
+
+    private func applyExerciseGoalSelection() {
+        appState.profile.dailyExerciseGoal = energyFromDisplayValue(Double(exerciseGoalDraft), unit: energyUnit)
     }
 
     private func syncBirthDrafts() {

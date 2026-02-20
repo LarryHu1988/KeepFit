@@ -151,6 +151,7 @@ struct LoseWeightView: View {
                 ),
                 accent: surplus > 0 ? .red : .blue,
                 valueText: centerMain,
+                valueUnit: energyUnit.symbol,
                 caption: "\(localized("目标", "Target")) \(energyText(fromKcal: deficitGoal, unit: energyUnit))"
             )
             .frame(width: 186, height: 186)
