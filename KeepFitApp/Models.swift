@@ -10,11 +10,11 @@ enum BiologicalSex: String, CaseIterable, Codable, Identifiable {
     var title: String {
         switch self {
         case .female:
-            return "女"
+            return localized("女", "Female")
         case .male:
-            return "男"
+            return localized("男", "Male")
         case .other:
-            return "其他"
+            return localized("其他", "Other")
         }
     }
 }
@@ -30,13 +30,13 @@ enum ActivityLevel: String, CaseIterable, Codable, Identifiable {
     var title: String {
         switch self {
         case .sedentary:
-            return "久坐"
+            return localized("久坐", "Sedentary")
         case .lightlyActive:
-            return "轻度活动"
+            return localized("轻度活动", "Lightly Active")
         case .moderatelyActive:
-            return "中度活动"
+            return localized("中度活动", "Moderately Active")
         case .veryActive:
-            return "高强度活动"
+            return localized("高强度活动", "Very Active")
         }
     }
 
@@ -114,21 +114,21 @@ enum FoodCategory: String, CaseIterable, Codable {
     var title: String {
         switch self {
         case .staple:
-            return "主食"
+            return localized("主食", "Staple")
         case .protein:
-            return "蛋白质"
+            return localized("蛋白质", "Protein")
         case .vegetable:
-            return "蔬菜"
+            return localized("蔬菜", "Vegetable")
         case .fruit:
-            return "水果"
+            return localized("水果", "Fruit")
         case .dairy:
-            return "乳制品"
+            return localized("乳制品", "Dairy")
         case .nuts:
-            return "坚果"
+            return localized("坚果", "Nuts")
         case .drink:
-            return "饮品"
+            return localized("饮品", "Drink")
         case .snack:
-            return "零食"
+            return localized("零食", "Snack")
         }
     }
 }
@@ -172,15 +172,15 @@ enum ExerciseCategory: String, CaseIterable, Codable {
     var title: String {
         switch self {
         case .cardio:
-            return "有氧"
+            return localized("有氧", "Cardio")
         case .strength:
-            return "力量"
+            return localized("力量", "Strength")
         case .flexibility:
-            return "柔韧"
+            return localized("柔韧", "Flexibility")
         case .sports:
-            return "球类"
+            return localized("球类", "Sports")
         case .outdoors:
-            return "户外"
+            return localized("户外", "Outdoors")
         }
     }
 }

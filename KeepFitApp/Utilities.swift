@@ -1,16 +1,232 @@
 import Foundation
 import SwiftUI
 
+private enum AppPreferenceKeys {
+    static let timeFormat = "keepfit.unit.time"
+    static let distanceUnit = "keepfit.unit.distance"
+    static let energyUnit = "keepfit.unit.energy"
+    static let heightUnit = "keepfit.unit.height"
+    static let weightUnit = "keepfit.unit.weight"
+    static let weekStart = "keepfit.calendar.weekStart"
+    static let appLanguage = "keepfit.appLanguage"
+}
+
+enum TimeFormatOption: String, CaseIterable, Identifiable {
+    case hour24
+    case hour12
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .hour24: return localized("24 小时制", "24-Hour")
+        case .hour12: return localized("12 小时制", "12-Hour")
+        }
+    }
+}
+
+enum DistanceUnitOption: String, CaseIterable, Identifiable {
+    case kilometer
+    case mile
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .kilometer: return localized("公里", "Kilometer")
+        case .mile: return localized("英里", "Mile")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .kilometer: return "km"
+        case .mile: return "mi"
+        }
+    }
+}
+
+enum EnergyUnitOption: String, CaseIterable, Identifiable {
+    case kcal
+    case kJ
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .kcal: return localized("千卡", "Kilocalorie")
+        case .kJ: return localized("千焦", "Kilojoule")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .kcal: return "kcal"
+        case .kJ: return "kJ"
+        }
+    }
+
+    func fromKcal(_ kcal: Double) -> Double {
+        switch self {
+        case .kcal: return kcal
+        case .kJ: return kcal * 4.184
+        }
+    }
+
+    func toKcal(_ value: Double) -> Double {
+        switch self {
+        case .kcal: return value
+        case .kJ: return value / 4.184
+        }
+    }
+}
+
+enum HeightUnitOption: String, CaseIterable, Identifiable {
+    case centimeter
+    case foot
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .centimeter: return localized("厘米", "Centimeter")
+        case .foot: return localized("英尺", "Foot")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .centimeter: return "cm"
+        case .foot: return "ft"
+        }
+    }
+}
+
+enum WeightUnitOption: String, CaseIterable, Identifiable {
+    case kilogram
+    case pound
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .kilogram: return localized("公斤", "Kilogram")
+        case .pound: return localized("磅", "Pound")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .kilogram: return "kg"
+        case .pound: return "lb"
+        }
+    }
+}
+
+enum WeekStartOption: String, CaseIterable, Identifiable {
+    case sunday
+    case monday
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .sunday: return localized("星期日", "Sunday")
+        case .monday: return localized("星期一", "Monday")
+        }
+    }
+
+    var firstWeekday: Int {
+        switch self {
+        case .sunday: return 1
+        case .monday: return 2
+        }
+    }
+}
+
+enum AppLanguageOption: String, CaseIterable, Identifiable {
+    case chinese = "zh-Hans"
+    case english = "en"
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .chinese: return "中文"
+        case .english: return "English"
+        }
+    }
+
+    var flag: String {
+        switch self {
+        case .chinese: return "🇨🇳"
+        case .english: return "🇺🇸"
+        }
+    }
+
+    var localeIdentifier: String { rawValue }
+}
+
+enum AppPreferences {
+    static var timeFormat: TimeFormatOption {
+        .hour24
+    }
+
+    static var distanceUnit: DistanceUnitOption {
+        DistanceUnitOption(rawValue: UserDefaults.standard.string(forKey: AppPreferenceKeys.distanceUnit) ?? "") ?? .kilometer
+    }
+
+    static var energyUnit: EnergyUnitOption {
+        EnergyUnitOption(rawValue: UserDefaults.standard.string(forKey: AppPreferenceKeys.energyUnit) ?? "") ?? .kcal
+    }
+
+    static var heightUnit: HeightUnitOption {
+        HeightUnitOption(rawValue: UserDefaults.standard.string(forKey: AppPreferenceKeys.heightUnit) ?? "") ?? .centimeter
+    }
+
+    static var weightUnit: WeightUnitOption {
+        WeightUnitOption(rawValue: UserDefaults.standard.string(forKey: AppPreferenceKeys.weightUnit) ?? "") ?? .kilogram
+    }
+
+    static var weekStart: WeekStartOption {
+        WeekStartOption(rawValue: UserDefaults.standard.string(forKey: AppPreferenceKeys.weekStart) ?? "") ?? .sunday
+    }
+
+    static var language: AppLanguageOption {
+        AppLanguageOption(rawValue: UserDefaults.standard.string(forKey: AppPreferenceKeys.appLanguage) ?? "") ?? .chinese
+    }
+
+    static var locale: Locale {
+        Locale(identifier: language.localeIdentifier)
+    }
+
+    static var calendar: Calendar {
+        var calendar = Calendar.current
+        calendar.locale = locale
+        calendar.firstWeekday = weekStart.firstWeekday
+        return calendar
+    }
+}
+
+struct DynamicDateFormatter {
+    let builder: () -> DateFormatter
+
+    func string(from date: Date) -> String {
+        builder().string(from: date)
+    }
+}
+
 extension Date {
     var startOfDayInCurrentCalendar: Date {
         Calendar.current.startOfDay(for: self)
     }
 
     var startOfWeekInCurrentCalendar: Date {
-        let calendar = Calendar.current
+        let calendar = AppPreferences.calendar
         let dayStart = calendar.startOfDay(for: self)
         let weekday = calendar.component(.weekday, from: dayStart)
-        return calendar.date(byAdding: .day, value: -(weekday - 1), to: dayStart) ?? dayStart
+        let offset = (weekday - calendar.firstWeekday + 7) % 7
+        return calendar.date(byAdding: .day, value: -offset, to: dayStart) ?? dayStart
     }
 
     func isSameDay(as other: Date) -> Bool {
@@ -19,47 +235,66 @@ extension Date {
 }
 
 enum Formatters {
-    static let dayAndTime: DateFormatter = {
+    static let dayAndTime: DynamicDateFormatter = .init {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "MM-dd HH:mm"
+        formatter.locale = AppPreferences.locale
+        switch AppPreferences.timeFormat {
+        case .hour24:
+            formatter.setLocalizedDateFormatFromTemplate("MdHHmm")
+        case .hour12:
+            formatter.setLocalizedDateFormatFromTemplate("Mdhmma")
+        }
         return formatter
-    }()
+    }
 
-    static let monthDay: DateFormatter = {
+    static let monthDay: DynamicDateFormatter = .init {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "M月d日"
+        formatter.locale = AppPreferences.locale
+        formatter.setLocalizedDateFormatFromTemplate("Md")
         return formatter
-    }()
+    }
 
-    static let monthTitle: DateFormatter = {
+    static let monthTitle: DynamicDateFormatter = .init {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "yyyy年M月"
+        formatter.locale = AppPreferences.locale
+        formatter.setLocalizedDateFormatFromTemplate("yMMM")
         return formatter
-    }()
+    }
 
-    static let weekDayShort: DateFormatter = {
+    static let yearMonth: DynamicDateFormatter = .init {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "E"
+        formatter.locale = AppPreferences.locale
+        formatter.setLocalizedDateFormatFromTemplate("yMMM")
         return formatter
-    }()
+    }
 
-    static let hourMinute: DateFormatter = {
+    static let yearMonthDay: DynamicDateFormatter = .init {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "HH:mm"
+        formatter.locale = AppPreferences.locale
+        formatter.setLocalizedDateFormatFromTemplate("yMd")
         return formatter
-    }()
+    }
 
-    static let trendDate: DateFormatter = {
+    static let weekDayShort: DynamicDateFormatter = .init {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "zh_CN")
-        formatter.dateFormat = "M/d"
+        formatter.locale = AppPreferences.locale
+        formatter.setLocalizedDateFormatFromTemplate("E")
         return formatter
-    }()
+    }
+
+    static let hourMinute: DynamicDateFormatter = .init {
+        let formatter = DateFormatter()
+        formatter.locale = AppPreferences.locale
+        formatter.dateFormat = AppPreferences.timeFormat == .hour24 ? "HH:mm" : "h:mm a"
+        return formatter
+    }
+
+    static let trendDate: DynamicDateFormatter = .init {
+        let formatter = DateFormatter()
+        formatter.locale = AppPreferences.locale
+        formatter.setLocalizedDateFormatFromTemplate("Md")
+        return formatter
+    }
 }
 
 enum AppThemeMode: String, CaseIterable, Identifiable {
@@ -72,11 +307,11 @@ enum AppThemeMode: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .system:
-            return "跟随系统"
+            return localized("跟随系统", "System")
         case .light:
-            return "浅色"
+            return localized("浅色", "Light")
         case .dark:
-            return "深色"
+            return localized("深色", "Dark")
         }
     }
 
@@ -95,4 +330,83 @@ enum AppThemeMode: String, CaseIterable, Identifiable {
 func rounded(_ value: Double, places: Int = 0) -> Double {
     let divisor = pow(10.0, Double(places))
     return (value * divisor).rounded() / divisor
+}
+
+func energyConvertedValue(fromKcal kcal: Double, unit: EnergyUnitOption = AppPreferences.energyUnit) -> Double {
+    unit.fromKcal(kcal)
+}
+
+func energyText(fromKcal kcal: Double, decimals: Int = 0, signed: Bool = false, includeUnit: Bool = true, unit: EnergyUnitOption = AppPreferences.energyUnit) -> String {
+    let value = energyConvertedValue(fromKcal: kcal, unit: unit)
+    let display: String
+    if decimals > 0 {
+        display = String(format: "%.\(decimals)f", value)
+    } else {
+        display = String(Int(value.rounded()))
+    }
+    let withSign = signed && value > 0 ? "+\(display)" : display
+    if includeUnit {
+        return "\(withSign) \(unit.symbol)"
+    }
+    return withSign
+}
+
+func energyFromDisplayValue(_ value: Double, unit: EnergyUnitOption = AppPreferences.energyUnit) -> Double {
+    unit.toKcal(value)
+}
+
+func weightDisplayValue(fromKg kg: Double, unit: WeightUnitOption = AppPreferences.weightUnit) -> Double {
+    switch unit {
+    case .kilogram: return kg
+    case .pound: return kg * 2.20462
+    }
+}
+
+func weightFromDisplayValue(_ value: Double, unit: WeightUnitOption = AppPreferences.weightUnit) -> Double {
+    switch unit {
+    case .kilogram: return value
+    case .pound: return value / 2.20462
+    }
+}
+
+func heightDisplayText(fromCm cm: Double, unit: HeightUnitOption = AppPreferences.heightUnit) -> String {
+    switch unit {
+    case .centimeter:
+        return "\(Int(cm.rounded())) cm"
+    case .foot:
+        let totalInches = max(cm / 2.54, 0)
+        var feet = Int(totalInches / 12)
+        var inches = Int((totalInches - Double(feet * 12)).rounded())
+        if inches == 12 {
+            feet += 1
+            inches = 0
+        }
+        return "\(feet) ft \(inches) in"
+    }
+}
+
+func weightText(fromKg kg: Double, decimals: Int = 1, includeUnit: Bool = true, unit: WeightUnitOption = AppPreferences.weightUnit) -> String {
+    let value = weightDisplayValue(fromKg: kg, unit: unit)
+    let display = String(format: "%.\(decimals)f", value)
+    if includeUnit {
+        return "\(display) \(unit.symbol)"
+    }
+    return display
+}
+
+func durationDisplayText(fromMinutes minutes: Double, includeUnit: Bool = true) -> String {
+    let display: String
+    if abs(minutes.rounded() - minutes) < 0.05 {
+        display = String(Int(minutes.rounded()))
+    } else {
+        display = String(format: "%.1f", minutes)
+    }
+    if includeUnit {
+        return "\(display) min"
+    }
+    return display
+}
+
+func localized(_ chinese: String, _ english: String) -> String {
+    AppPreferences.language == .english ? english : chinese
 }

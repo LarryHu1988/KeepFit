@@ -21,7 +21,7 @@ struct MainTabView: View {
             .tag(TabKey.eat)
             .environment(\.tabSwitchToken, eatTabSwitchToken)
             .tabItem {
-                Label("管住嘴", systemImage: "fork.knife")
+                Label(localized("管住嘴", "Eat Well"), systemImage: "fork.knife")
             }
 
             MoveMoreView {
@@ -30,7 +30,7 @@ struct MainTabView: View {
             .tag(TabKey.move)
             .environment(\.tabSwitchToken, moveTabSwitchToken)
             .tabItem {
-                Label("迈开腿", systemImage: "figure.run")
+                Label(localized("迈开腿", "Move More"), systemImage: "figure.run")
             }
 
             LoseWeightView {
@@ -39,7 +39,7 @@ struct MainTabView: View {
             .tag(TabKey.lose)
             .environment(\.tabSwitchToken, loseTabSwitchToken)
             .tabItem {
-                Label("减个肥", systemImage: "sun.max")
+                Label(localized("减个肥", "Lose Weight"), systemImage: "sun.max")
             }
         }
         .tint(Color.accentColor)

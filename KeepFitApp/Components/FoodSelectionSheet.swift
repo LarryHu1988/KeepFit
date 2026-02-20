@@ -6,7 +6,12 @@ struct FoodSelectionSheet: View {
     let onSelect: (FoodItem) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     @State private var keyword = ""
+
+    private var energyUnit: EnergyUnitOption {
+        EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
+    }
 
     private var filtered: [FoodItem] {
         if keyword.isEmpty { return items }
@@ -30,7 +35,9 @@ struct FoodSelectionSheet: View {
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(item.name)
                                                 .foregroundStyle(.primary)
-                                            Text("\(Int(item.caloriesPer100g)) kcal/100\(IconCatalog.foodUnit(id: item.id, category: item.category).symbol)")
+                                            Text(
+                                                "\(energyText(fromKcal: item.caloriesPer100g, includeUnit: true, unit: energyUnit))/100\(IconCatalog.foodUnit(id: item.id, category: item.category).symbol)"
+                                            )
                                                 .font(.caption)
                                                 .foregroundStyle(.secondary)
                                         }
@@ -42,12 +49,12 @@ struct FoodSelectionSheet: View {
                     }
                 }
             }
-            .searchable(text: $keyword, prompt: "搜索食物")
-            .navigationTitle("选择食物")
+            .searchable(text: $keyword, prompt: localized("搜索食物", "Search Food"))
+            .navigationTitle(localized("选择食物", "Select Food"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("关闭") { dismiss() }
+                    Button(localized("关闭", "Close")) { dismiss() }
                 }
             }
         }

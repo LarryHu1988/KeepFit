@@ -14,17 +14,21 @@ struct ProgressRing: View {
         min(max(progress, 0), 1)
     }
 
+    private var trackGradient: AngularGradient {
+        AngularGradient(
+            colors: [
+                accent.opacity(colorScheme == .dark ? 0.24 : 0.18),
+                accent.opacity(colorScheme == .dark ? 0.12 : 0.08),
+                accent.opacity(colorScheme == .dark ? 0.24 : 0.18)
+            ],
+            center: .center
+        )
+    }
+
     var body: some View {
         ZStack {
             Circle()
-                .stroke(
-                    LinearGradient(
-                        colors: [Color(.systemGray5), Color(.systemGray4)],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
-                    lineWidth: lineWidth
-                )
+                .stroke(trackGradient, lineWidth: lineWidth)
 
             Circle()
                 .trim(from: 0, to: clampedProgress)
@@ -38,17 +42,11 @@ struct ProgressRing: View {
 
             Circle()
                 .fill(
-                    colorScheme == .dark
-                        ? Color.white.opacity(0.06)
-                        : Color.white.opacity(0.55)
+                    accent.opacity(colorScheme == .dark ? 0.18 : 0.12)
                 )
                 .overlay(
                     Circle()
-                        .fill(accent.opacity(colorScheme == .dark ? 0.20 : 0.10))
-                )
-                .overlay(
-                    Circle()
-                        .stroke(.white.opacity(colorScheme == .dark ? 0.18 : 0.44), lineWidth: 1)
+                        .stroke(accent.opacity(colorScheme == .dark ? 0.24 : 0.20), lineWidth: 1)
                 )
                 .padding(lineWidth + 10)
 

@@ -7,7 +7,14 @@ struct CalendarHeatmapView: View {
     let hasRecord: (Date) -> Bool
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
-    private let weekTitles = ["日", "一", "二", "三", "四", "五", "六"]
+    private var weekTitles: [String] {
+        var calendar = AppPreferences.calendar
+        calendar.locale = AppPreferences.locale
+        let symbols = calendar.veryShortStandaloneWeekdaySymbols
+        guard symbols.count == 7 else { return ["日", "一", "二", "三", "四", "五", "六"] }
+        let start = max(0, min(6, calendar.firstWeekday - 1))
+        return Array(symbols[start...] + symbols[..<start])
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -77,10 +84,17 @@ struct WeekStripCalendarView: View {
     let accent: Color
     let indicatorColor: (Date) -> Color?
 
-    private let weekTitles = ["日", "一", "二", "三", "四", "五", "六"]
+    private var weekTitles: [String] {
+        var calendar = AppPreferences.calendar
+        calendar.locale = AppPreferences.locale
+        let symbols = calendar.veryShortStandaloneWeekdaySymbols
+        guard symbols.count == 7 else { return ["日", "一", "二", "三", "四", "五", "六"] }
+        let start = max(0, min(6, calendar.firstWeekday - 1))
+        return Array(symbols[start...] + symbols[..<start])
+    }
 
     private var weekDates: [Date] {
-        let calendar = Calendar.current
+        let calendar = AppPreferences.calendar
         let weekStart = selectedDate.startOfWeekInCurrentCalendar
         return (0..<7).compactMap { offset in
             calendar.date(byAdding: .day, value: offset, to: weekStart)
@@ -132,9 +146,10 @@ struct WeekStripCalendarView: View {
 
     @ViewBuilder
     private func weekCell(for date: Date) -> some View {
-        let calendar = Calendar.current
+        let calendar = AppPreferences.calendar
         let isSelected = date.isSameDay(as: selectedDate)
-        let weekdayIndex = max(0, min(6, calendar.component(.weekday, from: date) - 1))
+        let weekday = calendar.component(.weekday, from: date)
+        let weekdayIndex = (weekday - calendar.firstWeekday + 7) % 7
 
         Button {
             selectedDate = date
@@ -182,7 +197,7 @@ struct WeekStripCalendarView: View {
     }
 
     private func shiftWeek(by offset: Int) {
-        let calendar = Calendar.current
+        let calendar = AppPreferences.calendar
         let currentWeekStart = selectedDate.startOfWeekInCurrentCalendar
         guard let targetWeekStart = calendar.date(byAdding: .day, value: offset * 7, to: currentWeekStart) else { return }
         let today = Date().startOfDayInCurrentCalendar

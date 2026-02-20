@@ -3,6 +3,8 @@ import SwiftUI
 struct MoveMoreView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.tabSwitchToken) private var tabSwitchToken
+    @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     let onSettingsTap: () -> Void
 
     @State private var selectedExercise: ExerciseItem?
@@ -25,6 +27,10 @@ struct MoveMoreView: View {
         appState.exerciseLogs(on: selectedDate)
     }
 
+    private var energyUnit: EnergyUnitOption {
+        EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -41,7 +47,7 @@ struct MoveMoreView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .green))
-            .navigationTitle("迈开腿")
+            .navigationTitle(localized("迈开腿", "Move More"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar {
@@ -96,10 +102,12 @@ struct MoveMoreView: View {
         let goal = max(appState.profile.dailyExerciseGoal, 1)
         let burned = todaySummary.caloriesBurned
         let remaining = goal - burned
-        let centerMain = remaining >= 0 ? "剩余\n\(Int(remaining))" : "超额\n\(Int(abs(remaining)))"
+        let centerMain = remaining >= 0
+            ? "\(localized("剩余", "Left"))\n\(energyText(fromKcal: remaining, includeUnit: false, unit: energyUnit))"
+            : "\(localized("超额", "Over"))\n\(energyText(fromKcal: abs(remaining), includeUnit: false, unit: energyUnit))"
 
         return CardContainer(
-            title: "运动消耗",
+            title: localized("运动消耗", "Exercise Burn"),
             subtitle: nil,
             accent: .green
         ) {
@@ -109,7 +117,7 @@ struct MoveMoreView: View {
                 gradient: LinearGradient(colors: [.green, .mint], startPoint: .topLeading, endPoint: .bottomTrailing),
                 accent: .green,
                 valueText: centerMain,
-                caption: "目标 \(Int(goal)) kcal"
+                caption: "\(localized("目标", "Target")) \(energyText(fromKcal: goal, unit: energyUnit))"
             )
             .frame(width: 186, height: 186)
             .frame(maxWidth: .infinity)
@@ -123,14 +131,14 @@ struct MoveMoreView: View {
         let isWarning = burned < goal
 
         return CardContainer(
-            title: "运动指标",
+            title: localized("运动指标", "Exercise Metrics"),
             subtitle: nil,
             accent: .green
         ) {
             HStack(spacing: 0) {
-                metricColumn(symbol: "flame.fill", color: .orange, name: "消耗", value: "\(Int(burned)) kcal")
-                metricColumn(symbol: "clock.fill", color: .blue, name: "时长", value: "\(Int(duration)) min")
-                metricColumn(symbol: "target", color: .green, name: "目标", value: "\(Int(goal)) kcal")
+                metricColumn(symbol: "flame.fill", color: .orange, name: localized("消耗", "Burn"), value: energyText(fromKcal: burned, unit: energyUnit))
+                metricColumn(symbol: "clock.fill", color: .blue, name: localized("时长", "Duration"), value: durationDisplayText(fromMinutes: duration))
+                metricColumn(symbol: "target", color: .green, name: localized("目标", "Target"), value: energyText(fromKcal: goal, unit: energyUnit))
             }
             .frame(maxWidth: .infinity)
 
@@ -145,7 +153,7 @@ struct MoveMoreView: View {
 
     private var todayExerciseCard: some View {
         CardContainer(
-            title: "锻炼记录",
+            title: localized("锻炼记录", "Workout Log"),
             subtitle: nil,
             accent: .green
         ) {
@@ -181,7 +189,7 @@ struct MoveMoreView: View {
                                 seed: selectedExercise?.id ?? "exercise_selector",
                                 size: 20
                             )
-                            Text(selectedExercise?.name ?? "选择运动项目")
+                            Text(selectedExercise?.name ?? localized("选择运动项目", "Select Exercise"))
                                 .font(entryFont)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
@@ -238,7 +246,7 @@ struct MoveMoreView: View {
                 Divider()
 
                 if todayLogs.isEmpty {
-                    Text("今天还没有锻炼记录")
+                    Text(localized("今天还没有锻炼记录", "No workout records today"))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -249,18 +257,18 @@ struct MoveMoreView: View {
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(log.exerciseName)
-                                    .font(.subheadline.weight(.semibold))
+                                    .font(.caption.weight(.semibold))
                                     .lineLimit(1)
                                 Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(formattedNumber(log.durationMinutes)) min")
-                                    .font(.caption)
+                                    .font(.caption2)
                                     .foregroundStyle(.secondary)
                                     .lineLimit(1)
                             }
 
                             Spacer()
 
-                            Text("\(Int(log.caloriesBurned(weightKg: appState.profile.weightKg))) kcal")
-                                .font(.subheadline)
+                                Text(energyText(fromKcal: log.caloriesBurned(weightKg: appState.profile.weightKg), unit: energyUnit))
+                                .font(.caption.weight(.semibold))
                                 .foregroundStyle(.green)
 
                             Button {
@@ -280,12 +288,12 @@ struct MoveMoreView: View {
     private var dailyHistoryCard: some View {
         let records = appState.dailyExerciseRecords(limit: 21)
         return CardContainer(
-            title: "历史锻炼",
+            title: localized("历史锻炼", "History"),
             subtitle: nil,
             accent: .green
         ) {
             if records.isEmpty {
-                Text("暂无历史记录")
+                Text(localized("暂无历史记录", "No history"))
                     .foregroundStyle(.secondary)
             } else {
                 VStack(spacing: 8) {
@@ -294,10 +302,10 @@ struct MoveMoreView: View {
                             Text(Formatters.monthDay.string(from: record.date))
                                 .font(.subheadline)
                             Spacer()
-                            Label("\(Int(record.caloriesBurned)) kcal", systemImage: "flame.fill")
+                            Label(energyText(fromKcal: record.caloriesBurned, unit: energyUnit), systemImage: "flame.fill")
                                 .font(.caption)
                                 .foregroundStyle(.green)
-                            Label("\(Int(record.minutes)) min", systemImage: "timer")
+                            Label(durationDisplayText(fromMinutes: record.minutes), systemImage: "timer")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
@@ -349,33 +357,36 @@ struct MoveMoreView: View {
         NavigationStack {
             VStack(spacing: 10) {
                 DatePicker(
-                    "锻炼时间",
+                    localized("锻炼时间", "Workout Time"),
                     selection: $exerciseTime,
                     displayedComponents: [.hourAndMinute]
                 )
                 .datePickerStyle(.wheel)
                 .labelsHidden()
 
-                Button("完成") {
+                Button(localized("完成", "Done")) {
                     showExerciseTimeSheet = false
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.green)
             }
             .padding()
-            .navigationTitle("选择锻炼时间")
+            .navigationTitle(localized("选择锻炼时间", "Select Time"))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
 
     private var inputFieldBackground: some View {
         RoundedRectangle(cornerRadius: 10, style: .continuous)
-            .fill(Color.primary.opacity(0.05))
+            .fill(Color.primary.opacity(colorScheme == .dark ? 0.14 : 0.04))
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color.green.opacity(0.12), Color.green.opacity(0.04)],
+                            colors: [
+                                Color.green.opacity(colorScheme == .dark ? 0.16 : 0.1),
+                                Color.green.opacity(colorScheme == .dark ? 0.06 : 0.04)
+                            ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -383,7 +394,7 @@ struct MoveMoreView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(.white.opacity(0.28), lineWidth: 1)
+                    .stroke(.white.opacity(colorScheme == .dark ? 0.16 : 0.24), lineWidth: 0.8)
             )
     }
 }

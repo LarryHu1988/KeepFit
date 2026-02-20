@@ -42,12 +42,12 @@ struct ExerciseSelectionSheet: View {
                     }
                 }
             }
-            .searchable(text: $keyword, prompt: "搜索运动项目")
-            .navigationTitle("选择运动")
+            .searchable(text: $keyword, prompt: localized("搜索运动项目", "Search Exercise"))
+            .navigationTitle(localized("选择运动", "Select Exercise"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("关闭") { dismiss() }
+                    Button(localized("关闭", "Close")) { dismiss() }
                 }
             }
         }

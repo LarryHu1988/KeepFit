@@ -1,8 +1,11 @@
 import SwiftUI
+import UIKit
 
 struct EatWellView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.tabSwitchToken) private var tabSwitchToken
+    @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     let onSettingsTap: () -> Void
 
     @State private var selectedFood: FoodItem?
@@ -30,8 +33,24 @@ struct EatWellView: View {
     }
 
     private var selectedUnitSymbol: String {
-        guard let selectedFood else { return "g" }
+        guard let selectedFood else { return localized("g", "g") }
         return appState.foodUnitSymbol(for: selectedFood)
+    }
+
+    private var energyUnit: EnergyUnitOption {
+        EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
+    }
+
+    private var proteinIcon: String {
+        resolvedMacroSymbol(preferred: "fish.fill", fallback: "bolt.heart.fill")
+    }
+
+    private var carbsIcon: String {
+        resolvedMacroSymbol(preferred: "carrot.fill", fallback: "leaf.fill")
+    }
+
+    private var fatIcon: String {
+        resolvedMacroSymbol(preferred: "avocado.fill", fallback: "drop.fill")
     }
 
     private var macroEnergy: Double {
@@ -54,7 +73,7 @@ struct EatWellView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .orange))
-            .navigationTitle("管住嘴")
+            .navigationTitle(localized("管住嘴", "Eat Well"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar {
@@ -65,7 +84,7 @@ struct EatWellView: View {
                         Image(systemName: "gearshape.fill")
                             .foregroundStyle(.primary)
                     }
-                    .accessibilityLabel("设置")
+                    .accessibilityLabel(localized("设置", "Settings"))
                 }
             }
             .onAppear {
@@ -112,10 +131,12 @@ struct EatWellView: View {
 
     private var intakeProgressCard: some View {
         let remain = targetCalories - todayNutrition.calories
-        let centerMain = remain >= 0 ? "剩余\n\(Int(remain))" : "超出\n\(Int(abs(remain)))"
+        let centerMain = remain >= 0
+            ? "\(localized("剩余", "Left"))\n\(energyText(fromKcal: remain, includeUnit: false, unit: energyUnit))"
+            : "\(localized("超出", "Over"))\n\(energyText(fromKcal: abs(remain), includeUnit: false, unit: energyUnit))"
 
         return CardContainer(
-            title: "摄入进度",
+            title: localized("摄入进度", "Intake Progress"),
             subtitle: nil,
             accent: .orange
         ) {
@@ -125,7 +146,7 @@ struct EatWellView: View {
                 gradient: LinearGradient(colors: [.orange, .red], startPoint: .topLeading, endPoint: .bottomTrailing),
                 accent: .orange,
                 valueText: centerMain,
-                caption: "目标 \(Int(targetCalories)) kcal"
+                caption: "\(localized("目标", "Target")) \(energyText(fromKcal: targetCalories, unit: energyUnit))"
             )
             .frame(width: 186, height: 186)
             .frame(maxWidth: .infinity)
@@ -138,14 +159,14 @@ struct EatWellView: View {
         let isWarning = warningKeywords.contains { advice.contains($0) } || todayNutrition.calories > targetCalories
 
         return CardContainer(
-            title: "营养结构",
+            title: localized("营养结构", "Nutrition"),
             subtitle: nil,
             accent: .orange
         ) {
             HStack(spacing: 0) {
-                nutrientColumn(icon: "fish.fill", iconColor: .red, name: "蛋白", value: "\(Int(todayNutrition.protein)) g", percent: Int(todayNutrition.protein * 4 / macroEnergy * 100))
-                nutrientColumn(icon: "leaf.fill", iconColor: .green, name: "碳水", value: "\(Int(todayNutrition.carbs)) g", percent: Int(todayNutrition.carbs * 4 / macroEnergy * 100))
-                nutrientColumn(icon: "drop.fill", iconColor: .orange, name: "脂肪", value: "\(Int(todayNutrition.fat)) g", percent: Int(todayNutrition.fat * 9 / macroEnergy * 100))
+                nutrientColumn(icon: proteinIcon, iconColor: .red, name: localized("蛋白", "Protein"), value: "\(Int(todayNutrition.protein)) g", percent: Int(todayNutrition.protein * 4 / macroEnergy * 100))
+                nutrientColumn(icon: carbsIcon, iconColor: .green, name: localized("碳水", "Carbs"), value: "\(Int(todayNutrition.carbs)) g", percent: Int(todayNutrition.carbs * 4 / macroEnergy * 100))
+                nutrientColumn(icon: fatIcon, iconColor: .orange, name: localized("脂肪", "Fat"), value: "\(Int(todayNutrition.fat)) g", percent: Int(todayNutrition.fat * 9 / macroEnergy * 100))
             }
             .frame(maxWidth: .infinity)
 
@@ -160,7 +181,7 @@ struct EatWellView: View {
 
     private var todayIntakeCard: some View {
         CardContainer(
-            title: "进食记录",
+            title: localized("进食记录", "Food Log"),
             subtitle: nil,
             accent: .orange
         ) {
@@ -196,7 +217,7 @@ struct EatWellView: View {
                                 seed: selectedFood?.id ?? "food_selector",
                                 size: 20
                             )
-                            Text(selectedFood?.name ?? "选择食物")
+                            Text(selectedFood?.name ?? localized("选择食物", "Select Food"))
                                 .font(entryFont)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
@@ -253,7 +274,7 @@ struct EatWellView: View {
                 Divider()
 
                 if todayLogs.isEmpty {
-                    Text("今天还没有进食记录")
+                    Text(localized("今天还没有进食记录", "No food records today"))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -264,18 +285,18 @@ struct EatWellView: View {
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(log.foodName)
-                                    .font(.subheadline.weight(.semibold))
+                                    .font(.caption.weight(.semibold))
                                     .lineLimit(1)
                                 Text("\(Formatters.hourMinute.string(from: log.date))  ·  \(formattedAmount(log.weightGrams))\(appState.foodUnitSymbol(forFoodID: log.foodID))")
-                                    .font(.caption)
+                                    .font(.caption2)
                                     .foregroundStyle(.secondary)
                                     .lineLimit(1)
                             }
 
                             Spacer()
 
-                            Text("\(Int(log.calories)) kcal")
-                                .font(.subheadline)
+                            Text(energyText(fromKcal: log.calories, unit: energyUnit))
+                                .font(.caption.weight(.semibold))
                                 .foregroundStyle(.orange)
 
                             Button {
@@ -295,12 +316,12 @@ struct EatWellView: View {
     private var dailyHistoryCard: some View {
         let records = appState.dailyNutritionRecords(limit: 21)
         return CardContainer(
-            title: "历史进食",
+            title: localized("历史进食", "History"),
             subtitle: nil,
             accent: .orange
         ) {
             if records.isEmpty {
-                Text("暂无历史记录")
+                Text(localized("暂无历史记录", "No history"))
                     .foregroundStyle(.secondary)
             } else {
                 VStack(spacing: 8) {
@@ -309,7 +330,7 @@ struct EatWellView: View {
                             Text(Formatters.monthDay.string(from: record.date))
                                 .font(.subheadline)
                             Spacer()
-                            Label("\(Int(record.calories)) kcal", systemImage: "flame")
+                            Label(energyText(fromKcal: record.calories, unit: energyUnit), systemImage: "flame")
                                 .font(.caption)
                                 .foregroundStyle(.orange)
                             Label("P\(Int(record.protein)) C\(Int(record.carbs)) F\(Int(record.fat))", systemImage: "chart.bar")
@@ -327,13 +348,9 @@ struct EatWellView: View {
     private func nutrientColumn(icon: String, iconColor: Color, name: String, value: String, percent: Int) -> some View {
         VStack(spacing: 5) {
             Image(systemName: icon)
-                .font(.caption.weight(.semibold))
+                .font(.body.weight(.semibold))
+                .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(iconColor)
-                .frame(width: 24, height: 24)
-                .background(
-                    Circle()
-                        .fill(iconColor.opacity(0.15))
-                )
             Text(name)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -346,6 +363,10 @@ struct EatWellView: View {
                 .monospacedDigit()
         }
         .frame(maxWidth: .infinity)
+    }
+
+    private func resolvedMacroSymbol(preferred: String, fallback: String) -> String {
+        UIImage(systemName: preferred) != nil ? preferred : fallback
     }
 
     private func formattedAmount(_ value: Double) -> String {
@@ -372,33 +393,36 @@ struct EatWellView: View {
         NavigationStack {
             VStack(spacing: 10) {
                 DatePicker(
-                    "进食时间",
+                    localized("进食时间", "Intake Time"),
                     selection: $intakeTime,
                     displayedComponents: [.hourAndMinute]
                 )
                 .datePickerStyle(.wheel)
                 .labelsHidden()
 
-                Button("完成") {
+                Button(localized("完成", "Done")) {
                     showIntakeTimeSheet = false
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.orange)
             }
             .padding()
-            .navigationTitle("选择进食时间")
+            .navigationTitle(localized("选择进食时间", "Select Time"))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
 
     private var inputFieldBackground: some View {
         RoundedRectangle(cornerRadius: 10, style: .continuous)
-            .fill(Color.primary.opacity(0.05))
+            .fill(Color.primary.opacity(colorScheme == .dark ? 0.14 : 0.04))
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color.orange.opacity(0.12), Color.orange.opacity(0.04)],
+                            colors: [
+                                Color.orange.opacity(colorScheme == .dark ? 0.16 : 0.1),
+                                Color.orange.opacity(colorScheme == .dark ? 0.06 : 0.04)
+                            ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -406,7 +430,7 @@ struct EatWellView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(.white.opacity(0.28), lineWidth: 1)
+                    .stroke(.white.opacity(colorScheme == .dark ? 0.16 : 0.24), lineWidth: 0.8)
             )
     }
 }

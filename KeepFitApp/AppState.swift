@@ -20,7 +20,7 @@ struct DailyCalorieTrend: Identifiable {
     var id: Date { date }
     let date: Date
     let intake: Double
-    let exerciseBurn: Double
+    let expenditure: Double
     let balance: Double
 }
 
@@ -277,24 +277,24 @@ final class AppState: ObservableObject {
         let fatRatio = fatKcal / totalMacroKcal
 
         if nutrition.calories == 0 {
-            return "今天还没记录饮食。建议先补充优质蛋白与蔬菜，再安排主食。"
+            return localized("今天还没记录饮食。建议先补充优质蛋白与蔬菜，再安排主食。", "No food logged yet. Start with quality protein and vegetables.")
         }
         if remaining > 350 {
-            return "今日仍可摄入约 \(Int(remaining)) kcal，优先补充蛋白质和高纤维碳水。"
+            return localized("今日仍可摄入约 \(energyText(fromKcal: remaining))，优先补充蛋白质和高纤维碳水。", "You can still take about \(energyText(fromKcal: remaining)); prioritize protein and high-fiber carbs.")
         }
         if remaining >= 0 {
-            return "当前摄入接近目标，晚餐以清淡高蛋白为主，避免额外甜饮。"
+            return localized("当前摄入接近目标，晚餐以清淡高蛋白为主，避免额外甜饮。", "You're close to target. Keep dinner lean and high-protein.")
         }
         if remaining < -250 {
-            return "已超目标 \(Int(abs(remaining))) kcal，建议晚间不再加餐并增加步行。"
+            return localized("已超目标 \(energyText(fromKcal: abs(remaining)))，建议晚间不再加餐并增加步行。", "You are over by \(energyText(fromKcal: abs(remaining))). Skip late snacks and add walking.")
         }
         if proteinRatio < 0.2 {
-            return "蛋白质占比偏低，下一餐可加鸡胸肉、鱼虾或豆制品。"
+            return localized("蛋白质占比偏低，下一餐可加鸡胸肉、鱼虾或豆制品。", "Protein ratio is low. Add chicken, fish, shrimp, or tofu next meal.")
         }
         if fatRatio > 0.35 {
-            return "脂肪占比较高，下一餐优先蒸煮食物并减少坚果/油炸。"
+            return localized("脂肪占比较高，下一餐优先蒸煮食物并减少坚果/油炸。", "Fat ratio is high. Prefer steamed/boiled food and reduce nuts/fried food.")
         }
-        return "营养结构整体平衡，继续保持。"
+        return localized("营养结构整体平衡，继续保持。", "Nutrition structure is balanced. Keep it up.")
     }
 
     func exerciseAdvice(on date: Date) -> String {
@@ -302,19 +302,19 @@ final class AppState: ObservableObject {
         let remaining = profile.dailyExerciseGoal - summary.caloriesBurned
 
         if summary.durationMinutes == 0 {
-            return "今天还没有运动记录。建议先完成 30 min 快走或 20 min 间歇训练。"
+            return localized("今天还没有运动记录。建议先完成 30 min 快走或 20 min 间歇训练。", "No workout logged yet. Start with 30 min brisk walk or 20 min intervals.")
         }
         if remaining > 120 {
-            return "距离今日运动目标还差约 \(Int(remaining)) kcal，可加 20-30 min 有氧。"
+            return localized("距离今日运动目标还差约 \(energyText(fromKcal: remaining))，可加 20-30 min 有氧。", "About \(energyText(fromKcal: remaining)) left to goal. Add 20-30 min cardio.")
         }
         if remaining > 0 {
-            return "你已接近目标，再补 10-15 min 拉伸或轻有氧即可。"
+            return localized("你已接近目标，再补 10-15 min 拉伸或轻有氧即可。", "You are close to goal. Add 10-15 min stretch or light cardio.")
         }
-        return "今日运动目标已达成，建议做低强度拉伸帮助恢复。"
+        return localized("今日运动目标已达成，建议做低强度拉伸帮助恢复。", "Goal reached. Do low-intensity stretching for recovery.")
     }
 
     func monthlyGrid(for month: Date) -> [Date?] {
-        let calendar = Calendar.current
+        let calendar = AppPreferences.calendar
         guard
             let monthInterval = calendar.dateInterval(of: .month, for: month),
             let dayRange = calendar.range(of: .day, in: .month, for: monthInterval.start)
@@ -323,7 +323,8 @@ final class AppState: ObservableObject {
         }
 
         let firstDay = monthInterval.start
-        let leadingBlank = calendar.component(.weekday, from: firstDay) - 1
+        let weekday = calendar.component(.weekday, from: firstDay)
+        let leadingBlank = (weekday - calendar.firstWeekday + 7) % 7
 
         var cells: [Date?] = Array(repeating: nil, count: leadingBlank)
         for day in dayRange {
@@ -386,14 +387,15 @@ final class AppState: ObservableObject {
     }
 
     func calorieTrends(days: Int = 30) -> [DailyCalorieTrend] {
-        let calendar = Calendar.current
+        let calendar = AppPreferences.calendar
         let today = Date().startOfDayInCurrentCalendar
         return (0..<days).reversed().compactMap { offset in
             guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
             let nutrition = dayNutrition(on: day)
             let exercise = dayExercise(on: day)
-            let balance = nutrition.calories - (profile.dailyMaintenanceCalories + exercise.caloriesBurned)
-            return DailyCalorieTrend(date: day, intake: nutrition.calories, exerciseBurn: exercise.caloriesBurned, balance: balance)
+            let exerciseExpenditure = exercise.caloriesBurned
+            let balance = nutrition.calories - (profile.dailyMaintenanceCalories + exerciseExpenditure)
+            return DailyCalorieTrend(date: day, intake: nutrition.calories, expenditure: exerciseExpenditure, balance: balance)
         }
     }
 
