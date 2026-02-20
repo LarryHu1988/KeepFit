@@ -31,6 +31,7 @@ struct FoodSelectionSheet: View {
                         Section(category.title) {
                             ForEach(categoryItems) { item in
                                 Button {
+                                    KeepFitHaptics.selection()
                                     onSelect(item)
                                     dismiss()
                                 } label: {
@@ -58,7 +59,10 @@ struct FoodSelectionSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(localized("关闭", "Close")) { dismiss() }
+                    Button(localized("关闭", "Close")) {
+                        KeepFitHaptics.impact(.light)
+                        dismiss()
+                    }
                 }
             }
         }

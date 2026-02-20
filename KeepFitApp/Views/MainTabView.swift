@@ -44,6 +44,7 @@ struct MainTabView: View {
         }
         .tint(Color.accentColor)
         .onChange(of: selectedTab) { _, newValue in
+            KeepFitHaptics.selection()
             switch newValue {
             case .eat:
                 eatTabSwitchToken += 1

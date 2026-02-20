@@ -1,14 +1,24 @@
 import PhotosUI
+import StoreKit
 import SwiftUI
 import UIKit
+import UserNotifications
 
 struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) private var requestReview
+    @Environment(\.openURL) private var openURL
 
-    @AppStorage("keepfit.reminder") private var reminderEnabled = true
     @AppStorage("keepfit.haptic") private var hapticEnabled = true
-    @AppStorage("keepfit.autoSync") private var autoSyncEnabled = false
+    @AppStorage("keepfit.reminder.food") private var foodReminderEnabled = true
+    @AppStorage("keepfit.reminder.exercise") private var exerciseReminderEnabled = true
+    @AppStorage("keepfit.reminder.summary") private var dailySummaryEnabled = true
+    @AppStorage("keepfit.reminder.food.minuteOfDay") private var foodReminderMinuteOfDay = 12 * 60
+    @AppStorage("keepfit.reminder.exercise.minuteOfDay") private var exerciseReminderMinuteOfDay = 19 * 60
+    @AppStorage("keepfit.reminder.summary.minuteOfDay") private var summaryReminderMinuteOfDay = 21 * 60 + 30
+    @AppStorage("keepfit.sync.healthKit") private var healthSyncEnabled = false
+    @AppStorage("keepfit.sync.iCloud") private var iCloudSyncEnabled = false
     @AppStorage("keepfit.themeMode") private var themeModeRaw = AppThemeMode.system.rawValue
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     @AppStorage("keepfit.unit.height") private var heightUnitRaw = HeightUnitOption.centimeter.rawValue
@@ -33,6 +43,9 @@ struct SettingsView: View {
     @State private var showTargetWeightSheet = false
     @State private var showTargetBodyFatSheet = false
     @State private var showExerciseGoalSheet = false
+    @State private var showFoodReminderTimeSheet = false
+    @State private var showExerciseReminderTimeSheet = false
+    @State private var showSummaryReminderTimeSheet = false
 
     @State private var metricHeightDraft = 170
     @State private var imperialHeightFeetDraft = 5
@@ -46,8 +59,21 @@ struct SettingsView: View {
     @State private var targetImperialWeightLbDraft = 143
     @State private var targetBodyFatTenthDraft = 180
     @State private var exerciseGoalDraft = 300
+    @State private var foodReminderTimeDraft = Date()
+    @State private var exerciseReminderTimeDraft = Date()
+    @State private var summaryReminderTimeDraft = Date()
 
     @State private var activeInfo: SettingsInfoTopic?
+    @State private var handlingHealthToggle = false
+    @State private var handlingReminderToggle = false
+    @State private var showHealthSyncAlert = false
+    @State private var healthSyncAlertMessage = ""
+    @State private var showAboutSheet = false
+    @State private var showReminderAlert = false
+    @State private var reminderAlertMessage = ""
+    @State private var showFeedbackAlert = false
+
+    private let feedbackEmail = "longyu.huihui@gmail.com"
 
     private var themeMode: AppThemeMode {
         AppThemeMode(rawValue: themeModeRaw) ?? .system
@@ -113,13 +139,29 @@ struct SettingsView: View {
         }
     }
 
+    private var foodReminderTimeText: String {
+        Formatters.hourMinute.string(from: date(fromMinuteOfDay: foodReminderMinuteOfDay))
+    }
+
+    private var exerciseReminderTimeText: String {
+        Formatters.hourMinute.string(from: date(fromMinuteOfDay: exerciseReminderMinuteOfDay))
+    }
+
+    private var summaryReminderTimeText: String {
+        Formatters.hourMinute.string(from: date(fromMinuteOfDay: summaryReminderMinuteOfDay))
+    }
+
     var body: some View {
         NavigationStack {
             Form {
-                avatarSection
                 basicInfoSection
                 goalsAdviceSection
-                commonSettingsSection
+                generalSettingsSection
+                unitsSection
+                dataSection
+                remindersSection
+                otherSection
+                rateKeepFitSection
             }
             .navigationTitle(localized("个人设置", "Settings"))
             .navigationBarTitleDisplayMode(.large)
@@ -136,6 +178,10 @@ struct SettingsView: View {
                 syncWeightDrafts()
                 syncBirthDrafts()
                 syncGoalDrafts()
+                appState.setICloudSyncEnabled(iCloudSyncEnabled)
+                Task {
+                    await syncReminderSchedulesOnAppear()
+                }
             }
             .onChange(of: selectedAvatarItem) { _, newItem in
                 guard let newItem else { return }
@@ -158,40 +204,75 @@ struct SettingsView: View {
             .onChange(of: energyUnitRaw) { _, _ in
                 syncGoalDrafts()
             }
+            .onChange(of: iCloudSyncEnabled) { _, isEnabled in
+                triggerHapticIfNeeded()
+                appState.setICloudSyncEnabled(isEnabled)
+            }
+            .onChange(of: healthSyncEnabled) { _, isEnabled in
+                Task {
+                    triggerHapticIfNeeded()
+                    await handleHealthToggleChanged(isEnabled)
+                }
+            }
+            .onChange(of: foodReminderEnabled) { _, isEnabled in
+                Task {
+                    triggerHapticIfNeeded()
+                    await handleReminderToggleChanged(.food, enabled: isEnabled)
+                }
+            }
+            .onChange(of: exerciseReminderEnabled) { _, isEnabled in
+                Task {
+                    triggerHapticIfNeeded()
+                    await handleReminderToggleChanged(.exercise, enabled: isEnabled)
+                }
+            }
+            .onChange(of: dailySummaryEnabled) { _, isEnabled in
+                Task {
+                    triggerHapticIfNeeded()
+                    await handleReminderToggleChanged(.summary, enabled: isEnabled)
+                }
+            }
+            .onChange(of: hapticEnabled) { _, isEnabled in
+                if isEnabled {
+                    triggerHapticIfNeeded()
+                }
+            }
+            .alert(localized("健康同步", "Health Sync"), isPresented: $showHealthSyncAlert) {
+                Button(localized("知道了", "OK"), role: .cancel) {}
+            } message: {
+                Text(healthSyncAlertMessage)
+            }
+            .alert(localized("提醒", "Reminders"), isPresented: $showReminderAlert) {
+                Button(localized("知道了", "OK"), role: .cancel) {}
+            } message: {
+                Text(reminderAlertMessage)
+            }
+            .alert(localized("意见反馈", "Feedback"), isPresented: $showFeedbackAlert) {
+                Button(localized("发送邮件", "Send Mail")) {
+                    openFeedbackEmail()
+                }
+                Button(localized("取消", "Cancel"), role: .cancel) {}
+            } message: {
+                Text(feedbackEmail)
+            }
+            .sheet(isPresented: $showAboutSheet) {
+                aboutSheet
+            }
         }
         .preferredColorScheme(themeMode.preferredColorScheme)
     }
 
-    private var avatarSection: some View {
-        Section {
-            HStack(spacing: 14) {
-                PhotosPicker(selection: $selectedAvatarItem, matching: .images) {
-                    avatarView
-                }
-                .buttonStyle(.plain)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    TextField(localized("用户名", "Username"), text: binding(\.name))
-                        .textFieldStyle(.roundedBorder)
-                    Text("KeepFit · 管住嘴迈开腿")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        } header: {
-            Text(localized("个人头像", "Avatar"))
-        }
-    }
-
     private var basicInfoSection: some View {
         Section {
+            avatarSelectionRow
+            usernameRow
             sexSelectionRow
             birthSelectionRow
             heightSelectionRow
             weightSelectionRow
             activitySelectionRow
         } header: {
-            Text(localized("基础信息", "Basic Info"))
+            Text(localized("信息", "Info"))
         }
     }
 
@@ -204,18 +285,15 @@ struct SettingsView: View {
             tdeeInfoRow
             intakeInfoRow
         } header: {
-            Text(localized("目标与建议", "Goals & Advice"))
+            Text(localized("目标", "Goals"))
         }
     }
 
-    private var commonSettingsSection: some View {
+    private var generalSettingsSection: some View {
         Section {
             languageSelectionRow
-            energyUnitSelectionRow
-            heightUnitSelectionRow
-            weightUnitSelectionRow
-            weekStartSelectionRow
             themeSelectionRow
+            weekStartSelectionRow
 
             Toggle(isOn: $hapticEnabled) {
                 HStack(spacing: 10) {
@@ -223,22 +301,229 @@ struct SettingsView: View {
                     Text(localized("触感反馈", "Haptics"))
                 }
             }
+        } header: {
+            Text(localized("通用", "General"))
+        }
+    }
 
-            Toggle(isOn: $reminderEnabled) {
+    private var unitsSection: some View {
+        Section {
+            energyUnitSelectionRow
+            heightUnitSelectionRow
+            weightUnitSelectionRow
+        } header: {
+            Text(localized("单位", "Units"))
+        }
+    }
+
+    private var dataSection: some View {
+        Section {
+            Toggle(isOn: $healthSyncEnabled) {
                 HStack(spacing: 10) {
-                    rowIcon("bell", .orange)
-                    Text(localized("饮食/运动提醒", "Diet/Exercise Reminder"))
+                    rowIcon("heart.text.square.fill", .green)
+                    Text(localized("Apple 健康", "Apple Health"))
                 }
             }
 
-            Toggle(isOn: $autoSyncEnabled) {
+            Toggle(isOn: $iCloudSyncEnabled) {
                 HStack(spacing: 10) {
-                    rowIcon("arrow.triangle.2.circlepath", .green)
-                    Text(localized("自动同步健康数据", "Auto Sync Health Data"))
+                    rowIcon("icloud.fill", .blue)
+                    Text(localized("iCloud 同步", "iCloud Sync"))
                 }
             }
         } header: {
-            Text(localized("常用设置", "Common Settings"))
+            Text(localized("数据", "Data"))
+        }
+    }
+
+    private var remindersSection: some View {
+        Section {
+            Toggle(isOn: $foodReminderEnabled) {
+                HStack(spacing: 10) {
+                    rowIcon("fork.knife", .orange)
+                    Text(localized("饮食提醒", "Diet Reminder"))
+                }
+            }
+            reminderTimeSelectionRow(
+                title: localized("饮食提醒时间", "Diet Reminder Time"),
+                color: .orange,
+                value: foodReminderTimeText,
+                isPresented: $showFoodReminderTimeSheet,
+                draft: $foodReminderTimeDraft,
+                minuteOfDay: $foodReminderMinuteOfDay,
+                reminder: .food
+            )
+
+            Toggle(isOn: $exerciseReminderEnabled) {
+                HStack(spacing: 10) {
+                    rowIcon("figure.run", .green)
+                    Text(localized("运动提醒", "Exercise Reminder"))
+                }
+            }
+            reminderTimeSelectionRow(
+                title: localized("运动提醒时间", "Exercise Reminder Time"),
+                color: .green,
+                value: exerciseReminderTimeText,
+                isPresented: $showExerciseReminderTimeSheet,
+                draft: $exerciseReminderTimeDraft,
+                minuteOfDay: $exerciseReminderMinuteOfDay,
+                reminder: .exercise
+            )
+
+            Toggle(isOn: $dailySummaryEnabled) {
+                HStack(spacing: 10) {
+                    rowIcon("doc.text", .indigo)
+                    Text(localized("每日总结", "Daily Summary"))
+                }
+            }
+            reminderTimeSelectionRow(
+                title: localized("每日总结时间", "Daily Summary Time"),
+                color: .indigo,
+                value: summaryReminderTimeText,
+                isPresented: $showSummaryReminderTimeSheet,
+                draft: $summaryReminderTimeDraft,
+                minuteOfDay: $summaryReminderMinuteOfDay,
+                reminder: .summary
+            )
+        } header: {
+            Text(localized("提醒", "Reminders"))
+        }
+    }
+
+    private var otherSection: some View {
+        Section {
+            ShareLink(item: shareText) {
+                HStack(spacing: 10) {
+                    rowIcon("square.and.arrow.up", .blue)
+                    Text(localized("分享 APP", "Share App"))
+                        .foregroundStyle(.primary)
+                }
+            }
+            .buttonStyle(.plain)
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    triggerHapticIfNeeded()
+                }
+            )
+
+            Button {
+                triggerHapticIfNeeded()
+                showFeedbackAlert = true
+            } label: {
+                HStack(spacing: 10) {
+                    rowIcon("envelope", .orange)
+                    Text(localized("意见反馈", "Feedback"))
+                        .foregroundStyle(.primary)
+                }
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                triggerHapticIfNeeded()
+                showAboutSheet = true
+            } label: {
+                HStack(spacing: 10) {
+                    rowIcon("info.circle", .teal)
+                    Text(localized("关于", "About"))
+                        .foregroundStyle(.primary)
+                }
+            }
+            .buttonStyle(.plain)
+        } header: {
+            Text(localized("其他", "Other"))
+        }
+    }
+
+    private var rateKeepFitSection: some View {
+        Section {
+            Button {
+                triggerHapticIfNeeded(style: .medium)
+                requestReview()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "star.bubble.fill")
+                        .font(.system(size: 20))
+                        .foregroundStyle(.yellow)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(localized("为 KeepFit 评分", "Rate KeepFit"))
+                            .foregroundStyle(.primary)
+                        Text(localized("你的反馈能帮助我们做得更好", "Your feedback helps us improve"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 4)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var avatarSelectionRow: some View {
+        PhotosPicker(selection: $selectedAvatarItem, matching: .images) {
+            HStack(spacing: 10) {
+                rowIcon("person.crop.circle", .purple)
+                Text(localized("头像", "Avatar"))
+                    .foregroundStyle(.primary)
+                Spacer()
+                avatarView(size: 36)
+                Image(systemName: "chevron.down")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var usernameRow: some View {
+        HStack(spacing: 10) {
+            rowIcon("person.text.rectangle", .blue)
+            Text(localized("用户名", "Username"))
+            TextField(localized("请输入用户名", "Enter username"), text: binding(\.name))
+                .multilineTextAlignment(.trailing)
+        }
+    }
+
+    private func reminderTimeSelectionRow(
+        title: String,
+        color: Color,
+        value: String,
+        isPresented: Binding<Bool>,
+        draft: Binding<Date>,
+        minuteOfDay: Binding<Int>,
+        reminder: ReminderKind
+    ) -> some View {
+        selectionPopoverRow(
+            icon: "clock",
+            title: title,
+            color: color,
+            value: value,
+            isPresented: isPresented,
+            onOpen: {
+                draft.wrappedValue = date(fromMinuteOfDay: minuteOfDay.wrappedValue)
+            }
+        ) {
+            glassOptionPopover(accent: color, title: title, width: 320) {
+                DatePicker(
+                    title,
+                    selection: draft,
+                    displayedComponents: [.hourAndMinute]
+                )
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+                .frame(height: 156)
+
+                popoverDoneButton {
+                    minuteOfDay.wrappedValue = minuteOfDayValue(from: draft.wrappedValue)
+                    isPresented.wrappedValue = false
+                    Task {
+                        await rescheduleReminderIfEnabled(reminder)
+                    }
+                }
+            }
         }
     }
 
@@ -545,8 +830,8 @@ struct SettingsView: View {
     }
 
     private var energyUnitSelectionRow: some View {
-        selectionPopoverRow(icon: "flame.fill", title: localized("能量单位", "Energy Unit"), color: .teal, value: energyUnit.title, isPresented: $showEnergyUnitSheet) {
-            glassOptionPopover(accent: .teal, title: localized("选择能量单位", "Select Energy Unit")) {
+        selectionPopoverRow(icon: "flame.fill", title: localized("能量", "Energy"), color: .teal, value: energyUnit.title, isPresented: $showEnergyUnitSheet) {
+            glassOptionPopover(accent: .teal, title: localized("选择能量", "Select Energy")) {
                 ForEach(EnergyUnitOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == energyUnit, accent: .teal) {
                         energyUnitRaw = option.rawValue
@@ -559,8 +844,8 @@ struct SettingsView: View {
     }
 
     private var heightUnitSelectionRow: some View {
-        selectionPopoverRow(icon: "ruler", title: localized("身高单位", "Height Unit"), color: .blue, value: heightUnit.title, isPresented: $showHeightUnitSheet) {
-            glassOptionPopover(accent: .blue, title: localized("选择身高单位", "Select Height Unit")) {
+        selectionPopoverRow(icon: "ruler", title: localized("身高", "Height"), color: .blue, value: heightUnit.title, isPresented: $showHeightUnitSheet) {
+            glassOptionPopover(accent: .blue, title: localized("选择身高", "Select Height")) {
                 ForEach(HeightUnitOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == heightUnit, accent: .blue) {
                         heightUnitRaw = option.rawValue
@@ -573,8 +858,8 @@ struct SettingsView: View {
     }
 
     private var weightUnitSelectionRow: some View {
-        selectionPopoverRow(icon: "scalemass", title: localized("体重单位", "Weight Unit"), color: .mint, value: weightUnit.title, isPresented: $showWeightUnitSheet) {
-            glassOptionPopover(accent: .mint, title: localized("选择体重单位", "Select Weight Unit")) {
+        selectionPopoverRow(icon: "scalemass", title: localized("体重", "Weight"), color: .mint, value: weightUnit.title, isPresented: $showWeightUnitSheet) {
+            glassOptionPopover(accent: .mint, title: localized("选择体重", "Select Weight")) {
                 ForEach(WeightUnitOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == weightUnit, accent: .mint) {
                         weightUnitRaw = option.rawValue
@@ -613,7 +898,265 @@ struct SettingsView: View {
         }
     }
 
-    private var avatarView: some View {
+    private var shareText: String {
+        localized(
+            "我在用 KeepFit（管住嘴迈开腿）记录饮食和运动，推荐你也试试。",
+            "I am using KeepFit to track food and workouts. Give it a try."
+        )
+    }
+
+    private var appVersionLabel: String {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "-"
+        return "v\(version) (\(build))"
+    }
+
+    private var aboutSheet: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(spacing: 12) {
+                    avatarView(size: 52)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("KeepFit")
+                            .font(.headline)
+                        Text(localized("管住嘴迈开腿", "Eat Well · Move More"))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Divider()
+
+                infoLine(title: localized("版本", "Version"), value: appVersionLabel)
+                infoLine(title: localized("开发支持", "Support"), value: feedbackEmail)
+
+                Text(localized("KeepFit 专注于饮食记录、运动消耗和热量平衡管理。", "KeepFit focuses on food logs, workout burn, and calorie balance."))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 4)
+
+                Spacer(minLength: 0)
+            }
+            .padding(18)
+            .navigationTitle(localized("关于 KeepFit", "About KeepFit"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(localized("完成", "Done")) {
+                        showAboutSheet = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.height(330)])
+    }
+
+    private func infoLine(title: String, value: String) -> some View {
+        HStack {
+            Text(title)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(value)
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.trailing)
+        }
+        .font(.subheadline)
+    }
+
+    private func openFeedbackEmail() {
+        triggerHapticIfNeeded()
+        guard let url = URL(string: "mailto:\(feedbackEmail)?subject=KeepFit%20Feedback") else {
+            return
+        }
+        openURL(url)
+    }
+
+    private func triggerHapticIfNeeded(style: UIImpactFeedbackGenerator.FeedbackStyle = .light) {
+        KeepFitHaptics.impact(style)
+    }
+
+    @MainActor
+    private func handleReminderToggleChanged(_ reminder: ReminderKind, enabled: Bool) async {
+        guard !handlingReminderToggle else { return }
+        handlingReminderToggle = true
+        defer { handlingReminderToggle = false }
+
+        if enabled {
+            let authorized = await requestReminderAuthorization()
+            guard authorized else {
+                setReminderToggle(reminder, enabled: false)
+                reminderAlertMessage = localized("请先允许通知权限，再开启提醒。", "Please allow notifications before enabling reminders.")
+                showReminderAlert = true
+                return
+            }
+            do {
+                try await scheduleReminder(reminder)
+            } catch {
+                setReminderToggle(reminder, enabled: false)
+                reminderAlertMessage = localized("提醒创建失败，请稍后重试。", "Failed to schedule reminder. Please try again.")
+                showReminderAlert = true
+            }
+        } else {
+            cancelReminder(reminder)
+        }
+    }
+
+    @MainActor
+    private func syncReminderSchedulesOnAppear() async {
+        guard !handlingReminderToggle else { return }
+        handlingReminderToggle = true
+        defer { handlingReminderToggle = false }
+
+        let settings = await notificationSettings()
+        let authorized = isNotificationAuthorized(settings.authorizationStatus)
+        if !authorized {
+            foodReminderEnabled = false
+            exerciseReminderEnabled = false
+            dailySummaryEnabled = false
+            return
+        }
+
+        if foodReminderEnabled {
+            try? await scheduleReminder(.food)
+        }
+        if exerciseReminderEnabled {
+            try? await scheduleReminder(.exercise)
+        }
+        if dailySummaryEnabled {
+            try? await scheduleReminder(.summary)
+        }
+    }
+
+    private func requestReminderAuthorization() async -> Bool {
+        let currentSettings = await notificationSettings()
+        switch currentSettings.authorizationStatus {
+        case .authorized, .provisional, .ephemeral:
+            return true
+        case .notDetermined:
+            return await requestNotificationAuthorization()
+        case .denied:
+            return false
+        @unknown default:
+            return false
+        }
+    }
+
+    private func requestNotificationAuthorization() async -> Bool {
+        await withCheckedContinuation { continuation in
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+                continuation.resume(returning: granted)
+            }
+        }
+    }
+
+    @MainActor
+    private func rescheduleReminderIfEnabled(_ reminder: ReminderKind) async {
+        if isReminderEnabled(reminder) {
+            do {
+                try await scheduleReminder(reminder)
+            } catch {
+                reminderAlertMessage = localized("提醒时间更新失败，请稍后重试。", "Failed to update reminder time. Please try again.")
+                showReminderAlert = true
+            }
+        } else {
+            cancelReminder(reminder)
+        }
+    }
+
+    private func notificationSettings() async -> UNNotificationSettings {
+        await withCheckedContinuation { continuation in
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                continuation.resume(returning: settings)
+            }
+        }
+    }
+
+    private func isNotificationAuthorized(_ status: UNAuthorizationStatus) -> Bool {
+        switch status {
+        case .authorized, .provisional, .ephemeral:
+            return true
+        default:
+            return false
+        }
+    }
+
+    private func scheduleReminder(_ reminder: ReminderKind) async throws {
+        cancelReminder(reminder)
+
+        let content = UNMutableNotificationContent()
+        content.title = reminder.title
+        content.body = reminder.body
+        content.sound = .default
+
+        let minuteOfDay = minuteOfDay(for: reminder)
+        var dateComponents = DateComponents()
+        dateComponents.hour = minuteOfDay / 60
+        dateComponents.minute = minuteOfDay % 60
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        let request = UNNotificationRequest(identifier: reminder.identifier, content: content, trigger: trigger)
+
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
+
+    private func cancelReminder(_ reminder: ReminderKind) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [reminder.identifier])
+        center.removeDeliveredNotifications(withIdentifiers: [reminder.identifier])
+    }
+
+    private func setReminderToggle(_ reminder: ReminderKind, enabled: Bool) {
+        switch reminder {
+        case .food:
+            foodReminderEnabled = enabled
+        case .exercise:
+            exerciseReminderEnabled = enabled
+        case .summary:
+            dailySummaryEnabled = enabled
+        }
+    }
+
+    private func isReminderEnabled(_ reminder: ReminderKind) -> Bool {
+        switch reminder {
+        case .food:
+            return foodReminderEnabled
+        case .exercise:
+            return exerciseReminderEnabled
+        case .summary:
+            return dailySummaryEnabled
+        }
+    }
+
+    private func minuteOfDay(for reminder: ReminderKind) -> Int {
+        switch reminder {
+        case .food:
+            return foodReminderMinuteOfDay
+        case .exercise:
+            return exerciseReminderMinuteOfDay
+        case .summary:
+            return summaryReminderMinuteOfDay
+        }
+    }
+
+    private func date(fromMinuteOfDay minuteOfDay: Int) -> Date {
+        let calendar = AppPreferences.calendar
+        let dayStart = calendar.startOfDay(for: Date())
+        return calendar.date(byAdding: .minute, value: minuteOfDay, to: dayStart) ?? Date()
+    }
+
+    private func minuteOfDayValue(from date: Date) -> Int {
+        let components = AppPreferences.calendar.dateComponents([.hour, .minute], from: date)
+        return (components.hour ?? 0) * 60 + (components.minute ?? 0)
+    }
+
+    private func avatarView(size: CGFloat = 68) -> some View {
         Group {
             if let data = appState.profile.avatarJPEGData,
                let image = UIImage(data: data) {
@@ -628,7 +1171,7 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(width: 68, height: 68)
+        .frame(width: size, height: size)
         .background(Color(.tertiarySystemBackground), in: Circle())
         .clipShape(Circle())
     }
@@ -649,6 +1192,7 @@ struct SettingsView: View {
         @ViewBuilder content: @escaping () -> PopoverContent
     ) -> some View {
         Button {
+            triggerHapticIfNeeded()
             onOpen?()
             isPresented.wrappedValue = true
         } label: {
@@ -722,7 +1266,10 @@ struct SettingsView: View {
     }
 
     private func popoverOptionCell(title: String, selected: Bool, accent: Color, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
+        Button {
+            triggerHapticIfNeeded()
+            action()
+        } label: {
             HStack(spacing: 10) {
                 Text(title)
                     .foregroundStyle(.primary)
@@ -751,7 +1298,10 @@ struct SettingsView: View {
     }
 
     private func popoverDoneButton(action: @escaping () -> Void) -> some View {
-        Button(action: action) {
+        Button {
+            triggerHapticIfNeeded()
+            action()
+        } label: {
             Text(localized("完成", "Done"))
                 .font(.footnote.weight(.medium))
                 .foregroundStyle(.primary.opacity(0.86))
@@ -1391,6 +1941,19 @@ struct SettingsView: View {
         appState.profile.dailyExerciseGoal = energyFromDisplayValue(Double(exerciseGoalDraft), unit: energyUnit)
     }
 
+    @MainActor
+    private func handleHealthToggleChanged(_ enabled: Bool) async {
+        guard !handlingHealthToggle else { return }
+        handlingHealthToggle = true
+        defer { handlingHealthToggle = false }
+
+        if let errorMessage = await appState.setHealthSyncEnabled(enabled) {
+            healthSyncEnabled = false
+            healthSyncAlertMessage = errorMessage
+            showHealthSyncAlert = true
+        }
+    }
+
     private func syncBirthDrafts() {
         let components = AppPreferences.calendar.dateComponents([.year, .month, .day], from: resolvedBirthDate)
         birthYearDraft = components.year ?? 1998
@@ -1502,6 +2065,45 @@ struct SettingsView: View {
                 }
             }
         )
+    }
+}
+
+private enum ReminderKind: CaseIterable {
+    case food
+    case exercise
+    case summary
+
+    var identifier: String {
+        switch self {
+        case .food:
+            return "keepfit.reminder.food"
+        case .exercise:
+            return "keepfit.reminder.exercise"
+        case .summary:
+            return "keepfit.reminder.summary"
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .food:
+            return localized("饮食提醒", "Diet Reminder")
+        case .exercise:
+            return localized("运动提醒", "Exercise Reminder")
+        case .summary:
+            return localized("每日总结", "Daily Summary")
+        }
+    }
+
+    var body: String {
+        switch self {
+        case .food:
+            return localized("记得记录今天的饮食，保持摄入清晰。", "Remember to log today's meals and keep intake clear.")
+        case .exercise:
+            return localized("安排一段运动时间，迈开腿更接近目标。", "Schedule a workout and move closer to your goal.")
+        case .summary:
+            return localized("查看今天的数据总结，优化明天计划。", "Check today's summary and optimize tomorrow's plan.")
+        }
     }
 }
 

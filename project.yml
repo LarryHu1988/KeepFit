@@ -27,18 +27,24 @@ targets:
       - path: KeepFitApp/Assets.xcassets
     dependencies:
       - sdk: Charts.framework
+      - sdk: HealthKit.framework
       - sdk: PhotosUI.framework
     settings:
       base:
+        CODE_SIGN_ENTITLEMENTS: KeepFitApp/KeepFit.entitlements
         PRODUCT_BUNDLE_IDENTIFIER: com.larry.keepfit
-        MARKETING_VERSION: 0.5.1
+        MARKETING_VERSION: 0.6.0
         CURRENT_PROJECT_VERSION: 1
         INFOPLIST_KEY_CFBundleDisplayName: KeepFit
+        INFOPLIST_KEY_NSHealthShareUsageDescription: 允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。
+        INFOPLIST_KEY_NSHealthUpdateUsageDescription: 允许 KeepFit 将饮食、运动与体重记录写入 Apple 健康。
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: 允许你选择头像图片
     info:
       path: KeepFitApp/Info.plist
       properties:
         CFBundleDisplayName: KeepFit
+        NSHealthShareUsageDescription: 允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。
+        NSHealthUpdateUsageDescription: 允许 KeepFit 将饮食、运动与体重记录写入 Apple 健康。
         NSPhotoLibraryUsageDescription: 允许你选择头像图片
         UIApplicationSceneManifest: {}
         UILaunchScreen: {}

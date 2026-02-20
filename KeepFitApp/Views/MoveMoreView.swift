@@ -53,6 +53,7 @@ struct MoveMoreView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        KeepFitHaptics.impact(.light)
                         onSettingsTap()
                     } label: {
                         Image(systemName: "gearshape.fill")
@@ -165,6 +166,7 @@ struct MoveMoreView: View {
             VStack(spacing: 10) {
                 HStack(spacing: 6) {
                     Button {
+                        KeepFitHaptics.impact(.light)
                         showExerciseTimeSheet = true
                     } label: {
                         HStack(spacing: 6) {
@@ -184,6 +186,7 @@ struct MoveMoreView: View {
                     .buttonStyle(.plain)
 
                     Button {
+                        KeepFitHaptics.impact(.light)
                         showExerciseSheet = true
                     } label: {
                         HStack(spacing: 8) {
@@ -226,6 +229,7 @@ struct MoveMoreView: View {
                     .background(inputFieldBackground)
 
                     Button {
+                        KeepFitHaptics.impact(.medium)
                         addExerciseLog()
                     } label: {
                         Image(systemName: "plus")
@@ -275,6 +279,7 @@ struct MoveMoreView: View {
                                 .foregroundStyle(.green)
 
                             Button {
+                                KeepFitHaptics.impact(.rigid)
                                 appState.deleteExerciseLog(log)
                             } label: {
                                 Image(systemName: "trash")
@@ -368,6 +373,7 @@ struct MoveMoreView: View {
                 .labelsHidden()
 
                 Button(localized("完成", "Done")) {
+                    KeepFitHaptics.impact(.light)
                     showExerciseTimeSheet = false
                 }
                 .buttonStyle(.borderedProminent)

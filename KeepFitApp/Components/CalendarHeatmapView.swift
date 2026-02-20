@@ -53,6 +53,7 @@ struct CalendarHeatmapView: View {
         }()
 
         Button {
+            KeepFitHaptics.selection()
             selectedDate = date
         } label: {
             VStack(spacing: 2) {
@@ -152,6 +153,7 @@ struct WeekStripCalendarView: View {
         let weekdayIndex = (weekday - calendar.firstWeekday + 7) % 7
 
         Button {
+            KeepFitHaptics.selection()
             selectedDate = date
         } label: {
             VStack(spacing: 2) {
@@ -203,6 +205,7 @@ struct WeekStripCalendarView: View {
         let today = Date().startOfDayInCurrentCalendar
         let todayWeekStart = today.startOfWeekInCurrentCalendar
         let targetSelectedDate = targetWeekStart.isSameDay(as: todayWeekStart) ? today : targetWeekStart
+        KeepFitHaptics.selection()
         withAnimation(.spring(response: 0.24, dampingFraction: 0.9)) {
             selectedDate = targetSelectedDate
         }

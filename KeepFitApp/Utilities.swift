@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 
 private enum AppPreferenceKeys {
     static let timeFormat = "keepfit.unit.time"
@@ -428,4 +429,34 @@ func englishDisplayName(from identifier: String) -> String {
             return first.uppercased() + lower.dropFirst()
         }
         .joined(separator: " ")
+}
+
+enum KeepFitHaptics {
+    private static let hapticKey = "keepfit.haptic"
+
+    private static var isEnabled: Bool {
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: hapticKey) == nil {
+            return true
+        }
+        return defaults.bool(forKey: hapticKey)
+    }
+
+    static func impact(_ style: UIImpactFeedbackGenerator.FeedbackStyle = .light) {
+        guard isEnabled else { return }
+        DispatchQueue.main.async {
+            let generator = UIImpactFeedbackGenerator(style: style)
+            generator.prepare()
+            generator.impactOccurred()
+        }
+    }
+
+    static func selection() {
+        guard isEnabled else { return }
+        DispatchQueue.main.async {
+            let generator = UISelectionFeedbackGenerator()
+            generator.prepare()
+            generator.selectionChanged()
+        }
+    }
 }

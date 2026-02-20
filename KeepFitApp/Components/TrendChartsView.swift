@@ -191,6 +191,7 @@ struct CalorieTrendChartView: View {
 
     private func legendButton(title: String, systemImage: String, color: Color, series: TrendSeries) -> some View {
         Button {
+            KeepFitHaptics.selection()
             focusedSeries = focusedSeries == series ? nil : series
         } label: {
             HStack(spacing: 4) {

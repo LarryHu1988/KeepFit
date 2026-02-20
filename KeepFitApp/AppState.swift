@@ -1,4 +1,6 @@
 import Foundation
+import HealthKit
+import UIKit
 
 struct DailyNutritionRecord: Identifiable {
     var id: Date { date }
@@ -24,45 +26,101 @@ struct DailyCalorieTrend: Identifiable {
     let deficit: Double
 }
 
+private struct KeepFitCloudSnapshot: Codable {
+    let version: Int
+    let modifiedAt: Date
+    let profile: UserProfile
+    let foodLibrary: [FoodItem]
+    let exerciseLibrary: [ExerciseItem]
+    let foodLogs: [FoodLog]
+    let exerciseLogs: [ExerciseLog]
+    let bodyMetricLogs: [BodyMetricLog]
+}
+
 @MainActor
 final class AppState: ObservableObject {
+    private enum SyncKeys {
+        static let iCloudEnabled = "keepfit.sync.iCloud"
+        static let healthEnabled = "keepfit.sync.healthKit"
+        static let localMutationTS = "keepfit.sync.localMutationTS"
+        static let cloudSnapshot = "keepfit.sync.iCloud.snapshot.v1"
+        static let exportedFoodLogIDs = "keepfit.sync.health.exported.foodLogIDs"
+        static let exportedExerciseLogIDs = "keepfit.sync.health.exported.exerciseLogIDs"
+        static let exportedBodyMetricIDs = "keepfit.sync.health.exported.bodyMetricIDs"
+        static let importedDietarySampleUUIDs = "keepfit.sync.health.imported.dietarySampleUUIDs"
+        static let importedWorkoutUUIDs = "keepfit.sync.health.imported.workoutUUIDs"
+        static let importedBodyMassUUIDs = "keepfit.sync.health.imported.bodyMassUUIDs"
+        static let importedBodyFatUUIDs = "keepfit.sync.health.imported.bodyFatUUIDs"
+        static let healthMetadataSource = "KeepFitSource"
+        static let healthMetadataSourceValue = "KeepFit"
+    }
+
     @Published var profile: UserProfile {
         didSet {
             store.save(profile, for: .profile)
+            handleLocalStateDidChange()
         }
     }
 
     @Published var foodLibrary: [FoodItem] {
         didSet {
             store.save(foodLibrary, for: .foods)
+            handleLocalStateDidChange()
         }
     }
 
     @Published var exerciseLibrary: [ExerciseItem] {
         didSet {
             store.save(exerciseLibrary, for: .exercises)
+            handleLocalStateDidChange()
         }
     }
 
     @Published var foodLogs: [FoodLog] {
         didSet {
             store.save(foodLogs, for: .foodLogs)
+            handleLocalStateDidChange()
+            scheduleHealthExportIfNeeded()
         }
     }
 
     @Published var exerciseLogs: [ExerciseLog] {
         didSet {
             store.save(exerciseLogs, for: .exerciseLogs)
+            handleLocalStateDidChange()
+            scheduleHealthExportIfNeeded()
         }
     }
 
     @Published var bodyMetricLogs: [BodyMetricLog] {
         didSet {
             store.save(bodyMetricLogs, for: .bodyMetrics)
+            handleLocalStateDidChange()
+            scheduleHealthExportIfNeeded()
         }
     }
 
     private let store = DataStore()
+    private let defaults = UserDefaults.standard
+    private let iCloudStore = NSUbiquitousKeyValueStore.default
+    private let healthStore = HKHealthStore()
+    private let cloudEncoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }()
+    private let cloudDecoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
+    private var cloudObserver: NSObjectProtocol?
+    private var foregroundObserver: NSObjectProtocol?
+    private var pendingCloudPushTask: Task<Void, Never>?
+    private var pendingHealthSyncTask: Task<Void, Never>?
+    private var isApplyingCloudSnapshot = false
+    private var isRunningHealthSync = false
+    private var localMutationAt: Date = .distantPast
 
     init() {
         let loadedProfile = store.load(UserProfile.self, for: .profile) ?? .default
@@ -89,6 +147,29 @@ final class AppState: ObservableObject {
                 )
             )
         }
+
+        let savedLocalMutationTS = defaults.double(forKey: SyncKeys.localMutationTS)
+        localMutationAt = savedLocalMutationTS > 0 ? Date(timeIntervalSince1970: savedLocalMutationTS) : .distantPast
+        setupForegroundObserver()
+        if isICloudSyncEnabled {
+            startICloudSync()
+        }
+        if isHealthSyncEnabled {
+            Task { [weak self] in
+                await self?.syncHealthDataIfEnabled()
+            }
+        }
+    }
+
+    deinit {
+        if let cloudObserver {
+            NotificationCenter.default.removeObserver(cloudObserver)
+        }
+        if let foregroundObserver {
+            NotificationCenter.default.removeObserver(foregroundObserver)
+        }
+        pendingCloudPushTask?.cancel()
+        pendingHealthSyncTask?.cancel()
     }
 
     private static func mergeFoodLibrary(_ existing: [FoodItem], with seed: [FoodItem]) -> [FoodItem] {
@@ -115,6 +196,53 @@ final class AppState: ObservableObject {
             merged.append(item)
         }
         return merged
+    }
+
+    var isICloudSyncEnabled: Bool {
+        defaults.bool(forKey: SyncKeys.iCloudEnabled)
+    }
+
+    var isHealthSyncEnabled: Bool {
+        defaults.bool(forKey: SyncKeys.healthEnabled)
+    }
+
+    func setICloudSyncEnabled(_ enabled: Bool) {
+        defaults.set(enabled, forKey: SyncKeys.iCloudEnabled)
+        if enabled {
+            startICloudSync()
+            pullCloudSnapshotIfNeeded(force: true)
+            queueCloudPush(immediate: true)
+        } else {
+            stopICloudSync()
+        }
+    }
+
+    func setHealthSyncEnabled(_ enabled: Bool) async -> String? {
+        if enabled {
+            guard HKHealthStore.isHealthDataAvailable() else {
+                return localized("当前设备不支持 Apple 健康。", "Apple Health is not available on this device.")
+            }
+            do {
+                let granted = try await requestHealthAuthorization()
+                guard granted else {
+                    return localized("未获得 Apple 健康权限。", "Apple Health permission was not granted.")
+                }
+                defaults.set(true, forKey: SyncKeys.healthEnabled)
+                await syncHealthDataIfEnabled()
+                return nil
+            } catch {
+                return localized("健康数据授权失败，请稍后重试。", "Failed to authorize Apple Health. Please try again.")
+            }
+        }
+
+        defaults.set(false, forKey: SyncKeys.healthEnabled)
+        pendingHealthSyncTask?.cancel()
+        return nil
+    }
+
+    func syncHealthDataIfEnabled() async {
+        guard isHealthSyncEnabled else { return }
+        await runHealthSync()
     }
 
     func addFoodLog(date: Date, item: FoodItem, grams: Double) {
@@ -433,5 +561,451 @@ final class AppState: ObservableObject {
     func latestBodyMetric() -> BodyMetricLog {
         bodyMetricLogs.sorted(by: { $0.date > $1.date }).first
             ?? BodyMetricLog(id: UUID(), date: Date(), weightKg: profile.weightKg, bodyFatPercent: profile.targetBodyFat + 8)
+    }
+
+    private func handleLocalStateDidChange() {
+        guard !isApplyingCloudSnapshot else { return }
+        localMutationAt = Date()
+        defaults.set(localMutationAt.timeIntervalSince1970, forKey: SyncKeys.localMutationTS)
+        queueCloudPush()
+    }
+
+    private func setupForegroundObserver() {
+        foregroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.pullCloudSnapshotIfNeeded(force: false)
+                await self.syncHealthDataIfEnabled()
+            }
+        }
+    }
+
+    private func startICloudSync() {
+        guard cloudObserver == nil else { return }
+        cloudObserver = NotificationCenter.default.addObserver(
+            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+            object: iCloudStore,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.pullCloudSnapshotIfNeeded(force: false)
+            }
+        }
+        iCloudStore.synchronize()
+        pullCloudSnapshotIfNeeded(force: true)
+    }
+
+    private func stopICloudSync() {
+        if let cloudObserver {
+            NotificationCenter.default.removeObserver(cloudObserver)
+            self.cloudObserver = nil
+        }
+        pendingCloudPushTask?.cancel()
+        pendingCloudPushTask = nil
+    }
+
+    private func queueCloudPush(immediate: Bool = false) {
+        guard isICloudSyncEnabled, !isApplyingCloudSnapshot else { return }
+        pendingCloudPushTask?.cancel()
+        if immediate {
+            pushCloudSnapshotToICloud()
+            return
+        }
+        pendingCloudPushTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 700_000_000)
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                self?.pushCloudSnapshotToICloud()
+            }
+        }
+    }
+
+    private func pushCloudSnapshotToICloud() {
+        guard isICloudSyncEnabled, !isApplyingCloudSnapshot else { return }
+        let snapshot = KeepFitCloudSnapshot(
+            version: 1,
+            modifiedAt: localMutationAt == .distantPast ? Date() : localMutationAt,
+            profile: profile,
+            foodLibrary: foodLibrary,
+            exerciseLibrary: exerciseLibrary,
+            foodLogs: foodLogs,
+            exerciseLogs: exerciseLogs,
+            bodyMetricLogs: bodyMetricLogs
+        )
+        guard let data = try? cloudEncoder.encode(snapshot) else { return }
+        iCloudStore.set(data, forKey: SyncKeys.cloudSnapshot)
+        iCloudStore.synchronize()
+    }
+
+    private func pullCloudSnapshotIfNeeded(force: Bool) {
+        guard isICloudSyncEnabled else { return }
+        guard let data = iCloudStore.data(forKey: SyncKeys.cloudSnapshot) else { return }
+        guard let snapshot = try? cloudDecoder.decode(KeepFitCloudSnapshot.self, from: data) else { return }
+        guard snapshot.version == 1 else { return }
+
+        let remoteTS = snapshot.modifiedAt.timeIntervalSince1970
+        let localTS = localMutationAt.timeIntervalSince1970
+        guard force || remoteTS > localTS + 1 else { return }
+
+        isApplyingCloudSnapshot = true
+        defer { isApplyingCloudSnapshot = false }
+
+        profile = snapshot.profile
+        foodLibrary = Self.mergeFoodLibrary(snapshot.foodLibrary, with: SeedData.foodLibrary)
+        exerciseLibrary = Self.mergeExerciseLibrary(snapshot.exerciseLibrary, with: SeedData.exerciseLibrary)
+        foodLogs = snapshot.foodLogs.sorted(by: { $0.date > $1.date })
+        exerciseLogs = snapshot.exerciseLogs.sorted(by: { $0.date > $1.date })
+        bodyMetricLogs = snapshot.bodyMetricLogs.sorted(by: { $0.date < $1.date })
+        if bodyMetricLogs.isEmpty {
+            bodyMetricLogs = [
+                BodyMetricLog(
+                    id: UUID(),
+                    date: Date(),
+                    weightKg: profile.weightKg,
+                    bodyFatPercent: max(10, profile.targetBodyFat + 8)
+                )
+            ]
+        }
+
+        localMutationAt = snapshot.modifiedAt
+        defaults.set(localMutationAt.timeIntervalSince1970, forKey: SyncKeys.localMutationTS)
+    }
+
+    private func scheduleHealthExportIfNeeded() {
+        guard isHealthSyncEnabled else { return }
+        pendingHealthSyncTask?.cancel()
+        pendingHealthSyncTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            guard !Task.isCancelled else { return }
+            await self?.runHealthSync()
+        }
+    }
+
+    private func runHealthSync() async {
+        guard isHealthSyncEnabled, HKHealthStore.isHealthDataAvailable(), !isRunningHealthSync else { return }
+        isRunningHealthSync = true
+        defer { isRunningHealthSync = false }
+
+        do {
+            try await exportUnsyncedLocalDataToHealth()
+            try await importHealthDataIntoKeepFit()
+        } catch {
+            // Keep silent for background/automatic sync to avoid interrupting user flow.
+        }
+    }
+
+    private func requestHealthAuthorization() async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            healthStore.requestAuthorization(toShare: healthWriteTypes, read: healthReadTypes) { success, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: success)
+            }
+        }
+    }
+
+    private var healthReadTypes: Set<HKObjectType> {
+        var types: Set<HKObjectType> = [HKObjectType.workoutType()]
+        if let dietary = HKObjectType.quantityType(forIdentifier: .dietaryEnergyConsumed) { types.insert(dietary) }
+        if let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass) { types.insert(bodyMass) }
+        if let bodyFat = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage) { types.insert(bodyFat) }
+        return types
+    }
+
+    private var healthWriteTypes: Set<HKSampleType> {
+        var types: Set<HKSampleType> = [HKObjectType.workoutType()]
+        if let dietary = HKObjectType.quantityType(forIdentifier: .dietaryEnergyConsumed) { types.insert(dietary) }
+        if let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass) { types.insert(bodyMass) }
+        if let bodyFat = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage) { types.insert(bodyFat) }
+        return types
+    }
+
+    private func exportUnsyncedLocalDataToHealth() async throws {
+        guard
+            let dietaryType = HKQuantityType.quantityType(forIdentifier: .dietaryEnergyConsumed),
+            let bodyMassType = HKQuantityType.quantityType(forIdentifier: .bodyMass),
+            let bodyFatType = HKQuantityType.quantityType(forIdentifier: .bodyFatPercentage)
+        else {
+            return
+        }
+
+        var exportedFoodIDs = loadStringSet(forKey: SyncKeys.exportedFoodLogIDs)
+        var exportedExerciseIDs = loadStringSet(forKey: SyncKeys.exportedExerciseLogIDs)
+        var exportedBodyMetricIDs = loadStringSet(forKey: SyncKeys.exportedBodyMetricIDs)
+
+        for log in foodLogs {
+            let logID = log.id.uuidString
+            if exportedFoodIDs.contains(logID) { continue }
+            let metadata: [String: Any] = [
+                HKMetadataKeyExternalUUID: logID,
+                SyncKeys.healthMetadataSource: SyncKeys.healthMetadataSourceValue
+            ]
+            let sample = HKQuantitySample(
+                type: dietaryType,
+                quantity: HKQuantity(unit: .kilocalorie(), doubleValue: max(log.calories, 0)),
+                start: log.date,
+                end: log.date.addingTimeInterval(60),
+                metadata: metadata
+            )
+            try await saveHealthObject(sample)
+            exportedFoodIDs.insert(logID)
+        }
+
+        for log in exerciseLogs {
+            let logID = log.id.uuidString
+            if exportedExerciseIDs.contains(logID) { continue }
+            let calories = max(log.caloriesBurned(weightKg: profile.weightKg), 0)
+            let durationSeconds = max(log.durationMinutes * 60, 60)
+            let endDate = log.date.addingTimeInterval(durationSeconds)
+            let metadata: [String: Any] = [
+                HKMetadataKeyExternalUUID: logID,
+                SyncKeys.healthMetadataSource: SyncKeys.healthMetadataSourceValue
+            ]
+            let workout = HKWorkout(
+                activityType: .other,
+                start: log.date,
+                end: endDate,
+                duration: durationSeconds,
+                totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: calories),
+                totalDistance: nil,
+                metadata: metadata
+            )
+            try await saveHealthObject(workout)
+            exportedExerciseIDs.insert(logID)
+        }
+
+        for log in bodyMetricLogs {
+            let logID = log.id.uuidString
+            if exportedBodyMetricIDs.contains(logID) { continue }
+            let metadata: [String: Any] = [
+                HKMetadataKeyExternalUUID: logID,
+                SyncKeys.healthMetadataSource: SyncKeys.healthMetadataSourceValue
+            ]
+            let weightSample = HKQuantitySample(
+                type: bodyMassType,
+                quantity: HKQuantity(unit: .gramUnit(with: .kilo), doubleValue: max(log.weightKg, 0)),
+                start: log.date,
+                end: log.date.addingTimeInterval(60),
+                metadata: metadata
+            )
+            let fatSample = HKQuantitySample(
+                type: bodyFatType,
+                quantity: HKQuantity(unit: .percent(), doubleValue: max(log.bodyFatPercent, 0) / 100),
+                start: log.date,
+                end: log.date.addingTimeInterval(60),
+                metadata: metadata
+            )
+            try await saveHealthObject(weightSample)
+            try await saveHealthObject(fatSample)
+            exportedBodyMetricIDs.insert(logID)
+        }
+
+        saveStringSet(exportedFoodIDs, forKey: SyncKeys.exportedFoodLogIDs)
+        saveStringSet(exportedExerciseIDs, forKey: SyncKeys.exportedExerciseLogIDs)
+        saveStringSet(exportedBodyMetricIDs, forKey: SyncKeys.exportedBodyMetricIDs)
+    }
+
+    private func importHealthDataIntoKeepFit() async throws {
+        guard
+            let dietaryType = HKQuantityType.quantityType(forIdentifier: .dietaryEnergyConsumed),
+            let bodyMassType = HKQuantityType.quantityType(forIdentifier: .bodyMass),
+            let bodyFatType = HKQuantityType.quantityType(forIdentifier: .bodyFatPercentage)
+        else {
+            return
+        }
+
+        let calendar = AppPreferences.calendar
+        let since = calendar.date(byAdding: .day, value: -90, to: Date()) ?? .distantPast
+
+        var importedDietaryUUIDs = loadStringSet(forKey: SyncKeys.importedDietarySampleUUIDs)
+        var importedWorkoutUUIDs = loadStringSet(forKey: SyncKeys.importedWorkoutUUIDs)
+        var importedBodyMassUUIDs = loadStringSet(forKey: SyncKeys.importedBodyMassUUIDs)
+        var importedBodyFatUUIDs = loadStringSet(forKey: SyncKeys.importedBodyFatUUIDs)
+        var exportedFoodIDs = loadStringSet(forKey: SyncKeys.exportedFoodLogIDs)
+        var exportedExerciseIDs = loadStringSet(forKey: SyncKeys.exportedExerciseLogIDs)
+        var exportedBodyMetricIDs = loadStringSet(forKey: SyncKeys.exportedBodyMetricIDs)
+
+        let dietarySamples = try await fetchQuantitySamples(type: dietaryType, from: since)
+        var mergedFoodLogs = foodLogs
+        for sample in dietarySamples {
+            let sampleUUID = sample.uuid.uuidString
+            if importedDietaryUUIDs.contains(sampleUUID) { continue }
+            importedDietaryUUIDs.insert(sampleUUID)
+
+            let kcal = sample.quantity.doubleValue(for: .kilocalorie())
+            guard kcal > 0 else { continue }
+
+            let log = FoodLog(
+                id: UUID(),
+                date: sample.startDate,
+                foodID: "apple_health_dietary_energy",
+                foodName: localized("Apple 健康摄入", "Apple Health Intake"),
+                foodIcon: "heart.fill",
+                weightGrams: 100,
+                caloriesPer100g: kcal,
+                proteinPer100g: 0,
+                carbsPer100g: 0,
+                fatPer100g: 0
+            )
+            mergedFoodLogs.append(log)
+            exportedFoodIDs.insert(log.id.uuidString)
+        }
+        if mergedFoodLogs.count != foodLogs.count {
+            foodLogs = mergedFoodLogs.sorted(by: { $0.date > $1.date })
+        }
+
+        let workouts = try await fetchWorkouts(from: since)
+        var mergedExerciseLogs = exerciseLogs
+        for workout in workouts {
+            let workoutUUID = workout.uuid.uuidString
+            if importedWorkoutUUIDs.contains(workoutUUID) { continue }
+            importedWorkoutUUIDs.insert(workoutUUID)
+
+            let calories = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0
+            let durationMinutes = max(workout.duration / 60, 1)
+            guard calories > 0 else { continue }
+
+            let met = max((calories * 200) / (3.5 * max(profile.weightKg, 1) * durationMinutes), 1)
+            let log = ExerciseLog(
+                id: UUID(),
+                date: workout.startDate,
+                exerciseID: "apple_health_workout",
+                exerciseName: localized("Apple 健康运动", "Apple Health Workout"),
+                exerciseIcon: "heart.circle.fill",
+                durationMinutes: durationMinutes,
+                met: met
+            )
+            mergedExerciseLogs.append(log)
+            exportedExerciseIDs.insert(log.id.uuidString)
+        }
+        if mergedExerciseLogs.count != exerciseLogs.count {
+            exerciseLogs = mergedExerciseLogs.sorted(by: { $0.date > $1.date })
+        }
+
+        let bodyMassSamples = try await fetchQuantitySamples(type: bodyMassType, from: since)
+        let bodyFatSamples = try await fetchQuantitySamples(type: bodyFatType, from: since)
+        var mergedBodyMetrics = bodyMetricLogs
+        var didImportBodyMetrics = false
+
+        for sample in bodyMassSamples {
+            let sampleUUID = sample.uuid.uuidString
+            if importedBodyMassUUIDs.contains(sampleUUID) { continue }
+            importedBodyMassUUIDs.insert(sampleUUID)
+
+            let day = sample.startDate.startOfDayInCurrentCalendar
+            let weight = sample.quantity.doubleValue(for: .gramUnit(with: .kilo))
+            let fallbackFat = mergedBodyMetrics.first(where: { $0.date.startOfDayInCurrentCalendar == day })?.bodyFatPercent
+                ?? max(10, profile.targetBodyFat + 8)
+            let metricID = upsertBodyMetric(in: &mergedBodyMetrics, date: day, weightKg: weight, bodyFatPercent: fallbackFat)
+            exportedBodyMetricIDs.insert(metricID.uuidString)
+            didImportBodyMetrics = true
+        }
+
+        for sample in bodyFatSamples {
+            let sampleUUID = sample.uuid.uuidString
+            if importedBodyFatUUIDs.contains(sampleUUID) { continue }
+            importedBodyFatUUIDs.insert(sampleUUID)
+
+            let day = sample.startDate.startOfDayInCurrentCalendar
+            let fatPercent = sample.quantity.doubleValue(for: .percent()) * 100
+            let fallbackWeight = mergedBodyMetrics.first(where: { $0.date.startOfDayInCurrentCalendar == day })?.weightKg
+                ?? profile.weightKg
+            let metricID = upsertBodyMetric(in: &mergedBodyMetrics, date: day, weightKg: fallbackWeight, bodyFatPercent: fatPercent)
+            exportedBodyMetricIDs.insert(metricID.uuidString)
+            didImportBodyMetrics = true
+        }
+
+        if didImportBodyMetrics {
+            bodyMetricLogs = mergedBodyMetrics.sorted(by: { $0.date < $1.date })
+        }
+
+        saveStringSet(importedDietaryUUIDs, forKey: SyncKeys.importedDietarySampleUUIDs)
+        saveStringSet(importedWorkoutUUIDs, forKey: SyncKeys.importedWorkoutUUIDs)
+        saveStringSet(importedBodyMassUUIDs, forKey: SyncKeys.importedBodyMassUUIDs)
+        saveStringSet(importedBodyFatUUIDs, forKey: SyncKeys.importedBodyFatUUIDs)
+        saveStringSet(exportedFoodIDs, forKey: SyncKeys.exportedFoodLogIDs)
+        saveStringSet(exportedExerciseIDs, forKey: SyncKeys.exportedExerciseLogIDs)
+        saveStringSet(exportedBodyMetricIDs, forKey: SyncKeys.exportedBodyMetricIDs)
+    }
+
+    private func saveHealthObject(_ object: HKObject) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            healthStore.save(object) { success, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                if success {
+                    continuation.resume()
+                } else {
+                    continuation.resume(throwing: NSError(domain: "KeepFit.HealthKit", code: -1))
+                }
+            }
+        }
+    }
+
+    private func fetchQuantitySamples(type: HKQuantityType, from startDate: Date) async throws -> [HKQuantitySample] {
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: nil, options: .strictStartDate)
+        let sortDescriptors = [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(sampleType: type, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: sortDescriptors) { _, samples, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: (samples as? [HKQuantitySample]) ?? [])
+            }
+            healthStore.execute(query)
+        }
+    }
+
+    private func fetchWorkouts(from startDate: Date) async throws -> [HKWorkout] {
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: nil, options: .strictStartDate)
+        let sortDescriptors = [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(sampleType: HKObjectType.workoutType(), predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: sortDescriptors) { _, samples, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: (samples as? [HKWorkout]) ?? [])
+            }
+            healthStore.execute(query)
+        }
+    }
+
+    @discardableResult
+    private func upsertBodyMetric(in logs: inout [BodyMetricLog], date: Date, weightKg: Double, bodyFatPercent: Double) -> UUID {
+        let day = date.startOfDayInCurrentCalendar
+        if let index = logs.firstIndex(where: { $0.date.startOfDayInCurrentCalendar == day }) {
+            logs[index].weightKg = weightKg
+            logs[index].bodyFatPercent = bodyFatPercent
+            return logs[index].id
+        }
+
+        let log = BodyMetricLog(
+            id: UUID(),
+            date: day,
+            weightKg: weightKg,
+            bodyFatPercent: bodyFatPercent
+        )
+        logs.append(log)
+        return log.id
+    }
+
+    private func loadStringSet(forKey key: String) -> Set<String> {
+        Set(defaults.stringArray(forKey: key) ?? [])
+    }
+
+    private func saveStringSet(_ values: Set<String>, forKey key: String) {
+        defaults.set(Array(values), forKey: key)
     }
 }

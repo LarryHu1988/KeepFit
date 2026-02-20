@@ -77,6 +77,7 @@ struct LoseWeightView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        KeepFitHaptics.impact(.light)
                         onSettingsTap()
                     } label: {
                         Image(systemName: "gearshape.fill")
@@ -205,6 +206,7 @@ struct LoseWeightView: View {
             VStack(spacing: 12) {
                 HStack {
                     Button {
+                        KeepFitHaptics.selection()
                         monthCursor = AppPreferences.calendar.date(byAdding: .month, value: -1, to: monthCursor) ?? monthCursor
                     } label: {
                         Image(systemName: "chevron.left")
@@ -216,6 +218,7 @@ struct LoseWeightView: View {
                     Spacer()
 
                     Button {
+                        KeepFitHaptics.selection()
                         monthCursor = AppPreferences.calendar.date(byAdding: .month, value: 1, to: monthCursor) ?? monthCursor
                     } label: {
                         Image(systemName: "chevron.right")
@@ -322,6 +325,7 @@ struct LoseWeightView: View {
 
             HStack(spacing: 8) {
                 Button {
+                    KeepFitHaptics.impact(.light)
                     bodyMetricDateDraft = selectedDate
                     showBodyMetricDatePicker = true
                 } label: {
@@ -376,6 +380,7 @@ struct LoseWeightView: View {
                 .background(metricFieldBackground)
 
                 Button {
+                    KeepFitHaptics.impact(.medium)
                     saveBodyMetric()
                 } label: {
                     Image(systemName: "plus")
@@ -405,6 +410,7 @@ struct LoseWeightView: View {
                     .font(.headline.weight(.semibold))
                 Spacer()
                 Button(localized("关闭", "Close")) {
+                    KeepFitHaptics.impact(.light)
                     showBodyMetricDatePicker = false
                 }
                 .font(.subheadline)
@@ -415,6 +421,7 @@ struct LoseWeightView: View {
                 selection: Binding(
                     get: { bodyMetricDateDraft },
                     set: { newValue in
+                        KeepFitHaptics.selection()
                         bodyMetricDateDraft = newValue
                         selectedDate = newValue
                         showBodyMetricDatePicker = false

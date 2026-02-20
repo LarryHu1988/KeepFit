@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 struct EatWellView: View {
     @EnvironmentObject private var appState: AppState
@@ -41,17 +40,9 @@ struct EatWellView: View {
         EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
     }
 
-    private var proteinIcon: String {
-        resolvedMacroSymbol(preferred: "fish.fill", fallback: "bolt.heart.fill")
-    }
-
-    private var carbsIcon: String {
-        resolvedMacroSymbol(preferred: "carrot.fill", fallback: "leaf.fill")
-    }
-
-    private var fatIcon: String {
-        resolvedMacroSymbol(preferred: "avocado.fill", fallback: "drop.fill")
-    }
+    private let proteinEmoji = "🍗"
+    private let carbsEmoji = "🍚"
+    private let fatEmoji = "🧈"
 
     private var macroEnergy: Double {
         max(1, todayNutrition.protein * 4 + todayNutrition.carbs * 4 + todayNutrition.fat * 9)
@@ -79,6 +70,7 @@ struct EatWellView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        KeepFitHaptics.impact(.light)
                         onSettingsTap()
                     } label: {
                         Image(systemName: "gearshape.fill")
@@ -167,9 +159,9 @@ struct EatWellView: View {
             accent: .orange
         ) {
             HStack(spacing: 0) {
-                nutrientColumn(icon: proteinIcon, iconColor: .red, name: localized("蛋白", "Protein"), value: "\(Int(todayNutrition.protein)) g", percent: Int(todayNutrition.protein * 4 / macroEnergy * 100))
-                nutrientColumn(icon: carbsIcon, iconColor: .green, name: localized("碳水", "Carbs"), value: "\(Int(todayNutrition.carbs)) g", percent: Int(todayNutrition.carbs * 4 / macroEnergy * 100))
-                nutrientColumn(icon: fatIcon, iconColor: .orange, name: localized("脂肪", "Fat"), value: "\(Int(todayNutrition.fat)) g", percent: Int(todayNutrition.fat * 9 / macroEnergy * 100))
+                nutrientColumn(iconEmoji: proteinEmoji, name: localized("蛋白", "Protein"), value: "\(Int(todayNutrition.protein)) g", percent: Int(todayNutrition.protein * 4 / macroEnergy * 100))
+                nutrientColumn(iconEmoji: carbsEmoji, name: localized("碳水", "Carbs"), value: "\(Int(todayNutrition.carbs)) g", percent: Int(todayNutrition.carbs * 4 / macroEnergy * 100))
+                nutrientColumn(iconEmoji: fatEmoji, name: localized("脂肪", "Fat"), value: "\(Int(todayNutrition.fat)) g", percent: Int(todayNutrition.fat * 9 / macroEnergy * 100))
             }
             .frame(maxWidth: .infinity)
 
@@ -193,6 +185,7 @@ struct EatWellView: View {
             VStack(spacing: 10) {
                 HStack(spacing: 6) {
                     Button {
+                        KeepFitHaptics.impact(.light)
                         showIntakeTimeSheet = true
                     } label: {
                         HStack(spacing: 6) {
@@ -212,6 +205,7 @@ struct EatWellView: View {
                     .buttonStyle(.plain)
 
                     Button {
+                        KeepFitHaptics.impact(.light)
                         showFoodSheet = true
                     } label: {
                         HStack(spacing: 8) {
@@ -254,6 +248,7 @@ struct EatWellView: View {
                     .background(inputFieldBackground)
 
                     Button {
+                        KeepFitHaptics.impact(.medium)
                         addFoodLog()
                     } label: {
                         Image(systemName: "plus")
@@ -303,6 +298,7 @@ struct EatWellView: View {
                                 .foregroundStyle(.orange)
 
                             Button {
+                                KeepFitHaptics.impact(.rigid)
                                 appState.deleteFoodLog(log)
                             } label: {
                                 Image(systemName: "trash")
@@ -348,12 +344,12 @@ struct EatWellView: View {
     }
 
     @ViewBuilder
-    private func nutrientColumn(icon: String, iconColor: Color, name: String, value: String, percent: Int) -> some View {
+    private func nutrientColumn(iconEmoji: String, name: String, value: String, percent: Int) -> some View {
         VStack(spacing: 5) {
-            Image(systemName: icon)
-                .font(.body.weight(.semibold))
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(iconColor)
+            Text(iconEmoji)
+                .font(.system(size: 18))
+                .frame(height: 22)
+                .accessibilityHidden(true)
             Text(name)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -366,10 +362,6 @@ struct EatWellView: View {
                 .monospacedDigit()
         }
         .frame(maxWidth: .infinity)
-    }
-
-    private func resolvedMacroSymbol(preferred: String, fallback: String) -> String {
-        UIImage(systemName: preferred) != nil ? preferred : fallback
     }
 
     private func formattedAmount(_ value: Double) -> String {
@@ -404,6 +396,7 @@ struct EatWellView: View {
                 .labelsHidden()
 
                 Button(localized("完成", "Done")) {
+                    KeepFitHaptics.impact(.light)
                     showIntakeTimeSheet = false
                 }
                 .buttonStyle(.borderedProminent)
