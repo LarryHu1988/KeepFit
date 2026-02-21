@@ -543,6 +543,23 @@ final class AppState: ObservableObject {
             .map { $0 }
     }
 
+    func dailyNutritionRecords(inMonthOf date: Date) -> [DailyNutritionRecord] {
+        let calendar = AppPreferences.calendar
+        let grouped = Dictionary(grouping: foodLogs) { $0.date.startOfDayInCurrentCalendar }
+        return grouped
+            .compactMap { day, logs -> DailyNutritionRecord? in
+                guard calendar.isDate(day, equalTo: date, toGranularity: .month) else { return nil }
+                return DailyNutritionRecord(
+                    date: day,
+                    calories: logs.reduce(0) { $0 + $1.calories },
+                    protein: logs.reduce(0) { $0 + $1.protein },
+                    carbs: logs.reduce(0) { $0 + $1.carbs },
+                    fat: logs.reduce(0) { $0 + $1.fat }
+                )
+            }
+            .sorted(by: { $0.date > $1.date })
+    }
+
     func dailyExerciseRecords(limit: Int = 30) -> [DailyExerciseRecord] {
         let grouped = Dictionary(grouping: exerciseLogs) { $0.date.startOfDayInCurrentCalendar }
         return grouped
@@ -556,6 +573,21 @@ final class AppState: ObservableObject {
             .sorted(by: { $0.date > $1.date })
             .prefix(limit)
             .map { $0 }
+    }
+
+    func dailyExerciseRecords(inMonthOf date: Date) -> [DailyExerciseRecord] {
+        let calendar = AppPreferences.calendar
+        let grouped = Dictionary(grouping: exerciseLogs) { $0.date.startOfDayInCurrentCalendar }
+        return grouped
+            .compactMap { day, logs -> DailyExerciseRecord? in
+                guard calendar.isDate(day, equalTo: date, toGranularity: .month) else { return nil }
+                return DailyExerciseRecord(
+                    date: day,
+                    caloriesBurned: logs.reduce(0) { $0 + $1.caloriesBurned(weightKg: profile.weightKg) },
+                    minutes: logs.reduce(0) { $0 + $1.durationMinutes }
+                )
+            }
+            .sorted(by: { $0.date > $1.date })
     }
 
     func calorieTrends(days: Int = 30) -> [DailyCalorieTrend] {

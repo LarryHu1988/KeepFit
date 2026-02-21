@@ -294,9 +294,9 @@ struct MoveMoreView: View {
     }
 
     private var dailyHistoryCard: some View {
-        let records = appState.dailyExerciseRecords(limit: 21)
+        let records = appState.dailyExerciseRecords(inMonthOf: selectedDate)
         return CardContainer(
-            title: localized("历史锻炼", "History"),
+            title: localized("当月锻炼", "Monthly Workout"),
             subtitle: nil,
             accent: .green
         ) {

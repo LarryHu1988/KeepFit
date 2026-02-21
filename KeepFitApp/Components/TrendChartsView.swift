@@ -50,12 +50,9 @@ struct CalorieTrendChartView: View {
     }
 
     private var displayTrends: [DailyCalorieTrend] {
-        guard let firstDataIndex = calorieTrends.firstIndex(where: {
-            $0.intake > 0.01 || $0.expenditure > 0.01
-        }) else {
-            return calorieTrends
+        calorieTrends.filter { trend in
+            trend.intake > 0.01 || trend.expenditure > 0.01
         }
-        return Array(calorieTrends[firstDataIndex...])
     }
 
     private var axisLabelCount: Int {

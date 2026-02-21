@@ -313,9 +313,9 @@ struct EatWellView: View {
     }
 
     private var dailyHistoryCard: some View {
-        let records = appState.dailyNutritionRecords(limit: 21)
+        let records = appState.dailyNutritionRecords(inMonthOf: selectedDate)
         return CardContainer(
-            title: localized("历史进食", "History"),
+            title: localized("当月进食", "Monthly Food"),
             subtitle: nil,
             accent: .orange
         ) {
