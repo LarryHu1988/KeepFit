@@ -66,6 +66,10 @@ struct SettingsView: View {
     @State private var summaryReminderTimeDraft = Date()
 
     @State private var activeInfo: SettingsInfoTopic?
+    @State private var selectionPopoverAnchor = UnitPoint(x: 0.9, y: 0.5)
+    @State private var selectionPopoverArrowEdge: Edge = .bottom
+    @State private var infoPopoverAnchor = UnitPoint(x: 0.5, y: 0)
+    @State private var infoPopoverArrowEdge: Edge = .bottom
     @State private var handlingHealthToggle = false
     @State private var handlingReminderToggle = false
     @State private var showHealthSyncAlert = false
@@ -586,14 +590,41 @@ struct SettingsView: View {
                 draft.wrappedValue = date(fromMinuteOfDay: minuteOfDay.wrappedValue)
             }
         ) {
-            glassOptionPopover(accent: color, title: title, width: 320) {
-                DatePicker(
-                    title,
-                    selection: draft,
-                    displayedComponents: [.hourAndMinute]
-                )
-                .datePickerStyle(.wheel)
-                .labelsHidden()
+            let hourOptions = (0...23).map { String(format: "%02d", $0) }
+            let minuteOptions = (0...59).map { String(format: "%02d", $0) }
+            let hourColumnWidth = adaptiveWheelColumnWidth(options: hourOptions, minWidth: 62, maxWidth: 82, sideInset: 24)
+            let minuteColumnWidth = adaptiveWheelColumnWidth(options: minuteOptions, minWidth: 62, maxWidth: 82, sideInset: 24)
+            let popoverWidth = adaptiveWheelPopoverWidth(
+                columnWidths: [hourColumnWidth, minuteColumnWidth],
+                horizontalPadding: 5,
+                minWidth: 176,
+                maxWidth: 236
+            )
+            let hourBinding = reminderHourBinding(for: draft)
+            let minuteBinding = reminderMinuteBinding(for: draft)
+            glassOptionPopover(accent: color, title: title, width: popoverWidth, horizontalPadding: 5) {
+                HStack(spacing: 0) {
+                    Picker(localized("时", "Hour"), selection: hourBinding) {
+                        ForEach(0...23, id: \.self) { hour in
+                            wheelOptionText(String(format: "%02d", hour)).tag(hour)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .keepFitPopoverWheelSizing()
+                    .frame(width: hourColumnWidth)
+
+                    Picker(localized("分", "Minute"), selection: minuteBinding) {
+                        ForEach(0...59, id: \.self) { minute in
+                            wheelOptionText(String(format: "%02d", minute)).tag(minute)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .keepFitPopoverWheelSizing()
+                    .frame(width: minuteColumnWidth)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
                 .frame(height: 156)
 
                 popoverDoneButton {
@@ -609,7 +640,11 @@ struct SettingsView: View {
 
     private var sexSelectionRow: some View {
         selectionPopoverRow(icon: "person.fill", title: localized("性别", "Sex"), color: .pink, value: appState.profile.sex.title, isPresented: $showSexSheet) {
-            glassOptionPopover(accent: .pink, title: localized("选择性别", "Select Sex")) {
+            glassOptionPopover(
+                accent: .pink,
+                title: localized("选择性别", "Select Sex"),
+                width: estimatedPopoverWidth(from: [BiologicalSex.male.title, BiologicalSex.female.title], minWidth: 184, maxWidth: 220)
+            ) {
                 ForEach([BiologicalSex.male, .female]) { option in
                     popoverOptionCell(title: option.title, selected: appState.profile.sex == option, accent: .pink) {
                         appState.profile.sex = option
@@ -621,7 +656,20 @@ struct SettingsView: View {
     }
 
     private var birthSelectionRow: some View {
-        selectionPopoverRow(
+        let currentYear = AppPreferences.calendar.component(.year, from: Date())
+        let yearOptions = ((currentYear - 100)...(currentYear - 10)).map { localized("\($0) 年", "\($0)") }
+        let monthOptions = (1...12).map { localized("\($0) 月", "\($0)") }
+        let dayOptions = (1...31).map { localized("\($0) 日", "\($0)") }
+        let yearColumnWidth = adaptiveWheelColumnWidth(options: yearOptions, minWidth: 84, maxWidth: 122, sideInset: 34)
+        let monthColumnWidth = adaptiveWheelColumnWidth(options: monthOptions, minWidth: 68, maxWidth: 94, sideInset: 30)
+        let dayColumnWidth = adaptiveWheelColumnWidth(options: dayOptions, minWidth: 68, maxWidth: 94, sideInset: 30)
+        let popoverWidth = adaptiveWheelPopoverWidth(
+            columnWidths: [yearColumnWidth, monthColumnWidth, dayColumnWidth],
+            horizontalPadding: 5,
+            minWidth: 226,
+            maxWidth: 332
+        )
+        return selectionPopoverRow(
             icon: "calendar",
             title: localized("生日", "Birthday"),
             color: .orange,
@@ -629,33 +677,39 @@ struct SettingsView: View {
             isPresented: $showBirthSheet,
             onOpen: { syncBirthDrafts() }
         ) {
-            glassOptionPopover(accent: .orange, title: localized("选择生日", "Select Birthday"), width: 330) {
+            glassOptionPopover(accent: .orange, title: localized("选择生日", "Select Birthday"), width: popoverWidth, horizontalPadding: 5) {
                 HStack(spacing: 0) {
-                    let currentYear = AppPreferences.calendar.component(.year, from: Date())
                     Picker(localized("年", "Year"), selection: $birthYearDraft) {
                         ForEach((currentYear - 100)...(currentYear - 10), id: \.self) { year in
-                            Text(localized("\(year) 年", "\(year)")).tag(year)
+                            wheelOptionText(localized("\(year) 年", "\(year)")).tag(year)
                         }
                     }
                     .pickerStyle(.wheel)
                     .labelsHidden()
+                    .keepFitPopoverWheelSizing()
+                    .frame(width: yearColumnWidth)
 
                     Picker(localized("月", "Month"), selection: $birthMonthDraft) {
                         ForEach(1...12, id: \.self) { month in
-                            Text(localized("\(month) 月", "\(month)")).tag(month)
+                            wheelOptionText(localized("\(month) 月", "\(month)")).tag(month)
                         }
                     }
                     .pickerStyle(.wheel)
                     .labelsHidden()
+                    .keepFitPopoverWheelSizing()
+                    .frame(width: monthColumnWidth)
 
                     Picker(localized("日", "Day"), selection: $birthDayDraft) {
                         ForEach(1...maxBirthDayInDraftMonth, id: \.self) { day in
-                            Text(localized("\(day) 日", "\(day)")).tag(day)
+                            wheelOptionText(localized("\(day) 日", "\(day)")).tag(day)
                         }
                     }
                     .pickerStyle(.wheel)
                     .labelsHidden()
+                    .keepFitPopoverWheelSizing()
+                    .frame(width: dayColumnWidth)
                 }
+                .frame(maxWidth: .infinity, alignment: .center)
                 .frame(height: 156)
 
                 popoverDoneButton {
@@ -667,7 +721,19 @@ struct SettingsView: View {
     }
 
     private var heightSelectionRow: some View {
-        selectionPopoverRow(
+        let metricOptions = (120...220).map { "\($0) cm" }
+        let feetOptions = (3...7).map { "\($0) ft" }
+        let inchOptions = (0...11).map { "\($0) in" }
+        let metricColumnWidth = adaptiveWheelColumnWidth(options: metricOptions, minWidth: 92, maxWidth: 136, sideInset: 32)
+        let feetColumnWidth = adaptiveWheelColumnWidth(options: feetOptions, minWidth: 70, maxWidth: 102, sideInset: 30)
+        let inchColumnWidth = adaptiveWheelColumnWidth(options: inchOptions, minWidth: 70, maxWidth: 102, sideInset: 30)
+        let popoverWidth = adaptiveWheelPopoverWidth(
+            columnWidths: heightUnit == .centimeter ? [metricColumnWidth] : [feetColumnWidth, inchColumnWidth],
+            horizontalPadding: 5,
+            minWidth: heightUnit == .centimeter ? 178 : 204,
+            maxWidth: heightUnit == .centimeter ? 246 : 292
+        )
+        return selectionPopoverRow(
             icon: "ruler",
             title: localized("身高", "Height"),
             color: .blue,
@@ -675,34 +741,50 @@ struct SettingsView: View {
             isPresented: $showHeightSheet,
             onOpen: { syncHeightDrafts() }
         ) {
-            glassOptionPopover(accent: .blue, title: localized("选择身高", "Select Height"), width: 330) {
+            glassOptionPopover(
+                accent: .blue,
+                title: localized("选择身高", "Select Height"),
+                width: popoverWidth,
+                horizontalPadding: 5
+            ) {
                 if heightUnit == .centimeter {
-                    Picker(localized("身高", "Height"), selection: $metricHeightDraft) {
-                        ForEach(120...220, id: \.self) { value in
-                            Text("\(value) cm").tag(value)
+                    HStack(spacing: 0) {
+                        Spacer(minLength: 0)
+                        Picker(localized("身高", "Height"), selection: $metricHeightDraft) {
+                            ForEach(120...220, id: \.self) { value in
+                                wheelOptionText("\(value) cm").tag(value)
+                            }
                         }
+                        .pickerStyle(.wheel)
+                        .labelsHidden()
+                        .keepFitPopoverWheelSizing()
+                        .frame(width: metricColumnWidth)
+                        Spacer(minLength: 0)
                     }
-                    .pickerStyle(.wheel)
-                    .labelsHidden()
                     .frame(height: 156)
                 } else {
                     HStack(spacing: 0) {
                         Picker("ft", selection: $imperialHeightFeetDraft) {
                             ForEach(3...7, id: \.self) { value in
-                                Text("\(value) ft").tag(value)
+                                wheelOptionText("\(value) ft").tag(value)
                             }
                         }
                         .pickerStyle(.wheel)
                         .labelsHidden()
+                        .keepFitPopoverWheelSizing()
+                        .frame(width: feetColumnWidth)
 
                         Picker("in", selection: $imperialHeightInchesDraft) {
                             ForEach(0...11, id: \.self) { value in
-                                Text("\(value) in").tag(value)
+                                wheelOptionText("\(value) in").tag(value)
                             }
                         }
                         .pickerStyle(.wheel)
                         .labelsHidden()
+                        .keepFitPopoverWheelSizing()
+                        .frame(width: inchColumnWidth)
                     }
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .frame(height: 156)
                 }
 
@@ -715,7 +797,21 @@ struct SettingsView: View {
     }
 
     private var weightSelectionRow: some View {
-        selectionPopoverRow(
+        let kilogramOptions = (60...400).map { String(format: "%.1f kg", Double($0) / 2) }
+        let poundOptions = (66...440).map { "\($0) lb" }
+        let columnWidth = adaptiveWheelColumnWidth(
+            options: weightUnit == .kilogram ? kilogramOptions : poundOptions,
+            minWidth: 98,
+            maxWidth: 152,
+            sideInset: 34
+        )
+        let popoverWidth = adaptiveWheelPopoverWidth(
+            columnWidths: [columnWidth],
+            horizontalPadding: 5,
+            minWidth: 178,
+            maxWidth: 246
+        )
+        return selectionPopoverRow(
             icon: "scalemass",
             title: localized("体重", "Weight"),
             color: .mint,
@@ -723,25 +819,37 @@ struct SettingsView: View {
             isPresented: $showWeightSheet,
             onOpen: { syncWeightDrafts() }
         ) {
-            glassOptionPopover(accent: .mint, title: localized("选择体重", "Select Weight"), width: 320) {
+            glassOptionPopover(accent: .mint, title: localized("选择体重", "Select Weight"), width: popoverWidth, horizontalPadding: 5) {
                 if weightUnit == .kilogram {
-                    Picker(localized("体重", "Weight"), selection: $metricWeightHalfDraft) {
-                        ForEach(60...400, id: \.self) { value in
-                            let kg = Double(value) / 2
-                            Text(String(format: "%.1f kg", kg)).tag(value)
+                    HStack(spacing: 0) {
+                        Spacer(minLength: 0)
+                        Picker(localized("体重", "Weight"), selection: $metricWeightHalfDraft) {
+                            ForEach(60...400, id: \.self) { value in
+                                let kg = Double(value) / 2
+                                wheelOptionText(String(format: "%.1f kg", kg)).tag(value)
+                            }
                         }
+                        .pickerStyle(.wheel)
+                        .labelsHidden()
+                        .keepFitPopoverWheelSizing()
+                        .frame(width: columnWidth)
+                        Spacer(minLength: 0)
                     }
-                    .pickerStyle(.wheel)
-                    .labelsHidden()
                     .frame(height: 156)
                 } else {
-                    Picker(localized("体重", "Weight"), selection: $imperialWeightLbDraft) {
-                        ForEach(66...440, id: \.self) { value in
-                            Text("\(value) lb").tag(value)
+                    HStack(spacing: 0) {
+                        Spacer(minLength: 0)
+                        Picker(localized("体重", "Weight"), selection: $imperialWeightLbDraft) {
+                            ForEach(66...440, id: \.self) { value in
+                                wheelOptionText("\(value) lb").tag(value)
+                            }
                         }
+                        .pickerStyle(.wheel)
+                        .labelsHidden()
+                        .keepFitPopoverWheelSizing()
+                        .frame(width: columnWidth)
+                        Spacer(minLength: 0)
                     }
-                    .pickerStyle(.wheel)
-                    .labelsHidden()
                     .frame(height: 156)
                 }
 
@@ -755,7 +863,11 @@ struct SettingsView: View {
 
     private var activitySelectionRow: some View {
         selectionPopoverRow(icon: "figure.walk", title: localized("活动水平", "Activity"), color: .green, value: appState.profile.activityLevel.title, isPresented: $showActivitySheet) {
-            glassOptionPopover(accent: .green, title: localized("选择活动水平", "Select Activity")) {
+            glassOptionPopover(
+                accent: .green,
+                title: localized("选择活动水平", "Select Activity"),
+                width: estimatedPopoverWidth(from: ActivityLevel.allCases.map(\.title), minWidth: 190, maxWidth: 248)
+            ) {
                 ForEach(ActivityLevel.allCases) { option in
                     popoverOptionCell(title: option.title, selected: appState.profile.activityLevel == option, accent: .green) {
                         appState.profile.activityLevel = option
@@ -767,7 +879,21 @@ struct SettingsView: View {
     }
 
     private var targetWeightSelectionRow: some View {
-        selectionPopoverRow(
+        let kilogramOptions = (70...360).map { String(format: "%.1f kg", Double($0) / 2) }
+        let poundOptions = (88...440).map { "\($0) lb" }
+        let columnWidth = adaptiveWheelColumnWidth(
+            options: weightUnit == .kilogram ? kilogramOptions : poundOptions,
+            minWidth: 98,
+            maxWidth: 152,
+            sideInset: 34
+        )
+        let popoverWidth = adaptiveWheelPopoverWidth(
+            columnWidths: [columnWidth],
+            horizontalPadding: 5,
+            minWidth: 178,
+            maxWidth: 246
+        )
+        return selectionPopoverRow(
             icon: "target",
             title: localized("目标体重", "Target Weight"),
             color: .teal,
@@ -775,25 +901,37 @@ struct SettingsView: View {
             isPresented: $showTargetWeightSheet,
             onOpen: { syncGoalDrafts() }
         ) {
-            glassOptionPopover(accent: .teal, title: localized("选择目标体重", "Select Target Weight"), width: 320) {
+            glassOptionPopover(accent: .teal, title: localized("选择目标体重", "Select Target Weight"), width: popoverWidth, horizontalPadding: 5) {
                 if weightUnit == .kilogram {
-                    Picker(localized("目标体重", "Target Weight"), selection: $targetMetricWeightHalfDraft) {
-                        ForEach(70...360, id: \.self) { value in
-                            let kg = Double(value) / 2
-                            Text(String(format: "%.1f kg", kg)).tag(value)
+                    HStack(spacing: 0) {
+                        Spacer(minLength: 0)
+                        Picker(localized("目标体重", "Target Weight"), selection: $targetMetricWeightHalfDraft) {
+                            ForEach(70...360, id: \.self) { value in
+                                let kg = Double(value) / 2
+                                wheelOptionText(String(format: "%.1f kg", kg)).tag(value)
+                            }
                         }
+                        .pickerStyle(.wheel)
+                        .labelsHidden()
+                        .keepFitPopoverWheelSizing()
+                        .frame(width: columnWidth)
+                        Spacer(minLength: 0)
                     }
-                    .pickerStyle(.wheel)
-                    .labelsHidden()
                     .frame(height: 156)
                 } else {
-                    Picker(localized("目标体重", "Target Weight"), selection: $targetImperialWeightLbDraft) {
-                        ForEach(88...440, id: \.self) { value in
-                            Text("\(value) lb").tag(value)
+                    HStack(spacing: 0) {
+                        Spacer(minLength: 0)
+                        Picker(localized("目标体重", "Target Weight"), selection: $targetImperialWeightLbDraft) {
+                            ForEach(88...440, id: \.self) { value in
+                                wheelOptionText("\(value) lb").tag(value)
+                            }
                         }
+                        .pickerStyle(.wheel)
+                        .labelsHidden()
+                        .keepFitPopoverWheelSizing()
+                        .frame(width: columnWidth)
+                        Spacer(minLength: 0)
                     }
-                    .pickerStyle(.wheel)
-                    .labelsHidden()
                     .frame(height: 156)
                 }
 
@@ -806,7 +944,15 @@ struct SettingsView: View {
     }
 
     private var targetBodyFatSelectionRow: some View {
-        selectionPopoverRow(
+        let bodyFatOptions = (80...450).map { String(format: "%.1f %%", Double($0) / 10) }
+        let columnWidth = adaptiveWheelColumnWidth(options: bodyFatOptions, minWidth: 102, maxWidth: 152, sideInset: 34)
+        let popoverWidth = adaptiveWheelPopoverWidth(
+            columnWidths: [columnWidth],
+            horizontalPadding: 5,
+            minWidth: 178,
+            maxWidth: 246
+        )
+        return selectionPopoverRow(
             icon: "chart.pie.fill",
             title: localized("目标体脂", "Target Body Fat"),
             color: .pink,
@@ -814,15 +960,21 @@ struct SettingsView: View {
             isPresented: $showTargetBodyFatSheet,
             onOpen: { syncGoalDrafts() }
         ) {
-            glassOptionPopover(accent: .pink, title: localized("选择目标体脂", "Select Target Body Fat"), width: 320) {
-                Picker(localized("目标体脂", "Target Body Fat"), selection: $targetBodyFatTenthDraft) {
-                    ForEach(80...450, id: \.self) { value in
-                        let percent = Double(value) / 10
-                        Text(String(format: "%.1f %%", percent)).tag(value)
+            glassOptionPopover(accent: .pink, title: localized("选择目标体脂", "Select Target Body Fat"), width: popoverWidth, horizontalPadding: 5) {
+                HStack(spacing: 0) {
+                    Spacer(minLength: 0)
+                    Picker(localized("目标体脂", "Target Body Fat"), selection: $targetBodyFatTenthDraft) {
+                        ForEach(80...450, id: \.self) { value in
+                            let percent = Double(value) / 10
+                            wheelOptionText(String(format: "%.1f %%", percent)).tag(value)
+                        }
                     }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .keepFitPopoverWheelSizing()
+                    .frame(width: columnWidth)
+                    Spacer(minLength: 0)
                 }
-                .pickerStyle(.wheel)
-                .labelsHidden()
                 .frame(height: 156)
 
                 popoverDoneButton {
@@ -834,7 +986,15 @@ struct SettingsView: View {
     }
 
     private var exerciseGoalSelectionRow: some View {
-        selectionPopoverRow(
+        let options = exerciseGoalRange.map { "\($0) \(energyUnit.symbol)" }
+        let columnWidth = adaptiveWheelColumnWidth(options: options, minWidth: 104, maxWidth: 164, sideInset: 36)
+        let popoverWidth = adaptiveWheelPopoverWidth(
+            columnWidths: [columnWidth],
+            horizontalPadding: 5,
+            minWidth: 178,
+            maxWidth: 258
+        )
+        return selectionPopoverRow(
             icon: "figure.run.circle.fill",
             title: localized("每日运动目标", "Daily Exercise Goal"),
             color: .green,
@@ -842,14 +1002,20 @@ struct SettingsView: View {
             isPresented: $showExerciseGoalSheet,
             onOpen: { syncGoalDrafts() }
         ) {
-            glassOptionPopover(accent: .green, title: localized("选择每日运动目标", "Select Daily Exercise Goal"), width: 320) {
-                Picker(localized("每日运动目标", "Daily Exercise Goal"), selection: $exerciseGoalDraft) {
-                    ForEach(exerciseGoalRange, id: \.self) { value in
-                        Text("\(value) \(energyUnit.symbol)").tag(value)
+            glassOptionPopover(accent: .green, title: localized("选择每日运动目标", "Select Daily Exercise Goal"), width: popoverWidth, horizontalPadding: 5) {
+                HStack(spacing: 0) {
+                    Spacer(minLength: 0)
+                    Picker(localized("每日运动目标", "Daily Exercise Goal"), selection: $exerciseGoalDraft) {
+                        ForEach(exerciseGoalRange, id: \.self) { value in
+                            wheelOptionText("\(value) \(energyUnit.symbol)").tag(value)
+                        }
                     }
+                    .pickerStyle(.wheel)
+                    .labelsHidden()
+                    .keepFitPopoverWheelSizing()
+                    .frame(width: columnWidth)
+                    Spacer(minLength: 0)
                 }
-                .pickerStyle(.wheel)
-                .labelsHidden()
                 .frame(height: 156)
 
                 popoverDoneButton {
@@ -898,7 +1064,11 @@ struct SettingsView: View {
 
     private var languageSelectionRow: some View {
         selectionPopoverRow(icon: "globe", title: localized("语言选择", "Language Selection"), color: .blue, value: appLanguage.title, isPresented: $showLanguageSheet) {
-            glassOptionPopover(accent: .blue, title: localized("选择语言", "Select Language")) {
+            glassOptionPopover(
+                accent: .blue,
+                title: localized("选择语言", "Select Language"),
+                width: estimatedPopoverWidth(from: AppLanguageOption.allCases.map(\.title), minWidth: 184, maxWidth: 228)
+            ) {
                 ForEach(AppLanguageOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == appLanguage, accent: .blue) {
                         appLanguageRaw = option.rawValue
@@ -911,7 +1081,11 @@ struct SettingsView: View {
 
     private var energyUnitSelectionRow: some View {
         selectionPopoverRow(icon: "flame.fill", title: localized("能量", "Energy"), color: .teal, value: energyUnit.title, isPresented: $showEnergyUnitSheet) {
-            glassOptionPopover(accent: .teal, title: localized("选择能量", "Select Energy")) {
+            glassOptionPopover(
+                accent: .teal,
+                title: localized("选择能量", "Select Energy"),
+                width: estimatedPopoverWidth(from: EnergyUnitOption.allCases.map(\.title), minWidth: 184, maxWidth: 228)
+            ) {
                 ForEach(EnergyUnitOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == energyUnit, accent: .teal) {
                         energyUnitRaw = option.rawValue
@@ -925,7 +1099,11 @@ struct SettingsView: View {
 
     private var heightUnitSelectionRow: some View {
         selectionPopoverRow(icon: "ruler", title: localized("身高", "Height"), color: .blue, value: heightUnit.title, isPresented: $showHeightUnitSheet) {
-            glassOptionPopover(accent: .blue, title: localized("选择身高", "Select Height")) {
+            glassOptionPopover(
+                accent: .blue,
+                title: localized("选择身高", "Select Height"),
+                width: estimatedPopoverWidth(from: HeightUnitOption.allCases.map(\.title), minWidth: 184, maxWidth: 232)
+            ) {
                 ForEach(HeightUnitOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == heightUnit, accent: .blue) {
                         heightUnitRaw = option.rawValue
@@ -939,7 +1117,11 @@ struct SettingsView: View {
 
     private var weightUnitSelectionRow: some View {
         selectionPopoverRow(icon: "scalemass", title: localized("体重", "Weight"), color: .mint, value: weightUnit.title, isPresented: $showWeightUnitSheet) {
-            glassOptionPopover(accent: .mint, title: localized("选择体重", "Select Weight")) {
+            glassOptionPopover(
+                accent: .mint,
+                title: localized("选择体重", "Select Weight"),
+                width: estimatedPopoverWidth(from: WeightUnitOption.allCases.map(\.title), minWidth: 184, maxWidth: 232)
+            ) {
                 ForEach(WeightUnitOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == weightUnit, accent: .mint) {
                         weightUnitRaw = option.rawValue
@@ -954,7 +1136,11 @@ struct SettingsView: View {
 
     private var weekStartSelectionRow: some View {
         selectionPopoverRow(icon: "calendar", title: localized("日历开始", "Week Start"), color: .orange, value: weekStart.title, isPresented: $showWeekStartSheet) {
-            glassOptionPopover(accent: .orange, title: localized("选择日历开始", "Select Week Start")) {
+            glassOptionPopover(
+                accent: .orange,
+                title: localized("选择日历开始", "Select Week Start"),
+                width: estimatedPopoverWidth(from: WeekStartOption.allCases.map(\.title), minWidth: 184, maxWidth: 232)
+            ) {
                 ForEach(WeekStartOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == weekStart, accent: .orange) {
                         weekStartRaw = option.rawValue
@@ -967,7 +1153,11 @@ struct SettingsView: View {
 
     private var themeSelectionRow: some View {
         selectionPopoverRow(icon: "circle.lefthalf.filled", title: localized("主题模式", "Theme"), color: .indigo, value: themeMode.title, isPresented: $showThemeSheet) {
-            glassOptionPopover(accent: .indigo, title: localized("选择主题模式", "Select Theme")) {
+            glassOptionPopover(
+                accent: .indigo,
+                title: localized("选择主题模式", "Select Theme"),
+                width: estimatedPopoverWidth(from: AppThemeMode.allCases.map(\.title), minWidth: 184, maxWidth: 236)
+            ) {
                 ForEach(AppThemeMode.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == themeMode, accent: .indigo) {
                         themeModeRaw = option.rawValue
@@ -1251,6 +1441,30 @@ struct SettingsView: View {
         return (components.hour ?? 0) * 60 + (components.minute ?? 0)
     }
 
+    private func reminderHourBinding(for draft: Binding<Date>) -> Binding<Int> {
+        Binding(
+            get: {
+                AppPreferences.calendar.component(.hour, from: draft.wrappedValue)
+            },
+            set: { newHour in
+                let minute = AppPreferences.calendar.component(.minute, from: draft.wrappedValue)
+                draft.wrappedValue = date(fromMinuteOfDay: newHour * 60 + minute)
+            }
+        )
+    }
+
+    private func reminderMinuteBinding(for draft: Binding<Date>) -> Binding<Int> {
+        Binding(
+            get: {
+                AppPreferences.calendar.component(.minute, from: draft.wrappedValue)
+            },
+            set: { newMinute in
+                let hour = AppPreferences.calendar.component(.hour, from: draft.wrappedValue)
+                draft.wrappedValue = date(fromMinuteOfDay: hour * 60 + newMinute)
+            }
+        )
+    }
+
     private func avatarView(size: CGFloat = 68) -> some View {
         Group {
             if let data = appState.profile.avatarJPEGData,
@@ -1277,6 +1491,125 @@ struct SettingsView: View {
             .frame(width: 18)
     }
 
+    private func normalizedUnitPoint(from location: CGPoint, in size: CGSize) -> UnitPoint {
+        let safeWidth = max(size.width, 1)
+        let safeHeight = max(size.height, 1)
+        let x = min(max(location.x / safeWidth, 0), 1)
+        let y = min(max(location.y / safeHeight, 0), 1)
+        return UnitPoint(x: x, y: y)
+    }
+
+    private func adaptivePopoverArrowEdge(globalY: CGFloat) -> Edge {
+        let screenHeight = max(UIScreen.main.bounds.height, 1)
+        return globalY < screenHeight * 0.5 ? .top : .bottom
+    }
+
+    private func anchorY(for arrowEdge: Edge) -> CGFloat {
+        switch arrowEdge {
+        case .top:
+            return 1
+        case .bottom:
+            return 0
+        default:
+            return 0.5
+        }
+    }
+
+    private var popoverMaxWidthOnScreen: CGFloat {
+        max(220, UIScreen.main.bounds.width - 42)
+    }
+
+    private let popoverWidthScale: CGFloat = 0.73
+
+    private func clampedPopoverWidth(_ proposed: CGFloat, minWidth: CGFloat, maxWidth: CGFloat) -> CGFloat {
+        let scaledMin = minWidth * popoverWidthScale
+        let scaledMax = maxWidth * popoverWidthScale
+        let scaledProposed = proposed * popoverWidthScale
+        let safeMax = min(scaledMax, popoverMaxWidthOnScreen)
+        return Swift.min(Swift.max(scaledProposed, scaledMin), safeMax)
+    }
+
+    private func estimatedPopoverWidth(from options: [String], minWidth: CGFloat = 184, maxWidth: CGFloat = 248) -> CGFloat {
+        let font = UIFont.preferredFont(forTextStyle: .subheadline)
+        let maxTextWidth = options
+            .map { ($0 as NSString).size(withAttributes: [.font: font]).width }
+            .max() ?? 0
+        let width = maxTextWidth + 58
+        return clampedPopoverWidth(width, minWidth: minWidth, maxWidth: maxWidth)
+    }
+
+    private func estimatedParagraphPopoverWidth(_ paragraphs: [String], minWidth: CGFloat = 220, maxWidth: CGFloat = 360) -> CGFloat {
+        let font = UIFont.preferredFont(forTextStyle: .caption2)
+        let maxTextWidth = paragraphs
+            .map { ($0 as NSString).size(withAttributes: [.font: font]).width }
+            .max() ?? 0
+        let width = maxTextWidth + 34
+        let safeMax = min(maxWidth, popoverMaxWidthOnScreen)
+        return Swift.min(Swift.max(width, minWidth), safeMax)
+    }
+
+    private var settingsValueUIFont: UIFont {
+        UIFont.preferredFont(forTextStyle: .subheadline)
+    }
+
+    private func measuredTextWidth(_ text: String, font: UIFont? = nil) -> CGFloat {
+        let resolvedFont = font ?? settingsValueUIFont
+        return ceil((text as NSString).size(withAttributes: [.font: resolvedFont]).width)
+    }
+
+    private func adaptiveWheelColumnWidth(
+        options: [String],
+        minWidth: CGFloat,
+        maxWidth: CGFloat,
+        sideInset: CGFloat = 28
+    ) -> CGFloat {
+        let maxTextWidth = options
+            .map { measuredTextWidth($0) }
+            .max() ?? 0
+        let proposed = maxTextWidth + sideInset
+        return Swift.min(Swift.max(proposed, minWidth), maxWidth)
+    }
+
+    private func adaptiveWheelPopoverWidth(
+        columnWidths: [CGFloat],
+        spacing: CGFloat = 0,
+        horizontalPadding: CGFloat = 5,
+        minWidth: CGFloat = 176,
+        maxWidth: CGFloat = 360
+    ) -> CGFloat {
+        let columns = columnWidths.reduce(0, +)
+        let spacingWidth = spacing * CGFloat(max(columnWidths.count - 1, 0))
+        let proposed = columns + spacingWidth + horizontalPadding * 2
+        let safeMax = min(maxWidth, popoverMaxWidthOnScreen)
+        return Swift.min(Swift.max(proposed, minWidth), safeMax)
+    }
+
+    @ViewBuilder
+    private func wheelOptionText(_ text: String) -> some View {
+        Text(text)
+            .font(.subheadline)
+            .lineLimit(1)
+            .minimumScaleFactor(0.9)
+            .allowsTightening(true)
+    }
+
+    private func presentSelectionPopover(
+        isPresented: Binding<Bool>,
+        onOpen: (() -> Void)?,
+        anchor: UnitPoint? = nil,
+        arrowEdge: Edge? = nil
+    ) {
+        triggerHapticIfNeeded()
+        if let anchor {
+            selectionPopoverAnchor = anchor
+        }
+        if let arrowEdge {
+            selectionPopoverArrowEdge = arrowEdge
+        }
+        onOpen?()
+        isPresented.wrappedValue = true
+    }
+
     private func selectionPopoverRow<PopoverContent: View>(
         icon: String,
         title: String,
@@ -1286,29 +1619,52 @@ struct SettingsView: View {
         onOpen: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> PopoverContent
     ) -> some View {
-        Button {
-            triggerHapticIfNeeded()
-            onOpen?()
-            isPresented.wrappedValue = true
-        } label: {
-            HStack(spacing: 10) {
-                rowIcon(icon, color)
-                Text(title)
-                    .foregroundStyle(.primary)
-                Spacer(minLength: 8)
-                if let value, !value.isEmpty {
-                    Text(value)
-                        .lineLimit(1)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                Image(systemName: "chevron.down")
-                    .font(.caption2.weight(.semibold))
+        HStack(spacing: 10) {
+            rowIcon(icon, color)
+            Text(title)
+                .foregroundStyle(.primary)
+            Spacer(minLength: 8)
+            if let value, !value.isEmpty {
+                Text(value)
+                    .lineLimit(1)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
+            Image(systemName: "chevron.down")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
         }
-        .buttonStyle(.plain)
-        .popover(isPresented: isPresented, attachmentAnchor: .rect(.bounds), arrowEdge: .bottom) {
+        .contentShape(Rectangle())
+        .overlay {
+            GeometryReader { proxy in
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture(coordinateSpace: .local) { location in
+                        let frame = proxy.frame(in: .global)
+                        let arrowEdge = adaptivePopoverArrowEdge(globalY: frame.midY)
+                        let rawAnchor = normalizedUnitPoint(from: location, in: proxy.size)
+                        let clampedX = min(max(rawAnchor.x, 0.08), 0.92)
+                        let anchor = UnitPoint(x: clampedX, y: anchorY(for: arrowEdge))
+                        presentSelectionPopover(
+                            isPresented: isPresented,
+                            onOpen: onOpen,
+                            anchor: anchor,
+                            arrowEdge: arrowEdge
+                        )
+                    }
+            }
+        }
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction {
+            let arrowEdge = adaptivePopoverArrowEdge(globalY: UIScreen.main.bounds.midY)
+            presentSelectionPopover(
+                isPresented: isPresented,
+                onOpen: onOpen,
+                anchor: UnitPoint(x: 0.9, y: 0.5),
+                arrowEdge: arrowEdge
+            )
+        }
+        .popover(isPresented: isPresented, attachmentAnchor: .point(selectionPopoverAnchor), arrowEdge: selectionPopoverArrowEdge) {
             content()
                 .presentationCompactAdaptation(.popover)
                 .presentationBackground(.clear)
@@ -1337,15 +1693,25 @@ struct SettingsView: View {
     private func glassOptionPopover<Content: View>(
         accent: Color,
         title _: String,
-        width: CGFloat = 292,
+        width: CGFloat? = nil,
+        minWidth: CGFloat = 184,
+        maxWidth: CGFloat = 248,
+        horizontalPadding: CGFloat = 12,
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             content()
-                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(12)
-        .frame(width: width, alignment: .leading)
+        .font(.subheadline)
+        .padding(.vertical, 12)
+        .padding(.horizontal, horizontalPadding)
+        .frame(
+            minWidth: minWidth,
+            idealWidth: width ?? minWidth,
+            maxWidth: width ?? min(maxWidth, popoverMaxWidthOnScreen),
+            alignment: .leading
+        )
+        .fixedSize(horizontal: width == nil, vertical: false)
         .background(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(.ultraThinMaterial)
@@ -1367,6 +1733,7 @@ struct SettingsView: View {
         } label: {
             HStack(spacing: 10) {
                 Text(title)
+                    .font(.subheadline)
                     .foregroundStyle(.primary)
                 Spacer()
                 if selected {
@@ -1398,7 +1765,7 @@ struct SettingsView: View {
             action()
         } label: {
             Text(localized("完成", "Done"))
-                .font(.footnote.weight(.medium))
+                .font(.subheadline.weight(.medium))
                 .foregroundStyle(.primary.opacity(0.86))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 7)
@@ -1826,15 +2193,24 @@ struct SettingsView: View {
     }
 
     private func infoButton(_ topic: SettingsInfoTopic) -> some View {
-        Button {
-            activeInfo = topic
-        } label: {
-            Image(systemName: "info.circle")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+        GeometryReader { proxy in
+            Button {
+                triggerHapticIfNeeded()
+                let frame = proxy.frame(in: .global)
+                let edge = adaptivePopoverArrowEdge(globalY: frame.midY)
+                infoPopoverArrowEdge = edge
+                infoPopoverAnchor = UnitPoint(x: 0.5, y: anchorY(for: edge))
+                activeInfo = topic
+            } label: {
+                Image(systemName: "info.circle")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .buttonStyle(.plain)
-        .popover(isPresented: infoPopoverBinding(for: topic), attachmentAnchor: .rect(.bounds), arrowEdge: infoPopoverArrowEdge(for: topic)) {
+        .frame(width: 18, height: 18)
+        .popover(isPresented: infoPopoverBinding(for: topic), attachmentAnchor: .point(infoPopoverAnchor), arrowEdge: infoPopoverArrowEdge) {
             glassInfoPopover(topic: topic)
                 .presentationCompactAdaptation(.popover)
                 .presentationBackground(.clear)
@@ -1848,15 +2224,6 @@ struct SettingsView: View {
                 activeInfo = isShowing ? topic : nil
             }
         )
-    }
-
-    private func infoPopoverArrowEdge(for topic: SettingsInfoTopic) -> Edge {
-        switch topic {
-        case .bmr:
-            return .top
-        case .tdee, .intake:
-            return .bottom
-        }
     }
 
     private func iconTextFieldRow(icon: String, title: String, text: Binding<String>, unit: String, keyboard: UIKeyboardType, color: Color) -> some View {
@@ -1937,22 +2304,20 @@ struct SettingsView: View {
     }
 
     private func glassInfoPopover(topic: SettingsInfoTopic) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ForEach(Array(topic.paragraphs.enumerated()), id: \.offset) { index, paragraph in
+        VStack(alignment: .leading, spacing: 5) {
+            ForEach(Array(topic.paragraphs.enumerated()), id: \.offset) { _, paragraph in
                 Text(paragraph)
-                    .font(.caption)
-                    .lineSpacing(1.5)
+                    .font(.caption2)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .allowsTightening(true)
                     .multilineTextAlignment(.leading)
                     .foregroundStyle(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
-                if index < topic.paragraphs.count - 1 {
-                    separatorLine()
-                }
             }
         }
         .padding(12)
-        .frame(width: 286, alignment: .topLeading)
+        .frame(width: estimatedParagraphPopoverWidth(topic.paragraphs), alignment: .topLeading)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(.ultraThinMaterial)
@@ -2254,6 +2619,10 @@ private enum SettingsInfoTopic: String, Identifiable {
 }
 
 private extension View {
+    func keepFitPopoverWheelSizing() -> some View {
+        font(.subheadline)
+    }
+
     func keepFitSettingsSeparatorAligned() -> some View {
         keepFitSettingsRowStyle(verticalInset: 8)
     }

@@ -26,9 +26,9 @@ struct KeepFitApp: App {
                     }
                 }
             }
-                .environmentObject(appState)
-                .preferredColorScheme(themeMode.preferredColorScheme)
-                .environment(\.locale, Locale(identifier: appLanguage.localeIdentifier))
+            .environmentObject(appState)
+            .preferredColorScheme(themeMode.preferredColorScheme)
+            .environment(\.locale, Locale(identifier: appLanguage.localeIdentifier))
         }
     }
 }
