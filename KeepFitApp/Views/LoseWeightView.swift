@@ -14,9 +14,27 @@ struct LoseWeightView: View {
     @State private var bodyFatText = ""
     @State private var showBodyMetricDatePicker = false
     @State private var bodyMetricDateDraft = Date()
+    @State private var calorieTrendRange: TrendRange = .all
+    @State private var weightTrendRange: TrendRange = .all
+    @State private var bodyFatTrendRange: TrendRange = .all
+    @State private var calorieCustomStartDate = Date().startOfDayInCurrentCalendar
+    @State private var calorieCustomEndDate = Date().startOfDayInCurrentCalendar
+    @State private var weightCustomStartDate = Date().startOfDayInCurrentCalendar
+    @State private var weightCustomEndDate = Date().startOfDayInCurrentCalendar
+    @State private var bodyFatCustomStartDate = Date().startOfDayInCurrentCalendar
+    @State private var bodyFatCustomEndDate = Date().startOfDayInCurrentCalendar
+    @State private var showTrendCustomRangeSheet = false
+    @State private var activeTrendPickerTarget: TrendPickerTarget = .calorie
+    @State private var customRangeBoundary: CustomRangeBoundary = .start
+    @State private var customRangeStartDraft = Date().startOfDayInCurrentCalendar
+    @State private var customRangeEndDraft = Date().startOfDayInCurrentCalendar
+    @State private var bodyMetricSheetMeasuredHeight: CGFloat = 0
+    @State private var trendCustomSheetMeasuredHeight: CGFloat = 0
+    @FocusState private var focusedField: InputField?
 
-    private let cardSpacing: CGFloat = 24
-    private let fieldHeight: CGFloat = 40
+    @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
+    @ScaledMetric(relativeTo: .body) private var fieldHeight: CGFloat = 42
+    @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 194
     private let deficitGoal: Double = 450
 
     private var todayNutrition: DayNutritionSummary {
@@ -51,6 +69,68 @@ struct LoseWeightView: View {
         WeightUnitOption(rawValue: weightUnitRaw) ?? .kilogram
     }
 
+    private var today: Date {
+        Date().startOfDayInCurrentCalendar
+    }
+
+    private var maxAdaptiveBottomSheetHeight: CGFloat {
+        UIScreen.main.bounds.height * 0.88
+    }
+
+    private var bodyMetricSheetHeight: CGFloat {
+        let measured = bodyMetricSheetMeasuredHeight > 0 ? bodyMetricSheetMeasuredHeight : 360
+        return min(max(measured, 320), maxAdaptiveBottomSheetHeight)
+    }
+
+    private var trendCustomSheetHeight: CGFloat {
+        let measured = trendCustomSheetMeasuredHeight > 0 ? trendCustomSheetMeasuredHeight : 520
+        return min(max(measured, 430), maxAdaptiveBottomSheetHeight)
+    }
+
+    private var isFutureDateSelected: Bool {
+        selectedDate.isFutureDayInCurrentCalendar
+    }
+
+    private var calorieTrendData: [DailyCalorieTrend] {
+        let bounds = trendBounds(
+            range: calorieTrendRange,
+            customStart: calorieCustomStartDate,
+            customEnd: calorieCustomEndDate
+        )
+        return appState.calorieTrends(days: 400)
+            .filter { trend in
+                let day = trend.date.startOfDayInCurrentCalendar
+                guard day >= bounds.start, day <= bounds.end else { return false }
+                return trend.intake > 0.01 || trend.expenditure > 0.01
+            }
+    }
+
+    private var weightTrendData: [BodyMetricLog] {
+        let bounds = trendBounds(
+            range: weightTrendRange,
+            customStart: weightCustomStartDate,
+            customEnd: weightCustomEndDate
+        )
+        return appState.weightTrends(limit: 400)
+            .filter { metric in
+                let day = metric.date.startOfDayInCurrentCalendar
+                return day >= bounds.start && day <= bounds.end
+            }
+    }
+
+    private var bodyFatTrendData: [BodyMetricLog] {
+        let bounds = trendBounds(
+            range: bodyFatTrendRange,
+            customStart: bodyFatCustomStartDate,
+            customEnd: bodyFatCustomEndDate
+        )
+        return appState.weightTrends(limit: 400)
+            .filter { metric in
+                let day = metric.date.startOfDayInCurrentCalendar
+                return day >= bounds.start && day <= bounds.end
+            }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -71,6 +151,11 @@ struct LoseWeightView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .blue))
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    focusedField = nil
+                }
+            )
             .navigationTitle(localized("减个肥", "Lose Weight"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -84,12 +169,35 @@ struct LoseWeightView: View {
                             .foregroundStyle(.primary)
                     }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button(localized("完成", "Done")) {
+                        focusedField = nil
+                    }
+                }
             }
             .onAppear {
                 monthCursor = selectedDate
+                let defaultStart = AppPreferences.calendar.date(byAdding: .month, value: -1, to: today) ?? today
+                if calorieCustomStartDate == calorieCustomEndDate {
+                    calorieCustomStartDate = defaultStart
+                    calorieCustomEndDate = today
+                }
+                if weightCustomStartDate == weightCustomEndDate {
+                    weightCustomStartDate = defaultStart
+                    weightCustomEndDate = today
+                }
+                if bodyFatCustomStartDate == bodyFatCustomEndDate {
+                    bodyFatCustomStartDate = defaultStart
+                    bodyFatCustomEndDate = today
+                }
                 syncBodyMetricInputs(for: selectedDate)
             }
             .onChange(of: selectedDate) { _, newValue in
+                if newValue.isFutureDayInCurrentCalendar {
+                    selectedDate = today
+                    return
+                }
                 monthCursor = newValue
                 syncBodyMetricInputs(for: newValue)
             }
@@ -101,7 +209,14 @@ struct LoseWeightView: View {
             }
             .sheet(isPresented: $showBodyMetricDatePicker) {
                 bodyMetricDateSheet
-                    .presentationDetents([.height(388)])
+                    .presentationDetents([.height(bodyMetricSheetHeight)])
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(24)
+                    .presentationBackground(.ultraThinMaterial)
+            }
+            .sheet(isPresented: $showTrendCustomRangeSheet) {
+                trendCustomRangeSheet
+                    .presentationDetents([.height(trendCustomSheetHeight)])
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(24)
                     .presentationBackground(.ultraThinMaterial)
@@ -146,7 +261,9 @@ struct LoseWeightView: View {
                 progress: progress,
                 lineWidth: 12,
                 gradient: LinearGradient(
-                    colors: surplus > 0 ? [.red, .pink] : [.blue, .cyan],
+                    colors: surplus > 0
+                        ? [.red.opacity(0.84), .orange.opacity(0.74), .red.opacity(0.66)]
+                        : [.blue.opacity(0.84), .cyan.opacity(0.74), .blue.opacity(0.66)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 ),
@@ -155,7 +272,7 @@ struct LoseWeightView: View {
                 valueUnit: energyUnit.symbol,
                 caption: "\(localized("目标", "Target")) \(energyText(fromKcal: deficitGoal, unit: energyUnit))"
             )
-            .frame(width: 186, height: 186)
+            .frame(width: ringSize, height: ringSize)
             .frame(maxWidth: .infinity)
         }
     }
@@ -321,10 +438,12 @@ struct LoseWeightView: View {
             subtitle: nil,
             accent: .blue
         ) {
-            let entryFont = Font.caption.weight(.medium)
+            let entryFont = Font.footnote.weight(.medium)
+            let canEdit = !isFutureDateSelected
 
             HStack(spacing: 8) {
                 Button {
+                    guard canEdit else { return }
                     KeepFitHaptics.impact(.light)
                     bodyMetricDateDraft = selectedDate
                     showBodyMetricDatePicker = true
@@ -344,6 +463,7 @@ struct LoseWeightView: View {
                     .background(metricFieldBackground)
                 }
                 .buttonStyle(.plain)
+                .disabled(!canEdit)
 
                 HStack(spacing: 5) {
                     Image(systemName: "scalemass.fill")
@@ -351,6 +471,7 @@ struct LoseWeightView: View {
                     TextField("weight", text: $weightText)
                         .keyboardType(.decimalPad)
                         .font(entryFont)
+                        .focused($focusedField, equals: .weight)
                         .minimumScaleFactor(0.8)
                         .lineLimit(1)
                         .multilineTextAlignment(.trailing)
@@ -361,6 +482,7 @@ struct LoseWeightView: View {
                 .padding(.horizontal, 8)
                 .frame(maxWidth: .infinity, minHeight: fieldHeight)
                 .background(metricFieldBackground)
+                .disabled(!canEdit)
 
                 HStack(spacing: 5) {
                     Image(systemName: "chart.pie.fill")
@@ -368,6 +490,7 @@ struct LoseWeightView: View {
                     TextField("body fat", text: $bodyFatText)
                         .keyboardType(.decimalPad)
                         .font(entryFont)
+                        .focused($focusedField, equals: .bodyFat)
                         .minimumScaleFactor(0.8)
                         .lineLimit(1)
                         .multilineTextAlignment(.trailing)
@@ -378,8 +501,11 @@ struct LoseWeightView: View {
                 .padding(.horizontal, 8)
                 .frame(maxWidth: .infinity, minHeight: fieldHeight)
                 .background(metricFieldBackground)
+                .disabled(!canEdit)
 
                 Button {
+                    guard canEdit else { return }
+                    focusedField = nil
                     KeepFitHaptics.impact(.medium)
                     saveBodyMetric()
                 } label: {
@@ -399,41 +525,47 @@ struct LoseWeightView: View {
                 }
                 .buttonStyle(.plain)
                 .frame(width: 34, height: fieldHeight)
+                .disabled(!canEdit)
             }
         }
     }
 
     private var bodyMetricDateSheet: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text(localized("选择记录日期", "Select Date"))
-                    .font(.headline.weight(.semibold))
-                Spacer()
-                Button(localized("关闭", "Close")) {
-                    KeepFitHaptics.impact(.light)
-                    showBodyMetricDatePicker = false
-                }
-                .font(.subheadline)
-            }
-
+        VStack(spacing: 12) {
             DatePicker(
                 localized("记录日期", "Record Date"),
                 selection: Binding(
                     get: { bodyMetricDateDraft },
                     set: { newValue in
                         KeepFitHaptics.selection()
-                        bodyMetricDateDraft = newValue
-                        selectedDate = newValue
+                        let day = min(newValue.startOfDayInCurrentCalendar, today)
+                        bodyMetricDateDraft = day
+                        selectedDate = day
                         showBodyMetricDatePicker = false
                     }
                 ),
+                in: ...today,
                 displayedComponents: [.date]
             )
             .datePickerStyle(.graphical)
             .labelsHidden()
+            .frame(maxWidth: .infinity)
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .padding(.horizontal, 12)
+        .padding(.top, 8)
+        .padding(.bottom, 8)
+        .frame(maxWidth: .infinity, alignment: .top)
+        .background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        updateBottomSheetHeight(proxy.size.height, for: .bodyMetric)
+                    }
+                    .onChange(of: proxy.size.height) { _, newHeight in
+                        updateBottomSheetHeight(newHeight, for: .bodyMetric)
+                    }
+            }
+        )
     }
 
     private var metricFieldBackground: some View {
@@ -459,33 +591,327 @@ struct LoseWeightView: View {
     }
 
     private var calorieTrendCard: some View {
-        CardContainer(
+        trendCardShell(
             title: localized("热量趋势", "Calorie Trend"),
-            subtitle: nil,
-            accent: .blue
+            range: $calorieTrendRange,
+            target: .calorie
         ) {
-            CalorieTrendChartView(calorieTrends: appState.calorieTrends(days: 45))
+            if calorieTrendData.isEmpty {
+                trendEmptyState
+            } else {
+                CalorieTrendChartView(calorieTrends: calorieTrendData)
+            }
         }
     }
 
     private var weightTrendCard: some View {
-        CardContainer(
+        trendCardShell(
             title: localized("体重趋势", "Weight Trend"),
-            subtitle: nil,
-            accent: .blue
+            range: $weightTrendRange,
+            target: .weight
         ) {
-            WeightTrendChartView(bodyMetrics: appState.weightTrends(limit: 45))
+            if weightTrendData.isEmpty {
+                trendEmptyState
+            } else {
+                WeightTrendChartView(bodyMetrics: weightTrendData)
+            }
         }
     }
 
     private var bodyFatTrendCard: some View {
-        CardContainer(
+        trendCardShell(
             title: localized("体脂趋势", "Body Fat Trend"),
-            subtitle: nil,
-            accent: .blue
+            range: $bodyFatTrendRange,
+            target: .bodyFat
         ) {
-            BodyFatTrendChartView(bodyMetrics: appState.weightTrends(limit: 45))
+            if bodyFatTrendData.isEmpty {
+                trendEmptyState
+            } else {
+                BodyFatTrendChartView(bodyMetrics: bodyFatTrendData)
+            }
         }
+    }
+
+    private func trendCardShell<Content: View>(
+        title: String,
+        range: Binding<TrendRange>,
+        target: TrendPickerTarget,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center, spacing: 10) {
+                Text(title)
+                    .font(.title3.weight(.semibold))
+                    .padding(.leading, 4)
+                Spacer(minLength: 6)
+                trendRangeMenuButton(
+                    range: range,
+                    target: target
+                )
+            }
+
+            VStack(alignment: .leading, spacing: 16) {
+                content()
+            }
+            .padding(18)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.blue.opacity(0.16), Color.blue.opacity(0.07), .white.opacity(0.04)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .stroke(.white.opacity(0.42), lineWidth: 1)
+                    )
+                    .shadow(color: Color.blue.opacity(0.1), radius: 8, x: 0, y: 4)
+            )
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func trendRangeMenuButton(
+        range: Binding<TrendRange>,
+        target: TrendPickerTarget
+    ) -> some View {
+        Menu {
+            ForEach(TrendRange.allCases) { option in
+                Button {
+                    KeepFitHaptics.selection()
+                    range.wrappedValue = option
+                    if option == .custom {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                            openCustomRangeSheet(for: target)
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 8) {
+                        Text(option.title)
+                        if option == range.wrappedValue {
+                            Image(systemName: "checkmark")
+                                .font(.caption.weight(.bold))
+                        }
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Text(range.wrappedValue.title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                Image(systemName: "line.3.horizontal.decrease.circle")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.blue)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(
+                Capsule(style: .continuous)
+                    .fill(Color.white.opacity(colorScheme == .dark ? 0.12 : 0.26))
+                    .overlay(
+                        Capsule(style: .continuous)
+                            .stroke(.white.opacity(colorScheme == .dark ? 0.18 : 0.34), lineWidth: 0.8)
+                    )
+            )
+        }
+        .menuStyle(.button)
+        .buttonStyle(.plain)
+    }
+
+    private var trendEmptyState: some View {
+        Text(localized("所选时间范围暂无数据", "No data in selected range"))
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.vertical, 10)
+    }
+
+    private var trendCustomRangeSheet: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Text(localized("趋势范围", "Trend Range"))
+                    .font(.headline.weight(.semibold))
+                Spacer()
+                Button(localized("完成", "Done")) {
+                    KeepFitHaptics.selection()
+                    applyCustomRangeDraft()
+                    showTrendCustomRangeSheet = false
+                }
+                .font(.subheadline.weight(.semibold))
+                .buttonStyle(.plain)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule(style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
+            }
+
+            HStack(spacing: 8) {
+                customBoundaryChip(
+                    title: localized("起始日", "Start"),
+                    value: Formatters.yearMonthDay.string(from: customRangeStartDraft),
+                    selected: customRangeBoundary == .start
+                ) {
+                    customRangeBoundary = .start
+                }
+                customBoundaryChip(
+                    title: localized("终止日", "End"),
+                    value: Formatters.yearMonthDay.string(from: customRangeEndDraft),
+                    selected: customRangeBoundary == .end
+                ) {
+                    customRangeBoundary = .end
+                }
+            }
+
+            DatePicker(
+                localized("趋势日期", "Trend Date"),
+                selection: customRangeBoundary == .start ? customRangeStartBinding : customRangeEndBinding,
+                in: customBoundaryDateRange,
+                displayedComponents: [.date]
+            )
+            .datePickerStyle(.graphical)
+            .labelsHidden()
+            .frame(maxWidth: .infinity)
+        }
+        .padding(.horizontal, 14)
+        .padding(.top, 10)
+        .padding(.bottom, 10)
+        .frame(maxWidth: .infinity, alignment: .top)
+        .background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        updateBottomSheetHeight(proxy.size.height, for: .trendCustom)
+                    }
+                    .onChange(of: proxy.size.height) { _, newHeight in
+                        updateBottomSheetHeight(newHeight, for: .trendCustom)
+                    }
+            }
+        )
+    }
+
+    private var customRangeStartBinding: Binding<Date> {
+        Binding(
+            get: { customRangeStartDraft },
+            set: { newValue in
+                let day = min(newValue.startOfDayInCurrentCalendar, today)
+                customRangeStartDraft = min(day, customRangeEndDraft)
+                customRangeBoundary = .end
+            }
+        )
+    }
+
+    private var customRangeEndBinding: Binding<Date> {
+        Binding(
+            get: { customRangeEndDraft },
+            set: { newValue in
+                let day = min(newValue.startOfDayInCurrentCalendar, today)
+                customRangeEndDraft = max(day, customRangeStartDraft)
+            }
+        )
+    }
+
+    private var customBoundaryDateRange: ClosedRange<Date> {
+        let earliest = Date(timeIntervalSince1970: 0)
+        if customRangeBoundary == .start {
+            return earliest...min(customRangeEndDraft, today)
+        }
+        return customRangeStartDraft...today
+    }
+
+    private func openCustomRangeSheet(for target: TrendPickerTarget) {
+        activeTrendPickerTarget = target
+        customRangeBoundary = .start
+        switch target {
+        case .calorie:
+            customRangeStartDraft = calorieCustomStartDate
+            customRangeEndDraft = calorieCustomEndDate
+        case .weight:
+            customRangeStartDraft = weightCustomStartDate
+            customRangeEndDraft = weightCustomEndDate
+        case .bodyFat:
+            customRangeStartDraft = bodyFatCustomStartDate
+            customRangeEndDraft = bodyFatCustomEndDate
+        }
+        showTrendCustomRangeSheet = true
+    }
+
+    private func applyCustomRangeDraft() {
+        let start = min(customRangeStartDraft.startOfDayInCurrentCalendar, customRangeEndDraft.startOfDayInCurrentCalendar)
+        let end = max(customRangeStartDraft.startOfDayInCurrentCalendar, customRangeEndDraft.startOfDayInCurrentCalendar)
+        switch activeTrendPickerTarget {
+        case .calorie:
+            calorieCustomStartDate = start
+            calorieCustomEndDate = end
+        case .weight:
+            weightCustomStartDate = start
+            weightCustomEndDate = end
+        case .bodyFat:
+            bodyFatCustomStartDate = start
+            bodyFatCustomEndDate = end
+        }
+    }
+
+    private func trendBounds(range: TrendRange, customStart: Date, customEnd: Date) -> (start: Date, end: Date) {
+        let calendar = AppPreferences.calendar
+        let end = today
+        switch range {
+        case .all:
+            return (Date(timeIntervalSince1970: 0), end)
+        case .sevenDays:
+            return (calendar.date(byAdding: .day, value: -6, to: end) ?? end, end)
+        case .oneMonth:
+            return (calendar.date(byAdding: .month, value: -1, to: end) ?? end, end)
+        case .threeMonths:
+            return (calendar.date(byAdding: .month, value: -3, to: end) ?? end, end)
+        case .halfYear:
+            return (calendar.date(byAdding: .month, value: -6, to: end) ?? end, end)
+        case .oneYear:
+            return (calendar.date(byAdding: .year, value: -1, to: end) ?? end, end)
+        case .custom:
+            let start = min(customStart.startOfDayInCurrentCalendar, customEnd.startOfDayInCurrentCalendar, end)
+            let clampedEnd = min(max(customEnd.startOfDayInCurrentCalendar, start), end)
+            return (start, clampedEnd)
+        }
+    }
+
+    private func customBoundaryChip(title: String, value: String, selected: Bool, action: @escaping () -> Void) -> some View {
+        Button {
+            KeepFitHaptics.selection()
+            action()
+        } label: {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(value)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(selected ? Color.blue.opacity(0.18) : Color.primary.opacity(0.05))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(selected ? Color.blue.opacity(0.45) : Color.white.opacity(0.2), lineWidth: 0.9)
+                    )
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
@@ -524,12 +950,82 @@ struct LoseWeightView: View {
     }
 
     private func saveBodyMetric() {
+        guard !selectedDate.isFutureDayInCurrentCalendar else { return }
         guard let displayWeight = Double(weightText), displayWeight > 20 else { return }
         guard let bodyFat = Double(bodyFatText), bodyFat > 1, bodyFat < 70 else { return }
 
         let weight = weightFromDisplayValue(displayWeight, unit: weightUnit)
         appState.upsertBodyMetric(date: selectedDate, weightKg: weight, bodyFatPercent: bodyFat)
         appState.profile.weightKg = weight
+        focusedField = nil
     }
 
+    private func updateBottomSheetHeight(_ contentHeight: CGFloat, for kind: BottomSheetKind) {
+        guard contentHeight > 0 else { return }
+        // Include drag-indicator / sheet chrome area so content stays fully visible.
+        let target = ceil(contentHeight + 26)
+        switch kind {
+        case .bodyMetric:
+            guard abs(bodyMetricSheetMeasuredHeight - target) > 1 else { return }
+            bodyMetricSheetMeasuredHeight = target
+        case .trendCustom:
+            guard abs(trendCustomSheetMeasuredHeight - target) > 1 else { return }
+            trendCustomSheetMeasuredHeight = target
+        }
+    }
+
+}
+
+private extension LoseWeightView {
+    enum InputField {
+        case weight
+        case bodyFat
+    }
+
+    enum BottomSheetKind {
+        case bodyMetric
+        case trendCustom
+    }
+}
+
+private enum TrendRange: String, CaseIterable, Identifiable {
+    case all
+    case sevenDays
+    case oneMonth
+    case threeMonths
+    case halfYear
+    case oneYear
+    case custom
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .all:
+            return localized("全部", "All")
+        case .sevenDays:
+            return localized("7天", "7D")
+        case .oneMonth:
+            return localized("1个月", "1M")
+        case .threeMonths:
+            return localized("3个月", "3M")
+        case .halfYear:
+            return localized("6个月", "6M")
+        case .oneYear:
+            return localized("1年", "1Y")
+        case .custom:
+            return localized("自定义", "Custom")
+        }
+    }
+}
+
+private enum TrendPickerTarget {
+    case calorie
+    case weight
+    case bodyFat
+}
+
+private enum CustomRangeBoundary {
+    case start
+    case end
 }

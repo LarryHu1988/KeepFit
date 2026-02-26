@@ -18,12 +18,24 @@ struct ProgressRing: View {
     private var trackGradient: AngularGradient {
         AngularGradient(
             colors: [
-                accent.opacity(colorScheme == .dark ? 0.24 : 0.18),
-                accent.opacity(colorScheme == .dark ? 0.12 : 0.08),
-                accent.opacity(colorScheme == .dark ? 0.24 : 0.18)
+                accent.opacity(colorScheme == .dark ? 0.16 : 0.12),
+                accent.opacity(colorScheme == .dark ? 0.05 : 0.03),
+                accent.opacity(colorScheme == .dark ? 0.16 : 0.12)
             ],
             center: .center
         )
+    }
+
+    private var activeRingOpacity: Double {
+        let base = colorScheme == .dark ? 0.58 : 0.54
+        let gain = colorScheme == .dark ? 0.24 : 0.22
+        return min(0.84, base + gain * clampedProgress)
+    }
+
+    private var activeShadowOpacity: Double {
+        let base = colorScheme == .dark ? 0.10 : 0.08
+        let gain = colorScheme == .dark ? 0.10 : 0.08
+        return min(0.22, base + gain * clampedProgress)
     }
 
     private var valueLines: [String] {
@@ -41,48 +53,45 @@ struct ProgressRing: View {
                     gradient,
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
+                .opacity(activeRingOpacity)
                 .rotationEffect(.degrees(-90))
                 .animation(.spring(duration: 0.5), value: clampedProgress)
-                .shadow(color: accent.opacity(0.24), radius: 6, x: 0, y: 3)
+                .shadow(color: accent.opacity(activeShadowOpacity), radius: 6, x: 0, y: 2)
 
             Circle()
                 .fill(
-                    accent.opacity(colorScheme == .dark ? 0.18 : 0.12)
-                )
-                .overlay(
-                    Circle()
-                        .stroke(accent.opacity(colorScheme == .dark ? 0.24 : 0.20), lineWidth: 1)
+                    accent.opacity(colorScheme == .dark ? 0.12 : 0.08)
                 )
                 .padding(lineWidth + 10)
 
             VStack(spacing: 4) {
                 if let unit = valueUnit, valueLines.count == 2 {
                     Text(valueLines[0])
-                        .font(.title3.weight(.semibold))
+                        .font(.title2.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                         .multilineTextAlignment(.center)
 
                     HStack(alignment: .lastTextBaseline, spacing: 3) {
                         Text(valueLines[1])
-                            .font(.title3.weight(.semibold))
+                            .font(.title2.weight(.semibold))
                             .lineLimit(1)
                             .minimumScaleFactor(0.75)
                         Text(unit)
-                            .font(.subheadline.weight(.semibold))
+                            .font(.callout.weight(.semibold))
                             .lineLimit(1)
                             .foregroundStyle(.secondary)
                     }
                 } else {
                     Text(valueText)
-                        .font(.title3.weight(.semibold))
+                        .font(.title2.weight(.semibold))
                         .minimumScaleFactor(0.75)
                         .lineLimit(2)
                         .multilineTextAlignment(.center)
                 }
 
                 Text(caption)
-                    .font(.caption2)
+                    .font(.footnote)
                     .minimumScaleFactor(0.8)
                     .lineLimit(1)
                     .foregroundStyle(.secondary)

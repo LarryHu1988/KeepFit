@@ -552,9 +552,6 @@ struct SettingsView: View {
                     .foregroundStyle(.primary)
                 Spacer()
                 avatarView(size: 36)
-                Image(systemName: "chevron.down")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
             }
         }
         .buttonStyle(.plain)
@@ -565,7 +562,7 @@ struct SettingsView: View {
             rowIcon("person.text.rectangle", .blue)
             Text(localized("用户名", "Username"))
             TextField(localized("请输入用户名", "Enter username"), text: binding(\.name))
-                .font(.subheadline)
+                .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.trailing)
         }
@@ -1491,14 +1488,6 @@ struct SettingsView: View {
             .frame(width: 18)
     }
 
-    private func normalizedUnitPoint(from location: CGPoint, in size: CGSize) -> UnitPoint {
-        let safeWidth = max(size.width, 1)
-        let safeHeight = max(size.height, 1)
-        let x = min(max(location.x / safeWidth, 0), 1)
-        let y = min(max(location.y / safeHeight, 0), 1)
-        return UnitPoint(x: x, y: y)
-    }
-
     private func adaptivePopoverArrowEdge(globalY: CGFloat) -> Edge {
         let screenHeight = max(UIScreen.main.bounds.height, 1)
         return globalY < screenHeight * 0.5 ? .top : .bottom
@@ -1549,7 +1538,7 @@ struct SettingsView: View {
     }
 
     private var settingsValueUIFont: UIFont {
-        UIFont.preferredFont(forTextStyle: .subheadline)
+        UIFont.preferredFont(forTextStyle: .body)
     }
 
     private func measuredTextWidth(_ text: String, font: UIFont? = nil) -> CGFloat {
@@ -1587,7 +1576,7 @@ struct SettingsView: View {
     @ViewBuilder
     private func wheelOptionText(_ text: String) -> some View {
         Text(text)
-            .font(.subheadline)
+            .font(.body)
             .lineLimit(1)
             .minimumScaleFactor(0.9)
             .allowsTightening(true)
@@ -1624,46 +1613,38 @@ struct SettingsView: View {
             Text(title)
                 .foregroundStyle(.primary)
             Spacer(minLength: 8)
-            if let value, !value.isEmpty {
-                Text(value)
-                    .lineLimit(1)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            Image(systemName: "chevron.down")
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(.secondary)
-        }
-        .contentShape(Rectangle())
-        .overlay {
-            GeometryReader { proxy in
-                Color.clear
-                    .contentShape(Rectangle())
-                    .onTapGesture(coordinateSpace: .local) { location in
+            HStack(spacing: 2) {
+                if let value, !value.isEmpty {
+                    Text(value)
+                        .lineLimit(1)
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                }
+                GeometryReader { proxy in
+                    Button {
                         let frame = proxy.frame(in: .global)
                         let arrowEdge = adaptivePopoverArrowEdge(globalY: frame.midY)
-                        let rawAnchor = normalizedUnitPoint(from: location, in: proxy.size)
-                        let clampedX = min(max(rawAnchor.x, 0.08), 0.92)
-                        let anchor = UnitPoint(x: clampedX, y: anchorY(for: arrowEdge))
+                        let anchor = UnitPoint(x: 0.92, y: anchorY(for: arrowEdge))
                         presentSelectionPopover(
                             isPresented: isPresented,
                             onOpen: onOpen,
                             anchor: anchor,
                             arrowEdge: arrowEdge
                         )
+                    } label: {
+                        Image(systemName: "chevron.down")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(localized("打开选项", "Open Options"))
+                }
+                .frame(width: 20, height: 22)
             }
         }
-        .accessibilityAddTraits(.isButton)
-        .accessibilityAction {
-            let arrowEdge = adaptivePopoverArrowEdge(globalY: UIScreen.main.bounds.midY)
-            presentSelectionPopover(
-                isPresented: isPresented,
-                onOpen: onOpen,
-                anchor: UnitPoint(x: 0.9, y: 0.5),
-                arrowEdge: arrowEdge
-            )
-        }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .popover(isPresented: isPresented, attachmentAnchor: .point(selectionPopoverAnchor), arrowEdge: selectionPopoverArrowEdge) {
             content()
                 .presentationCompactAdaptation(.popover)
@@ -1702,7 +1683,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 8) {
             content()
         }
-        .font(.subheadline)
+        .font(.body)
         .padding(.vertical, 12)
         .padding(.horizontal, horizontalPadding)
         .frame(
@@ -1733,7 +1714,7 @@ struct SettingsView: View {
         } label: {
             HStack(spacing: 10) {
                 Text(title)
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundStyle(.primary)
                 Spacer()
                 if selected {
@@ -1765,7 +1746,7 @@ struct SettingsView: View {
             action()
         } label: {
             Text(localized("完成", "Done"))
-                .font(.subheadline.weight(.medium))
+                .font(.body.weight(.medium))
                 .foregroundStyle(.primary.opacity(0.86))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 7)
@@ -1991,7 +1972,7 @@ struct SettingsView: View {
                 .foregroundStyle(.primary)
             Spacer()
             Text(value)
-                .font(.subheadline)
+                .font(.body)
                 .foregroundStyle(.secondary)
             Image(systemName: "chevron.right")
                 .font(.caption2)
@@ -2213,7 +2194,7 @@ struct SettingsView: View {
         .popover(isPresented: infoPopoverBinding(for: topic), attachmentAnchor: .point(infoPopoverAnchor), arrowEdge: infoPopoverArrowEdge) {
             glassInfoPopover(topic: topic)
                 .presentationCompactAdaptation(.popover)
-                .presentationBackground(.clear)
+                .presentationBackground(.ultraThinMaterial)
         }
     }
 
@@ -2249,11 +2230,11 @@ struct SettingsView: View {
     private func valueWithUnit(value: String, unit: String) -> some View {
         HStack(spacing: 6) {
             Text(value)
-                .font(.subheadline)
+                .font(.body)
                 .monospacedDigit()
                 .frame(width: 84, alignment: .trailing)
             Text(unit)
-                .font(.subheadline)
+                .font(.body)
                 .foregroundStyle(.secondary)
         }
         .frame(width: 130, alignment: .trailing)
@@ -2308,7 +2289,7 @@ struct SettingsView: View {
             ForEach(Array(topic.paragraphs.enumerated()), id: \.offset) { _, paragraph in
                 Text(paragraph)
                     .font(.caption2)
-                    .lineLimit(1)
+                    .lineLimit(nil)
                     .minimumScaleFactor(0.75)
                     .allowsTightening(true)
                     .multilineTextAlignment(.leading)
@@ -2317,19 +2298,8 @@ struct SettingsView: View {
             }
         }
         .padding(12)
-        .frame(width: estimatedParagraphPopoverWidth(topic.paragraphs), alignment: .topLeading)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .stroke(.white.opacity(0.24), lineWidth: 0.8)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.white.opacity(0.02))
-                )
-        )
+        .frame(maxWidth: estimatedParagraphPopoverWidth(topic.paragraphs), alignment: .topLeading)
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private func ensureBirthDateSeeded() {
@@ -2606,7 +2576,7 @@ private enum SettingsInfoTopic: String, Identifiable {
         case .tdee:
             return [
                 localized("TDEE = BMR × 活动系数。", "TDEE = BMR × activity multiplier."),
-                localized("活动系数: 久坐 1.2 / 轻度活动 1.375 / 中度活动 1.55 / 高强度活动 1.725。", "Activity multiplier: Sedentary 1.2 / Light 1.375 / Moderate 1.55 / Very active 1.725.")
+                localized("活动系数：久坐1.2/轻度1.375/中度1.55/高强度1.725。", "Multiplier: sedentary 1.2 / light 1.375 / moderate 1.55 / very active 1.725.")
             ]
         case .intake:
             return [
@@ -2620,7 +2590,7 @@ private enum SettingsInfoTopic: String, Identifiable {
 
 private extension View {
     func keepFitPopoverWheelSizing() -> some View {
-        font(.subheadline)
+        font(.body)
     }
 
     func keepFitSettingsSeparatorAligned() -> some View {

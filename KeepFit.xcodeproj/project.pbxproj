@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -37,7 +37,7 @@
 /* Begin PBXFileReference section */
 		07C1B8F1412FA0397259A796 /* EatWellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatWellView.swift; sourceTree = "<group>"; };
 		0FBC1421ECB35C7F4D92C384 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
-		23879382716B923C6B194CBE /* KeepFit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = KeepFit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		23879382716B923C6B194CBE /* KeepFit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeepFit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A76B5F72669A8F489F28413 /* KeepFit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeepFit.entitlements; sourceTree = "<group>"; };
 		52FD3FA91C2FAAC74F058A48 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		5417EDF38E8D0DBF95815D5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -183,11 +183,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-					4125CD96C28B86E6AFE5097E = {
-						ProvisioningStyle = Automatic;
-					};
-				};
 			};
 			buildConfigurationList = 067F4D85FAE2476D61D1519C /* Build configuration list for PBXProject "KeepFit" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -199,7 +194,6 @@
 			);
 			mainGroup = A747E69AF654F804E38063DC;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -258,6 +252,7 @@
 				CODE_SIGN_ENTITLEMENTS = KeepFitApp/KeepFit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2S7X36GQC9;
 				INFOPLIST_FILE = KeepFitApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。";
@@ -268,7 +263,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.7.0;
+				MARKETING_VERSION = 0.8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.larry.keepfit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -281,7 +276,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = KeepFitApp/KeepFit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2S7X36GQC9;
 				INFOPLIST_FILE = KeepFitApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。";
@@ -292,8 +291,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.7.0;
+				MARKETING_VERSION = 0.8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.larry.keepfit;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = KeepFit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

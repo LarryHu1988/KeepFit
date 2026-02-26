@@ -44,8 +44,9 @@ struct CalendarHeatmapView: View {
     @ViewBuilder
     private func calendarCell(for date: Date) -> some View {
         let isSelected = date.isSameDay(as: selectedDate)
+        let isFuture = date.isFutureDayInCurrentCalendar
         let balance = dayBalance(date)
-        let hasData = hasRecord(date)
+        let hasData = hasRecord(date) && !isFuture
         let balanceDotColor: Color = {
             if balance <= -80 { return .green }
             if balance >= 80 { return .red }
@@ -53,13 +54,14 @@ struct CalendarHeatmapView: View {
         }()
 
         Button {
+            guard !isFuture else { return }
             KeepFitHaptics.selection()
             selectedDate = date
         } label: {
             VStack(spacing: 2) {
                 Text("\(Calendar.current.component(.day, from: date))")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(isSelected ? Color.white : Color.primary)
+                    .foregroundStyle(isSelected ? Color.white : (isFuture ? Color.secondary : Color.primary))
 
                 if hasData {
                     Circle()
@@ -73,10 +75,15 @@ struct CalendarHeatmapView: View {
             .frame(height: 48)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(isSelected ? Color.accentColor : Color(.tertiarySystemBackground))
+                    .fill(
+                        isSelected
+                            ? Color.accentColor
+                            : Color(.tertiarySystemBackground).opacity(isFuture ? 0.5 : 1)
+                    )
             )
         }
         .buttonStyle(.plain)
+        .disabled(isFuture)
     }
 }
 
@@ -84,6 +91,8 @@ struct WeekStripCalendarView: View {
     @Binding var selectedDate: Date
     let accent: Color
     let indicatorColor: (Date) -> Color?
+    @ScaledMetric(relativeTo: .body) private var rowPadding: CGFloat = 10
+    @ScaledMetric(relativeTo: .body) private var dayCellHeight: CGFloat = 54
 
     private var weekTitles: [String] {
         var calendar = AppPreferences.calendar
@@ -103,12 +112,12 @@ struct WeekStripCalendarView: View {
     }
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 7) {
             ForEach(weekDates, id: \.self) { date in
                 weekCell(for: date)
             }
         }
-        .padding(9)
+        .padding(rowPadding)
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -149,23 +158,25 @@ struct WeekStripCalendarView: View {
     private func weekCell(for date: Date) -> some View {
         let calendar = AppPreferences.calendar
         let isSelected = date.isSameDay(as: selectedDate)
+        let isFuture = date.isFutureDayInCurrentCalendar
         let weekday = calendar.component(.weekday, from: date)
         let weekdayIndex = (weekday - calendar.firstWeekday + 7) % 7
 
         Button {
+            guard !isFuture else { return }
             KeepFitHaptics.selection()
             selectedDate = date
         } label: {
             VStack(spacing: 2) {
                 Text(weekTitles[weekdayIndex])
                     .font(.caption2.weight(.medium))
-                    .foregroundStyle(isSelected ? Color.white.opacity(0.95) : Color.secondary)
+                    .foregroundStyle(isSelected ? Color.white.opacity(0.95) : (isFuture ? Color.secondary.opacity(0.62) : Color.secondary))
 
                 Text("\(calendar.component(.day, from: date))")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(isSelected ? Color.white : Color.primary)
+                    .foregroundStyle(isSelected ? Color.white : (isFuture ? Color.secondary : Color.primary))
 
-                if let dotColor = indicatorColor(date) {
+                if let dotColor = indicatorColor(date), !isFuture {
                     Circle()
                         .fill(dotColor)
                         .frame(width: 5, height: 5)
@@ -173,7 +184,7 @@ struct WeekStripCalendarView: View {
                     Color.clear.frame(width: 5, height: 5)
                 }
             }
-            .frame(maxWidth: .infinity, minHeight: 52)
+            .frame(maxWidth: .infinity, minHeight: dayCellHeight)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(
@@ -184,18 +195,19 @@ struct WeekStripCalendarView: View {
                                 endPoint: .bottomTrailing
                             )
                             : LinearGradient(
-                                colors: [.white.opacity(0.16), .white.opacity(0.08)],
+                                colors: isFuture ? [.white.opacity(0.08), .white.opacity(0.04)] : [.white.opacity(0.16), .white.opacity(0.08)],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .stroke(isSelected ? .white.opacity(0.45) : .white.opacity(0.2), lineWidth: 1)
+                            .stroke(isSelected ? .white.opacity(0.45) : .white.opacity(isFuture ? 0.12 : 0.2), lineWidth: 1)
                     )
             )
         }
         .buttonStyle(.plain)
+        .disabled(isFuture)
     }
 
     private func shiftWeek(by offset: Int) {
@@ -204,7 +216,8 @@ struct WeekStripCalendarView: View {
         guard let targetWeekStart = calendar.date(byAdding: .day, value: offset * 7, to: currentWeekStart) else { return }
         let today = Date().startOfDayInCurrentCalendar
         let todayWeekStart = today.startOfWeekInCurrentCalendar
-        let targetSelectedDate = targetWeekStart.isSameDay(as: todayWeekStart) ? today : targetWeekStart
+        let clampedWeekStart = min(targetWeekStart, todayWeekStart)
+        let targetSelectedDate = clampedWeekStart.isSameDay(as: todayWeekStart) ? today : clampedWeekStart
         KeepFitHaptics.selection()
         withAnimation(.spring(response: 0.24, dampingFraction: 0.9)) {
             selectedDate = targetSelectedDate

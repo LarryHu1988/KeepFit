@@ -266,6 +266,7 @@ final class AppState: ObservableObject {
 
     func addFoodLog(date: Date, item: FoodItem, grams: Double) {
         guard grams > 0 else { return }
+        guard !date.isFutureDayInCurrentCalendar else { return }
         let log = FoodLog(
             id: UUID(),
             date: date,
@@ -284,6 +285,7 @@ final class AppState: ObservableObject {
 
     func addExerciseLog(date: Date, item: ExerciseItem, durationMinutes: Double) {
         guard durationMinutes > 0 else { return }
+        guard !date.isFutureDayInCurrentCalendar else { return }
         let log = ExerciseLog(
             id: UUID(),
             date: date,
@@ -298,6 +300,7 @@ final class AppState: ObservableObject {
     }
 
     func upsertBodyMetric(date: Date, weightKg: Double, bodyFatPercent: Double) {
+        guard !date.isFutureDayInCurrentCalendar else { return }
         let day = date.startOfDayInCurrentCalendar
         if let index = bodyMetricLogs.firstIndex(where: { $0.date.startOfDayInCurrentCalendar == day }) {
             bodyMetricLogs[index].weightKg = weightKg

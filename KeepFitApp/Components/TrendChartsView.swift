@@ -152,7 +152,7 @@ struct CalorieTrendChartView: View {
                             indexedDisplayTrends.indices.contains(index)
                         {
                             Text(compactTrendDateLabel(from: indexedDisplayTrends[index].entry.date))
-                                .font(.system(size: 10, weight: .regular, design: .rounded))
+                                .font(.system(size: 11, weight: .regular, design: .rounded))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.7)
                         }
@@ -161,7 +161,7 @@ struct CalorieTrendChartView: View {
             }
             .chartYScale(domain: yDomain)
             .chartYAxisLabel(energyUnit.symbol)
-            .frame(height: 190)
+            .frame(height: 204)
 
             HStack(spacing: 12) {
                 legendButton(title: localized("饮食摄入", "Food Intake"), systemImage: "circle.fill", color: .orange, series: .intake)
@@ -173,11 +173,11 @@ struct CalorieTrendChartView: View {
             if let selectedEntry {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(Formatters.monthDay.string(from: selectedEntry.date))
-                        .font(.caption.weight(.semibold))
+                        .font(.footnote.weight(.semibold))
                     Text(
                         "\(localized("饮食摄入", "Food Intake")) \(energyText(fromKcal: selectedEntry.intake, signed: false, includeUnit: true, unit: energyUnit))  ·  \(localized("运动支出", "Exercise Burn")) \(energyText(fromKcal: selectedEntry.expenditure, signed: false, includeUnit: true, unit: energyUnit))  ·  \(localized("热量赤字", "Calorie Deficit")) \(energyText(fromKcal: selectedEntry.deficit, signed: true, includeUnit: true, unit: energyUnit))"
                     )
-                        .font(.caption)
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -197,7 +197,7 @@ struct CalorieTrendChartView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.82)
             }
-            .font(.caption2)
+            .font(.footnote)
             .foregroundStyle(color)
             .padding(.horizontal, 7)
             .padding(.vertical, 4)
@@ -286,7 +286,7 @@ struct WeightTrendChartView: View {
                             indexedMetrics.indices.contains(index)
                         {
                             Text(compactTrendDateLabel(from: indexedMetrics[index].entry.date))
-                                .font(.system(size: 10, weight: .regular, design: .rounded))
+                                .font(.system(size: 11, weight: .regular, design: .rounded))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.7)
                         }
@@ -294,13 +294,13 @@ struct WeightTrendChartView: View {
                 }
             }
             .chartYAxisLabel(weightUnit.symbol)
-            .frame(height: 170)
+            .frame(height: 184)
 
             if let selectedEntry {
                 Text(
                     "\(Formatters.monthDay.string(from: selectedEntry.date))  ·  \(weightText(fromKg: selectedEntry.weightKg, decimals: 1, includeUnit: true, unit: weightUnit))"
                 )
-                    .font(.caption)
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
             }
         }
@@ -376,7 +376,7 @@ struct BodyFatTrendChartView: View {
                             indexedMetrics.indices.contains(index)
                         {
                             Text(compactTrendDateLabel(from: indexedMetrics[index].entry.date))
-                                .font(.system(size: 10, weight: .regular, design: .rounded))
+                                .font(.system(size: 11, weight: .regular, design: .rounded))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.7)
                         }
@@ -384,11 +384,11 @@ struct BodyFatTrendChartView: View {
                 }
             }
             .chartYAxisLabel("%")
-            .frame(height: 170)
+            .frame(height: 184)
 
             if let selectedEntry {
                 Text("\(Formatters.monthDay.string(from: selectedEntry.date))  ·  \(String(format: "%.1f", selectedEntry.bodyFatPercent)) %")
-                    .font(.caption)
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
             }
         }

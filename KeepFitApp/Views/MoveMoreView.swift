@@ -13,11 +13,13 @@ struct MoveMoreView: View {
     @State private var durationText = "30"
     @State private var showExerciseSheet = false
     @State private var showExerciseTimeSheet = false
+    @FocusState private var focusedField: InputField?
 
-    private let cardSpacing: CGFloat = 24
-    private let fieldHeight: CGFloat = 36
-    private let timeFieldWidth: CGFloat = 82
-    private let compactFieldWidth: CGFloat = 60
+    @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
+    @ScaledMetric(relativeTo: .body) private var fieldHeight: CGFloat = 40
+    @ScaledMetric(relativeTo: .body) private var timeFieldWidth: CGFloat = 90
+    @ScaledMetric(relativeTo: .body) private var compactFieldWidth: CGFloat = 64
+    @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 194
 
     private var todaySummary: DayFitnessSummary {
         appState.dayExercise(on: selectedDate)
@@ -29,6 +31,10 @@ struct MoveMoreView: View {
 
     private var energyUnit: EnergyUnitOption {
         EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
+    }
+
+    private var isFutureDateSelected: Bool {
+        selectedDate.isFutureDayInCurrentCalendar
     }
 
     var body: some View {
@@ -47,6 +53,11 @@ struct MoveMoreView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .green))
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    focusedField = nil
+                }
+            )
             .navigationTitle(localized("迈开腿", "Move More"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -60,6 +71,12 @@ struct MoveMoreView: View {
                             .foregroundStyle(.primary)
                     }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button(localized("完成", "Done")) {
+                        focusedField = nil
+                    }
+                }
             }
             .onAppear {
                 if selectedExercise == nil {
@@ -68,6 +85,11 @@ struct MoveMoreView: View {
             }
             .onChange(of: tabSwitchToken) { _, _ in
                 selectedDate = Date().startOfDayInCurrentCalendar
+            }
+            .onChange(of: selectedDate) { _, newValue in
+                if newValue.isFutureDayInCurrentCalendar {
+                    selectedDate = Date().startOfDayInCurrentCalendar
+                }
             }
             .sheet(isPresented: $showExerciseSheet) {
                 ExerciseSelectionSheet(items: appState.exerciseLibrary, iconForItem: { item in
@@ -117,13 +139,17 @@ struct MoveMoreView: View {
             ProgressRing(
                 progress: appState.exerciseProgress(on: selectedDate),
                 lineWidth: 12,
-                gradient: LinearGradient(colors: [.green, .mint], startPoint: .topLeading, endPoint: .bottomTrailing),
+                gradient: LinearGradient(
+                    colors: [.green.opacity(0.84), .mint.opacity(0.74), .green.opacity(0.66)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
                 accent: .green,
                 valueText: centerMain,
                 valueUnit: energyUnit.symbol,
                 caption: "\(localized("目标", "Target")) \(energyText(fromKcal: goal, unit: energyUnit))"
             )
-            .frame(width: 186, height: 186)
+            .frame(width: ringSize, height: ringSize)
             .frame(maxWidth: .infinity)
         }
     }
@@ -162,10 +188,12 @@ struct MoveMoreView: View {
             accent: .green
         ) {
             let entryFont = Font.caption.weight(.medium)
+            let canEdit = !isFutureDateSelected
 
             VStack(spacing: 10) {
                 HStack(spacing: 6) {
                     Button {
+                        guard canEdit else { return }
                         KeepFitHaptics.impact(.light)
                         showExerciseTimeSheet = true
                     } label: {
@@ -184,8 +212,10 @@ struct MoveMoreView: View {
                         .background(inputFieldBackground)
                     }
                     .buttonStyle(.plain)
+                    .disabled(!canEdit)
 
                     Button {
+                        guard canEdit else { return }
                         KeepFitHaptics.impact(.light)
                         showExerciseSheet = true
                     } label: {
@@ -193,12 +223,13 @@ struct MoveMoreView: View {
                             AppIconBadge(
                                 icon: appState.exerciseIcon(for: selectedExercise ?? appState.exerciseLibrary.first ?? SeedData.exerciseLibrary[0]),
                                 seed: selectedExercise?.id ?? "exercise_selector",
-                                size: 20
+                                size: 18
                             )
                             Text(selectedExercise.map { appState.exerciseDisplayName(for: $0) } ?? localized("选择运动项目", "Select Exercise"))
                                 .font(entryFont)
                                 .lineLimit(1)
-                                .minimumScaleFactor(0.8)
+                                .minimumScaleFactor(0.66)
+                                .allowsTightening(true)
                             Spacer()
                             Image(systemName: "chevron.up.chevron.down")
                                 .font(.caption2)
@@ -210,11 +241,13 @@ struct MoveMoreView: View {
                     }
                     .buttonStyle(.plain)
                     .layoutPriority(1)
+                    .disabled(!canEdit)
 
                     HStack(spacing: 6) {
                         TextField("duration", text: $durationText)
                             .font(entryFont)
                             .keyboardType(.decimalPad)
+                            .focused($focusedField, equals: .duration)
                             .multilineTextAlignment(.trailing)
                             .lineLimit(1)
                             .minimumScaleFactor(0.8)
@@ -227,8 +260,11 @@ struct MoveMoreView: View {
                     .padding(.horizontal, 8)
                     .frame(width: compactFieldWidth, height: fieldHeight)
                     .background(inputFieldBackground)
+                    .disabled(!canEdit)
 
                     Button {
+                        guard canEdit else { return }
+                        focusedField = nil
                         KeepFitHaptics.impact(.medium)
                         addExerciseLog()
                     } label: {
@@ -248,6 +284,7 @@ struct MoveMoreView: View {
                     }
                     .buttonStyle(.plain)
                     .frame(width: 34, height: fieldHeight)
+                    .disabled(!canEdit)
                 }
 
                 Divider()
@@ -349,6 +386,7 @@ struct MoveMoreView: View {
     }
 
     private func addExerciseLog() {
+        guard !selectedDate.isFutureDayInCurrentCalendar else { return }
         guard let exercise = selectedExercise else { return }
         guard let minutes = Double(durationText), minutes > 0 else { return }
 
@@ -359,6 +397,7 @@ struct MoveMoreView: View {
 
         appState.addExerciseLog(date: date, item: exercise, durationMinutes: minutes)
         durationText = "30"
+        focusedField = nil
     }
 
     private var exerciseTimeSheet: some View {
@@ -405,5 +444,11 @@ struct MoveMoreView: View {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .stroke(.white.opacity(colorScheme == .dark ? 0.16 : 0.24), lineWidth: 0.8)
             )
+    }
+}
+
+private extension MoveMoreView {
+    enum InputField {
+        case duration
     }
 }

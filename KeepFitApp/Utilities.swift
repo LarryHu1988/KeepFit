@@ -233,6 +233,10 @@ extension Date {
     func isSameDay(as other: Date) -> Bool {
         Calendar.current.isDate(self, inSameDayAs: other)
     }
+
+    var isFutureDayInCurrentCalendar: Bool {
+        startOfDayInCurrentCalendar > Date().startOfDayInCurrentCalendar
+    }
 }
 
 enum Formatters {

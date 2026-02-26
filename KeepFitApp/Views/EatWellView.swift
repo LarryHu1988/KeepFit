@@ -13,11 +13,13 @@ struct EatWellView: View {
     @State private var amountText = "120"
     @State private var showFoodSheet = false
     @State private var showIntakeTimeSheet = false
+    @FocusState private var focusedField: InputField?
 
-    private let cardSpacing: CGFloat = 24
-    private let fieldHeight: CGFloat = 36
-    private let timeFieldWidth: CGFloat = 82
-    private let compactFieldWidth: CGFloat = 58
+    @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
+    @ScaledMetric(relativeTo: .body) private var fieldHeight: CGFloat = 40
+    @ScaledMetric(relativeTo: .body) private var timeFieldWidth: CGFloat = 90
+    @ScaledMetric(relativeTo: .body) private var compactFieldWidth: CGFloat = 62
+    @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 194
 
     private var todayNutrition: DayNutritionSummary {
         appState.dayNutrition(on: selectedDate)
@@ -38,6 +40,10 @@ struct EatWellView: View {
 
     private var energyUnit: EnergyUnitOption {
         EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
+    }
+
+    private var isFutureDateSelected: Bool {
+        selectedDate.isFutureDayInCurrentCalendar
     }
 
     private let proteinEmoji = "🍗"
@@ -64,6 +70,11 @@ struct EatWellView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(GrowPageBackground(accent: .orange))
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    focusedField = nil
+                }
+            )
             .navigationTitle(localized("管住嘴", "Eat Well"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -78,6 +89,12 @@ struct EatWellView: View {
                     }
                     .accessibilityLabel(localized("设置", "Settings"))
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button(localized("完成", "Done")) {
+                        focusedField = nil
+                    }
+                }
             }
             .onAppear {
                 if selectedFood == nil {
@@ -89,6 +106,11 @@ struct EatWellView: View {
             }
             .onChange(of: tabSwitchToken) { _, _ in
                 selectedDate = Date().startOfDayInCurrentCalendar
+            }
+            .onChange(of: selectedDate) { _, newValue in
+                if newValue.isFutureDayInCurrentCalendar {
+                    selectedDate = Date().startOfDayInCurrentCalendar
+                }
             }
             .sheet(isPresented: $showFoodSheet) {
                 FoodSelectionSheet(items: appState.foodLibrary, iconForItem: { item in
@@ -137,13 +159,17 @@ struct EatWellView: View {
             ProgressRing(
                 progress: appState.intakeProgress(on: selectedDate),
                 lineWidth: 12,
-                gradient: LinearGradient(colors: [.orange, .red], startPoint: .topLeading, endPoint: .bottomTrailing),
+                gradient: LinearGradient(
+                    colors: [.orange.opacity(0.86), .yellow.opacity(0.72), .orange.opacity(0.68)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
                 accent: .orange,
                 valueText: centerMain,
                 valueUnit: energyUnit.symbol,
                 caption: "\(localized("目标", "Target")) \(energyText(fromKcal: targetCalories, unit: energyUnit))"
             )
-            .frame(width: 186, height: 186)
+            .frame(width: ringSize, height: ringSize)
             .frame(maxWidth: .infinity)
         }
     }
@@ -181,10 +207,12 @@ struct EatWellView: View {
             accent: .orange
         ) {
             let entryFont = Font.caption.weight(.medium)
+            let canEdit = !isFutureDateSelected
 
             VStack(spacing: 10) {
                 HStack(spacing: 6) {
                     Button {
+                        guard canEdit else { return }
                         KeepFitHaptics.impact(.light)
                         showIntakeTimeSheet = true
                     } label: {
@@ -203,8 +231,10 @@ struct EatWellView: View {
                         .background(inputFieldBackground)
                     }
                     .buttonStyle(.plain)
+                    .disabled(!canEdit)
 
                     Button {
+                        guard canEdit else { return }
                         KeepFitHaptics.impact(.light)
                         showFoodSheet = true
                     } label: {
@@ -212,12 +242,13 @@ struct EatWellView: View {
                             AppIconBadge(
                                 icon: appState.foodIcon(for: selectedFood ?? appState.foodLibrary.first ?? SeedData.foodLibrary[0]),
                                 seed: selectedFood?.id ?? "food_selector",
-                                size: 20
+                                size: 18
                             )
                             Text(selectedFood.map { appState.foodDisplayName(for: $0) } ?? localized("选择食物", "Select Food"))
                                 .font(entryFont)
                                 .lineLimit(1)
-                                .minimumScaleFactor(0.8)
+                                .minimumScaleFactor(0.66)
+                                .allowsTightening(true)
                             Spacer()
                             Image(systemName: "chevron.up.chevron.down")
                                 .font(.caption2)
@@ -229,11 +260,13 @@ struct EatWellView: View {
                     }
                     .buttonStyle(.plain)
                     .layoutPriority(1)
+                    .disabled(!canEdit)
 
                     HStack(spacing: 6) {
                         TextField("amount", text: $amountText)
                             .font(entryFont)
                             .keyboardType(.decimalPad)
+                            .focused($focusedField, equals: .amount)
                             .multilineTextAlignment(.trailing)
                             .lineLimit(1)
                             .minimumScaleFactor(0.8)
@@ -246,8 +279,11 @@ struct EatWellView: View {
                     .padding(.horizontal, 8)
                     .frame(width: compactFieldWidth, height: fieldHeight)
                     .background(inputFieldBackground)
+                    .disabled(!canEdit)
 
                     Button {
+                        guard canEdit else { return }
+                        focusedField = nil
                         KeepFitHaptics.impact(.medium)
                         addFoodLog()
                     } label: {
@@ -267,6 +303,7 @@ struct EatWellView: View {
                     }
                     .buttonStyle(.plain)
                     .frame(width: 34, height: fieldHeight)
+                    .disabled(!canEdit)
                 }
 
                 Divider()
@@ -372,6 +409,7 @@ struct EatWellView: View {
     }
 
     private func addFoodLog() {
+        guard !selectedDate.isFutureDayInCurrentCalendar else { return }
         guard let food = selectedFood else { return }
         guard let amount = Double(amountText), amount > 0 else { return }
 
@@ -382,6 +420,7 @@ struct EatWellView: View {
 
         appState.addFoodLog(date: date, item: food, grams: amount)
         amountText = String(Int(appState.defaultEntryAmount(for: food)))
+        focusedField = nil
     }
 
     private var intakeTimeSheet: some View {
@@ -428,5 +467,11 @@ struct EatWellView: View {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .stroke(.white.opacity(colorScheme == .dark ? 0.16 : 0.24), lineWidth: 0.8)
             )
+    }
+}
+
+private extension EatWellView {
+    enum InputField {
+        case amount
     }
 }
