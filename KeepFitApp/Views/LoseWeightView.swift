@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct LoseWeightView: View {
     @EnvironmentObject private var appState: AppState
@@ -25,6 +26,10 @@ struct LoseWeightView: View {
     @State private var bodyFatCustomEndDate = Date().startOfDayInCurrentCalendar
     @State private var showTrendCustomRangeSheet = false
     @State private var activeTrendPickerTarget: TrendPickerTarget = .calorie
+    @State private var activeTrendRangePopoverTarget: TrendPickerTarget?
+    @State private var trendRangeDraft: TrendRange = .all
+    @State private var trendRangePopoverAnchor = UnitPoint(x: 0.92, y: 1.0)
+    @State private var trendRangePopoverArrowEdge: Edge = .top
     @State private var customRangeBoundary: CustomRangeBoundary = .start
     @State private var customRangeStartDraft = Date().startOfDayInCurrentCalendar
     @State private var customRangeEndDraft = Date().startOfDayInCurrentCalendar
@@ -682,49 +687,49 @@ struct LoseWeightView: View {
         range: Binding<TrendRange>,
         target: TrendPickerTarget
     ) -> some View {
-        Menu {
-            ForEach(TrendRange.allCases) { option in
-                Button {
-                    KeepFitHaptics.selection()
-                    range.wrappedValue = option
-                    if option == .custom {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
-                            openCustomRangeSheet(for: target)
-                        }
-                    }
-                } label: {
-                    HStack(spacing: 8) {
-                        Text(option.title)
-                        if option == range.wrappedValue {
-                            Image(systemName: "checkmark")
-                                .font(.caption.weight(.bold))
-                        }
-                    }
+        GeometryReader { proxy in
+            Button {
+                KeepFitHaptics.selection()
+                let frame = proxy.frame(in: .global)
+                let edge: Edge = frame.midY < UIScreen.main.bounds.height * 0.55 ? .top : .bottom
+                trendRangePopoverArrowEdge = edge
+                trendRangePopoverAnchor = UnitPoint(x: 0.92, y: edge == .top ? 1 : 0)
+                trendRangeDraft = range.wrappedValue
+                activeTrendRangePopoverTarget = target
+            } label: {
+                HStack(spacing: 4) {
+                    Text(range.wrappedValue.title)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(trendRangeControlTextColor(for: target))
+                        .lineLimit(1)
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(trendRangeControlTextColor(for: target))
                 }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(
+                    Capsule(style: .continuous)
+                        .fill(trendRangeControlTint(for: target).opacity(colorScheme == .dark ? 0.2 : 0.14))
+                        .overlay(
+                            Capsule(style: .continuous)
+                                .stroke(trendRangeControlTint(for: target).opacity(colorScheme == .dark ? 0.42 : 0.34), lineWidth: 0.9)
+                        )
+                )
             }
-        } label: {
-            HStack(spacing: 4) {
-                Text(range.wrappedValue.title)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                Image(systemName: "line.3.horizontal.decrease.circle")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.blue)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(
-                Capsule(style: .continuous)
-                    .fill(Color.white.opacity(colorScheme == .dark ? 0.12 : 0.26))
-                    .overlay(
-                        Capsule(style: .continuous)
-                            .stroke(.white.opacity(colorScheme == .dark ? 0.18 : 0.34), lineWidth: 0.8)
-                    )
-            )
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
         }
-        .menuStyle(.button)
-        .buttonStyle(.plain)
+        .frame(width: trendRangeTriggerWidth(for: range.wrappedValue.title), height: 28, alignment: .trailing)
+        .popover(
+            isPresented: trendRangePopoverBinding(for: target),
+            attachmentAnchor: .point(trendRangePopoverAnchor),
+            arrowEdge: trendRangePopoverArrowEdge
+        ) {
+            trendRangePopover(range: range, target: target)
+                .presentationCompactAdaptation(.popover)
+                .presentationBackground(.clear)
+        }
     }
 
     private var trendEmptyState: some View {
@@ -890,18 +895,22 @@ struct LoseWeightView: View {
             KeepFitHaptics.selection()
             action()
         } label: {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .center, spacing: 2) {
                 Text(title)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .multilineTextAlignment(.center)
                 Text(value)
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .multilineTextAlignment(.center)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .center)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(selected ? Color.blue.opacity(0.18) : Color.primary.opacity(0.05))
@@ -958,6 +967,147 @@ struct LoseWeightView: View {
         appState.upsertBodyMetric(date: selectedDate, weightKg: weight, bodyFatPercent: bodyFat)
         appState.profile.weightKg = weight
         focusedField = nil
+    }
+
+    private func trendRangePopoverBinding(for target: TrendPickerTarget) -> Binding<Bool> {
+        Binding(
+            get: { activeTrendRangePopoverTarget == target },
+            set: { isPresented in
+                activeTrendRangePopoverTarget = isPresented ? target : nil
+            }
+        )
+    }
+
+    private func trendRangePopover(range: Binding<TrendRange>, target: TrendPickerTarget) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Picker(localized("趋势范围", "Trend Range"), selection: $trendRangeDraft) {
+                ForEach(TrendRange.allCases) { option in
+                    trendWheelOptionText(option.title)
+                        .tag(option)
+                }
+            }
+            .pickerStyle(.wheel)
+            .labelsHidden()
+            .frame(maxWidth: .infinity)
+            .frame(height: 172)
+
+            trendPopoverDoneButton {
+                KeepFitHaptics.selection()
+                applyTrendRangeDraft(range: range, target: target)
+            }
+        }
+        .font(.body)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 10)
+        .frame(width: trendRangeWheelPopoverWidth, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .fill(
+                            trendRangePopoverTint(for: target)
+                                .opacity(colorScheme == .dark ? 0.08 : 0.06)
+                        )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .stroke(.white.opacity(0.22), lineWidth: 0.8)
+                )
+        )
+    }
+
+    @ViewBuilder
+    private func trendWheelOptionText(_ text: String) -> some View {
+        Text(text)
+            .font(.body)
+            .lineLimit(1)
+            .minimumScaleFactor(0.9)
+            .allowsTightening(true)
+    }
+
+    private func trendPopoverDoneButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(localized("确认", "Confirm"))
+                .font(.body.weight(.medium))
+                .foregroundStyle(.primary.opacity(0.86))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 7)
+                .background(
+                    Capsule(style: .continuous)
+                        .fill(.ultraThinMaterial.opacity(0.52))
+                        .overlay(
+                            Capsule(style: .continuous)
+                                .stroke(.white.opacity(0.16), lineWidth: 0.7)
+                        )
+                )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func applyTrendRangeDraft(range: Binding<TrendRange>, target: TrendPickerTarget) {
+        let selection = trendRangeDraft
+        range.wrappedValue = selection
+        activeTrendRangePopoverTarget = nil
+        if selection == .custom {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                openCustomRangeSheet(for: target)
+            }
+        }
+    }
+
+    private var trendRangeWheelPopoverWidth: CGFloat {
+        let maxTextWidth = TrendRange.allCases
+            .map { trendWheelTextWidth($0.title) }
+            .max() ?? 0
+        let oneColumnWidth = maxTextWidth + 44
+        let desired = oneColumnWidth + 20
+        let maxAllowed = min(UIScreen.main.bounds.width * 0.8, 300)
+        return min(max(desired, 176), maxAllowed)
+    }
+
+    private func trendRangeTriggerWidth(for title: String) -> CGFloat {
+        let textWidth = trendMenuTextWidth(title)
+        let iconAndPadding: CGFloat = 36
+        return min(max(textWidth + iconAndPadding, 70), 140)
+    }
+
+    private func trendMenuTextWidth(_ text: String) -> CGFloat {
+        let font = UIFont.preferredFont(forTextStyle: .caption1)
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        return ceil((text as NSString).size(withAttributes: attributes).width)
+    }
+
+    private func trendWheelTextWidth(_ text: String) -> CGFloat {
+        let font = UIFont.preferredFont(forTextStyle: .body)
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        return ceil((text as NSString).size(withAttributes: attributes).width)
+    }
+
+    private func trendRangePopoverTint(for target: TrendPickerTarget) -> Color {
+        switch target {
+        case .calorie:
+            return .orange
+        case .weight:
+            return .cyan
+        case .bodyFat:
+            return .pink
+        }
+    }
+
+    private func trendRangeControlTint(for target: TrendPickerTarget) -> Color {
+        switch target {
+        case .calorie:
+            return .orange
+        case .weight:
+            return .cyan
+        case .bodyFat:
+            return .pink
+        }
+    }
+
+    private func trendRangeControlTextColor(for target: TrendPickerTarget) -> Color {
+        trendRangeControlTint(for: target).opacity(colorScheme == .dark ? 0.95 : 0.88)
     }
 
     private func updateBottomSheetHeight(_ contentHeight: CGFloat, for kind: BottomSheetKind) {
