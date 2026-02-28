@@ -18,15 +18,7 @@ struct KeepFitApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Group {
-                if onboardingCompleted {
-                    MainTabView()
-                } else {
-                    OnboardingView {
-                        onboardingCompleted = true
-                    }
-                }
-            }
+            MainTabView(onboardingCompleted: $onboardingCompleted)
             .environmentObject(appState)
             .environment(\.locale, Locale(identifier: appLanguage.localeIdentifier))
             .onAppear {

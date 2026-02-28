@@ -6,6 +6,7 @@ struct MoveMoreView: View {
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     let onSettingsTap: () -> Void
+    var onExerciseLogged: (() -> Void)? = nil
 
     @State private var selectedExercise: ExerciseItem?
     @State private var selectedDate = Date().startOfDayInCurrentCalendar
@@ -398,6 +399,7 @@ struct MoveMoreView: View {
         appState.addExerciseLog(date: date, item: exercise, durationMinutes: minutes)
         durationText = "30"
         focusedField = nil
+        onExerciseLogged?()
     }
 
     private var exerciseTimeSheet: some View {

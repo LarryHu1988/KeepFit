@@ -8,6 +8,7 @@ struct LoseWeightView: View {
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     @AppStorage("keepfit.unit.weight") private var weightUnitRaw = WeightUnitOption.kilogram.rawValue
     let onSettingsTap: () -> Void
+    var onBodyMetricSaved: (() -> Void)? = nil
 
     @State private var selectedDate = Date().startOfDayInCurrentCalendar
     @State private var monthCursor = Date()
@@ -967,6 +968,7 @@ struct LoseWeightView: View {
         appState.upsertBodyMetric(date: selectedDate, weightKg: weight, bodyFatPercent: bodyFat)
         appState.profile.weightKg = weight
         focusedField = nil
+        onBodyMetricSaved?()
     }
 
     private func trendRangePopoverBinding(for target: TrendPickerTarget) -> Binding<Bool> {

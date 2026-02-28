@@ -6,6 +6,7 @@ struct EatWellView: View {
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     let onSettingsTap: () -> Void
+    var onFoodLogged: (() -> Void)? = nil
 
     @State private var selectedFood: FoodItem?
     @State private var selectedDate = Date().startOfDayInCurrentCalendar
@@ -421,6 +422,7 @@ struct EatWellView: View {
         appState.addFoodLog(date: date, item: food, grams: amount)
         amountText = String(Int(appState.defaultEntryAmount(for: food)))
         focusedField = nil
+        onFoodLogged?()
     }
 
     private var intakeTimeSheet: some View {
