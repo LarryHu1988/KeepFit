@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct MainTabView: View {
     private enum TabKey: Hashable {
@@ -12,6 +13,8 @@ struct MainTabView: View {
     @State private var eatTabSwitchToken = 0
     @State private var moveTabSwitchToken = 0
     @State private var loseTabSwitchToken = 0
+    @State private var tabBarAppearanceConfigured = false
+    @State private var navigationBarAppearanceConfigured = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -57,6 +60,41 @@ struct MainTabView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
+        .onAppear {
+            configureTabBarAppearanceIfNeeded()
+            configureNavigationBarAppearanceIfNeeded()
+        }
+    }
+
+    private func configureTabBarAppearanceIfNeeded() {
+        guard !tabBarAppearanceConfigured else { return }
+
+        let appearance = UITabBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundEffect = nil
+        appearance.backgroundColor = .clear
+        appearance.shadowColor = .clear
+
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+        UITabBar.appearance().isTranslucent = true
+
+        tabBarAppearanceConfigured = true
+    }
+
+    private func configureNavigationBarAppearanceIfNeeded() {
+        guard !navigationBarAppearanceConfigured else { return }
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .clear
+        appearance.shadowColor = .clear
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+
+        navigationBarAppearanceConfigured = true
     }
 }
 
