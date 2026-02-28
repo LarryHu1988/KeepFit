@@ -165,7 +165,13 @@ struct SettingsView: View {
         NavigationStack {
             settingsPresentedView
         }
-        .preferredColorScheme(themeMode.preferredColorScheme)
+        .onAppear {
+            applyThemeModeImmediately(themeMode)
+        }
+        .onChange(of: themeModeRaw) { _, newValue in
+            let mode = AppThemeMode(rawValue: newValue) ?? .system
+            applyThemeModeImmediately(mode)
+        }
     }
 
     private var settingsFormView: some View {
@@ -1158,6 +1164,7 @@ struct SettingsView: View {
                 ForEach(AppThemeMode.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == themeMode, accent: .indigo) {
                         themeModeRaw = option.rawValue
+                        applyThemeModeImmediately(option)
                         showThemeSheet = false
                     }
                 }
@@ -2306,6 +2313,25 @@ struct SettingsView: View {
         if birthDateTimestamp > 0 { return }
         let date = birthDateFromAge(appState.profile.age)
         birthDateTimestamp = date.timeIntervalSince1970
+    }
+
+    private func applyThemeModeImmediately(_ mode: AppThemeMode) {
+        let interfaceStyle: UIUserInterfaceStyle
+        switch mode {
+        case .system:
+            interfaceStyle = .unspecified
+        case .light:
+            interfaceStyle = .light
+        case .dark:
+            interfaceStyle = .dark
+        }
+
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        for scene in scenes {
+            for window in scene.windows {
+                window.overrideUserInterfaceStyle = interfaceStyle
+            }
+        }
     }
 
     private func syncHeightDrafts() {

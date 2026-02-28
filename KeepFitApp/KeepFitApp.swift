@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @main
 struct KeepFitApp: App {
@@ -27,8 +28,33 @@ struct KeepFitApp: App {
                 }
             }
             .environmentObject(appState)
-            .preferredColorScheme(themeMode.preferredColorScheme)
             .environment(\.locale, Locale(identifier: appLanguage.localeIdentifier))
+            .onAppear {
+                applyThemeMode(themeMode)
+            }
+            .onChange(of: themeModeRaw) { _, newValue in
+                let mode = AppThemeMode(rawValue: newValue) ?? .system
+                applyThemeMode(mode)
+            }
+        }
+    }
+
+    private func applyThemeMode(_ mode: AppThemeMode) {
+        let interfaceStyle: UIUserInterfaceStyle
+        switch mode {
+        case .system:
+            interfaceStyle = .unspecified
+        case .light:
+            interfaceStyle = .light
+        case .dark:
+            interfaceStyle = .dark
+        }
+
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        for scene in scenes {
+            for window in scene.windows {
+                window.overrideUserInterfaceStyle = interfaceStyle
+            }
         }
     }
 }
