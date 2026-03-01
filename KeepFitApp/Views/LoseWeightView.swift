@@ -214,6 +214,10 @@ struct LoseWeightView: View {
             .onChange(of: weightUnitRaw) { _, _ in
                 syncBodyMetricInputs(for: selectedDate)
             }
+            .onReceive(appState.$bodyMetricLogs) { _ in
+                guard focusedField == nil else { return }
+                syncBodyMetricInputs(for: selectedDate)
+            }
             .onChange(of: tabSwitchToken) { _, _ in
                 selectedDate = Date().startOfDayInCurrentCalendar
             }
@@ -946,13 +950,12 @@ struct LoseWeightView: View {
     }
 
     private func syncBodyMetricInputs(for date: Date) {
-        if let todayMetric = appState.bodyMetricLogs.first(where: { $0.date.isSameDay(as: date) }) {
+        if let todayMetric = appState.latestBodyMetric(on: date) {
             weightText = String(format: "%.1f", weightDisplayValue(fromKg: todayMetric.weightKg, unit: weightUnit))
             bodyFatText = String(format: "%.1f", todayMetric.bodyFatPercent)
         } else {
-            let latest = appState.latestBodyMetric()
-            weightText = String(format: "%.1f", weightDisplayValue(fromKg: latest.weightKg, unit: weightUnit))
-            bodyFatText = String(format: "%.1f", latest.bodyFatPercent)
+            weightText = String(format: "%.1f", weightDisplayValue(fromKg: appState.profile.weightKg, unit: weightUnit))
+            bodyFatText = String(format: "%.1f", max(10, appState.profile.targetBodyFat + 8))
         }
     }
 

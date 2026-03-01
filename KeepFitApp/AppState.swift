@@ -51,6 +51,7 @@ final class AppState: ObservableObject {
         static let importedWorkoutUUIDs = "keepfit.sync.health.imported.workoutUUIDs"
         static let importedBodyMassUUIDs = "keepfit.sync.health.imported.bodyMassUUIDs"
         static let importedBodyFatUUIDs = "keepfit.sync.health.imported.bodyFatUUIDs"
+        static let healthInitialImportCompleted = "keepfit.sync.health.initialImportCompleted.v2"
         static let healthMetadataSource = "KeepFitSource"
         static let healthMetadataSourceValue = "KeepFit"
     }
@@ -119,11 +120,15 @@ final class AppState: ObservableObject {
     private var cloudObserver: NSObjectProtocol?
     private var foregroundObserver: NSObjectProtocol?
     private var ubiquityIdentityObserver: NSObjectProtocol?
+    private var didBecomeActiveObserver: NSObjectProtocol?
+    private var didEnterBackgroundObserver: NSObjectProtocol?
     private var pendingCloudPushTask: Task<Void, Never>?
     private var pendingHealthSyncTask: Task<Void, Never>?
+    private var healthPollingTask: Task<Void, Never>?
     private var isApplyingCloudSnapshot = false
     private var isRunningHealthSync = false
     private var localMutationAt: Date = .distantPast
+    private var healthObserverQueries: [HKObserverQuery] = []
 
     init() {
         let loadedProfile = store.load(UserProfile.self, for: .profile) ?? .default
@@ -156,11 +161,14 @@ final class AppState: ObservableObject {
         refreshICloudAccountAvailability()
         setupUbiquityIdentityObserver()
         setupForegroundObserver()
+        setupHealthActivityObservers()
         if isICloudSyncEnabled {
             startICloudSync()
         }
         if isHealthSyncEnabled {
             Task { [weak self] in
+                await self?.startHealthObserversIfNeeded()
+                self?.startHealthPollingIfNeeded()
                 await self?.syncHealthDataIfEnabled()
             }
         }
@@ -176,8 +184,15 @@ final class AppState: ObservableObject {
         if let ubiquityIdentityObserver {
             NotificationCenter.default.removeObserver(ubiquityIdentityObserver)
         }
+        if let didBecomeActiveObserver {
+            NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+        }
+        if let didEnterBackgroundObserver {
+            NotificationCenter.default.removeObserver(didEnterBackgroundObserver)
+        }
         pendingCloudPushTask?.cancel()
         pendingHealthSyncTask?.cancel()
+        healthPollingTask?.cancel()
     }
 
     private static func mergeFoodLibrary(_ existing: [FoodItem], with seed: [FoodItem]) -> [FoodItem] {
@@ -247,6 +262,8 @@ final class AppState: ObservableObject {
                     return localized("未获得 Apple 健康权限。", "Apple Health permission was not granted.")
                 }
                 defaults.set(true, forKey: SyncKeys.healthEnabled)
+                await startHealthObserversIfNeeded()
+                startHealthPollingIfNeeded()
                 await syncHealthDataIfEnabled()
                 return nil
             } catch {
@@ -256,6 +273,8 @@ final class AppState: ObservableObject {
 
         defaults.set(false, forKey: SyncKeys.healthEnabled)
         pendingHealthSyncTask?.cancel()
+        stopHealthPolling()
+        stopHealthObservers()
         return nil
     }
 
@@ -335,8 +354,13 @@ final class AppState: ObservableObject {
     }
 
     func foodDisplayName(forFoodID foodID: String, fallback: String? = nil) -> String {
-        let chinese = foodLibrary.first(where: { $0.id == foodID })?.name ?? fallback ?? foodID
-        return displayName(id: foodID, chinese: chinese)
+        if let item = foodLibrary.first(where: { $0.id == foodID }) {
+            return displayName(id: foodID, chinese: item.name)
+        }
+        if let fallback, !fallback.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return fallback
+        }
+        return AppPreferences.language == .english ? englishDisplayName(from: foodID) : foodID
     }
 
     func foodIcon(forFoodID foodID: String) -> String {
@@ -355,8 +379,13 @@ final class AppState: ObservableObject {
     }
 
     func exerciseDisplayName(forExerciseID exerciseID: String, fallback: String? = nil) -> String {
-        let chinese = exerciseLibrary.first(where: { $0.id == exerciseID })?.name ?? fallback ?? exerciseID
-        return displayName(id: exerciseID, chinese: chinese)
+        if let item = exerciseLibrary.first(where: { $0.id == exerciseID }) {
+            return displayName(id: exerciseID, chinese: item.name)
+        }
+        if let fallback, !fallback.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return fallback
+        }
+        return AppPreferences.language == .english ? englishDisplayName(from: exerciseID) : exerciseID
     }
 
     func exerciseIcon(forExerciseID exerciseID: String) -> String {
@@ -617,6 +646,12 @@ final class AppState: ObservableObject {
             ?? BodyMetricLog(id: UUID(), date: Date(), weightKg: profile.weightKg, bodyFatPercent: profile.targetBodyFat + 8)
     }
 
+    func latestBodyMetric(on date: Date) -> BodyMetricLog? {
+        bodyMetricLogs
+            .filter { $0.date.startOfDayInCurrentCalendar == date.startOfDayInCurrentCalendar }
+            .max(by: { $0.date < $1.date })
+    }
+
     private func handleLocalStateDidChange() {
         guard !isApplyingCloudSnapshot else { return }
         localMutationAt = Date()
@@ -635,6 +670,30 @@ final class AppState: ObservableObject {
                 self.refreshICloudAccountAvailability()
                 self.pullCloudSnapshotIfNeeded(force: false)
                 await self.syncHealthDataIfEnabled()
+            }
+        }
+    }
+
+    private func setupHealthActivityObservers() {
+        didBecomeActiveObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.startHealthPollingIfNeeded()
+                await self.syncHealthDataIfEnabled()
+            }
+        }
+
+        didEnterBackgroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.stopHealthPolling()
             }
         }
     }
@@ -774,6 +833,95 @@ final class AppState: ObservableObject {
         }
     }
 
+    private var healthObserverTypes: [HKSampleType] {
+        var types: [HKSampleType] = [HKObjectType.workoutType()]
+        if let dietary = HKObjectType.quantityType(forIdentifier: .dietaryEnergyConsumed) {
+            types.append(dietary)
+        }
+        if let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass) {
+            types.append(bodyMass)
+        }
+        if let bodyFat = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage) {
+            types.append(bodyFat)
+        }
+        return types
+    }
+
+    private func startHealthObserversIfNeeded() async {
+        guard isHealthSyncEnabled, HKHealthStore.isHealthDataAvailable() else { return }
+        guard healthObserverQueries.isEmpty else { return }
+
+        for sampleType in healthObserverTypes {
+            let query = HKObserverQuery(sampleType: sampleType, predicate: nil) { [weak self] _, completionHandler, error in
+                completionHandler()
+                guard error == nil else { return }
+                Task { @MainActor [weak self] in
+                    await self?.syncHealthDataIfEnabled()
+                }
+            }
+            healthStore.execute(query)
+            healthObserverQueries.append(query)
+            try? await enableHealthBackgroundDelivery(for: sampleType)
+        }
+    }
+
+    private func stopHealthObservers() {
+        for query in healthObserverQueries {
+            healthStore.stop(query)
+        }
+        healthObserverQueries.removeAll()
+
+        for sampleType in healthObserverTypes {
+            healthStore.disableBackgroundDelivery(for: sampleType) { _, _ in }
+        }
+    }
+
+    private func startHealthPollingIfNeeded() {
+        guard isHealthSyncEnabled, UIApplication.shared.applicationState == .active else { return }
+        guard healthPollingTask == nil else { return }
+
+        healthPollingTask = Task { [weak self] in
+            while !Task.isCancelled {
+                // Foreground fallback for simulator/reliability: keep Health import responsive.
+                try? await Task.sleep(nanoseconds: 5_000_000_000)
+                guard !Task.isCancelled else { break }
+                await MainActor.run {
+                    guard let self, UIApplication.shared.applicationState == .active else { return }
+                    Task { @MainActor [weak self] in
+                        await self?.syncHealthDataIfEnabled()
+                    }
+                }
+            }
+        }
+    }
+
+    private func stopHealthPolling() {
+        healthPollingTask?.cancel()
+        healthPollingTask = nil
+    }
+
+    private func enableHealthBackgroundDelivery(for sampleType: HKSampleType) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            healthStore.enableBackgroundDelivery(for: sampleType, frequency: .immediate) { success, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                if success {
+                    continuation.resume()
+                } else {
+                    continuation.resume(
+                        throwing: NSError(
+                            domain: "KeepFit.HealthKit",
+                            code: -3,
+                            userInfo: [NSLocalizedDescriptionKey: "Failed to enable background delivery."]
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     private func requestHealthAuthorization() async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             healthStore.requestAuthorization(toShare: healthWriteTypes, read: healthReadTypes) { success, error in
@@ -801,6 +949,295 @@ final class AppState: ObservableObject {
         if let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass) { types.insert(bodyMass) }
         if let bodyFat = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage) { types.insert(bodyFat) }
         return types
+    }
+
+    private struct HealthFoodImportDescriptor {
+        let id: String
+        let name: String
+    }
+
+    private struct HealthWorkoutImportDescriptor {
+        let id: String
+        let name: String
+        let defaultMET: Double
+    }
+
+    private func normalizedLookupKey(_ value: String) -> String {
+        let scalars = value.unicodeScalars.filter { CharacterSet.alphanumerics.contains($0) }
+        return String(String.UnicodeScalarView(scalars)).lowercased()
+    }
+
+    private func stableHashHex(of value: String) -> String {
+        var hash: UInt64 = 14_695_981_039_346_656_037
+        let prime: UInt64 = 1_099_511_628_211
+        for byte in value.utf8 {
+            hash ^= UInt64(byte)
+            hash &*= prime
+        }
+        return String(hash, radix: 16)
+    }
+
+    private func matchedFoodItem(for healthFoodName: String) -> FoodItem? {
+        let key = normalizedLookupKey(healthFoodName)
+        guard !key.isEmpty else { return nil }
+
+        if let exactChinese = foodLibrary.first(where: { normalizedLookupKey($0.name) == key }) {
+            return exactChinese
+        }
+
+        if let exactEnglish = foodLibrary.first(where: { normalizedLookupKey(englishDisplayName(from: $0.id)) == key }) {
+            return exactEnglish
+        }
+
+        if let fuzzyChinese = foodLibrary.first(where: {
+            let itemKey = normalizedLookupKey($0.name)
+            return !itemKey.isEmpty && (key.contains(itemKey) || itemKey.contains(key))
+        }) {
+            return fuzzyChinese
+        }
+
+        if let fuzzyEnglish = foodLibrary.first(where: {
+            let itemKey = normalizedLookupKey(englishDisplayName(from: $0.id))
+            return !itemKey.isEmpty && (key.contains(itemKey) || itemKey.contains(key))
+        }) {
+            return fuzzyEnglish
+        }
+
+        return nil
+    }
+
+    private func resolveHealthFoodDescriptor(from sample: HKQuantitySample) -> HealthFoodImportDescriptor {
+        let foodType = (sample.metadata?[HKMetadataKeyFoodType] as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if let foodType, !foodType.isEmpty {
+            if let matched = matchedFoodItem(for: foodType) {
+                return HealthFoodImportDescriptor(id: matched.id, name: matched.name)
+            }
+            return HealthFoodImportDescriptor(
+                id: "apple_health_food_\(stableHashHex(of: foodType))",
+                name: foodType
+            )
+        }
+
+        let sourceName = sample.sourceRevision.source.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !sourceName.isEmpty {
+            return HealthFoodImportDescriptor(
+                id: "apple_health_food_source_\(stableHashHex(of: sourceName))",
+                name: localized("饮食摄入 · \(sourceName)", "Food Intake · \(sourceName)")
+            )
+        }
+
+        return HealthFoodImportDescriptor(
+            id: "apple_health_food_unknown",
+            name: localized("饮食摄入", "Food Intake")
+        )
+    }
+
+    private func mappedExerciseDescriptor(
+        preferredIDs: [String],
+        fallbackChinese: String,
+        fallbackEnglish: String,
+        defaultMET: Double
+    ) -> HealthWorkoutImportDescriptor {
+        for id in preferredIDs {
+            if let item = exerciseLibrary.first(where: { $0.id == id }) {
+                return HealthWorkoutImportDescriptor(id: item.id, name: item.name, defaultMET: item.met)
+            }
+        }
+
+        let fallbackID = preferredIDs.first ?? "apple_health_workout_generic"
+        return HealthWorkoutImportDescriptor(
+            id: fallbackID,
+            name: localized(fallbackChinese, fallbackEnglish),
+            defaultMET: defaultMET
+        )
+    }
+
+    private func resolveHealthWorkoutDescriptor(from workout: HKWorkout) -> HealthWorkoutImportDescriptor {
+        switch workout.workoutActivityType {
+        case .running:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["running", "jogging", "trail_running"],
+                fallbackChinese: "跑步",
+                fallbackEnglish: "Running",
+                defaultMET: 9.8
+            )
+        case .walking:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["walking_fast", "walking_slow"],
+                fallbackChinese: "步行",
+                fallbackEnglish: "Walking",
+                defaultMET: 4.3
+            )
+        case .hiking:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["hiking", "walking_fast"],
+                fallbackChinese: "徒步",
+                fallbackEnglish: "Hiking",
+                defaultMET: 6.0
+            )
+        case .cycling:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["cycling_light", "cycling_fast", "mountain_bike"],
+                fallbackChinese: "骑行",
+                fallbackEnglish: "Cycling",
+                defaultMET: 7.0
+            )
+        case .swimming:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["swim_light", "swim_fast"],
+                fallbackChinese: "游泳",
+                fallbackEnglish: "Swimming",
+                defaultMET: 8.0
+            )
+        case .traditionalStrengthTraining, .functionalStrengthTraining:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["weight_training", "bodyweight"],
+                fallbackChinese: "力量训练",
+                fallbackEnglish: "Strength Training",
+                defaultMET: 6.0
+            )
+        case .highIntensityIntervalTraining:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["hiit"],
+                fallbackChinese: "高强度间歇训练",
+                fallbackEnglish: "HIIT",
+                defaultMET: 10.0
+            )
+        case .yoga:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["yoga"],
+                fallbackChinese: "瑜伽",
+                fallbackEnglish: "Yoga",
+                defaultMET: 3.0
+            )
+        case .pilates:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["pilates"],
+                fallbackChinese: "普拉提",
+                fallbackEnglish: "Pilates",
+                defaultMET: 3.5
+            )
+        case .dance:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["dancing", "zumba"],
+                fallbackChinese: "舞蹈",
+                fallbackEnglish: "Dance",
+                defaultMET: 6.0
+            )
+        case .mixedCardio:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["aerobics", "step_aerobics"],
+                fallbackChinese: "有氧操",
+                fallbackEnglish: "Aerobics",
+                defaultMET: 7.3
+            )
+        case .stairClimbing:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["stair_climber", "stairs_up"],
+                fallbackChinese: "爬楼",
+                fallbackEnglish: "Stair Climbing",
+                defaultMET: 8.8
+            )
+        case .elliptical:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["elliptical"],
+                fallbackChinese: "椭圆机",
+                fallbackEnglish: "Elliptical",
+                defaultMET: 5.0
+            )
+        case .rowing:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["rowing_machine", "rowing_outdoor"],
+                fallbackChinese: "划船",
+                fallbackEnglish: "Rowing",
+                defaultMET: 7.0
+            )
+        case .jumpRope:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["jump_rope"],
+                fallbackChinese: "跳绳",
+                fallbackEnglish: "Jump Rope",
+                defaultMET: 12.3
+            )
+        case .boxing:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["boxing", "kickboxing_cardio"],
+                fallbackChinese: "拳击",
+                fallbackEnglish: "Boxing",
+                defaultMET: 8.5
+            )
+        case .basketball:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["basketball"],
+                fallbackChinese: "篮球",
+                fallbackEnglish: "Basketball",
+                defaultMET: 8.0
+            )
+        case .soccer:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["soccer"],
+                fallbackChinese: "足球",
+                fallbackEnglish: "Soccer",
+                defaultMET: 8.5
+            )
+        case .tennis:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["tennis"],
+                fallbackChinese: "网球",
+                fallbackEnglish: "Tennis",
+                defaultMET: 7.3
+            )
+        case .badminton:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["badminton"],
+                fallbackChinese: "羽毛球",
+                fallbackEnglish: "Badminton",
+                defaultMET: 5.5
+            )
+        case .volleyball:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["volleyball"],
+                fallbackChinese: "排球",
+                fallbackEnglish: "Volleyball",
+                defaultMET: 4.0
+            )
+        case .baseball:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["baseball"],
+                fallbackChinese: "棒球",
+                fallbackEnglish: "Baseball",
+                defaultMET: 5.0
+            )
+        case .golf:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["golf"],
+                fallbackChinese: "高尔夫",
+                fallbackEnglish: "Golf",
+                defaultMET: 4.8
+            )
+        case .martialArts:
+            return mappedExerciseDescriptor(
+                preferredIDs: ["taekwondo", "karate", "judo", "muay_thai"],
+                fallbackChinese: "武术",
+                fallbackEnglish: "Martial Arts",
+                defaultMET: 8.5
+            )
+        default:
+            let sourceName = workout.sourceRevision.source.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            let fallbackName: String
+            if sourceName.isEmpty {
+                fallbackName = localized("运动记录", "Workout")
+            } else {
+                fallbackName = localized("运动记录 · \(sourceName)", "Workout · \(sourceName)")
+            }
+            return HealthWorkoutImportDescriptor(
+                id: "apple_health_workout_\(workout.workoutActivityType.rawValue)",
+                name: fallbackName,
+                defaultMET: 5.0
+            )
+        }
     }
 
     private func exportUnsyncedLocalDataToHealth() async throws {
@@ -893,9 +1330,6 @@ final class AppState: ObservableObject {
             return
         }
 
-        let calendar = AppPreferences.calendar
-        let since = calendar.date(byAdding: .day, value: -90, to: Date()) ?? .distantPast
-
         var importedDietaryUUIDs = loadStringSet(forKey: SyncKeys.importedDietarySampleUUIDs)
         var importedWorkoutUUIDs = loadStringSet(forKey: SyncKeys.importedWorkoutUUIDs)
         var importedBodyMassUUIDs = loadStringSet(forKey: SyncKeys.importedBodyMassUUIDs)
@@ -904,22 +1338,41 @@ final class AppState: ObservableObject {
         var exportedExerciseIDs = loadStringSet(forKey: SyncKeys.exportedExerciseLogIDs)
         var exportedBodyMetricIDs = loadStringSet(forKey: SyncKeys.exportedBodyMetricIDs)
 
+        let didCompleteInitialImport = defaults.bool(forKey: SyncKeys.healthInitialImportCompleted)
+        let hasHistoricalImportState =
+            !importedDietaryUUIDs.isEmpty ||
+            !importedWorkoutUUIDs.isEmpty ||
+            !importedBodyMassUUIDs.isEmpty ||
+            !importedBodyFatUUIDs.isEmpty
+        let calendar = AppPreferences.calendar
+        let since: Date = {
+            if didCompleteInitialImport || hasHistoricalImportState {
+                return calendar.date(byAdding: .day, value: -90, to: Date()) ?? .distantPast
+            }
+            // First-time Health sync should import all available historical records.
+            return .distantPast
+        }()
+
         let dietarySamples = try await fetchQuantitySamples(type: dietaryType, from: since)
         var mergedFoodLogs = foodLogs
         for sample in dietarySamples {
             let sampleUUID = sample.uuid.uuidString
             if importedDietaryUUIDs.contains(sampleUUID) { continue }
             importedDietaryUUIDs.insert(sampleUUID)
+            if (sample.metadata?[SyncKeys.healthMetadataSource] as? String) == SyncKeys.healthMetadataSourceValue {
+                continue
+            }
 
             let kcal = sample.quantity.doubleValue(for: .kilocalorie())
             guard kcal > 0 else { continue }
+            let descriptor = resolveHealthFoodDescriptor(from: sample)
 
             let log = FoodLog(
                 id: UUID(),
                 date: sample.startDate,
-                foodID: "apple_health_dietary_energy",
-                foodName: localized("Apple 健康摄入", "Apple Health Intake"),
-                foodIcon: "heart.fill",
+                foodID: descriptor.id,
+                foodName: descriptor.name,
+                foodIcon: foodIcon(forFoodID: descriptor.id),
                 weightGrams: 100,
                 caloriesPer100g: kcal,
                 proteinPer100g: 0,
@@ -939,18 +1392,26 @@ final class AppState: ObservableObject {
             let workoutUUID = workout.uuid.uuidString
             if importedWorkoutUUIDs.contains(workoutUUID) { continue }
             importedWorkoutUUIDs.insert(workoutUUID)
+            if (workout.metadata?[SyncKeys.healthMetadataSource] as? String) == SyncKeys.healthMetadataSourceValue {
+                continue
+            }
 
+            let descriptor = resolveHealthWorkoutDescriptor(from: workout)
             let calories = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0
             let durationMinutes = max(workout.duration / 60, 1)
-            guard calories > 0 else { continue }
-
-            let met = max((calories * 200) / (3.5 * max(profile.weightKg, 1) * durationMinutes), 1)
+            let met: Double
+            if calories > 0 {
+                met = max((calories * 200) / (3.5 * max(profile.weightKg, 1) * durationMinutes), 1)
+            } else {
+                // Keep workout import robust even when Health sample has no active energy field.
+                met = descriptor.defaultMET
+            }
             let log = ExerciseLog(
                 id: UUID(),
                 date: workout.startDate,
-                exerciseID: "apple_health_workout",
-                exerciseName: localized("Apple 健康运动", "Apple Health Workout"),
-                exerciseIcon: "heart.circle.fill",
+                exerciseID: descriptor.id,
+                exerciseName: descriptor.name,
+                exerciseIcon: exerciseIcon(forExerciseID: descriptor.id),
                 durationMinutes: durationMinutes,
                 met: met
             )
@@ -970,6 +1431,9 @@ final class AppState: ObservableObject {
             let sampleUUID = sample.uuid.uuidString
             if importedBodyMassUUIDs.contains(sampleUUID) { continue }
             importedBodyMassUUIDs.insert(sampleUUID)
+            if (sample.metadata?[SyncKeys.healthMetadataSource] as? String) == SyncKeys.healthMetadataSourceValue {
+                continue
+            }
 
             let day = sample.startDate.startOfDayInCurrentCalendar
             let weight = sample.quantity.doubleValue(for: .gramUnit(with: .kilo))
@@ -984,6 +1448,9 @@ final class AppState: ObservableObject {
             let sampleUUID = sample.uuid.uuidString
             if importedBodyFatUUIDs.contains(sampleUUID) { continue }
             importedBodyFatUUIDs.insert(sampleUUID)
+            if (sample.metadata?[SyncKeys.healthMetadataSource] as? String) == SyncKeys.healthMetadataSourceValue {
+                continue
+            }
 
             let day = sample.startDate.startOfDayInCurrentCalendar
             let fatPercent = sample.quantity.doubleValue(for: .percent()) * 100
@@ -1005,6 +1472,7 @@ final class AppState: ObservableObject {
         saveStringSet(exportedFoodIDs, forKey: SyncKeys.exportedFoodLogIDs)
         saveStringSet(exportedExerciseIDs, forKey: SyncKeys.exportedExerciseLogIDs)
         saveStringSet(exportedBodyMetricIDs, forKey: SyncKeys.exportedBodyMetricIDs)
+        defaults.set(true, forKey: SyncKeys.healthInitialImportCompleted)
     }
 
     private func saveHealthObject(_ object: HKObject) async throws {
