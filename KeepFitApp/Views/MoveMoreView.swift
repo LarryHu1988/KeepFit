@@ -40,28 +40,32 @@ struct MoveMoreView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: cardSpacing) {
-                    weekCalendarStrip
-                    exerciseProgressCard
-                    exerciseMetricsCard
-                    todayExerciseCard
-                    dailyHistoryCard
+            ZStack {
+                GrowPageBackground(accent: .green)
+
+                ScrollView {
+                    VStack(spacing: cardSpacing) {
+                        weekCalendarStrip
+                        exerciseProgressCard
+                        exerciseMetricsCard
+                        todayExerciseCard
+                        dailyHistoryCard
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 18)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 18)
-                .frame(maxWidth: .infinity)
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        focusedField = nil
+                    }
+                )
             }
-            .background(GrowPageBackground(accent: .green))
-            .simultaneousGesture(
-                TapGesture().onEnded {
-                    focusedField = nil
-                }
-            )
             .navigationTitle(localized("迈开腿", "Move More"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

@@ -57,28 +57,32 @@ struct EatWellView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: cardSpacing) {
-                    weekCalendarStrip
-                    intakeProgressCard
-                    intakeMacroCard
-                    todayIntakeCard
-                    dailyHistoryCard
+            ZStack {
+                GrowPageBackground(accent: .orange)
+
+                ScrollView {
+                    VStack(spacing: cardSpacing) {
+                        weekCalendarStrip
+                        intakeProgressCard
+                        intakeMacroCard
+                        todayIntakeCard
+                        dailyHistoryCard
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 18)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 18)
-                .frame(maxWidth: .infinity)
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        focusedField = nil
+                    }
+                )
             }
-            .background(GrowPageBackground(accent: .orange))
-            .simultaneousGesture(
-                TapGesture().onEnded {
-                    focusedField = nil
-                }
-            )
             .navigationTitle(localized("管住嘴", "Eat Well"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

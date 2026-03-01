@@ -139,32 +139,36 @@ struct LoseWeightView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: cardSpacing) {
-                    weekCalendarStrip
-                    summaryRingCard
-                    summaryMetricsCard
-                    calendarCard
-                    selectedDayCard
-                    bodyMetricInputCard
-                    calorieTrendCard
-                    weightTrendCard
-                    bodyFatTrendCard
+            ZStack {
+                GrowPageBackground(accent: .blue)
+
+                ScrollView {
+                    VStack(spacing: cardSpacing) {
+                        weekCalendarStrip
+                        summaryRingCard
+                        summaryMetricsCard
+                        calendarCard
+                        selectedDayCard
+                        bodyMetricInputCard
+                        calorieTrendCard
+                        weightTrendCard
+                        bodyFatTrendCard
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 18)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 18)
-                .frame(maxWidth: .infinity)
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        focusedField = nil
+                    }
+                )
             }
-            .background(GrowPageBackground(accent: .blue))
-            .simultaneousGesture(
-                TapGesture().onEnded {
-                    focusedField = nil
-                }
-            )
             .navigationTitle(localized("减个肥", "Lose Weight"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
