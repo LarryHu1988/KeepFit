@@ -47,6 +47,12 @@ struct EatWellView: View {
         selectedDate.isFutureDayInCurrentCalendar
     }
 
+    private var barBackgroundTint: Color {
+        colorScheme == .dark
+            ? Color.orange.opacity(0.22)
+            : Color.orange.opacity(0.14)
+    }
+
     private let proteinEmoji = "🍗"
     private let carbsEmoji = "🍚"
     private let fatEmoji = "🧈"
@@ -81,9 +87,8 @@ struct EatWellView: View {
             }
             .navigationTitle(localized("管住嘴", "Eat Well"))
             .navigationBarTitleDisplayMode(.large)
-            .toolbarBackground(.clear, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(.clear, for: .tabBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(barBackgroundTint, for: .tabBar)
             .toolbarBackground(.visible, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

@@ -104,6 +104,12 @@ struct LoseWeightView: View {
         appState.latestBodyMetric(on: selectedDate) != nil
     }
 
+    private var barBackgroundTint: Color {
+        colorScheme == .dark
+            ? Color.blue.opacity(0.22)
+            : Color.blue.opacity(0.14)
+    }
+
     private var calorieTrendData: [DailyCalorieTrend] {
         let bounds = trendBounds(
             range: calorieTrendRange,
@@ -174,9 +180,8 @@ struct LoseWeightView: View {
             }
             .navigationTitle(localized("减个肥", "Lose Weight"))
             .navigationBarTitleDisplayMode(.large)
-            .toolbarBackground(.clear, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(.clear, for: .tabBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(barBackgroundTint, for: .tabBar)
             .toolbarBackground(.visible, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

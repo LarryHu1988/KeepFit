@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 struct MainTabView: View {
     private enum TabKey: Hashable {
@@ -101,65 +100,48 @@ struct MainTabView: View {
     @State private var eatTabSwitchToken = 0
     @State private var moveTabSwitchToken = 0
     @State private var loseTabSwitchToken = 0
-    @State private var tabBarAppearanceConfigured = false
-    @State private var navigationBarAppearanceConfigured = false
     @State private var guideStep: GuideStep = .addFood
 
     private var isGuideActive: Bool {
         !onboardingCompleted && !guideStep.isCompleted
     }
 
-    private var selectedTabAccent: Color {
-        switch selectedTab {
-        case .eat:
-            return .orange
-        case .move:
-            return .green
-        case .lose:
-            return .blue
-        }
-    }
-
     var body: some View {
-        ZStack {
-            GrowPageBackground(accent: selectedTabAccent)
-
-            TabView(selection: $selectedTab) {
-                EatWellView(
-                    onSettingsTap: handleSettingsTap,
-                    onFoodLogged: {
-                        handleGuideAction(.addedFood)
-                    }
-                )
-                .tag(TabKey.eat)
-                .environment(\.tabSwitchToken, eatTabSwitchToken)
-                .tabItem {
-                    Label(localized("管住嘴", "Eat Well"), systemImage: "fork.knife")
+        TabView(selection: $selectedTab) {
+            EatWellView(
+                onSettingsTap: handleSettingsTap,
+                onFoodLogged: {
+                    handleGuideAction(.addedFood)
                 }
+            )
+            .tag(TabKey.eat)
+            .environment(\.tabSwitchToken, eatTabSwitchToken)
+            .tabItem {
+                Label(localized("管住嘴", "Eat Well"), systemImage: "fork.knife")
+            }
 
-                MoveMoreView(
-                    onSettingsTap: handleSettingsTap,
-                    onExerciseLogged: {
-                        handleGuideAction(.addedExercise)
-                    }
-                )
-                .tag(TabKey.move)
-                .environment(\.tabSwitchToken, moveTabSwitchToken)
-                .tabItem {
-                    Label(localized("迈开腿", "Move More"), systemImage: "figure.run")
+            MoveMoreView(
+                onSettingsTap: handleSettingsTap,
+                onExerciseLogged: {
+                    handleGuideAction(.addedExercise)
                 }
+            )
+            .tag(TabKey.move)
+            .environment(\.tabSwitchToken, moveTabSwitchToken)
+            .tabItem {
+                Label(localized("迈开腿", "Move More"), systemImage: "figure.run")
+            }
 
-                LoseWeightView(
-                    onSettingsTap: handleSettingsTap,
-                    onBodyMetricSaved: {
-                        handleGuideAction(.addedBodyMetric)
-                    }
-                )
-                .tag(TabKey.lose)
-                .environment(\.tabSwitchToken, loseTabSwitchToken)
-                .tabItem {
-                    Label(localized("减个肥", "Lose Weight"), systemImage: "sun.max")
+            LoseWeightView(
+                onSettingsTap: handleSettingsTap,
+                onBodyMetricSaved: {
+                    handleGuideAction(.addedBodyMetric)
                 }
+            )
+            .tag(TabKey.lose)
+            .environment(\.tabSwitchToken, loseTabSwitchToken)
+            .tabItem {
+                Label(localized("减个肥", "Lose Weight"), systemImage: "sun.max")
             }
         }
         .tint(Color.accentColor)
@@ -188,8 +170,6 @@ struct MainTabView: View {
             SettingsView()
         }
         .onAppear {
-            configureTabBarAppearanceIfNeeded()
-            configureNavigationBarAppearanceIfNeeded()
             bootstrapGuideIfNeeded()
         }
         .onChange(of: guideStep) { _, newValue in
@@ -197,39 +177,6 @@ struct MainTabView: View {
             onboardingStepRaw = min(newValue.rawValue, GuideStep.openSettings.rawValue)
         }
         .animation(.spring(response: 0.32, dampingFraction: 0.9), value: guideStep)
-    }
-
-    private func configureTabBarAppearanceIfNeeded() {
-        guard !tabBarAppearanceConfigured else { return }
-
-        let appearance = UITabBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundEffect = nil
-        appearance.backgroundColor = .clear
-        appearance.shadowColor = .clear
-
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
-        UITabBar.appearance().isTranslucent = true
-
-        tabBarAppearanceConfigured = true
-    }
-
-    private func configureNavigationBarAppearanceIfNeeded() {
-        guard !navigationBarAppearanceConfigured else { return }
-
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundEffect = nil
-        appearance.backgroundColor = .clear
-        appearance.shadowColor = .clear
-
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        UINavigationBar.appearance().compactAppearance = appearance
-        UINavigationBar.appearance().isTranslucent = true
-
-        navigationBarAppearanceConfigured = true
     }
 
     private var firstUseGuideBanner: some View {

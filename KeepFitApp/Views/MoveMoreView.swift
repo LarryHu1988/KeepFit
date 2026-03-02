@@ -38,6 +38,12 @@ struct MoveMoreView: View {
         selectedDate.isFutureDayInCurrentCalendar
     }
 
+    private var barBackgroundTint: Color {
+        colorScheme == .dark
+            ? Color.green.opacity(0.22)
+            : Color.green.opacity(0.14)
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -64,9 +70,8 @@ struct MoveMoreView: View {
             }
             .navigationTitle(localized("迈开腿", "Move More"))
             .navigationBarTitleDisplayMode(.large)
-            .toolbarBackground(.clear, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(.clear, for: .tabBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(barBackgroundTint, for: .tabBar)
             .toolbarBackground(.visible, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
