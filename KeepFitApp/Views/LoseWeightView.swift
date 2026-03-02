@@ -40,6 +40,9 @@ struct LoseWeightView: View {
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
     @ScaledMetric(relativeTo: .body) private var fieldHeight: CGFloat = 42
+    @ScaledMetric(relativeTo: .body) private var bodyMetricDateFieldWidth: CGFloat = 72
+    @ScaledMetric(relativeTo: .body) private var bodyMetricActionButtonWidth: CGFloat = 30
+    @ScaledMetric(relativeTo: .body) private var bodyMetricRowSpacing: CGFloat = 6
     @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 194
     private let deficitGoal: Double = 450
 
@@ -95,6 +98,10 @@ struct LoseWeightView: View {
 
     private var isFutureDateSelected: Bool {
         selectedDate.isFutureDayInCurrentCalendar
+    }
+
+    private var hasBodyMetricOnSelectedDate: Bool {
+        appState.latestBodyMetric(on: selectedDate) != nil
     }
 
     private var calorieTrendData: [DailyCalorieTrend] {
@@ -452,95 +459,137 @@ struct LoseWeightView: View {
             subtitle: nil,
             accent: .blue
         ) {
-            let entryFont = Font.footnote.weight(.medium)
+            let entryFont = Font.caption.weight(.medium)
             let canEdit = !isFutureDateSelected
+            let canDelete = canEdit && hasBodyMetricOnSelectedDate
 
-            HStack(spacing: 8) {
-                Button {
-                    guard canEdit else { return }
-                    KeepFitHaptics.impact(.light)
-                    bodyMetricDateDraft = selectedDate
-                    showBodyMetricDatePicker = true
-                } label: {
-                    HStack(spacing: 6) {
-                        Text(Formatters.monthDay.string(from: selectedDate))
-                            .font(entryFont)
-                            .monospacedDigit()
-                            .lineLimit(1)
-                        Spacer(minLength: 0)
-                        Image(systemName: "chevron.up.chevron.down")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+            GeometryReader { proxy in
+                let actionWidth = bodyMetricActionButtonWidth
+                let spacing = bodyMetricRowSpacing
+                let totalWidth = max(0, proxy.size.width)
+                let availableForFields = max(0, totalWidth - (actionWidth * 2) - (spacing * 4))
+                let dateWidth = min(bodyMetricDateFieldWidth, max(62, availableForFields * 0.24))
+                let metricWidth = max(0, (availableForFields - dateWidth) / 2)
+
+                HStack(spacing: spacing) {
+                    Button {
+                        guard canEdit else { return }
+                        KeepFitHaptics.impact(.light)
+                        bodyMetricDateDraft = selectedDate
+                        showBodyMetricDatePicker = true
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(Formatters.monthDay.string(from: selectedDate))
+                                .font(entryFont)
+                                .monospacedDigit()
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.9)
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 8)
+                        .frame(width: dateWidth, height: fieldHeight)
+                        .background(metricFieldBackground)
                     }
-                    .padding(.horizontal, 10)
-                    .frame(width: 94, height: fieldHeight)
+                    .buttonStyle(.plain)
+                    .disabled(!canEdit)
+
+                    HStack(spacing: 4) {
+                        Image(systemName: "scalemass.fill")
+                            .font(.caption)
+                            .foregroundStyle(.blue)
+                        TextField("weight", text: $weightText)
+                            .keyboardType(.decimalPad)
+                            .font(entryFont)
+                            .focused($focusedField, equals: .weight)
+                            .minimumScaleFactor(0.72)
+                            .lineLimit(1)
+                            .multilineTextAlignment(.trailing)
+                        Text(weightUnit.symbol)
+                            .font(entryFont)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
+                    }
+                    .padding(.horizontal, 7)
+                    .frame(width: metricWidth, height: fieldHeight)
                     .background(metricFieldBackground)
-                }
-                .buttonStyle(.plain)
-                .disabled(!canEdit)
+                    .disabled(!canEdit)
 
-                HStack(spacing: 5) {
-                    Image(systemName: "scalemass.fill")
-                        .foregroundStyle(.blue)
-                    TextField("weight", text: $weightText)
-                        .keyboardType(.decimalPad)
-                        .font(entryFont)
-                        .focused($focusedField, equals: .weight)
-                        .minimumScaleFactor(0.8)
-                        .lineLimit(1)
-                        .multilineTextAlignment(.trailing)
-                    Text(weightUnit.symbol)
-                        .font(entryFont)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.horizontal, 8)
-                .frame(maxWidth: .infinity, minHeight: fieldHeight)
-                .background(metricFieldBackground)
-                .disabled(!canEdit)
+                    HStack(spacing: 4) {
+                        Image(systemName: "chart.pie.fill")
+                            .font(.caption)
+                            .foregroundStyle(.cyan)
+                        TextField("body fat", text: $bodyFatText)
+                            .keyboardType(.decimalPad)
+                            .font(entryFont)
+                            .focused($focusedField, equals: .bodyFat)
+                            .minimumScaleFactor(0.72)
+                            .lineLimit(1)
+                            .multilineTextAlignment(.trailing)
+                        Text("%")
+                            .font(entryFont)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
+                    }
+                    .padding(.horizontal, 7)
+                    .frame(width: metricWidth, height: fieldHeight)
+                    .background(metricFieldBackground)
+                    .disabled(!canEdit)
 
-                HStack(spacing: 5) {
-                    Image(systemName: "chart.pie.fill")
-                        .foregroundStyle(.cyan)
-                    TextField("body fat", text: $bodyFatText)
-                        .keyboardType(.decimalPad)
-                        .font(entryFont)
-                        .focused($focusedField, equals: .bodyFat)
-                        .minimumScaleFactor(0.8)
-                        .lineLimit(1)
-                        .multilineTextAlignment(.trailing)
-                    Text("%")
-                        .font(entryFont)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.horizontal, 8)
-                .frame(maxWidth: .infinity, minHeight: fieldHeight)
-                .background(metricFieldBackground)
-                .disabled(!canEdit)
+                    Button {
+                        guard canEdit else { return }
+                        focusedField = nil
+                        KeepFitHaptics.impact(.medium)
+                        saveBodyMetric()
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 12, height: 12)
+                            .padding(7)
+                            .background(
+                                Circle()
+                                    .fill(Color.blue.opacity(0.9))
+                                    .overlay(
+                                        Circle()
+                                            .stroke(.white.opacity(0.8), lineWidth: 1)
+                                    )
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .frame(width: actionWidth, height: fieldHeight)
+                    .disabled(!canEdit)
 
-                Button {
-                    guard canEdit else { return }
-                    focusedField = nil
-                    KeepFitHaptics.impact(.medium)
-                    saveBodyMetric()
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 14, height: 14)
-                        .padding(9)
-                        .background(
-                            Circle()
-                                .fill(Color.blue.opacity(0.9))
-                                .overlay(
-                                    Circle()
-                                        .stroke(.white.opacity(0.8), lineWidth: 1)
-                                )
-                        )
+                    Button {
+                        guard canDelete else { return }
+                        focusedField = nil
+                        KeepFitHaptics.impact(.rigid)
+                        deleteBodyMetric()
+                    } label: {
+                        Image(systemName: "trash")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 12, height: 12)
+                            .padding(7)
+                            .background(
+                                Circle()
+                                    .fill(Color.red.opacity(0.88))
+                                    .overlay(
+                                        Circle()
+                                            .stroke(.white.opacity(0.78), lineWidth: 1)
+                                    )
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .frame(width: actionWidth, height: fieldHeight)
+                    .disabled(!canDelete)
                 }
-                .buttonStyle(.plain)
-                .frame(width: 34, height: fieldHeight)
-                .disabled(!canEdit)
             }
+            .frame(height: fieldHeight)
         }
     }
 
@@ -627,7 +676,10 @@ struct LoseWeightView: View {
             if weightTrendData.isEmpty {
                 trendEmptyState
             } else {
-                WeightTrendChartView(bodyMetrics: weightTrendData)
+                WeightTrendChartView(
+                    bodyMetrics: weightTrendData,
+                    targetWeightKg: appState.profile.targetWeightKg
+                )
             }
         }
     }
@@ -641,7 +693,10 @@ struct LoseWeightView: View {
             if bodyFatTrendData.isEmpty {
                 trendEmptyState
             } else {
-                BodyFatTrendChartView(bodyMetrics: bodyFatTrendData)
+                BodyFatTrendChartView(
+                    bodyMetrics: bodyFatTrendData,
+                    targetBodyFatPercent: appState.profile.targetBodyFat
+                )
             }
         }
     }
@@ -974,6 +1029,13 @@ struct LoseWeightView: View {
         let weight = weightFromDisplayValue(displayWeight, unit: weightUnit)
         appState.upsertBodyMetric(date: selectedDate, weightKg: weight, bodyFatPercent: bodyFat)
         appState.profile.weightKg = weight
+        focusedField = nil
+        onBodyMetricSaved?()
+    }
+
+    private func deleteBodyMetric() {
+        guard !selectedDate.isFutureDayInCurrentCalendar else { return }
+        guard appState.deleteBodyMetric(on: selectedDate) else { return }
         focusedField = nil
         onBodyMetricSaved?()
     }

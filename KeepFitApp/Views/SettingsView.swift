@@ -1374,7 +1374,7 @@ struct SettingsView: View {
 
         let content = UNMutableNotificationContent()
         content.title = reminder.title
-        content.body = reminder.body
+        content.body = reminderBody(for: reminder)
         content.sound = .default
 
         let minuteOfDay = minuteOfDay(for: reminder)
@@ -1392,6 +1392,15 @@ struct SettingsView: View {
                     continuation.resume()
                 }
             }
+        }
+    }
+
+    private func reminderBody(for reminder: ReminderKind) -> String {
+        switch reminder {
+        case .summary:
+            return appState.dailySummaryReminderBody(on: Date())
+        case .food, .exercise:
+            return reminder.body
         }
     }
 

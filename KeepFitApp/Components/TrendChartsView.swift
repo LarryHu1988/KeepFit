@@ -214,6 +214,7 @@ struct CalorieTrendChartView: View {
 
 struct WeightTrendChartView: View {
     let bodyMetrics: [BodyMetricLog]
+    let targetWeightKg: Double
     @AppStorage("keepfit.unit.weight") private var weightUnitRaw = WeightUnitOption.kilogram.rawValue
     @State private var selectedIndex: Int?
 
@@ -251,6 +252,12 @@ struct WeightTrendChartView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Chart {
+                RuleMark(
+                    y: .value(localized("目标体重", "Target Weight"), weightDisplayValue(fromKg: targetWeightKg, unit: weightUnit))
+                )
+                .foregroundStyle(.mint.opacity(0.58))
+                .lineStyle(StrokeStyle(lineWidth: 1.2, dash: [6, 4]))
+
                 ForEach(indexedMetrics, id: \.entry.id) { point in
                     LineMark(
                         x: .value(localized("索引", "Index"), point.index),
@@ -309,6 +316,7 @@ struct WeightTrendChartView: View {
 
 struct BodyFatTrendChartView: View {
     let bodyMetrics: [BodyMetricLog]
+    let targetBodyFatPercent: Double
     @State private var selectedIndex: Int?
 
     private var indexedMetrics: [(index: Int, entry: BodyMetricLog)] {
@@ -341,6 +349,12 @@ struct BodyFatTrendChartView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Chart {
+                RuleMark(
+                    y: .value(localized("目标体脂", "Target Body Fat"), targetBodyFatPercent)
+                )
+                .foregroundStyle(.pink.opacity(0.58))
+                .lineStyle(StrokeStyle(lineWidth: 1.2, dash: [6, 4]))
+
                 ForEach(indexedMetrics, id: \.entry.id) { point in
                     LineMark(
                         x: .value(localized("索引", "Index"), point.index),

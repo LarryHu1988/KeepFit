@@ -1,6 +1,7 @@
 import Foundation
 import HealthKit
 import UIKit
+@preconcurrency import UserNotifications
 
 struct DailyNutritionRecord: Identifiable {
     var id: Date { date }
@@ -56,6 +57,12 @@ final class AppState: ObservableObject {
         static let healthMetadataSourceValue = "KeepFit"
     }
 
+    private enum ReminderKeys {
+        static let summaryEnabled = "keepfit.reminder.summary"
+        static let summaryMinuteOfDay = "keepfit.reminder.summary.minuteOfDay"
+        static let summaryIdentifier = "keepfit.reminder.summary"
+    }
+
     @Published var profile: UserProfile {
         didSet {
             store.save(profile, for: .profile)
@@ -82,6 +89,7 @@ final class AppState: ObservableObject {
             store.save(foodLogs, for: .foodLogs)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
+            refreshSummaryReminderIfNeeded()
         }
     }
 
@@ -90,6 +98,7 @@ final class AppState: ObservableObject {
             store.save(exerciseLogs, for: .exerciseLogs)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
+            refreshSummaryReminderIfNeeded()
         }
     }
 
@@ -98,6 +107,7 @@ final class AppState: ObservableObject {
             store.save(bodyMetricLogs, for: .bodyMetrics)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
+            refreshSummaryReminderIfNeeded()
         }
     }
 
@@ -337,6 +347,18 @@ final class AppState: ObservableObject {
         }
     }
 
+    @discardableResult
+    func deleteBodyMetric(on date: Date) -> Bool {
+        let day = date.startOfDayInCurrentCalendar
+        let originalCount = bodyMetricLogs.count
+        bodyMetricLogs.removeAll(where: { $0.date.startOfDayInCurrentCalendar == day })
+        let deleted = bodyMetricLogs.count != originalCount
+        if deleted, let latestRemaining = bodyMetricLogs.max(by: { $0.date < $1.date }) {
+            profile.weightKg = latestRemaining.weightKg
+        }
+        return deleted
+    }
+
     func deleteFoodLog(_ log: FoodLog) {
         foodLogs.removeAll(where: { $0.id == log.id })
     }
@@ -517,6 +539,53 @@ final class AppState: ObservableObject {
         return localized("今日运动目标已达成，建议做低强度拉伸帮助恢复。", "Goal reached. Do low-intensity stretching for recovery.")
     }
 
+    func dailySummaryReminderBody(on date: Date) -> String {
+        let day = date.startOfDayInCurrentCalendar
+        let nutrition = dayNutrition(on: day)
+        let exercise = dayExercise(on: day)
+        let maintenance = profile.dailyMaintenanceCalories
+        let balance = dailyBalance(on: day) // intake - (maintenance + exercise)
+
+        let intakeText = energyText(fromKcal: nutrition.calories)
+        let exerciseText = energyText(fromKcal: exercise.caloriesBurned)
+        let maintenanceText = energyText(fromKcal: maintenance)
+        let balanceText = energyText(fromKcal: abs(balance))
+
+        if AppPreferences.language == .english {
+            if nutrition.calories <= 0.01 && exercise.caloriesBurned <= 0.01 {
+                return "No logs today yet. Add your meals and workouts first for an accurate summary."
+            }
+
+            let head = "Intake \(intakeText), exercise \(exerciseText), maintenance \(maintenanceText)."
+            if balance <= -300 {
+                return "\(head) Deficit \(balanceText) today. Great pace for fat loss, keep protein and sleep on track."
+            }
+            if balance < 0 {
+                return "\(head) Mild deficit \(balanceText). Good control today, keep hydration and recovery."
+            }
+            if balance <= 200 {
+                return "\(head) Nearly balanced today. Keep dinner lighter to secure tomorrow's deficit."
+            }
+            return "\(head) Surplus \(balanceText) today. Add light cardio/walking and tighten intake tomorrow."
+        }
+
+        if nutrition.calories <= 0.01 && exercise.caloriesBurned <= 0.01 {
+            return "今天还没有有效记录，建议先补充饮食和运动数据，才能得到准确总结。"
+        }
+
+        let head = "摄入\(intakeText)，运动\(exerciseText)，维持\(maintenanceText)。"
+        if balance <= -300 {
+            return "\(head) 今日赤字\(balanceText)，减脂节奏很好，继续保持蛋白和睡眠。"
+        }
+        if balance < 0 {
+            return "\(head) 今日小幅赤字\(balanceText)，控制不错，注意补水与恢复。"
+        }
+        if balance <= 200 {
+            return "\(head) 今日接近平衡，晚间尽量清淡，帮助明天进入赤字。"
+        }
+        return "\(head) 今日超量\(balanceText)，建议补充步行/轻有氧，明天适当控制摄入。"
+    }
+
     func monthlyGrid(for month: Date) -> [Date?] {
         let calendar = AppPreferences.calendar
         guard
@@ -657,6 +726,55 @@ final class AppState: ObservableObject {
         localMutationAt = Date()
         defaults.set(localMutationAt.timeIntervalSince1970, forKey: SyncKeys.localMutationTS)
         queueCloudPush()
+    }
+
+    private func refreshSummaryReminderIfNeeded() {
+        guard defaults.bool(forKey: ReminderKeys.summaryEnabled) else {
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [ReminderKeys.summaryIdentifier])
+            return
+        }
+
+        let minute = summaryReminderMinuteOfDay
+        let body = dailySummaryReminderBody(on: Date())
+        let title = localized("每日总结", "Daily Summary")
+
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            let authorized: Bool
+            switch settings.authorizationStatus {
+            case .authorized, .provisional, .ephemeral:
+                authorized = true
+            default:
+                authorized = false
+            }
+            guard authorized else { return }
+
+            var components = DateComponents()
+            components.hour = minute / 60
+            components.minute = minute % 60
+
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            content.sound = .default
+
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+            let request = UNNotificationRequest(
+                identifier: ReminderKeys.summaryIdentifier,
+                content: content,
+                trigger: trigger
+            )
+
+            let center = UNUserNotificationCenter.current()
+            center.removePendingNotificationRequests(withIdentifiers: [ReminderKeys.summaryIdentifier])
+            center.add(request) { _ in }
+        }
+    }
+
+    private var summaryReminderMinuteOfDay: Int {
+        if defaults.object(forKey: ReminderKeys.summaryMinuteOfDay) == nil {
+            return 21 * 60 + 30
+        }
+        return min(max(defaults.integer(forKey: ReminderKeys.summaryMinuteOfDay), 0), 1439)
     }
 
     private func setupForegroundObserver() {
