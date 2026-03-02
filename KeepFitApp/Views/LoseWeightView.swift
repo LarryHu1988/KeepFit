@@ -40,7 +40,7 @@ struct LoseWeightView: View {
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
     @ScaledMetric(relativeTo: .body) private var fieldHeight: CGFloat = 42
-    @ScaledMetric(relativeTo: .body) private var bodyMetricDateFieldWidth: CGFloat = 72
+    @ScaledMetric(relativeTo: .body) private var bodyMetricDateFieldWidth: CGFloat = 84
     @ScaledMetric(relativeTo: .body) private var bodyMetricActionButtonWidth: CGFloat = 30
     @ScaledMetric(relativeTo: .body) private var bodyMetricRowSpacing: CGFloat = 6
     @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 194
@@ -174,8 +174,10 @@ struct LoseWeightView: View {
             }
             .navigationTitle(localized("减个肥", "Lose Weight"))
             .navigationBarTitleDisplayMode(.large)
-            .toolbarBackground(.hidden, for: .navigationBar)
-            .toolbarBackground(.hidden, for: .tabBar)
+            .toolbarBackground(.clear, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(.clear, for: .tabBar)
+            .toolbarBackground(.visible, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -468,7 +470,7 @@ struct LoseWeightView: View {
                 let spacing = bodyMetricRowSpacing
                 let totalWidth = max(0, proxy.size.width)
                 let availableForFields = max(0, totalWidth - (actionWidth * 2) - (spacing * 4))
-                let dateWidth = min(bodyMetricDateFieldWidth, max(62, availableForFields * 0.24))
+                let dateWidth = min(bodyMetricDateFieldWidth, max(74, availableForFields * 0.30))
                 let metricWidth = max(0, (availableForFields - dateWidth) / 2)
 
                 HStack(spacing: spacing) {

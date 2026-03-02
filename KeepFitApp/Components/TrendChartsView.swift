@@ -56,7 +56,9 @@ struct CalorieTrendChartView: View {
     }
 
     private var axisLabelCount: Int {
-        maxVisibleXAxisLabels()
+        maxVisibleXAxisLabels(
+            labels: indexedDisplayTrends.map { compactTrendDateLabel(from: $0.entry.date) }
+        )
     }
 
     private var xAxisIndices: [Int] {
@@ -139,7 +141,7 @@ struct CalorieTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedIndex)
-            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 40, endPadding: 40))
+            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
                 AxisMarks(preset: .aligned, values: xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
@@ -238,7 +240,9 @@ struct WeightTrendChartView: View {
     }
 
     private var axisLabelCount: Int {
-        maxVisibleXAxisLabels()
+        maxVisibleXAxisLabels(
+            labels: indexedMetrics.map { compactTrendDateLabel(from: $0.entry.date) }
+        )
     }
 
     private var xAxisIndices: [Int] {
@@ -280,7 +284,7 @@ struct WeightTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedIndex)
-            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 40, endPadding: 40))
+            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
                 AxisMarks(preset: .aligned, values: xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
@@ -335,7 +339,9 @@ struct BodyFatTrendChartView: View {
     }
 
     private var axisLabelCount: Int {
-        maxVisibleXAxisLabels()
+        maxVisibleXAxisLabels(
+            labels: indexedMetrics.map { compactTrendDateLabel(from: $0.entry.date) }
+        )
     }
 
     private var xAxisIndices: [Int] {
@@ -377,7 +383,7 @@ struct BodyFatTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedIndex)
-            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 40, endPadding: 40))
+            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
                 AxisMarks(preset: .aligned, values: xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
@@ -443,8 +449,18 @@ private func compactTrendDateLabel(from date: Date) -> String {
     return "\(month)/\(day)"
 }
 
-private func maxVisibleXAxisLabels(minLabelWidth: CGFloat = 28, chartHorizontalPadding: CGFloat = 92) -> Int {
+private func maxVisibleXAxisLabels(
+    labels: [String],
+    chartHorizontalPadding: CGFloat = 68,
+    plotInnerPadding: CGFloat = 92,
+    minLabelCharacters: Int = 4,
+    fontSize: CGFloat = 11,
+    interLabelSpacing: CGFloat = 6
+) -> Int {
     let screenWidth = UIScreen.main.bounds.width
-    let usableWidth = max(120, screenWidth - chartHorizontalPadding)
-    return max(2, Int(floor(usableWidth / minLabelWidth)))
+    let plotWidth = max(120, screenWidth - chartHorizontalPadding - plotInnerPadding)
+    let longestLabelCharacters = max(minLabelCharacters, labels.map(\.count).max() ?? minLabelCharacters)
+    let estimatedLabelWidth = max(28, CGFloat(longestLabelCharacters) * fontSize * 0.58)
+    let requiredSlotWidth = max(32, estimatedLabelWidth + interLabelSpacing)
+    return max(2, Int(floor(plotWidth / requiredSlotWidth)))
 }

@@ -109,42 +109,57 @@ struct MainTabView: View {
         !onboardingCompleted && !guideStep.isCompleted
     }
 
+    private var selectedTabAccent: Color {
+        switch selectedTab {
+        case .eat:
+            return .orange
+        case .move:
+            return .green
+        case .lose:
+            return .blue
+        }
+    }
+
     var body: some View {
-        TabView(selection: $selectedTab) {
-            EatWellView(
-                onSettingsTap: handleSettingsTap,
-                onFoodLogged: {
-                    handleGuideAction(.addedFood)
-                }
-            )
-            .tag(TabKey.eat)
-            .environment(\.tabSwitchToken, eatTabSwitchToken)
-            .tabItem {
-                Label(localized("管住嘴", "Eat Well"), systemImage: "fork.knife")
-            }
+        ZStack {
+            GrowPageBackground(accent: selectedTabAccent)
 
-            MoveMoreView(
-                onSettingsTap: handleSettingsTap,
-                onExerciseLogged: {
-                    handleGuideAction(.addedExercise)
+            TabView(selection: $selectedTab) {
+                EatWellView(
+                    onSettingsTap: handleSettingsTap,
+                    onFoodLogged: {
+                        handleGuideAction(.addedFood)
+                    }
+                )
+                .tag(TabKey.eat)
+                .environment(\.tabSwitchToken, eatTabSwitchToken)
+                .tabItem {
+                    Label(localized("管住嘴", "Eat Well"), systemImage: "fork.knife")
                 }
-            )
-            .tag(TabKey.move)
-            .environment(\.tabSwitchToken, moveTabSwitchToken)
-            .tabItem {
-                Label(localized("迈开腿", "Move More"), systemImage: "figure.run")
-            }
 
-            LoseWeightView(
-                onSettingsTap: handleSettingsTap,
-                onBodyMetricSaved: {
-                    handleGuideAction(.addedBodyMetric)
+                MoveMoreView(
+                    onSettingsTap: handleSettingsTap,
+                    onExerciseLogged: {
+                        handleGuideAction(.addedExercise)
+                    }
+                )
+                .tag(TabKey.move)
+                .environment(\.tabSwitchToken, moveTabSwitchToken)
+                .tabItem {
+                    Label(localized("迈开腿", "Move More"), systemImage: "figure.run")
                 }
-            )
-            .tag(TabKey.lose)
-            .environment(\.tabSwitchToken, loseTabSwitchToken)
-            .tabItem {
-                Label(localized("减个肥", "Lose Weight"), systemImage: "sun.max")
+
+                LoseWeightView(
+                    onSettingsTap: handleSettingsTap,
+                    onBodyMetricSaved: {
+                        handleGuideAction(.addedBodyMetric)
+                    }
+                )
+                .tag(TabKey.lose)
+                .environment(\.tabSwitchToken, loseTabSwitchToken)
+                .tabItem {
+                    Label(localized("减个肥", "Lose Weight"), systemImage: "sun.max")
+                }
             }
         }
         .tint(Color.accentColor)
@@ -205,12 +220,14 @@ struct MainTabView: View {
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
+        appearance.backgroundEffect = nil
         appearance.backgroundColor = .clear
         appearance.shadowColor = .clear
 
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
         UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().isTranslucent = true
 
         navigationBarAppearanceConfigured = true
     }
