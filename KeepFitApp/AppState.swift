@@ -58,6 +58,12 @@ final class AppState: ObservableObject {
     }
 
     private enum ReminderKeys {
+        static let foodEnabled = "keepfit.reminder.food"
+        static let foodMinuteOfDay = "keepfit.reminder.food.minuteOfDay"
+        static let foodIdentifier = "keepfit.reminder.food"
+        static let exerciseEnabled = "keepfit.reminder.exercise"
+        static let exerciseMinuteOfDay = "keepfit.reminder.exercise.minuteOfDay"
+        static let exerciseIdentifier = "keepfit.reminder.exercise"
         static let summaryEnabled = "keepfit.reminder.summary"
         static let summaryMinuteOfDay = "keepfit.reminder.summary.minuteOfDay"
         static let summaryIdentifier = "keepfit.reminder.summary"
@@ -67,6 +73,7 @@ final class AppState: ObservableObject {
         didSet {
             store.save(profile, for: .profile)
             handleLocalStateDidChange()
+            refreshDynamicRemindersIfNeeded()
         }
     }
 
@@ -89,7 +96,7 @@ final class AppState: ObservableObject {
             store.save(foodLogs, for: .foodLogs)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
-            refreshSummaryReminderIfNeeded()
+            refreshDynamicRemindersIfNeeded()
         }
     }
 
@@ -98,7 +105,7 @@ final class AppState: ObservableObject {
             store.save(exerciseLogs, for: .exerciseLogs)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
-            refreshSummaryReminderIfNeeded()
+            refreshDynamicRemindersIfNeeded()
         }
     }
 
@@ -107,7 +114,7 @@ final class AppState: ObservableObject {
             store.save(bodyMetricLogs, for: .bodyMetrics)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
-            refreshSummaryReminderIfNeeded()
+            refreshDynamicRemindersIfNeeded()
         }
     }
 
@@ -539,6 +546,70 @@ final class AppState: ObservableObject {
         return localized("今日运动目标已达成，建议做低强度拉伸帮助恢复。", "Goal reached. Do low-intensity stretching for recovery.")
     }
 
+    func foodReminderBody(on date: Date) -> String {
+        let day = date.startOfDayInCurrentCalendar
+        let logs = foodLogs(on: day)
+        let summary = dayNutrition(on: day)
+        let target = profile.recommendedIntakeForFatLoss
+        let remaining = target - summary.calories
+
+        if AppPreferences.language == .english {
+            if logs.isEmpty {
+                return "No meal logs today. Log your first meal to keep intake on track."
+            }
+            if remaining > 250 {
+                return "Logged \(logs.count) meals, intake \(energyText(fromKcal: summary.calories)). About \(energyText(fromKcal: remaining)) left, prioritize protein and vegetables."
+            }
+            if remaining >= 0 {
+                return "Intake is near target. Keep your next meal lighter and continue logging."
+            }
+            return "Intake is over target by \(energyText(fromKcal: abs(remaining))). Keep later meals clean and avoid extra snacks."
+        }
+
+        if logs.isEmpty {
+            return "今天还没有饮食记录，先记录第一餐，方便控制全天摄入。"
+        }
+        if remaining > 250 {
+            return "今天已记录\(logs.count)餐，已摄入\(energyText(fromKcal: summary.calories))，还可摄入约\(energyText(fromKcal: remaining))，优先蛋白和蔬菜。"
+        }
+        if remaining >= 0 {
+            return "当前摄入已接近目标，下一餐建议清淡高蛋白，并继续记录。"
+        }
+        return "当前已超目标约\(energyText(fromKcal: abs(remaining)))，后续建议避免加餐并保持记录。"
+    }
+
+    func exerciseReminderBody(on date: Date) -> String {
+        let day = date.startOfDayInCurrentCalendar
+        let logs = exerciseLogs(on: day)
+        let summary = dayExercise(on: day)
+        let goal = max(profile.dailyExerciseGoal, 1)
+        let remaining = goal - summary.caloriesBurned
+
+        if AppPreferences.language == .english {
+            if logs.isEmpty {
+                return "No workout logs today. Start with 20-30 min walk or cardio."
+            }
+            if remaining > 120 {
+                return "Burned \(energyText(fromKcal: summary.caloriesBurned)) in \(durationDisplayText(fromMinutes: summary.durationMinutes)). About \(energyText(fromKcal: remaining)) left to your goal."
+            }
+            if remaining > 0 {
+                return "You're close to the workout goal. Add 10-15 min light cardio or mobility."
+            }
+            return "Workout goal achieved today. Keep recovery and stretching on schedule."
+        }
+
+        if logs.isEmpty {
+            return "今天还没有运动记录，建议先完成 20-30 min 快走或有氧。"
+        }
+        if remaining > 120 {
+            return "今天已消耗\(energyText(fromKcal: summary.caloriesBurned))，时长\(durationDisplayText(fromMinutes: summary.durationMinutes))，距离目标还差约\(energyText(fromKcal: remaining))。"
+        }
+        if remaining > 0 {
+            return "你已接近今日目标，再补 10-15 min 轻有氧或拉伸即可。"
+        }
+        return "今日运动目标已达成，建议保持拉伸恢复，避免过量训练。"
+    }
+
     func dailySummaryReminderBody(on date: Date) -> String {
         let day = date.startOfDayInCurrentCalendar
         let nutrition = dayNutrition(on: day)
@@ -728,17 +799,28 @@ final class AppState: ObservableObject {
         queueCloudPush()
     }
 
-    private func refreshSummaryReminderIfNeeded() {
-        guard defaults.bool(forKey: ReminderKeys.summaryEnabled) else {
-            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [ReminderKeys.summaryIdentifier])
-            return
+    private struct ReminderScheduleConfig {
+        let enabled: Bool
+        let identifier: String
+        let title: String
+        let body: String
+        let minuteOfDay: Int
+    }
+
+    private func refreshDynamicRemindersIfNeeded() {
+        let configs = reminderScheduleConfigs(for: Date())
+        let center = UNUserNotificationCenter.current()
+
+        let disabledIdentifiers = configs.filter { !$0.enabled }.map(\.identifier)
+        if !disabledIdentifiers.isEmpty {
+            center.removePendingNotificationRequests(withIdentifiers: disabledIdentifiers)
+            center.removeDeliveredNotifications(withIdentifiers: disabledIdentifiers)
         }
 
-        let minute = summaryReminderMinuteOfDay
-        let body = dailySummaryReminderBody(on: Date())
-        let title = localized("每日总结", "Daily Summary")
+        let enabledConfigs = configs.filter(\.enabled)
+        guard !enabledConfigs.isEmpty else { return }
 
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
+        center.getNotificationSettings { settings in
             let authorized: Bool
             switch settings.authorizationStatus {
             case .authorized, .provisional, .ephemeral:
@@ -748,33 +830,63 @@ final class AppState: ObservableObject {
             }
             guard authorized else { return }
 
-            var components = DateComponents()
-            components.hour = minute / 60
-            components.minute = minute % 60
+            for config in enabledConfigs {
+                var components = DateComponents()
+                components.hour = config.minuteOfDay / 60
+                components.minute = config.minuteOfDay % 60
 
-            let content = UNMutableNotificationContent()
-            content.title = title
-            content.body = body
-            content.sound = .default
+                let content = UNMutableNotificationContent()
+                content.title = config.title
+                content.body = config.body
+                content.sound = .default
 
-            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
-            let request = UNNotificationRequest(
-                identifier: ReminderKeys.summaryIdentifier,
-                content: content,
-                trigger: trigger
-            )
+                let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+                let request = UNNotificationRequest(identifier: config.identifier, content: content, trigger: trigger)
 
-            let center = UNUserNotificationCenter.current()
-            center.removePendingNotificationRequests(withIdentifiers: [ReminderKeys.summaryIdentifier])
-            center.add(request) { _ in }
+                center.removePendingNotificationRequests(withIdentifiers: [config.identifier])
+                center.add(request) { _ in }
+            }
         }
     }
 
-    private var summaryReminderMinuteOfDay: Int {
-        if defaults.object(forKey: ReminderKeys.summaryMinuteOfDay) == nil {
-            return 21 * 60 + 30
+    private func reminderScheduleConfigs(for date: Date) -> [ReminderScheduleConfig] {
+        [
+            ReminderScheduleConfig(
+                enabled: reminderEnabled(forKey: ReminderKeys.foodEnabled, defaultValue: true),
+                identifier: ReminderKeys.foodIdentifier,
+                title: localized("饮食提醒", "Diet Reminder"),
+                body: foodReminderBody(on: date),
+                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.foodMinuteOfDay, defaultValue: 12 * 60)
+            ),
+            ReminderScheduleConfig(
+                enabled: reminderEnabled(forKey: ReminderKeys.exerciseEnabled, defaultValue: true),
+                identifier: ReminderKeys.exerciseIdentifier,
+                title: localized("运动提醒", "Exercise Reminder"),
+                body: exerciseReminderBody(on: date),
+                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.exerciseMinuteOfDay, defaultValue: 19 * 60)
+            ),
+            ReminderScheduleConfig(
+                enabled: reminderEnabled(forKey: ReminderKeys.summaryEnabled, defaultValue: true),
+                identifier: ReminderKeys.summaryIdentifier,
+                title: localized("每日总结", "Daily Summary"),
+                body: dailySummaryReminderBody(on: date),
+                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.summaryMinuteOfDay, defaultValue: 21 * 60 + 30)
+            )
+        ]
+    }
+
+    private func reminderEnabled(forKey key: String, defaultValue: Bool) -> Bool {
+        if defaults.object(forKey: key) == nil {
+            return defaultValue
         }
-        return min(max(defaults.integer(forKey: ReminderKeys.summaryMinuteOfDay), 0), 1439)
+        return defaults.bool(forKey: key)
+    }
+
+    private func reminderMinuteOfDay(forKey key: String, defaultValue: Int) -> Int {
+        if defaults.object(forKey: key) == nil {
+            return defaultValue
+        }
+        return min(max(defaults.integer(forKey: key), 0), 1439)
     }
 
     private func setupForegroundObserver() {

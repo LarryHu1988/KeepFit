@@ -1397,10 +1397,12 @@ struct SettingsView: View {
 
     private func reminderBody(for reminder: ReminderKind) -> String {
         switch reminder {
+        case .food:
+            return appState.foodReminderBody(on: Date())
+        case .exercise:
+            return appState.exerciseReminderBody(on: Date())
         case .summary:
             return appState.dailySummaryReminderBody(on: Date())
-        case .food, .exercise:
-            return reminder.body
         }
     }
 

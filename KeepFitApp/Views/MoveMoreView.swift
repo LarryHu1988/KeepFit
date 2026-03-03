@@ -62,11 +62,7 @@ struct MoveMoreView: View {
                     .padding(.bottom, 18)
                     .frame(maxWidth: .infinity)
                 }
-                .simultaneousGesture(
-                    TapGesture().onEnded {
-                        focusedField = nil
-                    }
-                )
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationTitle(localized("迈开腿", "Move More"))
             .navigationBarTitleDisplayMode(.large)
@@ -299,14 +295,8 @@ struct MoveMoreView: View {
                     .disabled(!canEdit)
                 }
 
-                Divider()
-
-                if todayLogs.isEmpty {
-                    Text(localized("今天还没有锻炼记录", "No workout records today"))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else {
+                if !todayLogs.isEmpty {
+                    Divider()
                     ForEach(todayLogs) { log in
                         HStack(spacing: 10) {
                             AppIconBadge(icon: appState.exerciseIcon(forExerciseID: log.exerciseID), seed: log.exerciseID, size: 24)

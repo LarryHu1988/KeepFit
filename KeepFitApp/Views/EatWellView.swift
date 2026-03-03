@@ -79,11 +79,7 @@ struct EatWellView: View {
                     .padding(.bottom, 18)
                     .frame(maxWidth: .infinity)
                 }
-                .simultaneousGesture(
-                    TapGesture().onEnded {
-                        focusedField = nil
-                    }
-                )
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationTitle(localized("管住嘴", "Eat Well"))
             .navigationBarTitleDisplayMode(.large)
@@ -318,14 +314,8 @@ struct EatWellView: View {
                     .disabled(!canEdit)
                 }
 
-                Divider()
-
-                if todayLogs.isEmpty {
-                    Text(localized("今天还没有进食记录", "No food records today"))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else {
+                if !todayLogs.isEmpty {
+                    Divider()
                     ForEach(todayLogs) { log in
                         HStack(spacing: 10) {
                             AppIconBadge(icon: appState.foodIcon(forFoodID: log.foodID), seed: log.foodID, size: 24)
