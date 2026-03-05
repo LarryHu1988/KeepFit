@@ -172,9 +172,13 @@ struct LoseWeightView: View {
                     .padding(.bottom, 18)
                     .frame(maxWidth: .infinity)
                 }
+                .scrollDismissesKeyboard(.immediately)
                 .simultaneousGesture(
                     TapGesture().onEnded {
-                        focusedField = nil
+                        if focusedField != nil {
+                            keepFitDismissKeyboard()
+                            focusedField = nil
+                        }
                     }
                 )
             }
@@ -224,6 +228,11 @@ struct LoseWeightView: View {
                 }
                 monthCursor = newValue
                 syncBodyMetricInputs(for: newValue)
+            }
+            .onChange(of: focusedField) { _, newValue in
+                if newValue == .weight || newValue == .bodyFat {
+                    keepFitPlaceCursorAtEndIfTextField()
+                }
             }
             .onChange(of: weightUnitRaw) { _, _ in
                 syncBodyMetricInputs(for: selectedDate)
@@ -511,6 +520,7 @@ struct LoseWeightView: View {
                             .keyboardType(.decimalPad)
                             .font(entryFont)
                             .focused($focusedField, equals: .weight)
+                            .submitLabel(.done)
                             .minimumScaleFactor(0.72)
                             .lineLimit(1)
                             .multilineTextAlignment(.trailing)
@@ -523,6 +533,12 @@ struct LoseWeightView: View {
                     .padding(.horizontal, 7)
                     .frame(width: metricWidth, height: fieldHeight)
                     .background(metricFieldBackground)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        guard canEdit else { return }
+                        focusedField = .weight
+                        keepFitPlaceCursorAtEndIfTextField()
+                    }
                     .disabled(!canEdit)
 
                     HStack(spacing: 4) {
@@ -533,6 +549,7 @@ struct LoseWeightView: View {
                             .keyboardType(.decimalPad)
                             .font(entryFont)
                             .focused($focusedField, equals: .bodyFat)
+                            .submitLabel(.done)
                             .minimumScaleFactor(0.72)
                             .lineLimit(1)
                             .multilineTextAlignment(.trailing)
@@ -545,6 +562,12 @@ struct LoseWeightView: View {
                     .padding(.horizontal, 7)
                     .frame(width: metricWidth, height: fieldHeight)
                     .background(metricFieldBackground)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        guard canEdit else { return }
+                        focusedField = .bodyFat
+                        keepFitPlaceCursorAtEndIfTextField()
+                    }
                     .disabled(!canEdit)
 
                     Button {

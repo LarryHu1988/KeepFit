@@ -62,7 +62,15 @@ struct MoveMoreView: View {
                     .padding(.bottom, 18)
                     .frame(maxWidth: .infinity)
                 }
-                .scrollDismissesKeyboard(.interactively)
+                .scrollDismissesKeyboard(.immediately)
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        if focusedField != nil {
+                            keepFitDismissKeyboard()
+                            focusedField = nil
+                        }
+                    }
+                )
             }
             .navigationTitle(localized("迈开腿", "Move More"))
             .navigationBarTitleDisplayMode(.large)
@@ -97,6 +105,11 @@ struct MoveMoreView: View {
             .onChange(of: selectedDate) { _, newValue in
                 if newValue.isFutureDayInCurrentCalendar {
                     selectedDate = Date().startOfDayInCurrentCalendar
+                }
+            }
+            .onChange(of: focusedField) { _, newValue in
+                if newValue == .duration {
+                    keepFitPlaceCursorAtEndIfTextField()
                 }
             }
             .sheet(isPresented: $showExerciseSheet) {
@@ -252,10 +265,11 @@ struct MoveMoreView: View {
                     .disabled(!canEdit)
 
                     HStack(spacing: 6) {
-                        TextField("duration", text: $durationText)
+                        TextField("", text: $durationText)
                             .font(entryFont)
                             .keyboardType(.decimalPad)
                             .focused($focusedField, equals: .duration)
+                            .submitLabel(.done)
                             .multilineTextAlignment(.trailing)
                             .lineLimit(1)
                             .minimumScaleFactor(0.8)
@@ -268,6 +282,12 @@ struct MoveMoreView: View {
                     .padding(.horizontal, 8)
                     .frame(width: compactFieldWidth, height: fieldHeight)
                     .background(inputFieldBackground)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        guard canEdit else { return }
+                        focusedField = .duration
+                        keepFitPlaceCursorAtEndIfTextField()
+                    }
                     .disabled(!canEdit)
 
                     Button {

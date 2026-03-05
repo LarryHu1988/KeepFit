@@ -139,6 +139,7 @@ final class AppState: ObservableObject {
     private var ubiquityIdentityObserver: NSObjectProtocol?
     private var didBecomeActiveObserver: NSObjectProtocol?
     private var didEnterBackgroundObserver: NSObjectProtocol?
+    private var dayChangedObserver: NSObjectProtocol?
     private var pendingCloudPushTask: Task<Void, Never>?
     private var pendingHealthSyncTask: Task<Void, Never>?
     private var healthPollingTask: Task<Void, Never>?
@@ -179,6 +180,8 @@ final class AppState: ObservableObject {
         setupUbiquityIdentityObserver()
         setupForegroundObserver()
         setupHealthActivityObservers()
+        setupCalendarDayChangedObserver()
+        refreshDynamicRemindersIfNeeded()
         if isICloudSyncEnabled {
             startICloudSync()
         }
@@ -206,6 +209,9 @@ final class AppState: ObservableObject {
         }
         if let didEnterBackgroundObserver {
             NotificationCenter.default.removeObserver(didEnterBackgroundObserver)
+        }
+        if let dayChangedObserver {
+            NotificationCenter.default.removeObserver(dayChangedObserver)
         }
         pendingCloudPushTask?.cancel()
         pendingHealthSyncTask?.cancel()
@@ -552,30 +558,32 @@ final class AppState: ObservableObject {
         let summary = dayNutrition(on: day)
         let target = profile.recommendedIntakeForFatLoss
         let remaining = target - summary.calories
+        let intakeText = energyText(fromKcal: summary.calories)
+        let targetText = energyText(fromKcal: target)
 
         if AppPreferences.language == .english {
             if logs.isEmpty {
-                return "No meal logs today. Log your first meal to keep intake on track."
+                return "No meal logs today. Intake \(intakeText) / target \(targetText). Log your first meal to keep intake on track."
             }
             if remaining > 250 {
-                return "Logged \(logs.count) meals, intake \(energyText(fromKcal: summary.calories)). About \(energyText(fromKcal: remaining)) left, prioritize protein and vegetables."
+                return "Logged \(logs.count) meals, intake \(intakeText) / target \(targetText). About \(energyText(fromKcal: remaining)) left, prioritize protein and vegetables."
             }
             if remaining >= 0 {
-                return "Intake is near target. Keep your next meal lighter and continue logging."
+                return "Logged \(logs.count) meals, intake \(intakeText) / target \(targetText). Intake is near target; keep your next meal lighter."
             }
-            return "Intake is over target by \(energyText(fromKcal: abs(remaining))). Keep later meals clean and avoid extra snacks."
+            return "Logged \(logs.count) meals, intake \(intakeText) / target \(targetText). Over target by \(energyText(fromKcal: abs(remaining))); avoid extra snacks."
         }
 
         if logs.isEmpty {
-            return "今天还没有饮食记录，先记录第一餐，方便控制全天摄入。"
+            return "今天还没有饮食记录，当前摄入\(intakeText)/目标\(targetText)，先记录第一餐更好控制全天摄入。"
         }
         if remaining > 250 {
-            return "今天已记录\(logs.count)餐，已摄入\(energyText(fromKcal: summary.calories))，还可摄入约\(energyText(fromKcal: remaining))，优先蛋白和蔬菜。"
+            return "今天已记录\(logs.count)餐，已摄入\(intakeText)/目标\(targetText)，还可摄入约\(energyText(fromKcal: remaining))，优先蛋白和蔬菜。"
         }
         if remaining >= 0 {
-            return "当前摄入已接近目标，下一餐建议清淡高蛋白，并继续记录。"
+            return "今天已记录\(logs.count)餐，已摄入\(intakeText)/目标\(targetText)，已接近目标，下一餐建议清淡高蛋白。"
         }
-        return "当前已超目标约\(energyText(fromKcal: abs(remaining)))，后续建议避免加餐并保持记录。"
+        return "今天已记录\(logs.count)餐，已摄入\(intakeText)/目标\(targetText)，已超目标约\(energyText(fromKcal: abs(remaining)))，后续建议避免加餐。"
     }
 
     func exerciseReminderBody(on date: Date) -> String {
@@ -584,30 +592,33 @@ final class AppState: ObservableObject {
         let summary = dayExercise(on: day)
         let goal = max(profile.dailyExerciseGoal, 1)
         let remaining = goal - summary.caloriesBurned
+        let burnedText = energyText(fromKcal: summary.caloriesBurned)
+        let goalText = energyText(fromKcal: goal)
+        let durationText = durationDisplayText(fromMinutes: summary.durationMinutes)
 
         if AppPreferences.language == .english {
             if logs.isEmpty {
-                return "No workout logs today. Start with 20-30 min walk or cardio."
+                return "No workout logs today. Burn \(burnedText) / goal \(goalText). Start with 20-30 min walk or cardio."
             }
             if remaining > 120 {
-                return "Burned \(energyText(fromKcal: summary.caloriesBurned)) in \(durationDisplayText(fromMinutes: summary.durationMinutes)). About \(energyText(fromKcal: remaining)) left to your goal."
+                return "Logged \(logs.count) workouts, burn \(burnedText) in \(durationText) / goal \(goalText). About \(energyText(fromKcal: remaining)) left."
             }
             if remaining > 0 {
-                return "You're close to the workout goal. Add 10-15 min light cardio or mobility."
+                return "Logged \(logs.count) workouts, burn \(burnedText) in \(durationText) / goal \(goalText). You're close to goal; add 10-15 min."
             }
-            return "Workout goal achieved today. Keep recovery and stretching on schedule."
+            return "Logged \(logs.count) workouts, burn \(burnedText) in \(durationText) / goal \(goalText). Goal achieved; keep recovery and stretching."
         }
 
         if logs.isEmpty {
-            return "今天还没有运动记录，建议先完成 20-30 min 快走或有氧。"
+            return "今天还没有运动记录，当前消耗\(burnedText)/目标\(goalText)，建议先完成 20-30 min 快走或有氧。"
         }
         if remaining > 120 {
-            return "今天已消耗\(energyText(fromKcal: summary.caloriesBurned))，时长\(durationDisplayText(fromMinutes: summary.durationMinutes))，距离目标还差约\(energyText(fromKcal: remaining))。"
+            return "今天已记录\(logs.count)次运动，消耗\(burnedText)，时长\(durationText)/目标\(goalText)，还差约\(energyText(fromKcal: remaining))。"
         }
         if remaining > 0 {
-            return "你已接近今日目标，再补 10-15 min 轻有氧或拉伸即可。"
+            return "今天已记录\(logs.count)次运动，消耗\(burnedText)，时长\(durationText)/目标\(goalText)，你已接近目标，再补 10-15 min 即可。"
         }
-        return "今日运动目标已达成，建议保持拉伸恢复，避免过量训练。"
+        return "今天已记录\(logs.count)次运动，消耗\(burnedText)，时长\(durationText)/目标\(goalText)，今日目标已达成，注意拉伸恢复。"
     }
 
     func dailySummaryReminderBody(on date: Date) -> String {
@@ -898,8 +909,21 @@ final class AppState: ObservableObject {
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 self.refreshICloudAccountAvailability()
+                self.refreshDynamicRemindersIfNeeded()
                 self.pullCloudSnapshotIfNeeded(force: false)
                 await self.syncHealthDataIfEnabled()
+            }
+        }
+    }
+
+    private func setupCalendarDayChangedObserver() {
+        dayChangedObserver = NotificationCenter.default.addObserver(
+            forName: .NSCalendarDayChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.refreshDynamicRemindersIfNeeded()
             }
         }
     }

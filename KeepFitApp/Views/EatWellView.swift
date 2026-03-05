@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct EatWellView: View {
     @EnvironmentObject private var appState: AppState
@@ -79,7 +80,15 @@ struct EatWellView: View {
                     .padding(.bottom, 18)
                     .frame(maxWidth: .infinity)
                 }
-                .scrollDismissesKeyboard(.interactively)
+                .scrollDismissesKeyboard(.immediately)
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        if focusedField != nil {
+                            keepFitDismissKeyboard()
+                            focusedField = nil
+                        }
+                    }
+                )
             }
             .navigationTitle(localized("管住嘴", "Eat Well"))
             .navigationBarTitleDisplayMode(.large)
@@ -118,6 +127,11 @@ struct EatWellView: View {
             .onChange(of: selectedDate) { _, newValue in
                 if newValue.isFutureDayInCurrentCalendar {
                     selectedDate = Date().startOfDayInCurrentCalendar
+                }
+            }
+            .onChange(of: focusedField) { _, newValue in
+                if newValue == .amount {
+                    keepFitPlaceCursorAtEndIfTextField()
                 }
             }
             .sheet(isPresented: $showFoodSheet) {
@@ -271,10 +285,11 @@ struct EatWellView: View {
                     .disabled(!canEdit)
 
                     HStack(spacing: 6) {
-                        TextField("amount", text: $amountText)
+                        TextField("", text: $amountText)
                             .font(entryFont)
                             .keyboardType(.decimalPad)
                             .focused($focusedField, equals: .amount)
+                            .submitLabel(.done)
                             .multilineTextAlignment(.trailing)
                             .lineLimit(1)
                             .minimumScaleFactor(0.8)
@@ -287,6 +302,12 @@ struct EatWellView: View {
                     .padding(.horizontal, 8)
                     .frame(width: compactFieldWidth, height: fieldHeight)
                     .background(inputFieldBackground)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        guard canEdit else { return }
+                        focusedField = .amount
+                        keepFitPlaceCursorAtEndIfTextField()
+                    }
                     .disabled(!canEdit)
 
                     Button {
@@ -476,5 +497,31 @@ struct EatWellView: View {
 private extension EatWellView {
     enum InputField {
         case amount
+    }
+}
+
+private weak var keepFitCurrentFirstResponder: UIResponder?
+
+extension UIResponder {
+    @objc fileprivate func keepFitCaptureFirstResponder() {
+        keepFitCurrentFirstResponder = self
+    }
+}
+
+func keepFitDismissKeyboard() {
+    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+}
+
+private func keepFitFindCurrentFirstResponder() -> UIResponder? {
+    keepFitCurrentFirstResponder = nil
+    UIApplication.shared.sendAction(#selector(UIResponder.keepFitCaptureFirstResponder), to: nil, from: nil, for: nil)
+    return keepFitCurrentFirstResponder
+}
+
+func keepFitPlaceCursorAtEndIfTextField() {
+    DispatchQueue.main.async {
+        guard let textField = keepFitFindCurrentFirstResponder() as? UITextField else { return }
+        let end = textField.endOfDocument
+        textField.selectedTextRange = textField.textRange(from: end, to: end)
     }
 }
