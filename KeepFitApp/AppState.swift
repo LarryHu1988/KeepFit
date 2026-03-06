@@ -1080,11 +1080,22 @@ final class AppState: ObservableObject {
         defer { isRunningHealthSync = false }
 
         do {
-            try await exportUnsyncedLocalDataToHealth()
             try await importHealthDataIntoKeepFit()
         } catch {
-            // Keep silent for background/automatic sync to avoid interrupting user flow.
+            logHealthSyncError(stage: "import", error: error)
         }
+
+        do {
+            try await exportUnsyncedLocalDataToHealth()
+        } catch {
+            logHealthSyncError(stage: "export", error: error)
+        }
+    }
+
+    private func logHealthSyncError(stage: String, error: Error) {
+        #if DEBUG
+        print("KeepFit Apple Health \(stage) failed: \(error.localizedDescription)")
+        #endif
     }
 
     private var healthObserverTypes: [HKSampleType] {
