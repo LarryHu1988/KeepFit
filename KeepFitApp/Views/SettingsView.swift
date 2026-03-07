@@ -1,3 +1,4 @@
+import AuthenticationServices
 import PhotosUI
 import StoreKit
 import SwiftUI
@@ -78,6 +79,7 @@ struct SettingsView: View {
     @State private var showReminderAlert = false
     @State private var reminderAlertMessage = ""
     @State private var showFeedbackAlert = false
+    @State private var showAppleAccountSheet = false
 
     private let feedbackEmail = "longyu.huihui@gmail.com"
 
@@ -103,6 +105,28 @@ struct SettingsView: View {
 
     private var appLanguage: AppLanguageOption {
         AppLanguageOption(rawValue: appLanguageRaw) ?? .chinese
+    }
+
+    private var cloudSyncTitle: String {
+        appState.isSignedInWithAppleAccount
+            ? localized("账号同步", "Account Sync")
+            : localized("iCloud 同步", "iCloud Sync")
+    }
+
+    private var cloudSyncSummary: String {
+        if appState.isSignedInWithAppleAccount {
+            if !appState.iCloudAccountAvailable {
+                return localized("需先在当前设备登录 iCloud。", "Sign in to iCloud on this device first.")
+            }
+            return iCloudSyncEnabled
+                ? localized("通过当前 Apple 账号在设备间同步。", "Sync across devices with the current Apple account.")
+                : localized("已登录 Apple 账号，可按需开启跨设备同步。", "Signed in with Apple. Enable cross-device sync when needed.")
+        }
+
+        if !appState.iCloudAccountAvailable {
+            return localized("需先在当前设备登录 iCloud。", "Sign in to iCloud on this device first.")
+        }
+        return localized("通过 iCloud 在设备间同步数据。", "Sync data across devices with iCloud.")
     }
 
     private var resolvedBirthDate: Date {
@@ -307,6 +331,9 @@ struct SettingsView: View {
             .sheet(isPresented: $showAboutSheet) {
                 aboutSheet
             }
+            .sheet(isPresented: $showAppleAccountSheet) {
+                AppleAccountSheet(requireChoice: false)
+            }
     }
 
     private var basicInfoSection: some View {
@@ -385,6 +412,39 @@ struct SettingsView: View {
 
     private var dataSection: some View {
         Section {
+            Button {
+                triggerHapticIfNeeded()
+                showAppleAccountSheet = true
+            } label: {
+                HStack(spacing: 10) {
+                    rowIcon("person.crop.circle.badge.checkmark", .black)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(localized("Apple 账号", "Apple Account"))
+                            .foregroundStyle(.primary)
+                        Text(appState.accountStatusSummary)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                    Spacer(minLength: 8)
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text(appState.accountDisplayTitle)
+                            .lineLimit(1)
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                        Text(appState.accountModeCaption)
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(1)
+                    }
+                    Image(systemName: "chevron.right")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            .keepFitSettingsSeparatorAligned()
+
             Toggle(isOn: $healthSyncEnabled) {
                 HStack(spacing: 10) {
                     rowIcon("heart.text.square.fill", .green)
@@ -396,7 +456,13 @@ struct SettingsView: View {
             Toggle(isOn: $iCloudSyncEnabled) {
                 HStack(spacing: 10) {
                     rowIcon("icloud.fill", .blue)
-                    Text(localized("iCloud 同步", "iCloud Sync"))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(cloudSyncTitle)
+                        Text(cloudSyncSummary)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
                 }
             }
             .disabled(!appState.iCloudAccountAvailable)
@@ -404,8 +470,14 @@ struct SettingsView: View {
         } header: {
             Text(localized("数据", "Data"))
         } footer: {
-            if !appState.iCloudAccountAvailable {
-                Text(localized("未登录 iCloud，iCloud 同步暂不可用。", "No iCloud account signed in. iCloud sync is unavailable."))
+            if appState.isSignedInWithAppleAccount && !appState.iCloudAccountAvailable {
+                Text(localized("已登录 Apple 账号，但当前设备未登录 iCloud，暂时无法同步到其他设备。", "Signed in with Apple, but iCloud is not signed in on this device. Sync to your other devices is temporarily unavailable."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .textCase(nil)
+                    .padding(.top, 2)
+            } else if !appState.iCloudAccountAvailable {
+                Text(localized("当前设备未登录 iCloud，iCloud 同步暂不可用。", "No iCloud account signed in. iCloud sync is unavailable."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .textCase(nil)
@@ -2651,5 +2723,229 @@ private extension View {
                             .frame(height: 1)
                     }
             )
+    }
+}
+
+struct AppleAccountSheet: View {
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+
+    let requireChoice: Bool
+
+    @State private var errorMessage = ""
+    @State private var showError = false
+
+    private var isSignedIn: Bool {
+        appState.isSignedInWithAppleAccount
+    }
+
+    private var heroTitle: String {
+        if isSignedIn {
+            return appState.accountDisplayTitle
+        }
+        return requireChoice
+            ? localized("选择使用方式", "Choose How to Use")
+            : localized("Apple 账号", "Apple Account")
+    }
+
+    private var heroSubtitle: String {
+        if isSignedIn {
+            return appState.accountStatusDetail
+        }
+        return requireChoice
+            ? localized("登录后可在同一账号下同步数据与设置，不登录也可以先在本机使用。", "Sign in to sync your data and settings with the same account, or continue using this device locally.")
+            : localized("可选择登录 Apple 账号，或继续本地使用。", "Sign in with Apple, or continue using local mode.")
+    }
+
+    private var heroDescription: String {
+        if requireChoice {
+            return localized(
+                "登录 Apple 账号后，KeepFit 会同步你的档案、记录与常用设置。更换设备后，登录同一账号即可继续使用这些数据；如果暂不登录，也可以继续本地使用，现有功能不受影响。",
+                "Sign in with Apple and KeepFit will sync your profile, logs, and common settings with this account. If you switch devices later, sign in with the same account to keep using your data. Or continue in local mode with all current features unchanged."
+            )
+        }
+        return localized(
+            "登录后，KeepFit 会在同一账号下同步你的档案、记录与常用设置；如果不登录，数据将继续仅保存在本机。",
+            "After signing in, KeepFit will sync your profile, logs, and common settings with this account. If you do not sign in, your data will remain on this device only."
+        )
+    }
+
+    private var localModeButtonTitle: String {
+        requireChoice
+            ? localized("先本地使用", "Use Local Mode First")
+            : localized("继续本地使用", "Use Local Mode")
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    heroCard
+                    actionCard
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 18)
+                .padding(.bottom, 24)
+            }
+            .navigationTitle(localized("Apple 账号", "Apple Account"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if !requireChoice {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(localized("完成", "Done")) {
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
+        .interactiveDismissDisabled(requireChoice && appState.isAccountChoiceUndecided)
+        .alert(localized("Apple 账号", "Apple Account"), isPresented: $showError) {
+            Button(localized("知道了", "OK"), role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
+    }
+
+    private var heroCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .overlay(
+                            Circle()
+                                .stroke(.white.opacity(0.26), lineWidth: 0.8)
+                        )
+                        .frame(width: 52, height: 52)
+                    Image(systemName: isSignedIn ? "person.crop.circle.badge.checkmark" : "person.crop.circle.badge.plus")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundStyle(isSignedIn ? .green : .primary)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(heroTitle)
+                        .font(.headline.weight(.semibold))
+                    Text(heroSubtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            Text(heroDescription)
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(18)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.08),
+                                    Color.blue.opacity(0.10),
+                                    Color.clear
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(.white.opacity(0.26), lineWidth: 0.8)
+                )
+        )
+    }
+
+    @ViewBuilder
+    private var actionCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            if isSignedIn {
+                Button(role: .destructive) {
+                    KeepFitHaptics.impact(.medium)
+                    appState.signOutAppleAccount()
+                    if !requireChoice {
+                        dismiss()
+                    }
+                } label: {
+                    Text(localized("退出 Apple 账号并切换为本地使用", "Sign Out and Use Local Mode"))
+                        .font(.headline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.red)
+                .background(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(Color.red.opacity(0.10))
+                )
+            } else {
+                SignInWithAppleButton(.signIn) { request in
+                    request.requestedScopes = [.fullName, .email]
+                } onCompletion: { result in
+                    handleAuthorizationResult(result)
+                }
+                .signInWithAppleButtonStyle(.black)
+                .frame(height: 52)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+
+                Button {
+                    KeepFitHaptics.selection()
+                    appState.continueWithLocalMode()
+                    dismiss()
+                } label: {
+                    Text(localModeButtonTitle)
+                        .font(.headline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.primary)
+                .background(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                .stroke(.white.opacity(0.2), lineWidth: 0.8)
+                        )
+                )
+            }
+        }
+        .padding(18)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(.white.opacity(0.18), lineWidth: 0.8)
+                )
+        )
+    }
+
+    private func handleAuthorizationResult(_ result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .success(let authorization):
+            Task {
+                if let message = await appState.completeAppleSignIn(with: authorization) {
+                    errorMessage = message
+                    showError = true
+                    return
+                }
+                dismiss()
+            }
+        case .failure(let error):
+            if let authorizationError = error as? ASAuthorizationError,
+               authorizationError.code == .canceled {
+                return
+            }
+            errorMessage = localized("Apple 登录失败，请稍后再试。", "Apple sign-in failed. Please try again.")
+            showError = true
+        }
     }
 }

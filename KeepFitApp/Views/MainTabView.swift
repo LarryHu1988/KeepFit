@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @EnvironmentObject private var appState: AppState
+
     private enum TabKey: Hashable {
         case eat
         case move
@@ -101,6 +103,7 @@ struct MainTabView: View {
     @State private var moveTabSwitchToken = 0
     @State private var loseTabSwitchToken = 0
     @State private var guideStep: GuideStep = .addFood
+    @State private var showAccountChoiceSheet = false
 
     private var isGuideActive: Bool {
         !onboardingCompleted && !guideStep.isCompleted
@@ -169,8 +172,23 @@ struct MainTabView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
+        .sheet(isPresented: $showAccountChoiceSheet) {
+            AppleAccountSheet(requireChoice: true)
+        }
         .onAppear {
             bootstrapGuideIfNeeded()
+            if !onboardingCompleted && appState.isAccountChoiceUndecided {
+                showAccountChoiceSheet = true
+            }
+        }
+        .onChange(of: onboardingCompleted) { _, completed in
+            guard !completed, appState.isAccountChoiceUndecided else { return }
+            showAccountChoiceSheet = true
+        }
+        .onChange(of: appState.isAccountChoiceUndecided) { _, isUndecided in
+            if !onboardingCompleted {
+                showAccountChoiceSheet = isUndecided
+            }
         }
         .onChange(of: guideStep) { _, newValue in
             guard !onboardingCompleted else { return }

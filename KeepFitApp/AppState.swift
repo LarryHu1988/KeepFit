@@ -1,4 +1,5 @@
 import Foundation
+import AuthenticationServices
 import HealthKit
 import UIKit
 @preconcurrency import UserNotifications
@@ -30,12 +31,51 @@ struct DailyCalorieTrend: Identifiable {
 private struct KeepFitCloudSnapshot: Codable {
     let version: Int
     let modifiedAt: Date
+    let settings: KeepFitSettingsSnapshot?
     let profile: UserProfile
     let foodLibrary: [FoodItem]
     let exerciseLibrary: [ExerciseItem]
     let foodLogs: [FoodLog]
     let exerciseLogs: [ExerciseLog]
     let bodyMetricLogs: [BodyMetricLog]
+}
+
+private struct KeepFitSettingsSnapshot: Codable {
+    let themeModeRaw: String
+    let energyUnitRaw: String
+    let heightUnitRaw: String
+    let weightUnitRaw: String
+    let weekStartRaw: String
+    let appLanguageRaw: String
+    let birthDateTimestamp: Double
+    let hapticEnabled: Bool
+    let foodReminderEnabled: Bool
+    let exerciseReminderEnabled: Bool
+    let dailySummaryEnabled: Bool
+    let foodReminderMinuteOfDay: Int
+    let exerciseReminderMinuteOfDay: Int
+    let summaryReminderMinuteOfDay: Int
+}
+
+enum KeepFitAccountMode: String, Codable {
+    case undecided
+    case local
+    case apple
+}
+
+struct KeepFitAccount: Codable {
+    var mode: KeepFitAccountMode
+    var userID: String?
+    var email: String?
+    var displayName: String?
+    var lastAuthenticatedAt: Date?
+
+    static let undecided = KeepFitAccount(mode: .undecided, userID: nil, email: nil, displayName: nil, lastAuthenticatedAt: nil)
+    static let local = KeepFitAccount(mode: .local, userID: nil, email: nil, displayName: nil, lastAuthenticatedAt: nil)
+
+    var isSignedInWithApple: Bool {
+        mode == .apple && !(userID ?? "").isEmpty
+    }
 }
 
 @MainActor
@@ -45,6 +85,7 @@ final class AppState: ObservableObject {
         static let healthEnabled = "keepfit.sync.healthKit"
         static let localMutationTS = "keepfit.sync.localMutationTS"
         static let cloudSnapshot = "keepfit.sync.iCloud.snapshot.v1"
+        static let cloudSnapshotAccountPrefix = "keepfit.sync.iCloud.snapshot.account."
         static let exportedFoodLogIDs = "keepfit.sync.health.exported.foodLogIDs"
         static let exportedExerciseLogIDs = "keepfit.sync.health.exported.exerciseLogIDs"
         static let exportedBodyMetricIDs = "keepfit.sync.health.exported.bodyMetricIDs"
@@ -55,6 +96,24 @@ final class AppState: ObservableObject {
         static let healthInitialImportCompleted = "keepfit.sync.health.initialImportCompleted.v2"
         static let healthMetadataSource = "KeepFitSource"
         static let healthMetadataSourceValue = "KeepFit"
+        static let account = "keepfit.account.current.v1"
+    }
+
+    private enum PreferenceKeys {
+        static let themeMode = "keepfit.themeMode"
+        static let energyUnit = "keepfit.unit.energy"
+        static let heightUnit = "keepfit.unit.height"
+        static let weightUnit = "keepfit.unit.weight"
+        static let weekStart = "keepfit.calendar.weekStart"
+        static let appLanguage = "keepfit.appLanguage"
+        static let birthDateTimestamp = "keepfit.birthDateTS"
+        static let hapticEnabled = "keepfit.haptic"
+        static let foodReminderEnabled = "keepfit.reminder.food"
+        static let exerciseReminderEnabled = "keepfit.reminder.exercise"
+        static let dailySummaryEnabled = "keepfit.reminder.summary"
+        static let foodReminderMinuteOfDay = "keepfit.reminder.food.minuteOfDay"
+        static let exerciseReminderMinuteOfDay = "keepfit.reminder.exercise.minuteOfDay"
+        static let summaryReminderMinuteOfDay = "keepfit.reminder.summary.minuteOfDay"
     }
 
     private enum ReminderKeys {
@@ -67,6 +126,7 @@ final class AppState: ObservableObject {
         static let summaryEnabled = "keepfit.reminder.summary"
         static let summaryMinuteOfDay = "keepfit.reminder.summary.minuteOfDay"
         static let summaryIdentifier = "keepfit.reminder.summary"
+        static let schedulingHorizonDays = 14
     }
 
     @Published var profile: UserProfile {
@@ -118,6 +178,7 @@ final class AppState: ObservableObject {
         }
     }
 
+    @Published private(set) var account: KeepFitAccount
     @Published private(set) var iCloudAccountAvailable = FileManager.default.ubiquityIdentityToken != nil
 
     private let store = DataStore()
@@ -155,6 +216,7 @@ final class AppState: ObservableObject {
         let loadedFoodLogs = store.load([FoodLog].self, for: .foodLogs) ?? []
         let loadedExerciseLogs = store.load([ExerciseLog].self, for: .exerciseLogs) ?? []
         let loadedBodyMetrics = store.load([BodyMetricLog].self, for: .bodyMetrics) ?? []
+        let loadedAccount = Self.loadAccount(from: UserDefaults.standard) ?? .undecided
 
         profile = loadedProfile
         foodLibrary = Self.mergeFoodLibrary(loadedFoods, with: SeedData.foodLibrary)
@@ -162,6 +224,7 @@ final class AppState: ObservableObject {
         foodLogs = loadedFoodLogs.sorted(by: { $0.date > $1.date })
         exerciseLogs = loadedExerciseLogs.sorted(by: { $0.date > $1.date })
         bodyMetricLogs = loadedBodyMetrics.sorted(by: { $0.date < $1.date })
+        account = loadedAccount
 
         if bodyMetricLogs.isEmpty {
             bodyMetricLogs.append(
@@ -190,6 +253,11 @@ final class AppState: ObservableObject {
                 await self?.startHealthObserversIfNeeded()
                 self?.startHealthPollingIfNeeded()
                 await self?.syncHealthDataIfEnabled()
+            }
+        }
+        if account.isSignedInWithApple {
+            Task { [weak self] in
+                await self?.refreshAppleCredentialStateIfNeeded()
             }
         }
     }
@@ -244,6 +312,11 @@ final class AppState: ObservableObject {
         return merged
     }
 
+    private static func loadAccount(from defaults: UserDefaults) -> KeepFitAccount? {
+        guard let data = defaults.data(forKey: SyncKeys.account) else { return nil }
+        return try? JSONDecoder().decode(KeepFitAccount.self, from: data)
+    }
+
     var isICloudSyncEnabled: Bool {
         defaults.bool(forKey: SyncKeys.iCloudEnabled)
     }
@@ -252,8 +325,114 @@ final class AppState: ObservableObject {
         defaults.bool(forKey: SyncKeys.healthEnabled)
     }
 
+    var isSignedInWithAppleAccount: Bool {
+        account.isSignedInWithApple
+    }
+
+    var isAccountChoiceUndecided: Bool {
+        account.mode == .undecided
+    }
+
+    var accountDisplayTitle: String {
+        if let displayName = trimmedNonEmpty(account.displayName) {
+            return displayName
+        }
+        if let email = trimmedNonEmpty(account.email) {
+            return email
+        }
+        switch account.mode {
+        case .apple:
+            return localized("Apple 账号", "Apple Account")
+        case .local, .undecided:
+            return localized("本地使用", "Local Mode")
+        }
+    }
+
+    var accountStatusDetail: String {
+        switch account.mode {
+        case .apple:
+            return iCloudAccountAvailable
+                ? localized("已登录 Apple 账号，数据与常用设置可在同一账号下保持同步。", "Signed in with Apple. Your data and settings sync with this account.")
+                : localized("已登录 Apple 账号，但当前设备未登录 iCloud。", "Signed in with Apple, but iCloud is not signed in on this device.")
+        case .local:
+            return localized("当前为本地使用，数据仅保存在本机。", "Currently using local mode. Your data stays on this device only.")
+        case .undecided:
+            return localized("请选择使用方式。", "No account mode selected yet.")
+        }
+    }
+
+    var accountStatusSummary: String {
+        switch account.mode {
+        case .apple:
+            return iCloudAccountAvailable
+                ? localized("数据与设置会跟随账号同步。", "Your data and settings sync with this account.")
+                : localized("当前设备未登录 iCloud。", "iCloud is not signed in on this device.")
+        case .local:
+            return localized("数据仅保存在本机。", "Your data stays on this device only.")
+        case .undecided:
+            return localized("可选择 Apple 账号或本地使用。", "Choose Apple Account or local mode.")
+        }
+    }
+
+    var accountModeCaption: String {
+        switch account.mode {
+        case .apple:
+            return localized("当前同步账号", "Current Sync Account")
+        case .local:
+            return localized("当前使用方式", "Current Mode")
+        case .undecided:
+            return localized("尚未选择", "Not Selected")
+        }
+    }
+
     func refreshICloudAvailability() {
         refreshICloudAccountAvailability()
+    }
+
+    func continueWithLocalMode() {
+        persistAccount(.local)
+    }
+
+    func signOutAppleAccount() {
+        persistAccount(.local)
+        defaults.set(false, forKey: SyncKeys.iCloudEnabled)
+        stopICloudSync()
+    }
+
+    func completeAppleSignIn(with authorization: ASAuthorization) async -> String? {
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            return localized("Apple 登录返回的数据无效。", "Apple sign-in returned invalid credentials.")
+        }
+
+        let displayName = Self.string(from: credential.fullName)
+        let email = trimmedNonEmpty(credential.email) ?? account.email
+        let resolvedDisplayName = displayName ?? account.displayName
+
+        let updatedAccount = KeepFitAccount(
+            mode: .apple,
+            userID: credential.user,
+            email: email,
+            displayName: resolvedDisplayName,
+            lastAuthenticatedAt: Date()
+        )
+        persistAccount(updatedAccount)
+
+        if let resolvedDisplayName, (profile.name.isEmpty || profile.name == UserProfile.default.name) {
+            profile.name = resolvedDisplayName
+        }
+
+        if iCloudAccountAvailable {
+            defaults.set(true, forKey: SyncKeys.iCloudEnabled)
+            startICloudSync()
+            if hasCloudSnapshot(forKey: currentCloudSnapshotKey()) {
+                pullCloudSnapshotIfNeeded(force: true)
+            } else {
+                queueCloudPush(immediate: true)
+            }
+        }
+
+        await refreshAppleCredentialStateIfNeeded()
+        return nil
     }
 
     func setICloudSyncEnabled(_ enabled: Bool) {
@@ -814,22 +993,35 @@ final class AppState: ObservableObject {
         let enabled: Bool
         let identifier: String
         let title: String
-        let body: String
         let minuteOfDay: Int
+        let kind: ReminderKind
+    }
+
+    private struct ReminderScheduleEntry {
+        let identifier: String
+        let title: String
+        let body: String
+        let fireDate: Date
+    }
+
+    private enum ReminderKind {
+        case food
+        case exercise
+        case summary
     }
 
     private func refreshDynamicRemindersIfNeeded() {
-        let configs = reminderScheduleConfigs(for: Date())
+        let now = Date()
+        let configs = reminderScheduleConfigs(for: now)
         let center = UNUserNotificationCenter.current()
+        let identifiersToClear = reminderIdentifiersToClear(referenceDate: now, horizonDays: ReminderKeys.schedulingHorizonDays)
+        center.removePendingNotificationRequests(withIdentifiers: identifiersToClear)
+        center.removeDeliveredNotifications(withIdentifiers: identifiersToClear)
 
-        let disabledIdentifiers = configs.filter { !$0.enabled }.map(\.identifier)
-        if !disabledIdentifiers.isEmpty {
-            center.removePendingNotificationRequests(withIdentifiers: disabledIdentifiers)
-            center.removeDeliveredNotifications(withIdentifiers: disabledIdentifiers)
-        }
-
-        let enabledConfigs = configs.filter(\.enabled)
-        guard !enabledConfigs.isEmpty else { return }
+        let enabledEntries = configs
+            .filter(\.enabled)
+            .flatMap { scheduledReminderEntries(for: $0, referenceDate: now, horizonDays: ReminderKeys.schedulingHorizonDays) }
+        guard !enabledEntries.isEmpty else { return }
 
         center.getNotificationSettings { settings in
             let authorized: Bool
@@ -841,49 +1033,119 @@ final class AppState: ObservableObject {
             }
             guard authorized else { return }
 
-            for config in enabledConfigs {
-                var components = DateComponents()
-                components.hour = config.minuteOfDay / 60
-                components.minute = config.minuteOfDay % 60
-
+            for entry in enabledEntries {
+                let components = AppPreferences.calendar.dateComponents([.year, .month, .day, .hour, .minute], from: entry.fireDate)
                 let content = UNMutableNotificationContent()
-                content.title = config.title
-                content.body = config.body
+                content.title = entry.title
+                content.body = entry.body
                 content.sound = .default
 
-                let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
-                let request = UNNotificationRequest(identifier: config.identifier, content: content, trigger: trigger)
+                let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+                let request = UNNotificationRequest(identifier: entry.identifier, content: content, trigger: trigger)
 
-                center.removePendingNotificationRequests(withIdentifiers: [config.identifier])
                 center.add(request) { _ in }
             }
         }
     }
 
-    private func reminderScheduleConfigs(for date: Date) -> [ReminderScheduleConfig] {
+    private func reminderScheduleConfigs(for _: Date) -> [ReminderScheduleConfig] {
         [
             ReminderScheduleConfig(
                 enabled: reminderEnabled(forKey: ReminderKeys.foodEnabled, defaultValue: true),
                 identifier: ReminderKeys.foodIdentifier,
                 title: localized("饮食提醒", "Diet Reminder"),
-                body: foodReminderBody(on: date),
-                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.foodMinuteOfDay, defaultValue: 12 * 60)
+                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.foodMinuteOfDay, defaultValue: 12 * 60),
+                kind: .food
             ),
             ReminderScheduleConfig(
                 enabled: reminderEnabled(forKey: ReminderKeys.exerciseEnabled, defaultValue: true),
                 identifier: ReminderKeys.exerciseIdentifier,
                 title: localized("运动提醒", "Exercise Reminder"),
-                body: exerciseReminderBody(on: date),
-                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.exerciseMinuteOfDay, defaultValue: 19 * 60)
+                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.exerciseMinuteOfDay, defaultValue: 19 * 60),
+                kind: .exercise
             ),
             ReminderScheduleConfig(
                 enabled: reminderEnabled(forKey: ReminderKeys.summaryEnabled, defaultValue: true),
                 identifier: ReminderKeys.summaryIdentifier,
                 title: localized("每日总结", "Daily Summary"),
-                body: dailySummaryReminderBody(on: date),
-                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.summaryMinuteOfDay, defaultValue: 21 * 60 + 30)
+                minuteOfDay: reminderMinuteOfDay(forKey: ReminderKeys.summaryMinuteOfDay, defaultValue: 21 * 60 + 30),
+                kind: .summary
             )
         ]
+    }
+
+    private func scheduledReminderEntries(
+        for config: ReminderScheduleConfig,
+        referenceDate: Date,
+        horizonDays: Int
+    ) -> [ReminderScheduleEntry] {
+        reminderFireDates(minuteOfDay: config.minuteOfDay, referenceDate: referenceDate, horizonDays: horizonDays)
+            .map { fireDate in
+                ReminderScheduleEntry(
+                    identifier: reminderIdentifier(for: config.identifier, fireDate: fireDate),
+                    title: config.title,
+                    body: reminderBody(for: config.kind, on: fireDate),
+                    fireDate: fireDate
+                )
+            }
+    }
+
+    private func reminderFireDates(minuteOfDay: Int, referenceDate: Date, horizonDays: Int) -> [Date] {
+        let calendar = AppPreferences.calendar
+        let startDay = referenceDate.startOfDayInCurrentCalendar
+        let minimumDate = referenceDate.addingTimeInterval(5)
+
+        return (0..<max(horizonDays, 1)).compactMap { offset in
+            guard let day = calendar.date(byAdding: .day, value: offset, to: startDay),
+                  let fireDate = calendar.date(
+                    bySettingHour: minuteOfDay / 60,
+                    minute: minuteOfDay % 60,
+                    second: 0,
+                    of: day
+                  )
+            else {
+                return nil
+            }
+            return fireDate >= minimumDate ? fireDate : nil
+        }
+    }
+
+    private func reminderIdentifiersToClear(referenceDate: Date, horizonDays: Int) -> [String] {
+        let calendar = AppPreferences.calendar
+        let reminderBases = [
+            ReminderKeys.foodIdentifier,
+            ReminderKeys.exerciseIdentifier,
+            ReminderKeys.summaryIdentifier
+        ]
+
+        var identifiers = Set(reminderBases)
+        let startDay = referenceDate.startOfDayInCurrentCalendar
+        for offset in -1...(horizonDays + 1) {
+            guard let day = calendar.date(byAdding: .day, value: offset, to: startDay) else { continue }
+            for base in reminderBases {
+                identifiers.insert(reminderIdentifier(for: base, fireDate: day))
+            }
+        }
+        return Array(identifiers)
+    }
+
+    private func reminderIdentifier(for baseIdentifier: String, fireDate: Date) -> String {
+        let components = AppPreferences.calendar.dateComponents([.year, .month, .day], from: fireDate)
+        let year = components.year ?? 0
+        let month = components.month ?? 0
+        let day = components.day ?? 0
+        return "\(baseIdentifier).\(year)-\(String(format: "%02d", month))-\(String(format: "%02d", day))"
+    }
+
+    private func reminderBody(for kind: ReminderKind, on date: Date) -> String {
+        switch kind {
+        case .food:
+            return foodReminderBody(on: date)
+        case .exercise:
+            return exerciseReminderBody(on: date)
+        case .summary:
+            return dailySummaryReminderBody(on: date)
+        }
     }
 
     private func reminderEnabled(forKey key: String, defaultValue: Bool) -> Bool {
@@ -972,6 +1234,101 @@ final class AppState: ObservableObject {
         }
     }
 
+    private func persistAccount(_ value: KeepFitAccount) {
+        account = value
+        if let data = try? JSONEncoder().encode(value) {
+            defaults.set(data, forKey: SyncKeys.account)
+        }
+    }
+
+    private static func string(from nameComponents: PersonNameComponents?) -> String? {
+        guard let nameComponents else { return nil }
+        let value = PersonNameComponentsFormatter().string(from: nameComponents).trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? nil : value
+    }
+
+    private func trimmedNonEmpty(_ value: String?) -> String? {
+        guard let value else { return nil }
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+
+    private func currentCloudSnapshotKey() -> String {
+        guard account.isSignedInWithApple, let userID = trimmedNonEmpty(account.userID) else {
+            return SyncKeys.cloudSnapshot
+        }
+        return "\(SyncKeys.cloudSnapshotAccountPrefix)\(stableHashHex(of: userID)).v1"
+    }
+
+    private func hasCloudSnapshot(forKey key: String) -> Bool {
+        iCloudStore.data(forKey: key) != nil
+    }
+
+    private func currentSettingsSnapshot() -> KeepFitSettingsSnapshot {
+        KeepFitSettingsSnapshot(
+            themeModeRaw: defaults.string(forKey: PreferenceKeys.themeMode) ?? AppThemeMode.system.rawValue,
+            energyUnitRaw: defaults.string(forKey: PreferenceKeys.energyUnit) ?? EnergyUnitOption.kcal.rawValue,
+            heightUnitRaw: defaults.string(forKey: PreferenceKeys.heightUnit) ?? HeightUnitOption.centimeter.rawValue,
+            weightUnitRaw: defaults.string(forKey: PreferenceKeys.weightUnit) ?? WeightUnitOption.kilogram.rawValue,
+            weekStartRaw: defaults.string(forKey: PreferenceKeys.weekStart) ?? WeekStartOption.sunday.rawValue,
+            appLanguageRaw: defaults.string(forKey: PreferenceKeys.appLanguage) ?? AppLanguageOption.chinese.rawValue,
+            birthDateTimestamp: defaults.double(forKey: PreferenceKeys.birthDateTimestamp),
+            hapticEnabled: defaults.object(forKey: PreferenceKeys.hapticEnabled) as? Bool ?? true,
+            foodReminderEnabled: defaults.object(forKey: PreferenceKeys.foodReminderEnabled) as? Bool ?? true,
+            exerciseReminderEnabled: defaults.object(forKey: PreferenceKeys.exerciseReminderEnabled) as? Bool ?? true,
+            dailySummaryEnabled: defaults.object(forKey: PreferenceKeys.dailySummaryEnabled) as? Bool ?? true,
+            foodReminderMinuteOfDay: defaults.object(forKey: PreferenceKeys.foodReminderMinuteOfDay) as? Int ?? 12 * 60,
+            exerciseReminderMinuteOfDay: defaults.object(forKey: PreferenceKeys.exerciseReminderMinuteOfDay) as? Int ?? 19 * 60,
+            summaryReminderMinuteOfDay: defaults.object(forKey: PreferenceKeys.summaryReminderMinuteOfDay) as? Int ?? 21 * 60 + 30
+        )
+    }
+
+    private func applySettingsSnapshot(_ snapshot: KeepFitSettingsSnapshot) {
+        defaults.set(snapshot.themeModeRaw, forKey: PreferenceKeys.themeMode)
+        defaults.set(snapshot.energyUnitRaw, forKey: PreferenceKeys.energyUnit)
+        defaults.set(snapshot.heightUnitRaw, forKey: PreferenceKeys.heightUnit)
+        defaults.set(snapshot.weightUnitRaw, forKey: PreferenceKeys.weightUnit)
+        defaults.set(snapshot.weekStartRaw, forKey: PreferenceKeys.weekStart)
+        defaults.set(snapshot.appLanguageRaw, forKey: PreferenceKeys.appLanguage)
+        defaults.set(snapshot.birthDateTimestamp, forKey: PreferenceKeys.birthDateTimestamp)
+        defaults.set(snapshot.hapticEnabled, forKey: PreferenceKeys.hapticEnabled)
+        defaults.set(snapshot.foodReminderEnabled, forKey: PreferenceKeys.foodReminderEnabled)
+        defaults.set(snapshot.exerciseReminderEnabled, forKey: PreferenceKeys.exerciseReminderEnabled)
+        defaults.set(snapshot.dailySummaryEnabled, forKey: PreferenceKeys.dailySummaryEnabled)
+        defaults.set(snapshot.foodReminderMinuteOfDay, forKey: PreferenceKeys.foodReminderMinuteOfDay)
+        defaults.set(snapshot.exerciseReminderMinuteOfDay, forKey: PreferenceKeys.exerciseReminderMinuteOfDay)
+        defaults.set(snapshot.summaryReminderMinuteOfDay, forKey: PreferenceKeys.summaryReminderMinuteOfDay)
+        refreshDynamicRemindersIfNeeded()
+    }
+
+    private func refreshAppleCredentialStateIfNeeded() async {
+        guard account.isSignedInWithApple, let userID = trimmedNonEmpty(account.userID) else { return }
+        let provider = ASAuthorizationAppleIDProvider()
+
+        do {
+            let state = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<ASAuthorizationAppleIDProvider.CredentialState, Error>) in
+                provider.getCredentialState(forUserID: userID) { credentialState, error in
+                    if let error {
+                        continuation.resume(throwing: error)
+                        return
+                    }
+                    continuation.resume(returning: credentialState)
+                }
+            }
+
+            switch state {
+            case .authorized:
+                break
+            case .revoked, .notFound, .transferred:
+                signOutAppleAccount()
+            @unknown default:
+                break
+            }
+        } catch {
+            // Ignore transient credential-state lookup failures on simulator/offline devices.
+        }
+    }
+
     private func startICloudSync() {
         guard iCloudAccountAvailable else { return }
         guard cloudObserver == nil else { return }
@@ -1016,8 +1373,9 @@ final class AppState: ObservableObject {
     private func pushCloudSnapshotToICloud() {
         guard isICloudSyncEnabled, iCloudAccountAvailable, !isApplyingCloudSnapshot else { return }
         let snapshot = KeepFitCloudSnapshot(
-            version: 1,
+            version: 2,
             modifiedAt: localMutationAt == .distantPast ? Date() : localMutationAt,
+            settings: currentSettingsSnapshot(),
             profile: profile,
             foodLibrary: foodLibrary,
             exerciseLibrary: exerciseLibrary,
@@ -1026,15 +1384,15 @@ final class AppState: ObservableObject {
             bodyMetricLogs: bodyMetricLogs
         )
         guard let data = try? cloudEncoder.encode(snapshot) else { return }
-        iCloudStore.set(data, forKey: SyncKeys.cloudSnapshot)
+        iCloudStore.set(data, forKey: currentCloudSnapshotKey())
         iCloudStore.synchronize()
     }
 
     private func pullCloudSnapshotIfNeeded(force: Bool) {
         guard isICloudSyncEnabled, iCloudAccountAvailable else { return }
-        guard let data = iCloudStore.data(forKey: SyncKeys.cloudSnapshot) else { return }
+        guard let data = iCloudStore.data(forKey: currentCloudSnapshotKey()) else { return }
         guard let snapshot = try? cloudDecoder.decode(KeepFitCloudSnapshot.self, from: data) else { return }
-        guard snapshot.version == 1 else { return }
+        guard (1...2).contains(snapshot.version) else { return }
 
         let remoteTS = snapshot.modifiedAt.timeIntervalSince1970
         let localTS = localMutationAt.timeIntervalSince1970
@@ -1044,6 +1402,9 @@ final class AppState: ObservableObject {
         defer { isApplyingCloudSnapshot = false }
 
         profile = snapshot.profile
+        if let settings = snapshot.settings {
+            applySettingsSnapshot(settings)
+        }
         foodLibrary = Self.mergeFoodLibrary(snapshot.foodLibrary, with: SeedData.foodLibrary)
         exerciseLibrary = Self.mergeExerciseLibrary(snapshot.exerciseLibrary, with: SeedData.exerciseLibrary)
         foodLogs = snapshot.foodLogs.sorted(by: { $0.date > $1.date })
