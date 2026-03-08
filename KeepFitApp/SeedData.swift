@@ -8,12 +8,13 @@ enum SeedData {
         _ calories: Double,
         _ protein: Double,
         _ carbs: Double,
-        _ fat: Double
+        _ fat: Double,
+        icon: String? = nil
     ) -> FoodItem {
         FoodItem(
             id: id,
             name: name,
-            icon: "",
+            icon: icon ?? IconCatalog.foodIcon(id: id, category: category),
             category: category,
             caloriesPer100g: calories,
             proteinPer100g: protein,
@@ -26,9 +27,10 @@ enum SeedData {
         _ id: String,
         _ name: String,
         _ category: ExerciseCategory,
-        _ met: Double
+        _ met: Double,
+        icon: String? = nil
     ) -> ExerciseItem {
-        ExerciseItem(id: id, name: name, icon: "", category: category, met: met)
+        ExerciseItem(id: id, name: name, icon: icon ?? IconCatalog.exerciseIcon(id: id, category: category), category: category, met: met)
     }
 
     static let foodLibrary: [FoodItem] = [
@@ -54,7 +56,18 @@ enum SeedData {
         food("bagel", "贝果", .staple, 250, 10, 49, 1.5),
         food("congee", "白粥", .staple, 46, 1.1, 10.2, 0.2),
 
-        // Protein (20)
+        food("fried_rice", "炒饭", .staple, 188, 4.3, 31, 5.4, icon: "🍛"),
+        food("fried_noodles", "炒面", .staple, 180, 5.6, 27, 5.2, icon: "🍝"),
+        food("sushi_roll", "寿司卷", .staple, 145, 5.5, 28, 1.7, icon: "🍣"),
+        food("wonton", "馄饨(熟)", .staple, 132, 6.5, 18, 3.5, icon: "🥟"),
+        food("tortilla", "玉米饼", .staple, 218, 5.7, 45.6, 2.9, icon: "🌮"),
+        food("pancake", "煎饼", .staple, 227, 6.4, 28.3, 9.7, icon: "🥞"),
+        food("cereal", "谷物麦片", .staple, 379, 13.2, 67.7, 6.5, icon: "🥣🥄"),
+        food("toast", "吐司", .staple, 266, 8.7, 49, 3.2, icon: "🍞🔥"),
+        food("croissant", "可颂", .staple, 406, 8.2, 45.8, 21, icon: "🥐"),
+        food("wrap", "卷饼", .staple, 296, 8.7, 49, 6.2, icon: "🌯"),
+
+        // Protein (30)
         food("chicken_breast", "鸡胸肉", .protein, 165, 31, 0, 3.6),
         food("chicken_leg", "鸡腿肉", .protein, 209, 26, 0, 10.9),
         food("beef_lean", "瘦牛肉", .protein, 187, 20.4, 0, 12),
@@ -75,8 +88,18 @@ enum SeedData {
         food("crab", "蟹肉", .protein, 97, 21, 0, 1.5),
         food("beef_shank", "牛腱", .protein, 170, 27, 0, 6),
         food("tempeh", "天贝", .protein, 193, 20, 9, 11),
+        food("sardine", "沙丁鱼", .protein, 208, 24.6, 0, 11.5, icon: "🐟🥫"),
+        food("mussel", "青口贝", .protein, 172, 24, 7, 4.5, icon: "🦪"),
+        food("scallop", "扇贝", .protein, 88, 16.8, 3.2, 0.8, icon: "🐚"),
+        food("squid", "鱿鱼", .protein, 92, 15.6, 3.1, 1.4, icon: "🦑"),
+        food("oyster", "生蚝", .protein, 68, 7, 4, 2.5, icon: "🦪"),
+        food("edamame", "毛豆", .protein, 121, 11.9, 8.9, 5.2, icon: "🫛"),
+        food("chickpea", "鹰嘴豆", .protein, 164, 8.9, 27.4, 2.6, icon: "🫘🟡"),
+        food("chicken_wing", "鸡翅", .protein, 203, 17.7, 0, 14.4, icon: "🍗🪽"),
+        food("pork_tenderloin", "猪里脊", .protein, 143, 21, 0, 5.2, icon: "🍖🐖"),
+        food("minced_beef", "牛肉末", .protein, 250, 17.2, 0, 20, icon: "🥩🔪"),
 
-        // Vegetable (15)
+        // Vegetable (25)
         food("broccoli", "西兰花", .vegetable, 34, 2.8, 6.6, 0.4),
         food("spinach", "菠菜", .vegetable, 23, 2.9, 3.6, 0.4),
         food("lettuce", "生菜", .vegetable, 15, 1.4, 2.9, 0.2),
@@ -92,8 +115,18 @@ enum SeedData {
         food("onion", "洋葱", .vegetable, 40, 1.1, 9.3, 0.1),
         food("eggplant", "茄子", .vegetable, 24, 1, 5.7, 0.2),
         food("zucchini", "西葫芦", .vegetable, 17, 1.2, 3.1, 0.3),
+        food("kale", "羽衣甘蓝", .vegetable, 49, 4.3, 8.8, 0.9, icon: "🥬💪"),
+        food("celery", "芹菜", .vegetable, 16, 0.7, 3, 0.2, icon: "🌿〰️"),
+        food("green_beans", "四季豆", .vegetable, 31, 1.8, 7, 0.1, icon: "🫛"),
+        food("pea", "豌豆", .vegetable, 81, 5.4, 14.5, 0.4, icon: "🫛🟢"),
+        food("bean_sprout", "豆芽", .vegetable, 30, 3, 5.9, 0.2, icon: "🌱💧"),
+        food("radish", "白萝卜", .vegetable, 18, 0.6, 4.1, 0.1, icon: "🥗"),
+        food("lotus_root", "莲藕", .vegetable, 74, 2.6, 17.2, 0.1, icon: "🪷"),
+        food("seaweed", "海带", .vegetable, 43, 1.7, 9.6, 0.6, icon: "🌿🌊"),
+        food("okra", "秋葵", .vegetable, 33, 1.9, 7.5, 0.2, icon: "🌿⭐️"),
+        food("broccoli_sprout", "西兰花苗", .vegetable, 35, 2.8, 6.6, 0.4, icon: "🌱🥦"),
 
-        // Fruit (15)
+        // Fruit (25)
         food("apple", "苹果", .fruit, 52, 0.3, 13.8, 0.2),
         food("banana", "香蕉", .fruit, 89, 1.1, 22.8, 0.3),
         food("orange", "橙子", .fruit, 47, 0.9, 11.8, 0.1),
@@ -109,8 +142,18 @@ enum SeedData {
         food("peach", "桃子", .fruit, 39, 0.9, 9.5, 0.3),
         food("cherry", "樱桃", .fruit, 63, 1.1, 16, 0.2),
         food("dragonfruit", "火龙果", .fruit, 60, 1.2, 13, 0.4),
+        food("grapefruit", "西柚", .fruit, 42, 0.8, 10.7, 0.1, icon: "🍊🩷"),
+        food("lemon", "柠檬", .fruit, 29, 1.1, 9.3, 0.3, icon: "🍋"),
+        food("lime", "青柠", .fruit, 30, 0.7, 10.5, 0.2, icon: "🍋🟢"),
+        food("papaya", "木瓜", .fruit, 43, 0.5, 10.8, 0.3, icon: "🍈🧡"),
+        food("lychee", "荔枝", .fruit, 66, 0.8, 16.5, 0.4, icon: "🍒⚪️"),
+        food("plum", "李子", .fruit, 46, 0.7, 11.4, 0.3, icon: "🫐🟣"),
+        food("raspberry", "覆盆子", .fruit, 52, 1.2, 11.9, 0.7, icon: "🍓〰️"),
+        food("blackberry", "黑莓", .fruit, 43, 1.4, 9.6, 0.5, icon: "🫐⚫️"),
+        food("cantaloupe", "哈密瓜", .fruit, 34, 0.8, 8.2, 0.2, icon: "🍈"),
+        food("coconut", "椰肉", .fruit, 354, 3.3, 15.2, 33.5, icon: "🥥"),
 
-        // Dairy (8)
+        // Dairy (12)
         food("greek_yogurt", "希腊酸奶", .dairy, 97, 9, 3.6, 5),
         food("milk", "牛奶", .dairy, 62, 3.4, 4.8, 3.3),
         food("soy_milk", "无糖豆浆", .dairy, 33, 2.9, 1.6, 1.6),
@@ -119,8 +162,12 @@ enum SeedData {
         food("cottage_cheese", "茅屋奶酪", .dairy, 98, 11.1, 3.4, 4.3),
         food("cheddar_cheese", "切达奶酪", .dairy, 403, 24.9, 1.3, 33),
         food("mozzarella", "马苏里拉", .dairy, 280, 28, 3.1, 17),
+        food("yogurt_plain", "原味酸奶", .dairy, 61, 3.5, 4.7, 3.3, icon: "🥣"),
+        food("skyr", "冰岛酸奶", .dairy, 63, 11, 4, 0.2, icon: "🥣❄️"),
+        food("soy_yogurt", "豆乳酸奶", .dairy, 54, 3.8, 6.2, 1.6, icon: "🫘🥣"),
+        food("chocolate_milk", "巧克力牛奶", .dairy, 83, 3.2, 10.3, 3.4, icon: "🍫🥛"),
 
-        // Nuts (8)
+        // Nuts (14)
         food("almond", "杏仁", .nuts, 579, 21.2, 21.6, 49.9),
         food("walnut", "核桃", .nuts, 654, 15.2, 13.7, 65.2),
         food("peanut", "花生", .nuts, 567, 25.8, 16.1, 49.2),
@@ -129,8 +176,14 @@ enum SeedData {
         food("macadamia", "夏威夷果", .nuts, 718, 7.9, 13.8, 75.8),
         food("sunflower_seed", "葵花籽", .nuts, 584, 20.8, 20, 51.5),
         food("pumpkin_seed", "南瓜籽", .nuts, 559, 30.2, 10.7, 49),
+        food("hazelnut", "榛子", .nuts, 628, 15, 17, 61, icon: "🌰🤎"),
+        food("pecan", "碧根果", .nuts, 691, 9.2, 13.9, 72, icon: "🌰🍂"),
+        food("chestnut", "板栗", .nuts, 213, 2.4, 45.5, 2.3, icon: "🌰🔥"),
+        food("chia_seed", "奇亚籽", .nuts, 486, 16.5, 42.1, 30.7, icon: "🫘⚫️"),
+        food("flaxseed", "亚麻籽", .nuts, 534, 18.3, 28.9, 42.2, icon: "🌾🫘"),
+        food("pine_nut", "松子", .nuts, 673, 13.7, 13.1, 68.4, icon: "🌲🌰"),
 
-        // Drink (8)
+        // Drink (16)
         food("black_coffee", "美式咖啡", .drink, 2, 0.3, 0, 0),
         food("latte", "拿铁", .drink, 54, 2.8, 5.1, 2.3),
         food("green_tea", "绿茶", .drink, 1, 0, 0.2, 0),
@@ -139,8 +192,16 @@ enum SeedData {
         food("protein_powder", "蛋白粉", .drink, 380, 80, 8, 5),
         food("orange_juice", "橙汁", .drink, 45, 0.7, 10.4, 0.2),
         food("coconut_water", "椰子水", .drink, 19, 0.7, 3.7, 0.2),
+        food("cappuccino", "卡布奇诺", .drink, 42, 2.1, 4.8, 1.5, icon: "☕️☁️"),
+        food("espresso", "浓缩咖啡", .drink, 9, 0.1, 1.7, 0.2, icon: "☕️⚫️"),
+        food("sparkling_water", "气泡水", .drink, 0, 0, 0, 0, icon: "🫧💧"),
+        food("sports_drink", "运动饮料", .drink, 25, 0, 6.3, 0, icon: "⚡️🥤"),
+        food("smoothie_berry", "莓果奶昔", .drink, 68, 1.6, 13.5, 0.8, icon: "🫐🧋"),
+        food("lemonade", "柠檬水", .drink, 27, 0.1, 6.9, 0, icon: "🍋🧃"),
+        food("tomato_juice", "番茄汁", .drink, 17, 0.8, 3.9, 0.1, icon: "🍅🧃"),
+        food("oat_milk", "燕麦奶", .drink, 46, 1, 6.7, 1.5, icon: "🌾🥛"),
 
-        // Snack (10)
+        // Snack (22)
         food("dark_chocolate", "黑巧克力", .snack, 598, 7.8, 45.9, 42.6),
         food("chips", "薯片", .snack, 536, 6.4, 52.9, 34.6),
         food("cookie", "曲奇饼干", .snack, 502, 6.2, 63, 24),
@@ -150,11 +211,23 @@ enum SeedData {
         food("popcorn", "爆米花", .snack, 387, 12.9, 78, 4.5),
         food("cracker", "苏打饼干", .snack, 450, 8, 70, 14),
         food("mooncake", "月饼", .snack, 408, 6.8, 56, 16),
-        food("fried_chicken", "炸鸡", .snack, 294, 18, 8.9, 20)
+        food("fried_chicken", "炸鸡", .snack, 294, 18, 8.9, 20),
+        food("pretzel", "椒盐卷饼", .snack, 380, 9.1, 79.2, 3.5, icon: "🥨"),
+        food("muffin", "松饼", .snack, 377, 5.6, 53.4, 16.1, icon: "🧁"),
+        food("donut", "甜甜圈", .snack, 452, 4.9, 51.3, 25, icon: "🍩"),
+        food("brownie", "布朗尼", .snack, 466, 4.9, 59.1, 22.7, icon: "🍫🟫"),
+        food("rice_cracker", "米饼", .snack, 390, 6.8, 82, 1.5, icon: "🍘"),
+        food("granola", "格兰诺拉", .snack, 471, 10, 64, 20, icon: "🥣🌾"),
+        food("sandwich", "三明治", .snack, 250, 12, 25, 11, icon: "🥪"),
+        food("hamburger", "汉堡", .snack, 295, 17, 30, 12, icon: "🍔"),
+        food("pizza", "披萨", .snack, 266, 11, 33, 10, icon: "🍕"),
+        food("hot_dog", "热狗", .snack, 290, 10, 23, 18, icon: "🌭"),
+        food("spring_roll", "春卷", .snack, 220, 4.8, 24, 11, icon: "🌯"),
+        food("seaweed_snack", "海苔脆", .snack, 430, 20, 35, 25, icon: "🌿🍘")
     ]
 
     static let exerciseLibrary: [ExerciseItem] = [
-        // Cardio (30)
+        // Cardio (38)
         exercise("walking_slow", "散步", .cardio, 2.8),
         exercise("walking_fast", "快走", .cardio, 4.3),
         exercise("jogging", "慢跑", .cardio, 7.0),
@@ -185,8 +258,16 @@ enum SeedData {
         exercise("mountain_bike", "山地骑行", .cardio, 8.5),
         exercise("kickboxing_cardio", "搏击有氧", .cardio, 9.5),
         exercise("rope_climb_machine", "爬绳机", .cardio, 9.2),
+        exercise("sprint_interval", "冲刺间歇跑", .cardio, 11.0, icon: "🏃"),
+        exercise("incline_walk", "坡度快走", .cardio, 5.3, icon: "🥾"),
+        exercise("dance_kpop", "韩舞", .cardio, 6.8, icon: "🕺"),
+        exercise("dance_jazz", "爵士舞", .cardio, 6.5, icon: "💃"),
+        exercise("boxing_bag", "沙袋拳击", .cardio, 8.8, icon: "🥊"),
+        exercise("stair_walk", "台阶走", .cardio, 5.0, icon: "🪜"),
+        exercise("skipping_light", "轻跳绳", .cardio, 9.0, icon: "🪢"),
+        exercise("water_aerobics", "水中有氧", .cardio, 5.5, icon: "🏊"),
 
-        // Strength (25)
+        // Strength (32)
         exercise("bodyweight", "自重训练", .strength, 5.5),
         exercise("weight_training", "力量训练", .strength, 6.0),
         exercise("crossfit", "综合体能", .strength, 8.5),
@@ -212,8 +293,15 @@ enum SeedData {
         exercise("calisthenics", "街头健身", .strength, 7.0),
         exercise("power_clean", "高翻", .strength, 8.0),
         exercise("sandbag_training", "沙袋训练", .strength, 7.5),
+        exercise("dumbbell_training", "哑铃训练", .strength, 5.8, icon: "🏋️"),
+        exercise("barbell_squat", "杠铃深蹲", .strength, 6.5, icon: "🏋️"),
+        exercise("chest_fly", "飞鸟训练", .strength, 5.0, icon: "💪"),
+        exercise("cable_row", "绳索划船", .strength, 5.3, icon: "🪢"),
+        exercise("leg_curl", "腿弯举", .strength, 4.8, icon: "🦵"),
+        exercise("leg_extension", "腿屈伸", .strength, 4.8, icon: "🦵"),
+        exercise("farmer_walk", "农夫行走", .strength, 6.0, icon: "🚶"),
 
-        // Flexibility (15)
+        // Flexibility (20)
         exercise("yoga", "瑜伽", .flexibility, 3.0),
         exercise("pilates", "普拉提", .flexibility, 3.5),
         exercise("stretching", "拉伸", .flexibility, 2.8),
@@ -229,8 +317,13 @@ enum SeedData {
         exercise("barre", "芭蕾塑形", .flexibility, 4.0),
         exercise("yin_yoga", "阴瑜伽", .flexibility, 2.5),
         exercise("mobility_flow", "关节流动训练", .flexibility, 3.2),
+        exercise("chair_yoga", "椅子瑜伽", .flexibility, 2.5, icon: "🪑"),
+        exercise("fascia_release", "筋膜放松", .flexibility, 2.2, icon: "🌿"),
+        exercise("shoulder_mobility", "肩颈活动", .flexibility, 2.8, icon: "🤸"),
+        exercise("hip_opener", "髋部打开", .flexibility, 3.0, icon: "🧘"),
+        exercise("recovery_flow", "恢复流", .flexibility, 2.7, icon: "🌿"),
 
-        // Sports (20)
+        // Sports (28)
         exercise("boxing", "拳击训练", .sports, 8.5),
         exercise("badminton", "羽毛球", .sports, 5.5),
         exercise("basketball", "篮球", .sports, 8.0),
@@ -251,8 +344,16 @@ enum SeedData {
         exercise("muay_thai", "泰拳", .sports, 10.0),
         exercise("ultimate_frisbee", "飞盘", .sports, 7.0),
         exercise("water_polo", "水球", .sports, 10.0),
+        exercise("padel", "板式网球", .sports, 7.0, icon: "🎾"),
+        exercise("rock_climbing", "攀岩", .sports, 8.0, icon: "🧗"),
+        exercise("bouldering", "抱石", .sports, 7.5, icon: "🧗"),
+        exercise("surfing", "冲浪", .sports, 6.0, icon: "🏄"),
+        exercise("skating_ice", "滑冰", .sports, 7.0, icon: "⛸️"),
+        exercise("cricket", "板球", .sports, 5.0, icon: "🏏"),
+        exercise("hockey", "曲棍球", .sports, 8.0, icon: "🏑"),
+        exercise("archery", "射箭", .sports, 4.5, icon: "🏹"),
 
-        // Outdoors (10)
+        // Outdoors (17)
         exercise("hiking", "徒步", .outdoors, 6.0),
         exercise("mountain_climb", "登山", .outdoors, 8.0),
         exercise("skating", "轮滑", .outdoors, 7.0),
@@ -262,6 +363,13 @@ enum SeedData {
         exercise("kayaking", "皮划艇", .outdoors, 5.0),
         exercise("skiing", "滑雪", .outdoors, 7.0),
         exercise("snowboarding", "单板滑雪", .outdoors, 7.5),
-        exercise("trail_running", "越野跑", .outdoors, 9.5)
+        exercise("trail_running", "越野跑", .outdoors, 9.5),
+        exercise("rucking", "负重行走", .outdoors, 7.8, icon: "🎒"),
+        exercise("dog_walking", "遛狗", .outdoors, 3.5, icon: "🐕"),
+        exercise("gardening", "园艺", .outdoors, 4.0, icon: "🪴"),
+        exercise("paddle_board", "桨板", .outdoors, 6.0, icon: "🏄"),
+        exercise("fishing", "钓鱼", .outdoors, 3.5, icon: "🎣"),
+        exercise("snowshoe", "雪地徒步", .outdoors, 7.0, icon: "❄️"),
+        exercise("orienteering", "定向越野", .outdoors, 8.0, icon: "🧭")
     ]
 }

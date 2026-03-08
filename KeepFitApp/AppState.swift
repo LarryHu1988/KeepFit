@@ -287,29 +287,15 @@ final class AppState: ObservableObject {
     }
 
     private static func mergeFoodLibrary(_ existing: [FoodItem], with seed: [FoodItem]) -> [FoodItem] {
-        var merged: [FoodItem] = []
-        var seen = Set<String>()
-
-        for item in existing where seen.insert(item.id).inserted {
-            merged.append(item)
-        }
-        for item in seed where seen.insert(item.id).inserted {
-            merged.append(item)
-        }
-        return merged
+        let seedIDs = Set(seed.map(\.id))
+        let extras = existing.filter { !seedIDs.contains($0.id) }
+        return seed + extras
     }
 
     private static func mergeExerciseLibrary(_ existing: [ExerciseItem], with seed: [ExerciseItem]) -> [ExerciseItem] {
-        var merged: [ExerciseItem] = []
-        var seen = Set<String>()
-
-        for item in existing where seen.insert(item.id).inserted {
-            merged.append(item)
-        }
-        for item in seed where seen.insert(item.id).inserted {
-            merged.append(item)
-        }
-        return merged
+        let seedIDs = Set(seed.map(\.id))
+        let extras = existing.filter { !seedIDs.contains($0.id) }
+        return seed + extras
     }
 
     private static func loadAccount(from defaults: UserDefaults) -> KeepFitAccount? {
@@ -560,7 +546,10 @@ final class AppState: ObservableObject {
     }
 
     func foodIcon(for food: FoodItem) -> String {
-        IconCatalog.foodIcon(id: food.id, category: food.category)
+        if !food.icon.isEmpty {
+            return food.icon
+        }
+        return IconCatalog.foodIcon(id: food.id, category: food.category)
     }
 
     func foodDisplayName(for food: FoodItem) -> String {
@@ -585,7 +574,10 @@ final class AppState: ObservableObject {
     }
 
     func exerciseIcon(for exercise: ExerciseItem) -> String {
-        IconCatalog.exerciseIcon(id: exercise.id, category: exercise.category)
+        if !exercise.icon.isEmpty {
+            return exercise.icon
+        }
+        return IconCatalog.exerciseIcon(id: exercise.id, category: exercise.category)
     }
 
     func exerciseDisplayName(for exercise: ExerciseItem) -> String {

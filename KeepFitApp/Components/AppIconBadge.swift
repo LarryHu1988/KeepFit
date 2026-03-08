@@ -14,6 +14,9 @@ struct AppIconBadge: View {
             } else {
                 Text(icon)
                     .font(.system(size: size * 0.72))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.44)
+                    .allowsTightening(true)
             }
         }
         .frame(width: size, height: size)
