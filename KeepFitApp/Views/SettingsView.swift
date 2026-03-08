@@ -67,10 +67,9 @@ struct SettingsView: View {
     @State private var summaryReminderTimeDraft = Date()
 
     @State private var activeInfo: SettingsInfoTopic?
+    @State private var infoPopoverSourceRect: CGRect = .zero
     @State private var selectionPopoverAnchor = UnitPoint(x: 0.9, y: 0.5)
     @State private var selectionPopoverArrowEdge: Edge = .bottom
-    @State private var infoPopoverAnchor = UnitPoint(x: 0.5, y: 0)
-    @State private var infoPopoverArrowEdge: Edge = .bottom
     @State private var handlingHealthToggle = false
     @State private var handlingReminderToggle = false
     @State private var showHealthSyncAlert = false
@@ -310,6 +309,9 @@ struct SettingsView: View {
 
     private var settingsPresentedView: some View {
         settingsInteractiveView
+            .overlay {
+                settingsInfoOverlay
+            }
             .alert(localized("健康同步", "Health Sync"), isPresented: $showHealthSyncAlert) {
                 Button(localized("知道了", "OK"), role: .cancel) {}
             } message: {
@@ -417,7 +419,7 @@ struct SettingsView: View {
                 showAppleAccountSheet = true
             } label: {
                 HStack(spacing: 10) {
-                    rowIcon("person.crop.circle.badge.checkmark", .black)
+                    appleAccountRowIcon
                     VStack(alignment: .leading, spacing: 2) {
                         Text(localized("Apple 账号", "Apple Account"))
                             .foregroundStyle(.primary)
@@ -1578,6 +1580,29 @@ struct SettingsView: View {
             .frame(width: 18)
     }
 
+    private var appleAccountRowIcon: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.indigo.opacity(0.92),
+                            Color.blue.opacity(0.88),
+                            Color.cyan.opacity(0.82)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(width: 19, height: 19)
+
+            Image(systemName: "apple.logo")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(.white)
+        }
+        .frame(width: 18)
+    }
+
     private func adaptivePopoverArrowEdge(globalY: CGFloat) -> Edge {
         let screenHeight = max(UIScreen.main.bounds.height, 1)
         return globalY < screenHeight * 0.5 ? .top : .bottom
@@ -2267,11 +2292,10 @@ struct SettingsView: View {
         GeometryReader { proxy in
             Button {
                 triggerHapticIfNeeded()
-                let frame = proxy.frame(in: .global)
-                let edge = adaptivePopoverArrowEdge(globalY: frame.midY)
-                infoPopoverArrowEdge = edge
-                infoPopoverAnchor = UnitPoint(x: 0.5, y: anchorY(for: edge))
-                activeInfo = topic
+                infoPopoverSourceRect = proxy.frame(in: .global)
+                withAnimation(.spring(response: 0.24, dampingFraction: 0.92)) {
+                    activeInfo = activeInfo == topic ? nil : topic
+                }
             } label: {
                 Image(systemName: "info.circle")
                     .font(.subheadline)
@@ -2281,20 +2305,6 @@ struct SettingsView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(width: 18, height: 18)
-        .popover(isPresented: infoPopoverBinding(for: topic), attachmentAnchor: .point(infoPopoverAnchor), arrowEdge: infoPopoverArrowEdge) {
-            glassInfoPopover(topic: topic)
-                .presentationCompactAdaptation(.popover)
-                .presentationBackground(.ultraThinMaterial)
-        }
-    }
-
-    private func infoPopoverBinding(for topic: SettingsInfoTopic) -> Binding<Bool> {
-        Binding(
-            get: { activeInfo == topic },
-            set: { isShowing in
-                activeInfo = isShowing ? topic : nil
-            }
-        )
     }
 
     private func iconTextFieldRow(icon: String, title: String, text: Binding<String>, unit: String, keyboard: UIKeyboardType, color: Color) -> some View {
@@ -2374,7 +2384,7 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
-    private func glassInfoPopover(topic: SettingsInfoTopic) -> some View {
+    private func glassInfoPopover(topic: SettingsInfoTopic, width: CGFloat? = nil) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             ForEach(Array(topic.paragraphs.enumerated()), id: \.offset) { _, paragraph in
                 Text(paragraph)
@@ -2388,8 +2398,76 @@ struct SettingsView: View {
             }
         }
         .padding(12)
-        .frame(maxWidth: estimatedParagraphPopoverWidth(topic.paragraphs), alignment: .topLeading)
+        .frame(width: width ?? estimatedParagraphPopoverWidth(topic.paragraphs), alignment: .topLeading)
         .fixedSize(horizontal: false, vertical: true)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(topic.accent.opacity(0.08))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(.white.opacity(0.16), lineWidth: 0.7)
+                )
+        )
+    }
+
+    @ViewBuilder
+    private var settingsInfoOverlay: some View {
+        GeometryReader { proxy in
+            if let topic = activeInfo {
+                let bubbleWidth = estimatedParagraphPopoverWidth(topic.paragraphs)
+                let bubbleHeight = measuredInfoPopoverHeight(for: topic, width: bubbleWidth)
+                let rootFrame = proxy.frame(in: .global)
+                let showBelow = infoPopoverSourceRect.midY < rootFrame.midY
+                let edgeInset: CGFloat = 16
+                let verticalSpacing: CGFloat = 12
+                let anchorX = infoPopoverSourceRect.midX - rootFrame.minX
+                let clampedX = min(
+                    max(anchorX, bubbleWidth / 2 + edgeInset),
+                    proxy.size.width - bubbleWidth / 2 - edgeInset
+                )
+                let targetY = showBelow
+                    ? infoPopoverSourceRect.maxY - rootFrame.minY + verticalSpacing + bubbleHeight / 2
+                    : infoPopoverSourceRect.minY - rootFrame.minY - verticalSpacing - bubbleHeight / 2
+                let clampedY = min(
+                    max(targetY, bubbleHeight / 2 + edgeInset),
+                    proxy.size.height - bubbleHeight / 2 - edgeInset
+                )
+
+                ZStack(alignment: .topLeading) {
+                    Color.black.opacity(0.001)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.22, dampingFraction: 0.94)) {
+                                activeInfo = nil
+                            }
+                        }
+
+                    glassInfoPopover(topic: topic, width: bubbleWidth)
+                        .position(x: clampedX, y: clampedY)
+                        .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .center)))
+                }
+            }
+        }
+        .allowsHitTesting(activeInfo != nil)
+    }
+
+    private func measuredInfoPopoverHeight(for topic: SettingsInfoTopic, width: CGFloat) -> CGFloat {
+        let font = UIFont.preferredFont(forTextStyle: .caption2)
+        let usableWidth = max(120, width - 24)
+        let textHeight = topic.paragraphs.reduce(CGFloat.zero) { partial, paragraph in
+            let rect = (paragraph as NSString).boundingRect(
+                with: CGSize(width: usableWidth, height: .greatestFiniteMagnitude),
+                options: [.usesLineFragmentOrigin, .usesFontLeading],
+                attributes: [.font: font],
+                context: nil
+            )
+            return partial + ceil(rect.height)
+        }
+        return textHeight + CGFloat(max(topic.paragraphs.count - 1, 0)) * 5 + 24
     }
 
     private func ensureBirthDateSeeded() {
@@ -2651,6 +2729,15 @@ private enum SettingsInfoTopic: String, Identifiable {
     case intake
 
     var id: String { rawValue }
+
+    var accent: Color {
+        switch self {
+        case .bmr, .tdee:
+            return .green
+        case .intake:
+            return .red
+        }
+    }
 
     var title: String {
         switch self {

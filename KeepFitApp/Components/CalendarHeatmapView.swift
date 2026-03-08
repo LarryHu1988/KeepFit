@@ -88,11 +88,16 @@ struct CalendarHeatmapView: View {
 }
 
 struct WeekStripCalendarView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var selectedDate: Date
     let accent: Color
     let indicatorColor: (Date) -> Color?
     @ScaledMetric(relativeTo: .body) private var rowPadding: CGFloat = 10
     @ScaledMetric(relativeTo: .body) private var dayCellHeight: CGFloat = 54
+
+    private var isCompactLayout: Bool {
+        UIScreen.main.bounds.width <= 390 || dynamicTypeSize >= .xxxLarge
+    }
 
     private var weekTitles: [String] {
         var calendar = AppPreferences.calendar
@@ -112,12 +117,12 @@ struct WeekStripCalendarView: View {
     }
 
     var body: some View {
-        HStack(spacing: 7) {
+        HStack(spacing: isCompactLayout ? 5 : 7) {
             ForEach(weekDates, id: \.self) { date in
                 weekCell(for: date)
             }
         }
-        .padding(rowPadding)
+        .padding(isCompactLayout ? max(8, rowPadding - 2) : rowPadding)
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -169,12 +174,16 @@ struct WeekStripCalendarView: View {
         } label: {
             VStack(spacing: 2) {
                 Text(weekTitles[weekdayIndex])
-                    .font(.caption2.weight(.medium))
+                    .font(.system(size: isCompactLayout ? 10.5 : 11.5, weight: .medium))
                     .foregroundStyle(isSelected ? Color.white.opacity(0.95) : (isFuture ? Color.secondary.opacity(0.62) : Color.secondary))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
 
                 Text("\(calendar.component(.day, from: date))")
-                    .font(.caption.weight(.semibold))
+                    .font(.system(size: isCompactLayout ? 14 : 15, weight: .semibold))
                     .foregroundStyle(isSelected ? Color.white : (isFuture ? Color.secondary : Color.primary))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
 
                 if let dotColor = indicatorColor(date), !isFuture {
                     Circle()
@@ -184,7 +193,7 @@ struct WeekStripCalendarView: View {
                     Color.clear.frame(width: 5, height: 5)
                 }
             }
-            .frame(maxWidth: .infinity, minHeight: dayCellHeight)
+            .frame(maxWidth: .infinity, minHeight: isCompactLayout ? max(48, dayCellHeight - 4) : dayCellHeight)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(

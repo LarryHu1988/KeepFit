@@ -1,10 +1,19 @@
 import SwiftUI
 
 struct CardContainer<Content: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let title: String
     let subtitle: String?
     let accent: Color
     @ViewBuilder var content: Content
+
+    private var isCompactLayout: Bool {
+        UIScreen.main.bounds.width <= 390 || dynamicTypeSize >= .xxxLarge
+    }
+
+    private var contentPadding: CGFloat {
+        isCompactLayout ? 14 : 18
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -24,7 +33,7 @@ struct CardContainer<Content: View>: View {
             VStack(alignment: .leading, spacing: 16) {
                 content
             }
-            .padding(18)
+            .padding(contentPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 24, style: .continuous)

@@ -5,6 +5,7 @@ struct LoseWeightView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.tabSwitchToken) private var tabSwitchToken
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     @AppStorage("keepfit.unit.weight") private var weightUnitRaw = WeightUnitOption.kilogram.rawValue
     let onSettingsTap: () -> Void
@@ -108,6 +109,10 @@ struct LoseWeightView: View {
         colorScheme == .dark
             ? Color.blue.opacity(0.22)
             : Color.blue.opacity(0.14)
+    }
+
+    private var effectiveRingSize: CGFloat {
+        min(ringSize, UIScreen.main.bounds.width - 84)
     }
 
     private var calorieTrendData: [DailyCalorieTrend] {
@@ -309,7 +314,7 @@ struct LoseWeightView: View {
                 valueUnit: energyUnit.symbol,
                 caption: "\(localized("目标", "Target")) \(energyText(fromKcal: deficitGoal, unit: energyUnit))"
             )
-            .frame(width: ringSize, height: ringSize)
+            .frame(width: effectiveRingSize, height: effectiveRingSize)
             .frame(maxWidth: .infinity)
         }
     }
@@ -475,16 +480,17 @@ struct LoseWeightView: View {
             subtitle: nil,
             accent: .blue
         ) {
-            let entryFont = Font.caption.weight(.medium)
             let canEdit = !isFutureDateSelected
             let canDelete = canEdit && hasBodyMetricOnSelectedDate
 
             GeometryReader { proxy in
-                let actionWidth = bodyMetricActionButtonWidth
-                let spacing = bodyMetricRowSpacing
+                let compactLayout = proxy.size.width < 350 || dynamicTypeSize >= .xxxLarge
+                let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 15, weight: .medium)
+                let actionWidth = compactLayout ? max(28, bodyMetricActionButtonWidth - 2) : bodyMetricActionButtonWidth
+                let spacing = compactLayout ? max(4, bodyMetricRowSpacing - 1) : bodyMetricRowSpacing
                 let totalWidth = max(0, proxy.size.width)
                 let availableForFields = max(0, totalWidth - (actionWidth * 2) - (spacing * 4))
-                let dateWidth = min(bodyMetricDateFieldWidth, max(74, availableForFields * 0.30))
+                let dateWidth = min(compactLayout ? 80 : bodyMetricDateFieldWidth, max(70, availableForFields * 0.28))
                 let metricWidth = max(0, (availableForFields - dateWidth) / 2)
 
                 HStack(spacing: spacing) {
@@ -499,38 +505,48 @@ struct LoseWeightView: View {
                                 .font(entryFont)
                                 .monospacedDigit()
                                 .lineLimit(1)
-                                .minimumScaleFactor(0.9)
+                                .minimumScaleFactor(0.76)
                             Spacer(minLength: 0)
                             Image(systemName: "chevron.up.chevron.down")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, compactLayout ? 7 : 8)
                         .frame(width: dateWidth, height: fieldHeight)
                         .background(metricFieldBackground)
                     }
                     .buttonStyle(.plain)
                     .disabled(!canEdit)
 
-                    HStack(spacing: 4) {
+                    HStack(spacing: compactLayout ? 3 : 4) {
                         Image(systemName: "scalemass.fill")
-                            .font(.caption)
+                            .font(.system(size: compactLayout ? 11 : 12, weight: .semibold))
                             .foregroundStyle(.blue)
-                        TextField("weight", text: $weightText)
+                        TextField(text: $weightText) {
+                            EmptyView()
+                        }
                             .keyboardType(.decimalPad)
                             .font(entryFont)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
                             .focused($focusedField, equals: .weight)
                             .submitLabel(.done)
-                            .minimumScaleFactor(0.72)
+                            .minimumScaleFactor(0.68)
                             .lineLimit(1)
                             .multilineTextAlignment(.trailing)
+                            .frame(maxWidth: .infinity)
+                            .onTapGesture {
+                                guard canEdit else { return }
+                                focusedField = .weight
+                                keepFitPlaceCursorAtEndIfTextField()
+                            }
                         Text(weightUnit.symbol)
                             .font(entryFont)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                             .fixedSize(horizontal: true, vertical: false)
                     }
-                    .padding(.horizontal, 7)
+                    .padding(.horizontal, compactLayout ? 6 : 7)
                     .frame(width: metricWidth, height: fieldHeight)
                     .background(metricFieldBackground)
                     .contentShape(Rectangle())
@@ -541,25 +557,35 @@ struct LoseWeightView: View {
                     }
                     .disabled(!canEdit)
 
-                    HStack(spacing: 4) {
+                    HStack(spacing: compactLayout ? 3 : 4) {
                         Image(systemName: "chart.pie.fill")
-                            .font(.caption)
+                            .font(.system(size: compactLayout ? 11 : 12, weight: .semibold))
                             .foregroundStyle(.cyan)
-                        TextField("body fat", text: $bodyFatText)
+                        TextField(text: $bodyFatText) {
+                            EmptyView()
+                        }
                             .keyboardType(.decimalPad)
                             .font(entryFont)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
                             .focused($focusedField, equals: .bodyFat)
                             .submitLabel(.done)
-                            .minimumScaleFactor(0.72)
+                            .minimumScaleFactor(0.68)
                             .lineLimit(1)
                             .multilineTextAlignment(.trailing)
+                            .frame(maxWidth: .infinity)
+                            .onTapGesture {
+                                guard canEdit else { return }
+                                focusedField = .bodyFat
+                                keepFitPlaceCursorAtEndIfTextField()
+                            }
                         Text("%")
                             .font(entryFont)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                             .fixedSize(horizontal: true, vertical: false)
                     }
-                    .padding(.horizontal, 7)
+                    .padding(.horizontal, compactLayout ? 6 : 7)
                     .frame(width: metricWidth, height: fieldHeight)
                     .background(metricFieldBackground)
                     .contentShape(Rectangle())

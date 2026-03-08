@@ -5,6 +5,7 @@ struct EatWellView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.tabSwitchToken) private var tabSwitchToken
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     let onSettingsTap: () -> Void
     var onFoodLogged: (() -> Void)? = nil
@@ -57,6 +58,10 @@ struct EatWellView: View {
     private let proteinEmoji = "🍗"
     private let carbsEmoji = "🍚"
     private let fatEmoji = "🧈"
+
+    private var effectiveRingSize: CGFloat {
+        min(ringSize, UIScreen.main.bounds.width - 84)
+    }
 
     private var macroEnergy: Double {
         max(1, todayNutrition.protein * 4 + todayNutrition.carbs * 4 + todayNutrition.fat * 9)
@@ -191,7 +196,7 @@ struct EatWellView: View {
                 valueUnit: energyUnit.symbol,
                 caption: "\(localized("目标", "Target")) \(energyText(fromKcal: targetCalories, unit: energyUnit))"
             )
-            .frame(width: ringSize, height: ringSize)
+            .frame(width: effectiveRingSize, height: effectiveRingSize)
             .frame(maxWidth: .infinity)
         }
     }
@@ -228,112 +233,134 @@ struct EatWellView: View {
             subtitle: nil,
             accent: .orange
         ) {
-            let entryFont = Font.caption.weight(.medium)
             let canEdit = !isFutureDateSelected
 
             VStack(spacing: 10) {
-                HStack(spacing: 6) {
-                    Button {
-                        guard canEdit else { return }
-                        KeepFitHaptics.impact(.light)
-                        showIntakeTimeSheet = true
-                    } label: {
-                        HStack(spacing: 6) {
-                            Text(Formatters.hourMinute.string(from: intakeTime))
-                                .font(entryFont)
-                                .monospacedDigit()
-                                .lineLimit(1)
-                            Spacer(minLength: 0)
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.horizontal, 10)
-                        .frame(width: timeFieldWidth, height: fieldHeight)
-                        .background(inputFieldBackground)
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(!canEdit)
+                GeometryReader { proxy in
+                    let totalWidth = max(0, proxy.size.width)
+                    let compactLayout = totalWidth < 340 || dynamicTypeSize >= .xxxLarge
+                    let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 15, weight: .medium)
+                    let spacing: CGFloat = compactLayout ? 5 : 6
+                    let actionWidth: CGFloat = compactLayout ? 32 : 34
+                    let timeWidth = min(max(compactLayout ? 72 : 84, totalWidth * 0.21), compactLayout ? 82 : 96)
+                    let amountWidth = min(max(compactLayout ? 54 : 60, totalWidth * 0.14), compactLayout ? 62 : 70)
+                    let selectorWidth = max(102, totalWidth - timeWidth - amountWidth - actionWidth - spacing * 3)
 
-                    Button {
-                        guard canEdit else { return }
-                        KeepFitHaptics.impact(.light)
-                        showFoodSheet = true
-                    } label: {
-                        HStack(spacing: 8) {
-                            AppIconBadge(
-                                icon: appState.foodIcon(for: selectedFood ?? appState.foodLibrary.first ?? SeedData.foodLibrary[0]),
-                                seed: selectedFood?.id ?? "food_selector",
-                                size: 18
-                            )
-                            Text(selectedFood.map { appState.foodDisplayName(for: $0) } ?? localized("选择食物", "Select Food"))
-                                .font(entryFont)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.66)
-                                .allowsTightening(true)
-                            Spacer()
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
+                    HStack(spacing: spacing) {
+                        Button {
+                            guard canEdit else { return }
+                            KeepFitHaptics.impact(.light)
+                            showIntakeTimeSheet = true
+                        } label: {
+                            HStack(spacing: 5) {
+                                Text(Formatters.hourMinute.string(from: intakeTime))
+                                    .font(entryFont)
+                                    .monospacedDigit()
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.8)
+                                Spacer(minLength: 0)
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, compactLayout ? 8 : 10)
+                            .frame(width: timeWidth, height: fieldHeight)
+                            .background(inputFieldBackground)
                         }
-                        .padding(.horizontal, 8)
-                        .frame(maxWidth: .infinity, minHeight: fieldHeight, alignment: .leading)
-                        .background(inputFieldBackground)
-                    }
-                    .buttonStyle(.plain)
-                    .layoutPriority(1)
-                    .disabled(!canEdit)
+                        .buttonStyle(.plain)
+                        .disabled(!canEdit)
 
-                    HStack(spacing: 6) {
-                        TextField("", text: $amountText)
+                        Button {
+                            guard canEdit else { return }
+                            KeepFitHaptics.impact(.light)
+                            showFoodSheet = true
+                        } label: {
+                            HStack(spacing: compactLayout ? 6 : 8) {
+                                AppIconBadge(
+                                    icon: appState.foodIcon(for: selectedFood ?? appState.foodLibrary.first ?? SeedData.foodLibrary[0]),
+                                    seed: selectedFood?.id ?? "food_selector",
+                                    size: compactLayout ? 16 : 18
+                                )
+                                Text(selectedFood.map { appState.foodDisplayName(for: $0) } ?? localized("选择食物", "Select Food"))
+                                    .font(entryFont)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.56)
+                                    .allowsTightening(true)
+                                Spacer(minLength: 0)
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, compactLayout ? 7 : 8)
+                            .frame(width: selectorWidth, height: fieldHeight, alignment: .leading)
+                            .background(inputFieldBackground)
+                        }
+                        .buttonStyle(.plain)
+                        .layoutPriority(1)
+                        .disabled(!canEdit)
+
+                        HStack(spacing: compactLayout ? 4 : 6) {
+                            TextField(text: $amountText) {
+                                EmptyView()
+                            }
                             .font(entryFont)
                             .keyboardType(.decimalPad)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
                             .focused($focusedField, equals: .amount)
                             .submitLabel(.done)
                             .multilineTextAlignment(.trailing)
                             .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                        Text(selectedUnitSymbol)
-                            .font(entryFont)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                            .fixedSize(horizontal: true, vertical: false)
-                    }
-                    .padding(.horizontal, 8)
-                    .frame(width: compactFieldWidth, height: fieldHeight)
-                    .background(inputFieldBackground)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        guard canEdit else { return }
-                        focusedField = .amount
-                        keepFitPlaceCursorAtEndIfTextField()
-                    }
-                    .disabled(!canEdit)
+                            .minimumScaleFactor(0.7)
+                            .frame(maxWidth: .infinity)
+                            .onTapGesture {
+                                guard canEdit else { return }
+                                focusedField = .amount
+                                keepFitPlaceCursorAtEndIfTextField()
+                            }
+                            Text(selectedUnitSymbol)
+                                .font(entryFont)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .fixedSize(horizontal: true, vertical: false)
+                        }
+                        .padding(.horizontal, compactLayout ? 7 : 8)
+                        .frame(width: amountWidth, height: fieldHeight)
+                        .background(inputFieldBackground)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            guard canEdit else { return }
+                            focusedField = .amount
+                            keepFitPlaceCursorAtEndIfTextField()
+                        }
+                        .disabled(!canEdit)
 
-                    Button {
-                        guard canEdit else { return }
-                        focusedField = nil
-                        KeepFitHaptics.impact(.medium)
-                        addFoodLog()
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(.white)
-                            .frame(width: 14, height: 14)
-                            .padding(9)
-                            .background(
-                                Circle()
-                                    .fill(Color.orange.opacity(0.9))
-                                    .overlay(
-                                        Circle()
-                                            .stroke(.white.opacity(0.8), lineWidth: 1)
-                                    )
-                            )
+                        Button {
+                            guard canEdit else { return }
+                            focusedField = nil
+                            KeepFitHaptics.impact(.medium)
+                            addFoodLog()
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 14, height: 14)
+                                .padding(compactLayout ? 8 : 9)
+                                .background(
+                                    Circle()
+                                        .fill(Color.orange.opacity(0.9))
+                                        .overlay(
+                                            Circle()
+                                                .stroke(.white.opacity(0.8), lineWidth: 1)
+                                        )
+                                )
+                        }
+                        .buttonStyle(.plain)
+                        .frame(width: actionWidth, height: fieldHeight)
+                        .disabled(!canEdit)
                     }
-                    .buttonStyle(.plain)
-                    .frame(width: 34, height: fieldHeight)
-                    .disabled(!canEdit)
                 }
+                .frame(height: fieldHeight)
 
                 if !todayLogs.isEmpty {
                     Divider()
