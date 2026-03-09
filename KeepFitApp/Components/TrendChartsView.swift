@@ -165,7 +165,11 @@ struct CalorieTrendChartView: View {
             .chartYAxisLabel(energyUnit.symbol)
             .frame(height: 204)
 
-            HStack(spacing: 12) {
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 96), spacing: 8, alignment: .center)],
+                alignment: .center,
+                spacing: 8
+            ) {
                 legendButton(title: localized("饮食摄入", "Food Intake"), systemImage: "circle.fill", color: .orange, series: .intake)
                 legendButton(title: localized("运动支出", "Exercise Burn"), systemImage: "circle.fill", color: .green, series: .expenditure)
                 legendButton(title: localized("热量赤字", "Calorie Deficit"), systemImage: "square.fill", color: .secondary, series: .deficit)
@@ -207,7 +211,7 @@ struct CalorieTrendChartView: View {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(isSeriesActive(series) ? color.opacity(0.12) : .clear)
             )
-            .fixedSize(horizontal: true, vertical: false)
+            .frame(maxWidth: .infinity, alignment: .center)
         }
         .buttonStyle(.plain)
         .opacity(seriesOpacity(series))

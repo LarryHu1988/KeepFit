@@ -178,13 +178,14 @@ struct LoseWeightView: View {
                     .frame(maxWidth: .infinity)
                 }
                 .scrollDismissesKeyboard(.immediately)
-                .simultaneousGesture(
+                .gesture(
                     TapGesture().onEnded {
                         if focusedField != nil {
                             keepFitDismissKeyboard()
                             focusedField = nil
                         }
-                    }
+                    },
+                    including: focusedField != nil ? .gesture : .none
                 )
             }
             .navigationTitle(localized("减个肥", "Lose Weight"))
@@ -484,13 +485,13 @@ struct LoseWeightView: View {
             let canDelete = canEdit && hasBodyMetricOnSelectedDate
 
             GeometryReader { proxy in
-                let compactLayout = proxy.size.width < 350 || dynamicTypeSize >= .xxxLarge
-                let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 15, weight: .medium)
+                let compactLayout = proxy.size.width < 352 || dynamicTypeSize.isAccessibilitySize
+                let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 14, weight: .medium)
                 let actionWidth = compactLayout ? max(28, bodyMetricActionButtonWidth - 2) : bodyMetricActionButtonWidth
                 let spacing = compactLayout ? max(4, bodyMetricRowSpacing - 1) : bodyMetricRowSpacing
                 let totalWidth = max(0, proxy.size.width)
                 let availableForFields = max(0, totalWidth - (actionWidth * 2) - (spacing * 4))
-                let dateWidth = min(compactLayout ? 80 : bodyMetricDateFieldWidth, max(70, availableForFields * 0.28))
+                let dateWidth = min(compactLayout ? 90 : max(bodyMetricDateFieldWidth, 90), max(82, availableForFields * 0.3))
                 let metricWidth = max(0, (availableForFields - dateWidth) / 2)
 
                 HStack(spacing: spacing) {
@@ -505,7 +506,7 @@ struct LoseWeightView: View {
                                 .font(entryFont)
                                 .monospacedDigit()
                                 .lineLimit(1)
-                                .minimumScaleFactor(0.76)
+                                .minimumScaleFactor(0.92)
                             Spacer(minLength: 0)
                             Image(systemName: "chevron.up.chevron.down")
                                 .font(.caption2)
@@ -522,16 +523,15 @@ struct LoseWeightView: View {
                         Image(systemName: "scalemass.fill")
                             .font(.system(size: compactLayout ? 11 : 12, weight: .semibold))
                             .foregroundStyle(.blue)
-                        TextField(text: $weightText) {
-                            EmptyView()
-                        }
+                        TextField("", text: $weightText)
                             .keyboardType(.decimalPad)
                             .font(entryFont)
+                            .textFieldStyle(.plain)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .focused($focusedField, equals: .weight)
                             .submitLabel(.done)
-                            .minimumScaleFactor(0.68)
+                            .minimumScaleFactor(0.9)
                             .lineLimit(1)
                             .multilineTextAlignment(.trailing)
                             .frame(maxWidth: .infinity)
@@ -561,16 +561,15 @@ struct LoseWeightView: View {
                         Image(systemName: "chart.pie.fill")
                             .font(.system(size: compactLayout ? 11 : 12, weight: .semibold))
                             .foregroundStyle(.cyan)
-                        TextField(text: $bodyFatText) {
-                            EmptyView()
-                        }
+                        TextField("", text: $bodyFatText)
                             .keyboardType(.decimalPad)
                             .font(entryFont)
+                            .textFieldStyle(.plain)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .focused($focusedField, equals: .bodyFat)
                             .submitLabel(.done)
-                            .minimumScaleFactor(0.68)
+                            .minimumScaleFactor(0.9)
                             .lineLimit(1)
                             .multilineTextAlignment(.trailing)
                             .frame(maxWidth: .infinity)

@@ -1350,17 +1350,21 @@ struct SettingsView: View {
                 setReminderToggle(reminder, enabled: false)
                 reminderAlertMessage = localized("请先允许通知权限，再开启提醒。", "Please allow notifications before enabling reminders.")
                 showReminderAlert = true
+                appState.noteSettingsDidChange(refreshReminders: true)
                 return
             }
             do {
                 try await scheduleReminder(reminder)
+                appState.noteSettingsDidChange(refreshReminders: true)
             } catch {
                 setReminderToggle(reminder, enabled: false)
                 reminderAlertMessage = localized("提醒创建失败，请稍后重试。", "Failed to schedule reminder. Please try again.")
                 showReminderAlert = true
+                appState.noteSettingsDidChange(refreshReminders: true)
             }
         } else {
             cancelReminder(reminder)
+            appState.noteSettingsDidChange(refreshReminders: true)
         }
     }
 
@@ -1373,9 +1377,9 @@ struct SettingsView: View {
         let settings = await notificationSettings()
         let authorized = isNotificationAuthorized(settings.authorizationStatus)
         if !authorized {
-            foodReminderEnabled = false
-            exerciseReminderEnabled = false
-            dailySummaryEnabled = false
+            cancelReminder(.food)
+            cancelReminder(.exercise)
+            cancelReminder(.summary)
             return
         }
 
@@ -1417,12 +1421,14 @@ struct SettingsView: View {
         if isReminderEnabled(reminder) {
             do {
                 try await scheduleReminder(reminder)
+                appState.noteSettingsDidChange(refreshReminders: true)
             } catch {
                 reminderAlertMessage = localized("提醒时间更新失败，请稍后重试。", "Failed to update reminder time. Please try again.")
                 showReminderAlert = true
             }
         } else {
             cancelReminder(reminder)
+            appState.noteSettingsDidChange(refreshReminders: true)
         }
     }
 

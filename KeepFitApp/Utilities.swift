@@ -437,6 +437,11 @@ func englishDisplayName(from identifier: String) -> String {
 
 enum KeepFitHaptics {
     private static let hapticKey = "keepfit.haptic"
+    private static let lightImpactGenerator = UIImpactFeedbackGenerator(style: .light)
+    private static let mediumImpactGenerator = UIImpactFeedbackGenerator(style: .medium)
+    private static let rigidImpactGenerator = UIImpactFeedbackGenerator(style: .rigid)
+    private static let softImpactGenerator = UIImpactFeedbackGenerator(style: .soft)
+    private static let selectionGenerator = UISelectionFeedbackGenerator()
 
     private static var isEnabled: Bool {
         let defaults = UserDefaults.standard
@@ -446,21 +451,43 @@ enum KeepFitHaptics {
         return defaults.bool(forKey: hapticKey)
     }
 
+    private static func performOnMain(_ action: @escaping () -> Void) {
+        if Thread.isMainThread {
+            action()
+        } else {
+            DispatchQueue.main.async(execute: action)
+        }
+    }
+
+    private static func impactGenerator(for style: UIImpactFeedbackGenerator.FeedbackStyle) -> UIImpactFeedbackGenerator {
+        switch style {
+        case .light:
+            return lightImpactGenerator
+        case .medium:
+            return mediumImpactGenerator
+        case .rigid:
+            return rigidImpactGenerator
+        case .soft:
+            return softImpactGenerator
+        default:
+            return lightImpactGenerator
+        }
+    }
+
     static func impact(_ style: UIImpactFeedbackGenerator.FeedbackStyle = .light) {
         guard isEnabled else { return }
-        DispatchQueue.main.async {
-            let generator = UIImpactFeedbackGenerator(style: style)
-            generator.prepare()
+        performOnMain {
+            let generator = impactGenerator(for: style)
             generator.impactOccurred()
+            generator.prepare()
         }
     }
 
     static func selection() {
         guard isEnabled else { return }
-        DispatchQueue.main.async {
-            let generator = UISelectionFeedbackGenerator()
-            generator.prepare()
-            generator.selectionChanged()
+        performOnMain {
+            selectionGenerator.selectionChanged()
+            selectionGenerator.prepare()
         }
     }
 }

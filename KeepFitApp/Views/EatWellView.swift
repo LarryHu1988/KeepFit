@@ -86,13 +86,14 @@ struct EatWellView: View {
                     .frame(maxWidth: .infinity)
                 }
                 .scrollDismissesKeyboard(.immediately)
-                .simultaneousGesture(
+                .gesture(
                     TapGesture().onEnded {
                         if focusedField != nil {
                             keepFitDismissKeyboard()
                             focusedField = nil
                         }
-                    }
+                    },
+                    including: focusedField != nil ? .gesture : .none
                 )
             }
             .navigationTitle(localized("管住嘴", "Eat Well"))
@@ -238,12 +239,12 @@ struct EatWellView: View {
             VStack(spacing: 10) {
                 GeometryReader { proxy in
                     let totalWidth = max(0, proxy.size.width)
-                    let compactLayout = totalWidth < 340 || dynamicTypeSize >= .xxxLarge
-                    let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 15, weight: .medium)
+                    let compactLayout = totalWidth < 352 || dynamicTypeSize.isAccessibilitySize
+                    let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 14, weight: .medium)
                     let spacing: CGFloat = compactLayout ? 5 : 6
                     let actionWidth: CGFloat = compactLayout ? 32 : 34
-                    let timeWidth = min(max(compactLayout ? 72 : 84, totalWidth * 0.21), compactLayout ? 82 : 96)
-                    let amountWidth = min(max(compactLayout ? 54 : 60, totalWidth * 0.14), compactLayout ? 62 : 70)
+                    let timeWidth = min(max(compactLayout ? 84 : 90, totalWidth * 0.235), compactLayout ? 90 : 98)
+                    let amountWidth = min(max(compactLayout ? 50 : 56, totalWidth * 0.125), compactLayout ? 58 : 66)
                     let selectorWidth = max(102, totalWidth - timeWidth - amountWidth - actionWidth - spacing * 3)
 
                     HStack(spacing: spacing) {
@@ -257,7 +258,7 @@ struct EatWellView: View {
                                     .font(entryFont)
                                     .monospacedDigit()
                                     .lineLimit(1)
-                                    .minimumScaleFactor(0.8)
+                                    .minimumScaleFactor(0.92)
                                 Spacer(minLength: 0)
                                 Image(systemName: "chevron.up.chevron.down")
                                     .font(.caption2)
@@ -284,7 +285,7 @@ struct EatWellView: View {
                                 Text(selectedFood.map { appState.foodDisplayName(for: $0) } ?? localized("选择食物", "Select Food"))
                                     .font(entryFont)
                                     .lineLimit(1)
-                                    .minimumScaleFactor(0.56)
+                                    .minimumScaleFactor(0.72)
                                     .allowsTightening(true)
                                 Spacer(minLength: 0)
                                 Image(systemName: "chevron.up.chevron.down")
@@ -300,10 +301,9 @@ struct EatWellView: View {
                         .disabled(!canEdit)
 
                         HStack(spacing: compactLayout ? 4 : 6) {
-                            TextField(text: $amountText) {
-                                EmptyView()
-                            }
+                            TextField("", text: $amountText)
                             .font(entryFont)
+                            .textFieldStyle(.plain)
                             .keyboardType(.decimalPad)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
@@ -311,7 +311,7 @@ struct EatWellView: View {
                             .submitLabel(.done)
                             .multilineTextAlignment(.trailing)
                             .lineLimit(1)
-                            .minimumScaleFactor(0.7)
+                            .minimumScaleFactor(0.9)
                             .frame(maxWidth: .infinity)
                             .onTapGesture {
                                 guard canEdit else { return }

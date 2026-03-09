@@ -981,6 +981,16 @@ final class AppState: ObservableObject {
         queueCloudPush()
     }
 
+    func noteSettingsDidChange(refreshReminders: Bool = false) {
+        guard !isApplyingCloudSnapshot else { return }
+        localMutationAt = Date()
+        defaults.set(localMutationAt.timeIntervalSince1970, forKey: SyncKeys.localMutationTS)
+        if refreshReminders {
+            refreshDynamicRemindersIfNeeded()
+        }
+        queueCloudPush()
+    }
+
     private struct ReminderScheduleConfig {
         let enabled: Bool
         let identifier: String
@@ -1858,6 +1868,107 @@ final class AppState: ObservableObject {
         }
     }
 
+    private func isKeepFitHealthObject(metadata: [String: Any]?) -> Bool {
+        (metadata?[SyncKeys.healthMetadataSource] as? String) == SyncKeys.healthMetadataSourceValue
+    }
+
+    private func indexOfHealthFoodLog(matching sampleUUID: String, in logs: [FoodLog]) -> Int? {
+        logs.firstIndex {
+            $0.id.uuidString == sampleUUID || $0.healthKitSampleUUID == sampleUUID
+        }
+    }
+
+    private func indexOfHealthWorkoutLog(matching workoutUUID: String, in logs: [ExerciseLog]) -> Int? {
+        logs.firstIndex {
+            $0.id.uuidString == workoutUUID || $0.healthKitWorkoutUUID == workoutUUID
+        }
+    }
+
+    private func backfillLegacyHealthFoodLink(
+        sampleUUID: String,
+        sample: HKQuantitySample,
+        descriptor: HealthFoodImportDescriptor,
+        in logs: inout [FoodLog]
+    ) -> Bool {
+        let kcal = sample.quantity.doubleValue(for: .kilocalorie())
+        let candidates = logs.indices.filter { index in
+            let log = logs[index]
+            guard log.healthKitSampleUUID == nil else { return false }
+            guard abs(log.date.timeIntervalSince(sample.startDate)) < 1 else { return false }
+            guard log.foodID == descriptor.id, log.foodName == descriptor.name else { return false }
+            guard abs(log.weightGrams - 100) < 0.001 else { return false }
+            guard abs(log.caloriesPer100g - kcal) < 0.01 else { return false }
+            return abs(log.proteinPer100g) < 0.001 && abs(log.carbsPer100g) < 0.001 && abs(log.fatPer100g) < 0.001
+        }
+
+        guard candidates.count == 1 else { return false }
+        logs[candidates[0]].healthKitSampleUUID = sampleUUID
+        return true
+    }
+
+    private func backfillLegacyHealthWorkoutLink(
+        workoutUUID: String,
+        workout: HKWorkout,
+        descriptor: HealthWorkoutImportDescriptor,
+        in logs: inout [ExerciseLog]
+    ) -> Bool {
+        let durationMinutes = max(workout.duration / 60, 1)
+        let candidates = logs.indices.filter { index in
+            let log = logs[index]
+            guard log.healthKitWorkoutUUID == nil else { return false }
+            guard abs(log.date.timeIntervalSince(workout.startDate)) < 1 else { return false }
+            guard log.exerciseID == descriptor.id, log.exerciseName == descriptor.name else { return false }
+            return abs(log.durationMinutes - durationMinutes) < 0.01
+        }
+
+        guard candidates.count == 1 else { return false }
+        logs[candidates[0]].healthKitWorkoutUUID = workoutUUID
+        return true
+    }
+
+    private func reconcileDeletedHealthFoodLogs(
+        liveUUIDs: Set<String>,
+        logs: inout [FoodLog],
+        exportedFoodIDs: inout Set<String>,
+        importedDietaryUUIDs: inout Set<String>
+    ) -> Bool {
+        let removedLogs = logs
+            .filter { log in
+                guard let sampleUUID = log.healthKitSampleUUID else { return false }
+                return !liveUUIDs.contains(sampleUUID)
+            }
+        guard !removedLogs.isEmpty else { return false }
+
+        logs.removeAll { log in
+            guard let sampleUUID = log.healthKitSampleUUID else { return false }
+            return !liveUUIDs.contains(sampleUUID)
+        }
+        exportedFoodIDs.subtract(removedLogs.map(\.id.uuidString))
+        importedDietaryUUIDs.subtract(removedLogs.compactMap(\.healthKitSampleUUID))
+        return true
+    }
+
+    private func reconcileDeletedHealthWorkoutLogs(
+        liveUUIDs: Set<String>,
+        logs: inout [ExerciseLog],
+        exportedExerciseIDs: inout Set<String>,
+        importedWorkoutUUIDs: inout Set<String>
+    ) -> Bool {
+        let removedLogs = logs.filter { log in
+            guard let workoutUUID = log.healthKitWorkoutUUID else { return false }
+            return !liveUUIDs.contains(workoutUUID)
+        }
+        guard !removedLogs.isEmpty else { return false }
+
+        logs.removeAll { log in
+            guard let workoutUUID = log.healthKitWorkoutUUID else { return false }
+            return !liveUUIDs.contains(workoutUUID)
+        }
+        exportedExerciseIDs.subtract(removedLogs.map(\.id.uuidString))
+        importedWorkoutUUIDs.subtract(removedLogs.compactMap(\.healthKitWorkoutUUID))
+        return true
+    }
+
     private func exportUnsyncedLocalDataToHealth() async throws {
         guard
             let dietaryType = HKQuantityType.quantityType(forIdentifier: .dietaryEnergyConsumed),
@@ -1873,6 +1984,7 @@ final class AppState: ObservableObject {
 
         for log in foodLogs {
             let logID = log.id.uuidString
+            if log.healthKitSampleUUID != nil { continue }
             if exportedFoodIDs.contains(logID) { continue }
             let metadata: [String: Any] = [
                 HKMetadataKeyExternalUUID: logID,
@@ -1891,6 +2003,7 @@ final class AppState: ObservableObject {
 
         for log in exerciseLogs {
             let logID = log.id.uuidString
+            if log.healthKitWorkoutUUID != nil { continue }
             if exportedExerciseIDs.contains(logID) { continue }
             let calories = max(log.caloriesBurned(weightKg: profile.weightKg), 0)
             let durationSeconds = max(log.durationMinutes * 60, 60)
@@ -1971,13 +2084,35 @@ final class AppState: ObservableObject {
             return .distantPast
         }()
 
-        let dietarySamples = try await fetchQuantitySamples(type: dietaryType, from: since)
+        let dietarySince = min(
+            since,
+            foodLogs
+                .filter { $0.healthKitSampleUUID != nil }
+                .map(\.date)
+                .min() ?? since
+        )
+        let dietarySamples = try await fetchQuantitySamples(type: dietaryType, from: dietarySince)
+        let importedDietarySamples = dietarySamples.filter { !isKeepFitHealthObject(metadata: $0.metadata) }
+        let liveDietaryUUIDs = Set(importedDietarySamples.map { $0.uuid.uuidString })
         var mergedFoodLogs = foodLogs
-        for sample in dietarySamples {
+        var didMutateFoodLogs = false
+        for sample in importedDietarySamples {
             let sampleUUID = sample.uuid.uuidString
-            if importedDietaryUUIDs.contains(sampleUUID) { continue }
-            importedDietaryUUIDs.insert(sampleUUID)
-            if (sample.metadata?[SyncKeys.healthMetadataSource] as? String) == SyncKeys.healthMetadataSourceValue {
+            let wasImported = importedDietaryUUIDs.contains(sampleUUID)
+            if let linkedIndex = indexOfHealthFoodLog(matching: sampleUUID, in: mergedFoodLogs) {
+                if mergedFoodLogs[linkedIndex].healthKitSampleUUID != sampleUUID {
+                    mergedFoodLogs[linkedIndex].healthKitSampleUUID = sampleUUID
+                    didMutateFoodLogs = true
+                }
+                importedDietaryUUIDs.insert(sampleUUID)
+                continue
+            }
+            if wasImported {
+                let descriptor = resolveHealthFoodDescriptor(from: sample)
+                if backfillLegacyHealthFoodLink(sampleUUID: sampleUUID, sample: sample, descriptor: descriptor, in: &mergedFoodLogs) {
+                    didMutateFoodLogs = true
+                }
+                importedDietaryUUIDs.insert(sampleUUID)
                 continue
             }
 
@@ -1986,11 +2121,12 @@ final class AppState: ObservableObject {
             let descriptor = resolveHealthFoodDescriptor(from: sample)
 
             let log = FoodLog(
-                id: UUID(),
+                id: sample.uuid,
                 date: sample.startDate,
                 foodID: descriptor.id,
                 foodName: descriptor.name,
                 foodIcon: foodIcon(forFoodID: descriptor.id),
+                healthKitSampleUUID: sampleUUID,
                 weightGrams: 100,
                 caloriesPer100g: kcal,
                 proteinPer100g: 0,
@@ -1999,22 +2135,53 @@ final class AppState: ObservableObject {
             )
             mergedFoodLogs.append(log)
             exportedFoodIDs.insert(log.id.uuidString)
+            importedDietaryUUIDs.insert(sampleUUID)
+            didMutateFoodLogs = true
         }
-        if mergedFoodLogs.count != foodLogs.count {
+        if reconcileDeletedHealthFoodLogs(
+            liveUUIDs: liveDietaryUUIDs,
+            logs: &mergedFoodLogs,
+            exportedFoodIDs: &exportedFoodIDs,
+            importedDietaryUUIDs: &importedDietaryUUIDs
+        ) {
+            didMutateFoodLogs = true
+        }
+        if didMutateFoodLogs || mergedFoodLogs.count != foodLogs.count {
             foodLogs = mergedFoodLogs.sorted(by: { $0.date > $1.date })
         }
 
-        let workouts = try await fetchWorkouts(from: since)
+        let workoutsSince = min(
+            since,
+            exerciseLogs
+                .filter { $0.healthKitWorkoutUUID != nil }
+                .map(\.date)
+                .min() ?? since
+        )
+        let workouts = try await fetchWorkouts(from: workoutsSince)
+        let importedWorkouts = workouts.filter { !isKeepFitHealthObject(metadata: $0.metadata) }
+        let liveWorkoutUUIDs = Set(importedWorkouts.map { $0.uuid.uuidString })
         var mergedExerciseLogs = exerciseLogs
-        for workout in workouts {
+        var didMutateExerciseLogs = false
+        for workout in importedWorkouts {
             let workoutUUID = workout.uuid.uuidString
-            if importedWorkoutUUIDs.contains(workoutUUID) { continue }
-            importedWorkoutUUIDs.insert(workoutUUID)
-            if (workout.metadata?[SyncKeys.healthMetadataSource] as? String) == SyncKeys.healthMetadataSourceValue {
+            let descriptor = resolveHealthWorkoutDescriptor(from: workout)
+            let wasImported = importedWorkoutUUIDs.contains(workoutUUID)
+            if let linkedIndex = indexOfHealthWorkoutLog(matching: workoutUUID, in: mergedExerciseLogs) {
+                if mergedExerciseLogs[linkedIndex].healthKitWorkoutUUID != workoutUUID {
+                    mergedExerciseLogs[linkedIndex].healthKitWorkoutUUID = workoutUUID
+                    didMutateExerciseLogs = true
+                }
+                importedWorkoutUUIDs.insert(workoutUUID)
+                continue
+            }
+            if wasImported {
+                if backfillLegacyHealthWorkoutLink(workoutUUID: workoutUUID, workout: workout, descriptor: descriptor, in: &mergedExerciseLogs) {
+                    didMutateExerciseLogs = true
+                }
+                importedWorkoutUUIDs.insert(workoutUUID)
                 continue
             }
 
-            let descriptor = resolveHealthWorkoutDescriptor(from: workout)
             let calories = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0
             let durationMinutes = max(workout.duration / 60, 1)
             let met: Double
@@ -2025,18 +2192,29 @@ final class AppState: ObservableObject {
                 met = descriptor.defaultMET
             }
             let log = ExerciseLog(
-                id: UUID(),
+                id: workout.uuid,
                 date: workout.startDate,
                 exerciseID: descriptor.id,
                 exerciseName: descriptor.name,
                 exerciseIcon: exerciseIcon(forExerciseID: descriptor.id),
+                healthKitWorkoutUUID: workoutUUID,
                 durationMinutes: durationMinutes,
                 met: met
             )
             mergedExerciseLogs.append(log)
             exportedExerciseIDs.insert(log.id.uuidString)
+            importedWorkoutUUIDs.insert(workoutUUID)
+            didMutateExerciseLogs = true
         }
-        if mergedExerciseLogs.count != exerciseLogs.count {
+        if reconcileDeletedHealthWorkoutLogs(
+            liveUUIDs: liveWorkoutUUIDs,
+            logs: &mergedExerciseLogs,
+            exportedExerciseIDs: &exportedExerciseIDs,
+            importedWorkoutUUIDs: &importedWorkoutUUIDs
+        ) {
+            didMutateExerciseLogs = true
+        }
+        if didMutateExerciseLogs || mergedExerciseLogs.count != exerciseLogs.count {
             exerciseLogs = mergedExerciseLogs.sorted(by: { $0.date > $1.date })
         }
 

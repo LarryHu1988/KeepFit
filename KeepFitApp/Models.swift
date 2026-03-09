@@ -150,6 +150,7 @@ struct FoodLog: Identifiable, Codable {
     var foodID: String
     var foodName: String
     var foodIcon: String
+    var healthKitSampleUUID: String? = nil
     var weightGrams: Double
     var caloriesPer100g: Double
     var proteinPer100g: Double
@@ -199,6 +200,7 @@ struct ExerciseLog: Identifiable, Codable {
     var exerciseID: String
     var exerciseName: String
     var exerciseIcon: String
+    var healthKitWorkoutUUID: String? = nil
     var durationMinutes: Double
     var met: Double
 
