@@ -435,6 +435,21 @@ func englishDisplayName(from identifier: String) -> String {
         .joined(separator: " ")
 }
 
+func keepFitMeasuredTextWidth(
+    _ text: String,
+    size: CGFloat,
+    weight: UIFont.Weight = .regular,
+    monospacedDigits: Bool = false
+) -> CGFloat {
+    let font: UIFont
+    if monospacedDigits {
+        font = .monospacedDigitSystemFont(ofSize: size, weight: weight)
+    } else {
+        font = .systemFont(ofSize: size, weight: weight)
+    }
+    return ceil((text as NSString).size(withAttributes: [.font: font]).width)
+}
+
 enum KeepFitHaptics {
     private static let hapticKey = "keepfit.haptic"
     private static let lightImpactGenerator = UIImpactFeedbackGenerator(style: .light)

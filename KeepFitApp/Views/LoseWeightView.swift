@@ -41,9 +41,6 @@ struct LoseWeightView: View {
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
     @ScaledMetric(relativeTo: .body) private var fieldHeight: CGFloat = 42
-    @ScaledMetric(relativeTo: .body) private var bodyMetricDateFieldWidth: CGFloat = 84
-    @ScaledMetric(relativeTo: .body) private var bodyMetricActionButtonWidth: CGFloat = 30
-    @ScaledMetric(relativeTo: .body) private var bodyMetricRowSpacing: CGFloat = 6
     @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 194
     private let deficitGoal: Double = 450
 
@@ -196,7 +193,6 @@ struct LoseWeightView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        KeepFitHaptics.impact(.light)
                         onSettingsTap()
                     } label: {
                         Image(systemName: "gearshape.fill")
@@ -485,16 +481,11 @@ struct LoseWeightView: View {
             let canDelete = canEdit && hasBodyMetricOnSelectedDate
 
             GeometryReader { proxy in
-                let compactLayout = proxy.size.width < 352 || dynamicTypeSize.isAccessibilitySize
-                let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 14, weight: .medium)
-                let actionWidth = compactLayout ? max(28, bodyMetricActionButtonWidth - 2) : bodyMetricActionButtonWidth
-                let spacing = compactLayout ? max(4, bodyMetricRowSpacing - 1) : bodyMetricRowSpacing
                 let totalWidth = max(0, proxy.size.width)
-                let availableForFields = max(0, totalWidth - (actionWidth * 2) - (spacing * 4))
-                let dateWidth = min(compactLayout ? 90 : max(bodyMetricDateFieldWidth, 90), max(82, availableForFields * 0.3))
-                let metricWidth = max(0, (availableForFields - dateWidth) / 2)
+                let layout = bodyMetricRowLayout(for: totalWidth)
+                let entryFont = layout.font
 
-                HStack(spacing: spacing) {
+                HStack(spacing: layout.spacing) {
                     Button {
                         guard canEdit else { return }
                         KeepFitHaptics.impact(.light)
@@ -508,20 +499,20 @@ struct LoseWeightView: View {
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.92)
                             Spacer(minLength: 0)
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
                         }
-                        .padding(.horizontal, compactLayout ? 7 : 8)
-                        .frame(width: dateWidth, height: fieldHeight)
+                        .padding(.horizontal, layout.horizontalPadding)
+                        .frame(width: layout.dateWidth, height: fieldHeight)
                         .background(metricFieldBackground)
                     }
                     .buttonStyle(.plain)
                     .disabled(!canEdit)
 
-                    HStack(spacing: compactLayout ? 3 : 4) {
+                    HStack(spacing: layout.unitSpacing) {
                         Image(systemName: "scalemass.fill")
-                            .font(.system(size: compactLayout ? 11 : 12, weight: .semibold))
+                            .font(.system(size: layout.iconSize, weight: .semibold))
                             .foregroundStyle(.blue)
                         TextField("", text: $weightText)
                             .keyboardType(.decimalPad)
@@ -546,8 +537,8 @@ struct LoseWeightView: View {
                             .lineLimit(1)
                             .fixedSize(horizontal: true, vertical: false)
                     }
-                    .padding(.horizontal, compactLayout ? 6 : 7)
-                    .frame(width: metricWidth, height: fieldHeight)
+                    .padding(.horizontal, layout.horizontalPadding - 1)
+                    .frame(width: layout.metricWidth, height: fieldHeight)
                     .background(metricFieldBackground)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -557,9 +548,9 @@ struct LoseWeightView: View {
                     }
                     .disabled(!canEdit)
 
-                    HStack(spacing: compactLayout ? 3 : 4) {
+                    HStack(spacing: layout.unitSpacing) {
                         Image(systemName: "chart.pie.fill")
-                            .font(.system(size: compactLayout ? 11 : 12, weight: .semibold))
+                            .font(.system(size: layout.iconSize, weight: .semibold))
                             .foregroundStyle(.cyan)
                         TextField("", text: $bodyFatText)
                             .keyboardType(.decimalPad)
@@ -584,8 +575,8 @@ struct LoseWeightView: View {
                             .lineLimit(1)
                             .fixedSize(horizontal: true, vertical: false)
                     }
-                    .padding(.horizontal, compactLayout ? 6 : 7)
-                    .frame(width: metricWidth, height: fieldHeight)
+                    .padding(.horizontal, layout.horizontalPadding - 1)
+                    .frame(width: layout.metricWidth, height: fieldHeight)
                     .background(metricFieldBackground)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -602,10 +593,9 @@ struct LoseWeightView: View {
                         saveBodyMetric()
                     } label: {
                         Image(systemName: "plus")
-                            .font(.caption.weight(.semibold))
+                            .font(.system(size: layout.actionIconSize, weight: .semibold))
                             .foregroundStyle(.white)
-                            .frame(width: 12, height: 12)
-                            .padding(7)
+                            .frame(width: layout.actionWidth, height: layout.actionWidth)
                             .background(
                                 Circle()
                                     .fill(Color.blue.opacity(0.9))
@@ -616,7 +606,7 @@ struct LoseWeightView: View {
                             )
                     }
                     .buttonStyle(.plain)
-                    .frame(width: actionWidth, height: fieldHeight)
+                    .frame(width: layout.actionWidth, height: fieldHeight)
                     .disabled(!canEdit)
 
                     Button {
@@ -626,10 +616,9 @@ struct LoseWeightView: View {
                         deleteBodyMetric()
                     } label: {
                         Image(systemName: "trash")
-                            .font(.caption.weight(.semibold))
+                            .font(.system(size: max(11, layout.actionIconSize - 1), weight: .semibold))
                             .foregroundStyle(.white)
-                            .frame(width: 12, height: 12)
-                            .padding(7)
+                            .frame(width: layout.actionWidth, height: layout.actionWidth)
                             .background(
                                 Circle()
                                     .fill(Color.red.opacity(0.88))
@@ -640,7 +629,7 @@ struct LoseWeightView: View {
                             )
                     }
                     .buttonStyle(.plain)
-                    .frame(width: actionWidth, height: fieldHeight)
+                    .frame(width: layout.actionWidth, height: fieldHeight)
                     .disabled(!canDelete)
                 }
             }
@@ -765,7 +754,9 @@ struct LoseWeightView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .center, spacing: 10) {
                 Text(title)
-                    .font(.title3.weight(.semibold))
+                    .font((UIScreen.main.bounds.width <= 390 || dynamicTypeSize >= .xxxLarge) ? .headline.weight(.semibold) : .title3.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.82)
                     .padding(.leading, 4)
                 Spacer(minLength: 6)
                 trendRangeMenuButton(
@@ -806,7 +797,11 @@ struct LoseWeightView: View {
         range: Binding<TrendRange>,
         target: TrendPickerTarget
     ) -> some View {
-        GeometryReader { proxy in
+        let compactControl = UIScreen.main.bounds.width <= 390 || dynamicTypeSize >= .xxxLarge
+        let fontSize: CGFloat = compactControl ? 11 : 12
+        let horizontalPadding: CGFloat = compactControl ? 6 : 8
+
+        return GeometryReader { proxy in
             Button {
                 KeepFitHaptics.selection()
                 let frame = proxy.frame(in: .global)
@@ -818,14 +813,16 @@ struct LoseWeightView: View {
             } label: {
                 HStack(spacing: 4) {
                     Text(range.wrappedValue.title)
-                        .font(.caption.weight(.medium))
+                        .font(.system(size: fontSize, weight: .medium))
                         .foregroundStyle(trendRangeControlTextColor(for: target))
                         .lineLimit(1)
+                        .minimumScaleFactor(0.88)
+                        .allowsTightening(true)
                     Image(systemName: "line.3.horizontal.decrease.circle")
-                        .font(.caption.weight(.semibold))
+                        .font(.system(size: fontSize, weight: .semibold))
                         .foregroundStyle(trendRangeControlTextColor(for: target))
                 }
-                .padding(.horizontal, 8)
+                .padding(.horizontal, horizontalPadding)
                 .padding(.vertical, 4)
                 .background(
                     Capsule(style: .continuous)
@@ -839,7 +836,7 @@ struct LoseWeightView: View {
             .buttonStyle(.plain)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
         }
-        .frame(width: trendRangeTriggerWidth(for: range.wrappedValue.title), height: 28, alignment: .trailing)
+        .frame(width: trendRangeTriggerWidth(for: range.wrappedValue.title, fontSize: fontSize), height: 28, alignment: .trailing)
         .popover(
             isPresented: trendRangePopoverBinding(for: target),
             attachmentAnchor: .point(trendRangePopoverAnchor),
@@ -1193,15 +1190,17 @@ struct LoseWeightView: View {
     }
 
     private func trendRangeTriggerWidth(for title: String) -> CGFloat {
-        let textWidth = trendMenuTextWidth(title)
-        let iconAndPadding: CGFloat = 36
-        return min(max(textWidth + iconAndPadding, 70), 140)
+        trendRangeTriggerWidth(for: title, fontSize: 12)
     }
 
-    private func trendMenuTextWidth(_ text: String) -> CGFloat {
-        let font = UIFont.preferredFont(forTextStyle: .caption1)
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        return ceil((text as NSString).size(withAttributes: attributes).width)
+    private func trendRangeTriggerWidth(for title: String, fontSize: CGFloat) -> CGFloat {
+        let textWidth = trendMenuTextWidth(title, fontSize: fontSize)
+        let iconAndPadding: CGFloat = fontSize <= 11 ? 30 : 34
+        return min(max(textWidth + iconAndPadding, 60), 120)
+    }
+
+    private func trendMenuTextWidth(_ text: String, fontSize: CGFloat = 12) -> CGFloat {
+        keepFitMeasuredTextWidth(text, size: fontSize, weight: .medium)
     }
 
     private func trendWheelTextWidth(_ text: String) -> CGFloat {
@@ -1253,6 +1252,22 @@ struct LoseWeightView: View {
 }
 
 private extension LoseWeightView {
+    struct BodyMetricRowLayout {
+        let fontSize: CGFloat
+        let spacing: CGFloat
+        let dateWidth: CGFloat
+        let metricWidth: CGFloat
+        let actionWidth: CGFloat
+        let iconSize: CGFloat
+        let horizontalPadding: CGFloat
+        let unitSpacing: CGFloat
+        let actionIconSize: CGFloat
+
+        var font: Font {
+            .system(size: fontSize, weight: .medium)
+        }
+    }
+
     enum InputField {
         case weight
         case bodyFat
@@ -1261,6 +1276,74 @@ private extension LoseWeightView {
     enum BottomSheetKind {
         case bodyMetric
         case trendCustom
+    }
+}
+
+private extension LoseWeightView {
+    func bodyMetricRowLayout(for totalWidth: CGFloat) -> BodyMetricRowLayout {
+        let dateSample = Formatters.monthDay.string(from: selectedDate)
+        let weightSample = weightText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "70.0" : weightText
+        let bodyFatSample = bodyFatText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "26.0" : bodyFatText
+        let presets: [(fontSize: CGFloat, spacing: CGFloat, actionWidth: CGFloat, padding: CGFloat, unitSpacing: CGFloat, iconSize: CGFloat)] = [
+            (14, 6, 30, 8, 4, 12),
+            (13, 5, 28, 7, 4, 11),
+            (12, 4, 26, 6, 3, 10)
+        ]
+
+        for preset in presets {
+            let baseDateWidth = max(
+                keepFitMeasuredTextWidth(dateSample, size: preset.fontSize, weight: .medium, monospacedDigits: true) + preset.padding * 2 + 18,
+                78
+            )
+            let weightWidth = keepFitMeasuredTextWidth(weightSample, size: preset.fontSize, weight: .medium, monospacedDigits: true)
+                + keepFitMeasuredTextWidth(weightUnit.symbol, size: preset.fontSize, weight: .medium)
+                + preset.padding * 2 + preset.unitSpacing + preset.iconSize + 6
+            let bodyFatWidth = keepFitMeasuredTextWidth(bodyFatSample, size: preset.fontSize, weight: .medium, monospacedDigits: true)
+                + keepFitMeasuredTextWidth("%", size: preset.fontSize, weight: .medium)
+                + preset.padding * 2 + preset.unitSpacing + preset.iconSize + 6
+            let baseMetricWidth = max(max(weightWidth, bodyFatWidth), 78)
+            let fieldBudget = totalWidth - preset.actionWidth * 2 - preset.spacing * 4
+            let totalNeeded = baseDateWidth + baseMetricWidth * 2 + preset.actionWidth * 2 + preset.spacing * 4
+
+            if totalNeeded <= totalWidth {
+                let extraWidth = max(0, fieldBudget - (baseDateWidth + baseMetricWidth * 2))
+                let maxDateWidth = min(max(baseDateWidth, fieldBudget * 0.28), baseDateWidth + 26)
+                let dateWidth = min(baseDateWidth + extraWidth * 0.18, maxDateWidth)
+                let metricWidth = max(baseMetricWidth, (fieldBudget - dateWidth) / 2)
+
+                return BodyMetricRowLayout(
+                    fontSize: preset.fontSize,
+                    spacing: preset.spacing,
+                    dateWidth: dateWidth,
+                    metricWidth: metricWidth,
+                    actionWidth: preset.actionWidth,
+                    iconSize: preset.iconSize,
+                    horizontalPadding: preset.padding,
+                    unitSpacing: preset.unitSpacing,
+                    actionIconSize: max(11, preset.fontSize - 1)
+                )
+            }
+        }
+
+        let fallbackDateWidth = max(
+            74,
+            keepFitMeasuredTextWidth(dateSample, size: 12, weight: .medium, monospacedDigits: true) + 28
+        )
+        let fallbackFieldBudget = totalWidth - 26 * 2 - 4 * 4
+        let fallbackDateTarget = min(max(fallbackDateWidth, fallbackFieldBudget * 0.28), fallbackDateWidth + 18)
+        let fallbackMetricWidth = max(72, (fallbackFieldBudget - fallbackDateTarget) / 2)
+
+        return BodyMetricRowLayout(
+            fontSize: 12,
+            spacing: 4,
+            dateWidth: fallbackDateTarget,
+            metricWidth: fallbackMetricWidth,
+            actionWidth: 26,
+            iconSize: 10,
+            horizontalPadding: 6,
+            unitSpacing: 3,
+            actionIconSize: 11
+        )
     }
 }
 

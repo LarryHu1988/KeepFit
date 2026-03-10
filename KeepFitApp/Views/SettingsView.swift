@@ -12,6 +12,7 @@ struct SettingsView: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @AppStorage("keepfit.haptic") private var hapticEnabled = true
     @AppStorage("keepfit.reminder.food") private var foodReminderEnabled = true
@@ -81,6 +82,34 @@ struct SettingsView: View {
     @State private var showAppleAccountSheet = false
 
     private let feedbackEmail = "longyu.huihui@gmail.com"
+
+    private var settingsCompactLayout: Bool {
+        UIScreen.main.bounds.width <= 390 || dynamicTypeSize >= .xLarge
+    }
+
+    private var settingsTitleFontSize: CGFloat {
+        settingsCompactLayout ? 15 : 16
+    }
+
+    private var settingsValueFontSize: CGFloat {
+        settingsCompactLayout ? 14 : 15
+    }
+
+    private var settingsTitleFont: Font {
+        .system(size: settingsTitleFontSize)
+    }
+
+    private var settingsValueFont: Font {
+        .system(size: settingsValueFontSize)
+    }
+
+    private var settingsTitleUIFont: UIFont {
+        .systemFont(ofSize: settingsTitleFontSize)
+    }
+
+    private var settingsValueUIFont: UIFont {
+        .systemFont(ofSize: settingsValueFontSize)
+    }
 
     private var themeMode: AppThemeMode {
         AppThemeMode(rawValue: themeModeRaw) ?? .system
@@ -418,27 +447,21 @@ struct SettingsView: View {
                 triggerHapticIfNeeded()
                 showAppleAccountSheet = true
             } label: {
-                HStack(spacing: 10) {
+                HStack(spacing: settingsCompactLayout ? 8 : 10) {
                     appleAccountRowIcon
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(localized("Apple 账号", "Apple Account"))
-                            .foregroundStyle(.primary)
-                        Text(appState.accountStatusSummary)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                    }
+                    Text(localized("Apple 账号", "Apple Account"))
+                        .font(settingsTitleFont)
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                        .allowsTightening(true)
+                        .layoutPriority(1)
                     Spacer(minLength: 8)
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text(appState.accountDisplayTitle)
-                            .lineLimit(1)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-                        Text(appState.accountModeCaption)
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                            .lineLimit(1)
-                    }
+                    Text(appState.accountDisplayTitle)
+                        .font(settingsValueFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
+                        .foregroundStyle(.secondary)
                     Image(systemName: "chevron.right")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.secondary)
@@ -451,6 +474,9 @@ struct SettingsView: View {
                 HStack(spacing: 10) {
                     rowIcon("heart.text.square.fill", .green)
                     Text(localized("Apple 健康", "Apple Health"))
+                        .font(settingsTitleFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
                 }
             }
             .keepFitSettingsSeparatorAligned()
@@ -458,13 +484,10 @@ struct SettingsView: View {
             Toggle(isOn: $iCloudSyncEnabled) {
                 HStack(spacing: 10) {
                     rowIcon("icloud.fill", .blue)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(cloudSyncTitle)
-                        Text(cloudSyncSummary)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                    }
+                    Text(cloudSyncTitle)
+                        .font(settingsTitleFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
                 }
             }
             .disabled(!appState.iCloudAccountAvailable)
@@ -601,17 +624,16 @@ struct SettingsView: View {
                 triggerHapticIfNeeded(style: .medium)
                 requestReview()
             } label: {
-                HStack(spacing: 12) {
+                HStack(spacing: settingsCompactLayout ? 10 : 12) {
                     Image(systemName: "star.bubble.fill")
-                        .font(.system(size: 20))
+                        .font(.system(size: settingsCompactLayout ? 18 : 20))
                         .foregroundStyle(.yellow)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(localized("为 KeepFit 评分", "Rate KeepFit"))
-                            .foregroundStyle(.primary)
-                        Text(localized("你的反馈能帮助我们做得更好", "Your feedback helps us improve"))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+                    Text(localized("为 KeepFit 评分", "Rate KeepFit"))
+                        .font(settingsTitleFont)
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                        .layoutPriority(1)
                     Spacer()
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
@@ -641,8 +663,11 @@ struct SettingsView: View {
         HStack(spacing: 10) {
             rowIcon("person.text.rectangle", .blue)
             Text(localized("用户名", "Username"))
+                .font(settingsTitleFont)
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
             TextField(localized("请输入用户名", "Enter username"), text: binding(\.name))
-                .font(.body)
+                .font(settingsValueFont)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.trailing)
         }
@@ -1108,6 +1133,10 @@ struct SettingsView: View {
             HStack(spacing: 10) {
                 rowIcon("heart.text.square.fill", .green)
                 Text(localized("基础代谢 BMR", "BMR"))
+                    .font(settingsTitleFont)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .allowsTightening(true)
                 infoButton(.bmr)
             }
             Spacer()
@@ -1120,6 +1149,10 @@ struct SettingsView: View {
             HStack(spacing: 10) {
                 rowIcon("speedometer", .green)
                 Text(localized("维持消耗 TDEE", "TDEE"))
+                    .font(settingsTitleFont)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .allowsTightening(true)
                 infoButton(.tdee)
             }
             Spacer()
@@ -1132,6 +1165,10 @@ struct SettingsView: View {
             HStack(spacing: 10) {
                 rowIcon("fork.knife.circle.fill", .red)
                 Text(localized("减脂建议摄入", "Fat-Loss Intake"))
+                    .font(settingsTitleFont)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .allowsTightening(true)
                 infoButton(.intake)
             }
             Spacer()
@@ -1583,7 +1620,7 @@ struct SettingsView: View {
     private func rowIcon(_ icon: String, _ color: Color) -> some View {
         Image(systemName: icon)
             .foregroundStyle(color)
-            .frame(width: 18)
+            .frame(width: settingsCompactLayout ? 16 : 18)
     }
 
     private var appleAccountRowIcon: some View {
@@ -1658,10 +1695,6 @@ struct SettingsView: View {
         return Swift.min(Swift.max(width, minWidth), safeMax)
     }
 
-    private var settingsValueUIFont: UIFont {
-        UIFont.preferredFont(forTextStyle: .body)
-    }
-
     private func measuredTextWidth(_ text: String, font: UIFont? = nil) -> CGFloat {
         let resolvedFont = font ?? settingsValueUIFont
         return ceil((text as NSString).size(withAttributes: [.font: resolvedFont]).width)
@@ -1729,16 +1762,23 @@ struct SettingsView: View {
         onOpen: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> PopoverContent
     ) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: settingsCompactLayout ? 8 : 10) {
             rowIcon(icon, color)
             Text(title)
+                .font(settingsTitleFont)
                 .foregroundStyle(.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
+                .allowsTightening(true)
+                .layoutPriority(1)
             Spacer(minLength: 8)
             HStack(spacing: 2) {
                 if let value, !value.isEmpty {
                     Text(value)
                         .lineLimit(1)
-                        .font(.body)
+                        .font(settingsValueFont)
+                        .minimumScaleFactor(0.74)
+                        .allowsTightening(true)
                         .foregroundStyle(.secondary)
                 }
                 GeometryReader { proxy in
@@ -1762,7 +1802,7 @@ struct SettingsView: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel(localized("打开选项", "Open Options"))
                 }
-                .frame(width: 20, height: 22)
+                .frame(width: settingsCompactLayout ? 18 : 20, height: 22)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -2334,16 +2374,25 @@ struct SettingsView: View {
     }
 
     private func valueWithUnit(value: String, unit: String) -> some View {
-        HStack(spacing: 6) {
+        let unitFont = UIFont.systemFont(ofSize: max(13, settingsValueFontSize - 1))
+        let valueWidth = measuredTextWidth(value, font: settingsValueUIFont)
+        let unitWidth = measuredTextWidth(unit, font: unitFont)
+        let totalWidth = min(
+            max(valueWidth + unitWidth + (settingsCompactLayout ? 10 : 12), settingsCompactLayout ? 84 : 96),
+            settingsCompactLayout ? 120 : 136
+        )
+
+        return HStack(spacing: 6) {
             Text(value)
-                .font(.body)
+                .font(settingsValueFont)
                 .monospacedDigit()
-                .frame(width: 84, alignment: .trailing)
+                .lineLimit(1)
+                .minimumScaleFactor(0.78)
             Text(unit)
-                .font(.body)
+                .font(.system(size: max(13, settingsValueFontSize - 1)))
                 .foregroundStyle(.secondary)
         }
-        .frame(width: 130, alignment: .trailing)
+        .frame(width: totalWidth, alignment: .trailing)
     }
 
     private func selectionSheet<T: Identifiable>(

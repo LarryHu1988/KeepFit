@@ -149,7 +149,6 @@ struct MainTabView: View {
         }
         .tint(Color.accentColor)
         .onChange(of: selectedTab) { _, newValue in
-            KeepFitHaptics.selection()
             switch newValue {
             case .eat:
                 eatTabSwitchToken += 1
@@ -259,8 +258,8 @@ struct MainTabView: View {
     }
 
     private func handleSettingsTap() {
-        handleGuideAction(.openedSettings)
         showSettings = true
+        handleGuideAction(.openedSettings)
     }
 
     private func handleGuideAction(_ action: GuideAction) {

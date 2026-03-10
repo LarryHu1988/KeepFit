@@ -5,7 +5,6 @@ struct EatWellView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.tabSwitchToken) private var tabSwitchToken
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     let onSettingsTap: () -> Void
     var onFoodLogged: (() -> Void)? = nil
@@ -20,8 +19,6 @@ struct EatWellView: View {
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
     @ScaledMetric(relativeTo: .body) private var fieldHeight: CGFloat = 40
-    @ScaledMetric(relativeTo: .body) private var timeFieldWidth: CGFloat = 90
-    @ScaledMetric(relativeTo: .body) private var compactFieldWidth: CGFloat = 62
     @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 194
 
     private var todayNutrition: DayNutritionSummary {
@@ -104,7 +101,6 @@ struct EatWellView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        KeepFitHaptics.impact(.light)
                         onSettingsTap()
                     } label: {
                         Image(systemName: "gearshape.fill")
@@ -239,15 +235,10 @@ struct EatWellView: View {
             VStack(spacing: 10) {
                 GeometryReader { proxy in
                     let totalWidth = max(0, proxy.size.width)
-                    let compactLayout = totalWidth < 352 || dynamicTypeSize.isAccessibilitySize
-                    let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 14, weight: .medium)
-                    let spacing: CGFloat = compactLayout ? 5 : 6
-                    let actionWidth: CGFloat = compactLayout ? 32 : 34
-                    let timeWidth = min(max(compactLayout ? 84 : 90, totalWidth * 0.235), compactLayout ? 90 : 98)
-                    let amountWidth = min(max(compactLayout ? 50 : 56, totalWidth * 0.125), compactLayout ? 58 : 66)
-                    let selectorWidth = max(102, totalWidth - timeWidth - amountWidth - actionWidth - spacing * 3)
+                    let layout = intakeRowLayout(for: totalWidth)
+                    let entryFont = layout.font
 
-                    HStack(spacing: spacing) {
+                    HStack(spacing: layout.spacing) {
                         Button {
                             guard canEdit else { return }
                             KeepFitHaptics.impact(.light)
@@ -264,8 +255,8 @@ struct EatWellView: View {
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
                             }
-                            .padding(.horizontal, compactLayout ? 8 : 10)
-                            .frame(width: timeWidth, height: fieldHeight)
+                            .padding(.horizontal, layout.horizontalPadding)
+                            .frame(width: layout.timeWidth, height: fieldHeight)
                             .background(inputFieldBackground)
                         }
                         .buttonStyle(.plain)
@@ -276,56 +267,56 @@ struct EatWellView: View {
                             KeepFitHaptics.impact(.light)
                             showFoodSheet = true
                         } label: {
-                            HStack(spacing: compactLayout ? 6 : 8) {
+                            HStack(spacing: layout.iconSize <= 16 ? 6 : 8) {
                                 AppIconBadge(
                                     icon: appState.foodIcon(for: selectedFood ?? appState.foodLibrary.first ?? SeedData.foodLibrary[0]),
                                     seed: selectedFood?.id ?? "food_selector",
-                                    size: compactLayout ? 16 : 18
+                                    size: layout.iconSize
                                 )
                                 Text(selectedFood.map { appState.foodDisplayName(for: $0) } ?? localized("选择食物", "Select Food"))
                                     .font(entryFont)
                                     .lineLimit(1)
-                                    .minimumScaleFactor(0.72)
+                                    .minimumScaleFactor(0.76)
                                     .allowsTightening(true)
                                 Spacer(minLength: 0)
                                 Image(systemName: "chevron.up.chevron.down")
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
                             }
-                            .padding(.horizontal, compactLayout ? 7 : 8)
-                            .frame(width: selectorWidth, height: fieldHeight, alignment: .leading)
+                            .padding(.horizontal, layout.horizontalPadding - 1)
+                            .frame(width: layout.selectorWidth, height: fieldHeight, alignment: .leading)
                             .background(inputFieldBackground)
                         }
                         .buttonStyle(.plain)
                         .layoutPriority(1)
                         .disabled(!canEdit)
 
-                        HStack(spacing: compactLayout ? 4 : 6) {
+                        HStack(spacing: layout.unitSpacing) {
                             TextField("", text: $amountText)
-                            .font(entryFont)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .focused($focusedField, equals: .amount)
-                            .submitLabel(.done)
-                            .multilineTextAlignment(.trailing)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.9)
-                            .frame(maxWidth: .infinity)
-                            .onTapGesture {
-                                guard canEdit else { return }
-                                focusedField = .amount
-                                keepFitPlaceCursorAtEndIfTextField()
-                            }
+                                .font(entryFont)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .focused($focusedField, equals: .amount)
+                                .submitLabel(.done)
+                                .multilineTextAlignment(.trailing)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.92)
+                                .frame(maxWidth: .infinity)
+                                .onTapGesture {
+                                    guard canEdit else { return }
+                                    focusedField = .amount
+                                    keepFitPlaceCursorAtEndIfTextField()
+                                }
                             Text(selectedUnitSymbol)
                                 .font(entryFont)
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
                                 .fixedSize(horizontal: true, vertical: false)
                         }
-                        .padding(.horizontal, compactLayout ? 7 : 8)
-                        .frame(width: amountWidth, height: fieldHeight)
+                        .padding(.horizontal, layout.horizontalPadding - 1)
+                        .frame(width: layout.valueWidth, height: fieldHeight)
                         .background(inputFieldBackground)
                         .contentShape(Rectangle())
                         .onTapGesture {
@@ -342,10 +333,9 @@ struct EatWellView: View {
                             addFoodLog()
                         } label: {
                             Image(systemName: "plus")
-                                .font(.footnote.weight(.semibold))
+                                .font(.system(size: layout.actionIconSize, weight: .semibold))
                                 .foregroundStyle(.white)
-                                .frame(width: 14, height: 14)
-                                .padding(compactLayout ? 8 : 9)
+                                .frame(width: layout.actionWidth, height: layout.actionWidth)
                                 .background(
                                     Circle()
                                         .fill(Color.orange.opacity(0.9))
@@ -356,7 +346,7 @@ struct EatWellView: View {
                                 )
                         }
                         .buttonStyle(.plain)
-                        .frame(width: actionWidth, height: fieldHeight)
+                        .frame(width: layout.actionWidth, height: fieldHeight)
                         .disabled(!canEdit)
                     }
                 }
@@ -522,8 +512,90 @@ struct EatWellView: View {
 }
 
 private extension EatWellView {
+    struct IntakeRowLayout {
+        let fontSize: CGFloat
+        let spacing: CGFloat
+        let timeWidth: CGFloat
+        let selectorWidth: CGFloat
+        let valueWidth: CGFloat
+        let actionWidth: CGFloat
+        let iconSize: CGFloat
+        let horizontalPadding: CGFloat
+        let unitSpacing: CGFloat
+        let actionIconSize: CGFloat
+
+        var font: Font {
+            .system(size: fontSize, weight: .medium)
+        }
+    }
+
     enum InputField {
         case amount
+    }
+}
+
+private extension EatWellView {
+    func intakeRowLayout(for totalWidth: CGFloat) -> IntakeRowLayout {
+        let amountSample = amountText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "120" : amountText
+        let presets: [(fontSize: CGFloat, spacing: CGFloat, actionWidth: CGFloat, iconSize: CGFloat, padding: CGFloat, unitSpacing: CGFloat, selectorMin: CGFloat)] = [
+            (14, 6, 34, 18, 10, 6, 110),
+            (13, 5, 32, 17, 8, 5, 102),
+            (12, 4, 30, 16, 7, 4, 92)
+        ]
+
+        for preset in presets {
+            let timeWidth = max(
+                keepFitMeasuredTextWidth("23:59", size: preset.fontSize, weight: .medium, monospacedDigits: true) + preset.padding * 2 + 18,
+                74
+            )
+            let valueWidth = max(
+                keepFitMeasuredTextWidth(amountSample, size: preset.fontSize, weight: .medium, monospacedDigits: true)
+                    + keepFitMeasuredTextWidth(selectedUnitSymbol, size: preset.fontSize, weight: .medium)
+                    + preset.padding * 2 + preset.unitSpacing + 4,
+                58
+            )
+            let selectorWidth = totalWidth - timeWidth - valueWidth - preset.actionWidth - preset.spacing * 3
+            if selectorWidth >= preset.selectorMin {
+                return IntakeRowLayout(
+                    fontSize: preset.fontSize,
+                    spacing: preset.spacing,
+                    timeWidth: timeWidth,
+                    selectorWidth: selectorWidth,
+                    valueWidth: valueWidth,
+                    actionWidth: preset.actionWidth,
+                    iconSize: preset.iconSize,
+                    horizontalPadding: preset.padding,
+                    unitSpacing: preset.unitSpacing,
+                    actionIconSize: max(12, preset.fontSize - 1)
+                )
+            }
+        }
+
+        let fallback = presets.last!
+        let timeWidth = max(
+            keepFitMeasuredTextWidth("23:59", size: fallback.fontSize, weight: .medium, monospacedDigits: true) + fallback.padding * 2 + 16,
+            70
+        )
+        let valueWidth = max(
+            keepFitMeasuredTextWidth("120", size: fallback.fontSize, weight: .medium, monospacedDigits: true)
+                + keepFitMeasuredTextWidth(selectedUnitSymbol, size: fallback.fontSize, weight: .medium)
+                + fallback.padding * 2 + fallback.unitSpacing + 4,
+            54
+        )
+        let selectorWidth = max(74, totalWidth - timeWidth - valueWidth - fallback.actionWidth - fallback.spacing * 3)
+
+        return IntakeRowLayout(
+            fontSize: fallback.fontSize,
+            spacing: fallback.spacing,
+            timeWidth: timeWidth,
+            selectorWidth: selectorWidth,
+            valueWidth: valueWidth,
+            actionWidth: fallback.actionWidth,
+            iconSize: fallback.iconSize,
+            horizontalPadding: fallback.padding,
+            unitSpacing: fallback.unitSpacing,
+            actionIconSize: max(12, fallback.fontSize - 1)
+        )
     }
 }
 

@@ -4,7 +4,6 @@ struct MoveMoreView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.tabSwitchToken) private var tabSwitchToken
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     let onSettingsTap: () -> Void
     var onExerciseLogged: (() -> Void)? = nil
@@ -19,8 +18,6 @@ struct MoveMoreView: View {
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
     @ScaledMetric(relativeTo: .body) private var fieldHeight: CGFloat = 40
-    @ScaledMetric(relativeTo: .body) private var timeFieldWidth: CGFloat = 90
-    @ScaledMetric(relativeTo: .body) private var compactFieldWidth: CGFloat = 64
     @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 194
 
     private var todaySummary: DayFitnessSummary {
@@ -86,7 +83,6 @@ struct MoveMoreView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        KeepFitHaptics.impact(.light)
                         onSettingsTap()
                     } label: {
                         Image(systemName: "gearshape.fill")
@@ -219,15 +215,10 @@ struct MoveMoreView: View {
             VStack(spacing: 10) {
                 GeometryReader { proxy in
                     let totalWidth = max(0, proxy.size.width)
-                    let compactLayout = totalWidth < 352 || dynamicTypeSize.isAccessibilitySize
-                    let entryFont: Font = compactLayout ? .system(size: 13, weight: .medium) : .system(size: 14, weight: .medium)
-                    let spacing: CGFloat = compactLayout ? 5 : 6
-                    let actionWidth: CGFloat = compactLayout ? 32 : 34
-                    let timeWidth = min(max(compactLayout ? 80 : 88, totalWidth * 0.215), compactLayout ? 88 : 96)
-                    let durationWidth = min(max(compactLayout ? 74 : 80, totalWidth * 0.17), compactLayout ? 88 : 94)
-                    let selectorWidth = max(90, totalWidth - timeWidth - durationWidth - actionWidth - spacing * 3)
+                    let layout = exerciseRowLayout(for: totalWidth)
+                    let entryFont = layout.font
 
-                    HStack(spacing: spacing) {
+                    HStack(spacing: layout.spacing) {
                         Button {
                             guard canEdit else { return }
                             KeepFitHaptics.impact(.light)
@@ -244,8 +235,8 @@ struct MoveMoreView: View {
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
                             }
-                            .padding(.horizontal, compactLayout ? 8 : 10)
-                            .frame(width: timeWidth, height: fieldHeight)
+                            .padding(.horizontal, layout.horizontalPadding)
+                            .frame(width: layout.timeWidth, height: fieldHeight)
                             .background(inputFieldBackground)
                         }
                         .buttonStyle(.plain)
@@ -256,56 +247,56 @@ struct MoveMoreView: View {
                             KeepFitHaptics.impact(.light)
                             showExerciseSheet = true
                         } label: {
-                            HStack(spacing: compactLayout ? 6 : 8) {
+                            HStack(spacing: layout.iconSize <= 16 ? 6 : 8) {
                                 AppIconBadge(
                                     icon: appState.exerciseIcon(for: selectedExercise ?? appState.exerciseLibrary.first ?? SeedData.exerciseLibrary[0]),
                                     seed: selectedExercise?.id ?? "exercise_selector",
-                                    size: compactLayout ? 16 : 18
+                                    size: layout.iconSize
                                 )
                                 Text(selectedExercise.map { appState.exerciseDisplayName(for: $0) } ?? localized("选择运动项目", "Select Exercise"))
                                     .font(entryFont)
                                     .lineLimit(1)
-                                    .minimumScaleFactor(0.72)
+                                    .minimumScaleFactor(0.76)
                                     .allowsTightening(true)
                                 Spacer(minLength: 0)
                                 Image(systemName: "chevron.up.chevron.down")
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
                             }
-                            .padding(.horizontal, compactLayout ? 7 : 8)
-                            .frame(width: selectorWidth, height: fieldHeight, alignment: .leading)
+                            .padding(.horizontal, layout.horizontalPadding - 1)
+                            .frame(width: layout.selectorWidth, height: fieldHeight, alignment: .leading)
                             .background(inputFieldBackground)
                         }
                         .buttonStyle(.plain)
                         .layoutPriority(1)
                         .disabled(!canEdit)
 
-                        HStack(spacing: compactLayout ? 4 : 6) {
+                        HStack(spacing: layout.unitSpacing) {
                             TextField("", text: $durationText)
-                            .font(entryFont)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .focused($focusedField, equals: .duration)
-                            .submitLabel(.done)
-                            .multilineTextAlignment(.trailing)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.9)
-                            .frame(maxWidth: .infinity)
-                            .onTapGesture {
-                                guard canEdit else { return }
-                                focusedField = .duration
-                                keepFitPlaceCursorAtEndIfTextField()
-                            }
+                                .font(entryFont)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .focused($focusedField, equals: .duration)
+                                .submitLabel(.done)
+                                .multilineTextAlignment(.trailing)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.92)
+                                .frame(maxWidth: .infinity)
+                                .onTapGesture {
+                                    guard canEdit else { return }
+                                    focusedField = .duration
+                                    keepFitPlaceCursorAtEndIfTextField()
+                                }
                             Text("min")
                                 .font(entryFont)
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
                                 .fixedSize(horizontal: true, vertical: false)
                         }
-                        .padding(.horizontal, compactLayout ? 7 : 8)
-                        .frame(width: durationWidth, height: fieldHeight)
+                        .padding(.horizontal, layout.horizontalPadding - 1)
+                        .frame(width: layout.valueWidth, height: fieldHeight)
                         .background(inputFieldBackground)
                         .contentShape(Rectangle())
                         .onTapGesture {
@@ -322,10 +313,9 @@ struct MoveMoreView: View {
                             addExerciseLog()
                         } label: {
                             Image(systemName: "plus")
-                                .font(.footnote.weight(.semibold))
+                                .font(.system(size: layout.actionIconSize, weight: .semibold))
                                 .foregroundStyle(.white)
-                                .frame(width: 14, height: 14)
-                                .padding(compactLayout ? 8 : 9)
+                                .frame(width: layout.actionWidth, height: layout.actionWidth)
                                 .background(
                                     Circle()
                                         .fill(Color.green.opacity(0.9))
@@ -336,7 +326,7 @@ struct MoveMoreView: View {
                                 )
                         }
                         .buttonStyle(.plain)
-                        .frame(width: actionWidth, height: fieldHeight)
+                        .frame(width: layout.actionWidth, height: fieldHeight)
                         .disabled(!canEdit)
                     }
                 }
@@ -498,7 +488,89 @@ struct MoveMoreView: View {
 }
 
 private extension MoveMoreView {
+    struct ExerciseRowLayout {
+        let fontSize: CGFloat
+        let spacing: CGFloat
+        let timeWidth: CGFloat
+        let selectorWidth: CGFloat
+        let valueWidth: CGFloat
+        let actionWidth: CGFloat
+        let iconSize: CGFloat
+        let horizontalPadding: CGFloat
+        let unitSpacing: CGFloat
+        let actionIconSize: CGFloat
+
+        var font: Font {
+            .system(size: fontSize, weight: .medium)
+        }
+    }
+
     enum InputField {
         case duration
+    }
+}
+
+private extension MoveMoreView {
+    func exerciseRowLayout(for totalWidth: CGFloat) -> ExerciseRowLayout {
+        let durationSample = durationText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "30" : durationText
+        let presets: [(fontSize: CGFloat, spacing: CGFloat, actionWidth: CGFloat, iconSize: CGFloat, padding: CGFloat, unitSpacing: CGFloat, selectorMin: CGFloat)] = [
+            (14, 6, 34, 18, 10, 6, 108),
+            (13, 5, 32, 17, 8, 5, 100),
+            (12, 4, 30, 16, 7, 4, 92)
+        ]
+
+        for preset in presets {
+            let timeWidth = max(
+                keepFitMeasuredTextWidth("23:59", size: preset.fontSize, weight: .medium, monospacedDigits: true) + preset.padding * 2 + 18,
+                74
+            )
+            let valueWidth = max(
+                keepFitMeasuredTextWidth(durationSample, size: preset.fontSize, weight: .medium, monospacedDigits: true)
+                    + keepFitMeasuredTextWidth("min", size: preset.fontSize, weight: .medium)
+                    + preset.padding * 2 + preset.unitSpacing + 6,
+                70
+            )
+            let selectorWidth = totalWidth - timeWidth - valueWidth - preset.actionWidth - preset.spacing * 3
+            if selectorWidth >= preset.selectorMin {
+                return ExerciseRowLayout(
+                    fontSize: preset.fontSize,
+                    spacing: preset.spacing,
+                    timeWidth: timeWidth,
+                    selectorWidth: selectorWidth,
+                    valueWidth: valueWidth,
+                    actionWidth: preset.actionWidth,
+                    iconSize: preset.iconSize,
+                    horizontalPadding: preset.padding,
+                    unitSpacing: preset.unitSpacing,
+                    actionIconSize: max(12, preset.fontSize - 1)
+                )
+            }
+        }
+
+        let fallback = presets.last!
+        let timeWidth = max(
+            keepFitMeasuredTextWidth("23:59", size: fallback.fontSize, weight: .medium, monospacedDigits: true) + fallback.padding * 2 + 16,
+            70
+        )
+        let valueWidth = max(
+            keepFitMeasuredTextWidth("120", size: fallback.fontSize, weight: .medium, monospacedDigits: true)
+                + keepFitMeasuredTextWidth("min", size: fallback.fontSize, weight: .medium)
+                + fallback.padding * 2 + fallback.unitSpacing + 6,
+            68
+        )
+        let selectorWidth = max(72, totalWidth - timeWidth - valueWidth - fallback.actionWidth - fallback.spacing * 3)
+
+        return ExerciseRowLayout(
+            fontSize: fallback.fontSize,
+            spacing: fallback.spacing,
+            timeWidth: timeWidth,
+            selectorWidth: selectorWidth,
+            valueWidth: valueWidth,
+            actionWidth: fallback.actionWidth,
+            iconSize: fallback.iconSize,
+            horizontalPadding: fallback.padding,
+            unitSpacing: fallback.unitSpacing,
+            actionIconSize: max(12, fallback.fontSize - 1)
+        )
     }
 }
