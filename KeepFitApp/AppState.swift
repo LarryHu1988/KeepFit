@@ -991,6 +991,10 @@ final class AppState: ObservableObject {
         queueCloudPush()
     }
 
+    func refreshReminderSchedules() {
+        refreshDynamicRemindersIfNeeded()
+    }
+
     private struct ReminderScheduleConfig {
         let enabled: Bool
         let identifier: String

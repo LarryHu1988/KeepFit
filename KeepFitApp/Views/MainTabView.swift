@@ -104,6 +104,8 @@ struct MainTabView: View {
     @State private var loseTabSwitchToken = 0
     @State private var guideStep: GuideStep = .addFood
     @State private var showAccountChoiceSheet = false
+    @State private var tabRefreshTask: Task<Void, Never>?
+    @State private var settingsGuideTask: Task<Void, Never>?
 
     private var isGuideActive: Bool {
         !onboardingCompleted && !guideStep.isCompleted
@@ -149,15 +151,20 @@ struct MainTabView: View {
         }
         .tint(Color.accentColor)
         .onChange(of: selectedTab) { _, newValue in
-            switch newValue {
-            case .eat:
-                eatTabSwitchToken += 1
-            case .move:
-                moveTabSwitchToken += 1
-            case .lose:
-                loseTabSwitchToken += 1
+            tabRefreshTask?.cancel()
+            tabRefreshTask = Task { @MainActor in
+                await Task.yield()
+                guard !Task.isCancelled else { return }
+                switch newValue {
+                case .eat:
+                    eatTabSwitchToken += 1
+                case .move:
+                    moveTabSwitchToken += 1
+                case .lose:
+                    loseTabSwitchToken += 1
+                }
+                handleGuideAction(.switchedTab(newValue))
             }
-            handleGuideAction(.switchedTab(newValue))
         }
         .overlay(alignment: .bottom) {
             if isGuideActive {
@@ -192,6 +199,10 @@ struct MainTabView: View {
         .onChange(of: guideStep) { _, newValue in
             guard !onboardingCompleted else { return }
             onboardingStepRaw = min(newValue.rawValue, GuideStep.openSettings.rawValue)
+        }
+        .onDisappear {
+            tabRefreshTask?.cancel()
+            settingsGuideTask?.cancel()
         }
         .animation(.spring(response: 0.32, dampingFraction: 0.9), value: guideStep)
     }
@@ -259,7 +270,13 @@ struct MainTabView: View {
 
     private func handleSettingsTap() {
         showSettings = true
-        handleGuideAction(.openedSettings)
+        guard isGuideActive else { return }
+        settingsGuideTask?.cancel()
+        settingsGuideTask = Task { @MainActor in
+            await Task.yield()
+            guard !Task.isCancelled else { return }
+            handleGuideAction(.openedSettings)
+        }
     }
 
     private func handleGuideAction(_ action: GuideAction) {

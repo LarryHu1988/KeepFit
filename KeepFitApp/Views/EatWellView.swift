@@ -124,7 +124,7 @@ struct EatWellView: View {
                 }
             }
             .onChange(of: tabSwitchToken) { _, _ in
-                selectedDate = Date().startOfDayInCurrentCalendar
+                resetSelectedDateForTabSwitch()
             }
             .onChange(of: selectedDate) { _, newValue in
                 if newValue.isFutureDayInCurrentCalendar {
@@ -508,6 +508,20 @@ struct EatWellView: View {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .stroke(.white.opacity(colorScheme == .dark ? 0.16 : 0.24), lineWidth: 0.8)
             )
+    }
+
+    private func resetSelectedDateForTabSwitch() {
+        let today = Date().startOfDayInCurrentCalendar
+        guard selectedDate != today else { return }
+        DispatchQueue.main.async {
+            let resolvedToday = Date().startOfDayInCurrentCalendar
+            guard selectedDate != resolvedToday else { return }
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                selectedDate = resolvedToday
+            }
+        }
     }
 }
 

@@ -1,8 +1,36 @@
 import SwiftUI
 import UIKit
+import UserNotifications
+
+final class KeepFitAppDelegate: NSObject, UIApplicationDelegate {
+    private let notificationDelegate = KeepFitNotificationDelegate()
+
+    func application(
+        _: UIApplication,
+        didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        UNUserNotificationCenter.current().delegate = notificationDelegate
+        return true
+    }
+
+    func applicationDidBecomeActive(_: UIApplication) {
+        UNUserNotificationCenter.current().delegate = notificationDelegate
+    }
+}
+
+final class KeepFitNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    func userNotificationCenter(
+        _: UNUserNotificationCenter,
+        willPresent _: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .list, .sound, .badge])
+    }
+}
 
 @main
 struct KeepFitApp: App {
+    @UIApplicationDelegateAdaptor(KeepFitAppDelegate.self) private var appDelegate
     @StateObject private var appState = AppState()
     @AppStorage("keepfit.themeMode") private var themeModeRaw = AppThemeMode.system.rawValue
     @AppStorage("keepfit.appLanguage") private var appLanguageRaw = AppLanguageOption.chinese.rawValue

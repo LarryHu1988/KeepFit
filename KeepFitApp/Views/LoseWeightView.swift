@@ -244,7 +244,7 @@ struct LoseWeightView: View {
                 syncBodyMetricInputs(for: selectedDate)
             }
             .onChange(of: tabSwitchToken) { _, _ in
-                selectedDate = Date().startOfDayInCurrentCalendar
+                resetSelectedDateForTabSwitch()
             }
             .sheet(isPresented: $showBodyMetricDatePicker) {
                 bodyMetricDateSheet
@@ -1276,6 +1276,20 @@ private extension LoseWeightView {
     enum BottomSheetKind {
         case bodyMetric
         case trendCustom
+    }
+
+    private func resetSelectedDateForTabSwitch() {
+        let today = Date().startOfDayInCurrentCalendar
+        guard selectedDate != today else { return }
+        DispatchQueue.main.async {
+            let resolvedToday = Date().startOfDayInCurrentCalendar
+            guard selectedDate != resolvedToday else { return }
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                selectedDate = resolvedToday
+            }
+        }
     }
 }
 

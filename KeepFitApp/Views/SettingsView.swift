@@ -80,6 +80,8 @@ struct SettingsView: View {
     @State private var reminderAlertMessage = ""
     @State private var showFeedbackAlert = false
     @State private var showAppleAccountSheet = false
+    @State private var didPrimeSettingsView = false
+    @State private var deferredSettingsSetupTask: Task<Void, Never>?
 
     private let feedbackEmail = "longyu.huihui@gmail.com"
 
@@ -217,13 +219,6 @@ struct SettingsView: View {
         NavigationStack {
             settingsPresentedView
         }
-        .onAppear {
-            applyThemeModeImmediately(themeMode)
-        }
-        .onChange(of: themeModeRaw) { _, newValue in
-            let mode = AppThemeMode(rawValue: newValue) ?? .system
-            applyThemeModeImmediately(mode)
-        }
     }
 
     private var settingsFormView: some View {
@@ -247,7 +242,7 @@ struct SettingsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(localized("完成", "Done")) {
-                    dismiss()
+                    dismissSettingsImmediately()
                 }
             }
         }
@@ -256,15 +251,10 @@ struct SettingsView: View {
     private var settingsInteractiveView: some View {
         settingsFormView
             .onAppear {
-                ensureBirthDateSeeded()
-                syncHeightDrafts()
-                syncWeightDrafts()
-                syncBirthDrafts()
-                syncGoalDrafts()
-                refreshICloudSyncState()
-                Task {
-                    await syncReminderSchedulesOnAppear()
-                }
+                prepareSettingsPresentation()
+            }
+            .onDisappear {
+                deferredSettingsSetupTask?.cancel()
             }
             .onChange(of: selectedAvatarItem) { _, newItem in
                 guard let newItem else { return }
@@ -417,10 +407,7 @@ struct SettingsView: View {
                 .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $hapticEnabled) {
-                HStack(spacing: 10) {
-                    rowIcon("hand.tap", .blue)
-                    Text(localized("触感反馈", "Haptics"))
-                }
+                settingsToggleLabel(icon: "hand.tap", title: localized("触感反馈", "Haptics"), color: .blue)
             }
             .keepFitSettingsSeparatorAligned()
         } header: {
@@ -471,24 +458,12 @@ struct SettingsView: View {
             .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $healthSyncEnabled) {
-                HStack(spacing: 10) {
-                    rowIcon("heart.text.square.fill", .green)
-                    Text(localized("Apple 健康", "Apple Health"))
-                        .font(settingsTitleFont)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
-                }
+                settingsToggleLabel(icon: "heart.text.square.fill", title: localized("Apple 健康", "Apple Health"), color: .green)
             }
             .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $iCloudSyncEnabled) {
-                HStack(spacing: 10) {
-                    rowIcon("icloud.fill", .blue)
-                    Text(cloudSyncTitle)
-                        .font(settingsTitleFont)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
-                }
+                settingsToggleLabel(icon: "icloud.fill", title: cloudSyncTitle, color: .blue)
             }
             .disabled(!appState.iCloudAccountAvailable)
             .keepFitSettingsSeparatorAligned()
@@ -514,10 +489,7 @@ struct SettingsView: View {
     private var remindersSection: some View {
         Section {
             Toggle(isOn: $foodReminderEnabled) {
-                HStack(spacing: 10) {
-                    rowIcon("fork.knife", .orange)
-                    Text(localized("饮食提醒", "Diet Reminder"))
-                }
+                settingsToggleLabel(icon: "fork.knife", title: localized("饮食提醒", "Diet Reminder"), color: .orange)
             }
             .keepFitSettingsSeparatorAligned()
             reminderTimeSelectionRow(
@@ -532,10 +504,7 @@ struct SettingsView: View {
             .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $exerciseReminderEnabled) {
-                HStack(spacing: 10) {
-                    rowIcon("figure.run", .green)
-                    Text(localized("运动提醒", "Exercise Reminder"))
-                }
+                settingsToggleLabel(icon: "figure.run", title: localized("运动提醒", "Exercise Reminder"), color: .green)
             }
             .keepFitSettingsSeparatorAligned()
             reminderTimeSelectionRow(
@@ -550,10 +519,7 @@ struct SettingsView: View {
             .keepFitSettingsSeparatorAligned()
 
             Toggle(isOn: $dailySummaryEnabled) {
-                HStack(spacing: 10) {
-                    rowIcon("doc.text", .indigo)
-                    Text(localized("每日总结", "Daily Summary"))
-                }
+                settingsToggleLabel(icon: "doc.text", title: localized("每日总结", "Daily Summary"), color: .indigo)
             }
             .keepFitSettingsSeparatorAligned()
             reminderTimeSelectionRow(
@@ -670,6 +636,19 @@ struct SettingsView: View {
                 .font(settingsValueFont)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.trailing)
+        }
+    }
+
+    private func settingsToggleLabel(icon: String, title: String, color: Color) -> some View {
+        HStack(spacing: settingsCompactLayout ? 8 : 10) {
+            rowIcon(icon, color)
+            Text(title)
+                .font(settingsTitleFont)
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
+                .allowsTightening(true)
+                .layoutPriority(1)
         }
     }
 
@@ -1275,7 +1254,6 @@ struct SettingsView: View {
                 ForEach(AppThemeMode.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == themeMode, accent: .indigo) {
                         themeModeRaw = option.rawValue
-                        applyThemeModeImmediately(option)
                         showThemeSheet = false
                     }
                 }
@@ -1363,6 +1341,33 @@ struct SettingsView: View {
         openURL(url)
     }
 
+    private func prepareSettingsPresentation() {
+        guard !didPrimeSettingsView else { return }
+        didPrimeSettingsView = true
+
+        ensureBirthDateSeeded()
+        syncHeightDrafts()
+        syncWeightDrafts()
+        syncBirthDrafts()
+        syncGoalDrafts()
+
+        deferredSettingsSetupTask?.cancel()
+        deferredSettingsSetupTask = Task { @MainActor in
+            await Task.yield()
+            try? await Task.sleep(nanoseconds: 180_000_000)
+            guard !Task.isCancelled else { return }
+            refreshICloudSyncState()
+            await syncReminderSchedulesOnAppear()
+        }
+    }
+
+    private func dismissSettingsImmediately() {
+        deferredSettingsSetupTask?.cancel()
+        activeInfo = nil
+        keepFitDismissKeyboard()
+        dismiss()
+    }
+
     private func refreshICloudSyncState() {
         appState.refreshICloudAvailability()
         let effective = appState.isICloudSyncEnabled
@@ -1390,19 +1395,8 @@ struct SettingsView: View {
                 appState.noteSettingsDidChange(refreshReminders: true)
                 return
             }
-            do {
-                try await scheduleReminder(reminder)
-                appState.noteSettingsDidChange(refreshReminders: true)
-            } catch {
-                setReminderToggle(reminder, enabled: false)
-                reminderAlertMessage = localized("提醒创建失败，请稍后重试。", "Failed to schedule reminder. Please try again.")
-                showReminderAlert = true
-                appState.noteSettingsDidChange(refreshReminders: true)
-            }
-        } else {
-            cancelReminder(reminder)
-            appState.noteSettingsDidChange(refreshReminders: true)
         }
+        appState.noteSettingsDidChange(refreshReminders: true)
     }
 
     @MainActor
@@ -1414,21 +1408,9 @@ struct SettingsView: View {
         let settings = await notificationSettings()
         let authorized = isNotificationAuthorized(settings.authorizationStatus)
         if !authorized {
-            cancelReminder(.food)
-            cancelReminder(.exercise)
-            cancelReminder(.summary)
             return
         }
-
-        if foodReminderEnabled {
-            try? await scheduleReminder(.food)
-        }
-        if exerciseReminderEnabled {
-            try? await scheduleReminder(.exercise)
-        }
-        if dailySummaryEnabled {
-            try? await scheduleReminder(.summary)
-        }
+        appState.refreshReminderSchedules()
     }
 
     private func requestReminderAuthorization() async -> Bool {
@@ -1453,22 +1435,6 @@ struct SettingsView: View {
         }
     }
 
-    @MainActor
-    private func rescheduleReminderIfEnabled(_ reminder: ReminderKind) async {
-        if isReminderEnabled(reminder) {
-            do {
-                try await scheduleReminder(reminder)
-                appState.noteSettingsDidChange(refreshReminders: true)
-            } catch {
-                reminderAlertMessage = localized("提醒时间更新失败，请稍后重试。", "Failed to update reminder time. Please try again.")
-                showReminderAlert = true
-            }
-        } else {
-            cancelReminder(reminder)
-            appState.noteSettingsDidChange(refreshReminders: true)
-        }
-    }
-
     private func notificationSettings() async -> UNNotificationSettings {
         await withCheckedContinuation { continuation in
             UNUserNotificationCenter.current().getNotificationSettings { settings in
@@ -1486,47 +1452,19 @@ struct SettingsView: View {
         }
     }
 
-    private func scheduleReminder(_ reminder: ReminderKind) async throws {
-        cancelReminder(reminder)
-
-        let content = UNMutableNotificationContent()
-        content.title = reminder.title
-        content.body = reminderBody(for: reminder)
-        content.sound = .default
-
-        let minuteOfDay = minuteOfDay(for: reminder)
-        var dateComponents = DateComponents()
-        dateComponents.hour = minuteOfDay / 60
-        dateComponents.minute = minuteOfDay % 60
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        let request = UNNotificationRequest(identifier: reminder.identifier, content: content, trigger: trigger)
-
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            UNUserNotificationCenter.current().add(request) { error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume()
-                }
-            }
+    @MainActor
+    private func rescheduleReminderIfEnabled(_ reminder: ReminderKind) async {
+        guard isReminderEnabled(reminder) else {
+            appState.noteSettingsDidChange(refreshReminders: true)
+            return
         }
-    }
-
-    private func reminderBody(for reminder: ReminderKind) -> String {
-        switch reminder {
-        case .food:
-            return appState.foodReminderBody(on: Date())
-        case .exercise:
-            return appState.exerciseReminderBody(on: Date())
-        case .summary:
-            return appState.dailySummaryReminderBody(on: Date())
+        let authorized = await requestReminderAuthorization()
+        guard authorized else {
+            reminderAlertMessage = localized("请先允许通知权限，再更新提醒时间。", "Please allow notifications before updating reminder time.")
+            showReminderAlert = true
+            return
         }
-    }
-
-    private func cancelReminder(_ reminder: ReminderKind) {
-        let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: [reminder.identifier])
-        center.removeDeliveredNotifications(withIdentifiers: [reminder.identifier])
+        appState.noteSettingsDidChange(refreshReminders: true)
     }
 
     private func setReminderToggle(_ reminder: ReminderKind, enabled: Bool) {
@@ -2529,25 +2467,6 @@ struct SettingsView: View {
         if birthDateTimestamp > 0 { return }
         let date = birthDateFromAge(appState.profile.age)
         birthDateTimestamp = date.timeIntervalSince1970
-    }
-
-    private func applyThemeModeImmediately(_ mode: AppThemeMode) {
-        let interfaceStyle: UIUserInterfaceStyle
-        switch mode {
-        case .system:
-            interfaceStyle = .unspecified
-        case .light:
-            interfaceStyle = .light
-        case .dark:
-            interfaceStyle = .dark
-        }
-
-        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
-        for scene in scenes {
-            for window in scene.windows {
-                window.overrideUserInterfaceStyle = interfaceStyle
-            }
-        }
     }
 
     private func syncHeightDrafts() {
