@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.colorScheme) private var colorScheme
 
     private enum TabKey: Hashable {
         case eat
@@ -111,6 +112,21 @@ struct MainTabView: View {
         !onboardingCompleted && !guideStep.isCompleted
     }
 
+    private var tabBarBackgroundTint: Color {
+        let baseColor: Color = switch selectedTab {
+        case .eat:
+            .orange
+        case .move:
+            .green
+        case .lose:
+            .blue
+        }
+
+        return colorScheme == .dark
+            ? baseColor.opacity(0.22)
+            : baseColor.opacity(0.14)
+    }
+
     var body: some View {
         TabView(selection: $selectedTab) {
             EatWellView(
@@ -150,6 +166,8 @@ struct MainTabView: View {
             }
         }
         .tint(Color.accentColor)
+        .toolbarBackground(tabBarBackgroundTint, for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
         .onChange(of: selectedTab) { _, newValue in
             tabRefreshTask?.cancel()
             tabRefreshTask = Task { @MainActor in

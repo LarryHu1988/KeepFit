@@ -36,12 +36,6 @@ struct MoveMoreView: View {
         selectedDate.isFutureDayInCurrentCalendar
     }
 
-    private var barBackgroundTint: Color {
-        colorScheme == .dark
-            ? Color.green.opacity(0.22)
-            : Color.green.opacity(0.14)
-    }
-
     private var effectiveRingSize: CGFloat {
         min(ringSize, UIScreen.main.bounds.width - 84)
     }
@@ -78,8 +72,6 @@ struct MoveMoreView: View {
             .navigationTitle(localized("迈开腿", "Move More"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
-            .toolbarBackground(barBackgroundTint, for: .tabBar)
-            .toolbarBackground(.visible, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

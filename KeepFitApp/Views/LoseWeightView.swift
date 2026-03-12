@@ -102,12 +102,6 @@ struct LoseWeightView: View {
         appState.latestBodyMetric(on: selectedDate) != nil
     }
 
-    private var barBackgroundTint: Color {
-        colorScheme == .dark
-            ? Color.blue.opacity(0.22)
-            : Color.blue.opacity(0.14)
-    }
-
     private var effectiveRingSize: CGFloat {
         min(ringSize, UIScreen.main.bounds.width - 84)
     }
@@ -188,8 +182,6 @@ struct LoseWeightView: View {
             .navigationTitle(localized("减个肥", "Lose Weight"))
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
-            .toolbarBackground(barBackgroundTint, for: .tabBar)
-            .toolbarBackground(.visible, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
