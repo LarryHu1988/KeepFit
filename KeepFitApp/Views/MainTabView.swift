@@ -107,24 +107,17 @@ struct MainTabView: View {
     @State private var showAccountChoiceSheet = false
     @State private var tabRefreshTask: Task<Void, Never>?
     @State private var settingsGuideTask: Task<Void, Never>?
+    @State private var settingsContentLoadTask: Task<Void, Never>?
+    @State private var settingsContentReady = false
 
     private var isGuideActive: Bool {
         !onboardingCompleted && !guideStep.isCompleted
     }
 
     private var tabBarBackgroundTint: Color {
-        let baseColor: Color = switch selectedTab {
-        case .eat:
-            .orange
-        case .move:
-            .green
-        case .lose:
-            .blue
-        }
-
-        return colorScheme == .dark
-            ? baseColor.opacity(0.22)
-            : baseColor.opacity(0.14)
+        colorScheme == .dark
+            ? Color.white.opacity(0.06)
+            : Color.white.opacity(0.42)
     }
 
     var body: some View {
@@ -171,7 +164,7 @@ struct MainTabView: View {
         .onChange(of: selectedTab) { _, newValue in
             tabRefreshTask?.cancel()
             tabRefreshTask = Task { @MainActor in
-                await Task.yield()
+                try? await Task.sleep(nanoseconds: 90_000_000)
                 guard !Task.isCancelled else { return }
                 switch newValue {
                 case .eat:
@@ -193,8 +186,15 @@ struct MainTabView: View {
                     .allowsHitTesting(false)
             }
         }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
+        .sheet(
+            isPresented: $showSettings,
+            onDismiss: {
+                settingsContentLoadTask?.cancel()
+                settingsContentReady = false
+            }
+        ) {
+            SettingsSheetHostView(isContentReady: settingsContentReady)
+                .environmentObject(appState)
         }
         .sheet(isPresented: $showAccountChoiceSheet) {
             AppleAccountSheet(requireChoice: true)
@@ -221,8 +221,8 @@ struct MainTabView: View {
         .onDisappear {
             tabRefreshTask?.cancel()
             settingsGuideTask?.cancel()
+            settingsContentLoadTask?.cancel()
         }
-        .animation(.spring(response: 0.32, dampingFraction: 0.9), value: guideStep)
     }
 
     private var firstUseGuideBanner: some View {
@@ -287,7 +287,17 @@ struct MainTabView: View {
     }
 
     private func handleSettingsTap() {
+        settingsContentLoadTask?.cancel()
+        settingsContentReady = false
         showSettings = true
+
+        settingsContentLoadTask = Task { @MainActor in
+            await Task.yield()
+            try? await Task.sleep(nanoseconds: 60_000_000)
+            guard !Task.isCancelled else { return }
+            settingsContentReady = true
+        }
+
         guard isGuideActive else { return }
         settingsGuideTask?.cancel()
         settingsGuideTask = Task { @MainActor in
@@ -302,15 +312,15 @@ struct MainTabView: View {
 
         switch (guideStep, action) {
         case (.addFood, .addedFood):
-            guideStep = .switchToMove
+            updateGuideStep(.switchToMove)
         case (.switchToMove, .switchedTab(.move)):
-            guideStep = .addExercise
+            updateGuideStep(.addExercise)
         case (.addExercise, .addedExercise):
-            guideStep = .switchToLose
+            updateGuideStep(.switchToLose)
         case (.switchToLose, .switchedTab(.lose)):
-            guideStep = .addBodyMetric
+            updateGuideStep(.addBodyMetric)
         case (.addBodyMetric, .addedBodyMetric):
-            guideStep = .openSettings
+            updateGuideStep(.openSettings)
         case (.openSettings, .openedSettings):
             completeFirstUseGuide()
         default:
@@ -319,9 +329,34 @@ struct MainTabView: View {
     }
 
     private func completeFirstUseGuide() {
-        guideStep = .completed
+        updateGuideStep(.completed)
         onboardingCompleted = true
         onboardingStepRaw = GuideStep.addFood.rawValue
+    }
+
+    private func updateGuideStep(_ newValue: GuideStep) {
+        withAnimation(.spring(response: 0.32, dampingFraction: 0.9)) {
+            guideStep = newValue
+        }
+    }
+}
+
+private struct SettingsSheetHostView: View {
+    let isContentReady: Bool
+
+    var body: some View {
+        Group {
+            if isContentReady {
+                SettingsView()
+            } else {
+                ZStack {
+                    Color.clear
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(.secondary)
+                }
+            }
+        }
     }
 }
 
