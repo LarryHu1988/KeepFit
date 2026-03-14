@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct MainTabView: View {
     @EnvironmentObject private var appState: AppState
@@ -107,17 +108,9 @@ struct MainTabView: View {
     @State private var showAccountChoiceSheet = false
     @State private var tabRefreshTask: Task<Void, Never>?
     @State private var settingsGuideTask: Task<Void, Never>?
-    @State private var settingsContentLoadTask: Task<Void, Never>?
-    @State private var settingsContentReady = false
 
     private var isGuideActive: Bool {
         !onboardingCompleted && !guideStep.isCompleted
-    }
-
-    private var tabBarBackgroundTint: Color {
-        colorScheme == .dark
-            ? Color.white.opacity(0.06)
-            : Color.white.opacity(0.42)
     }
 
     var body: some View {
@@ -159,12 +152,10 @@ struct MainTabView: View {
             }
         }
         .tint(Color.accentColor)
-        .toolbarBackground(tabBarBackgroundTint, for: .tabBar)
-        .toolbarBackground(.visible, for: .tabBar)
         .onChange(of: selectedTab) { _, newValue in
             tabRefreshTask?.cancel()
             tabRefreshTask = Task { @MainActor in
-                try? await Task.sleep(nanoseconds: 90_000_000)
+                await Task.yield()
                 guard !Task.isCancelled else { return }
                 switch newValue {
                 case .eat:
@@ -186,24 +177,22 @@ struct MainTabView: View {
                     .allowsHitTesting(false)
             }
         }
-        .sheet(
-            isPresented: $showSettings,
-            onDismiss: {
-                settingsContentLoadTask?.cancel()
-                settingsContentReady = false
-            }
-        ) {
-            SettingsSheetHostView(isContentReady: settingsContentReady)
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
                 .environmentObject(appState)
         }
         .sheet(isPresented: $showAccountChoiceSheet) {
             AppleAccountSheet(requireChoice: true)
         }
         .onAppear {
+            configureSystemTabBarAppearance()
             bootstrapGuideIfNeeded()
             if !onboardingCompleted && appState.isAccountChoiceUndecided {
                 showAccountChoiceSheet = true
             }
+        }
+        .onChange(of: colorScheme) { _, _ in
+            configureSystemTabBarAppearance()
         }
         .onChange(of: onboardingCompleted) { _, completed in
             guard !completed, appState.isAccountChoiceUndecided else { return }
@@ -221,7 +210,6 @@ struct MainTabView: View {
         .onDisappear {
             tabRefreshTask?.cancel()
             settingsGuideTask?.cancel()
-            settingsContentLoadTask?.cancel()
         }
     }
 
@@ -287,16 +275,7 @@ struct MainTabView: View {
     }
 
     private func handleSettingsTap() {
-        settingsContentLoadTask?.cancel()
-        settingsContentReady = false
         showSettings = true
-
-        settingsContentLoadTask = Task { @MainActor in
-            await Task.yield()
-            try? await Task.sleep(nanoseconds: 60_000_000)
-            guard !Task.isCancelled else { return }
-            settingsContentReady = true
-        }
 
         guard isGuideActive else { return }
         settingsGuideTask?.cancel()
@@ -339,24 +318,34 @@ struct MainTabView: View {
             guideStep = newValue
         }
     }
-}
 
-private struct SettingsSheetHostView: View {
-    let isContentReady: Bool
+    private func configureSystemTabBarAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundEffect = UIBlurEffect(
+            style: colorScheme == .dark ? .systemUltraThinMaterialDark : .systemUltraThinMaterialLight
+        )
+        appearance.backgroundColor = UIColor.white.withAlphaComponent(colorScheme == .dark ? 0.05 : 0.14)
+        appearance.shadowColor = .clear
 
-    var body: some View {
-        Group {
-            if isContentReady {
-                SettingsView()
-            } else {
-                ZStack {
-                    Color.clear
-                    ProgressView()
-                        .controlSize(.small)
-                        .tint(.secondary)
-                }
-            }
+        let normalColor = UIColor.secondaryLabel.withAlphaComponent(colorScheme == .dark ? 0.78 : 0.9)
+        let selectedColor = UIColor.systemBlue
+
+        for itemAppearance in [
+            appearance.stackedLayoutAppearance,
+            appearance.inlineLayoutAppearance,
+            appearance.compactInlineLayoutAppearance
+        ] {
+            itemAppearance.normal.iconColor = normalColor
+            itemAppearance.normal.titleTextAttributes = [.foregroundColor: normalColor]
+            itemAppearance.selected.iconColor = selectedColor
+            itemAppearance.selected.titleTextAttributes = [.foregroundColor: selectedColor]
         }
+
+        let tabBarAppearance = UITabBar.appearance()
+        tabBarAppearance.standardAppearance = appearance
+        tabBarAppearance.scrollEdgeAppearance = appearance
+        tabBarAppearance.isTranslucent = true
     }
 }
 
