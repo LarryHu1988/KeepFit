@@ -1345,16 +1345,9 @@ struct SettingsView: View {
         guard !didPrimeSettingsView else { return }
         didPrimeSettingsView = true
 
-        ensureBirthDateSeeded()
-        syncHeightDrafts()
-        syncWeightDrafts()
-        syncBirthDrafts()
-        syncGoalDrafts()
-
         deferredSettingsSetupTask?.cancel()
         deferredSettingsSetupTask = Task { @MainActor in
             await Task.yield()
-            try? await Task.sleep(nanoseconds: 180_000_000)
             guard !Task.isCancelled else { return }
             refreshICloudSyncState()
             await syncReminderSchedulesOnAppear()

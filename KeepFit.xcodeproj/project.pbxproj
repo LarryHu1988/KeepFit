@@ -30,7 +30,6 @@
 		D7E72F6BDD1E252282D03E7B /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782711AA16C33058140223EA /* MainTabView.swift */; };
 		DDFAD0C4AE97EC3E2A7E55D5 /* CalendarHeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2F213427C091094F6088EE2 /* CalendarHeatmapView.swift */; };
 		E991DF3AB63226E4BC06920B /* ExerciseSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974512BAA2E9B3255EBCFB93 /* ExerciseSelectionSheet.swift */; };
-		F8D5144A70BB83710A35D8BA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD57C2EB641F509EDB0499A /* OnboardingView.swift */; };
 		FF385BFD74D139DF708768BE /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52FD3FA91C2FAAC74F058A48 /* Models.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,7 +50,6 @@
 		974512BAA2E9B3255EBCFB93 /* ExerciseSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSelectionSheet.swift; sourceTree = "<group>"; };
 		98139737892CE26183CEC3D7 /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
 		9A500D23BE43C3BBAD0D898D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		9AD57C2EB641F509EDB0499A /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		AB10A52C474FB9542C968139 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		ADE90823EF06872E7EE88EE1 /* LoseWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoseWeightView.swift; sourceTree = "<group>"; };
 		B7481C6BAA0C901B0042609E /* GrowPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowPageBackground.swift; sourceTree = "<group>"; };
@@ -147,7 +145,6 @@
 				ADE90823EF06872E7EE88EE1 /* LoseWeightView.swift */,
 				782711AA16C33058140223EA /* MainTabView.swift */,
 				CAB036398535B1B6709C4308 /* MoveMoreView.swift */,
-				9AD57C2EB641F509EDB0499A /* OnboardingView.swift */,
 				FCD9ACF251ABC91A14A3F0EF /* SettingsView.swift */,
 			);
 			path = Views;
@@ -233,7 +230,6 @@
 				D7E72F6BDD1E252282D03E7B /* MainTabView.swift in Sources */,
 				FF385BFD74D139DF708768BE /* Models.swift in Sources */,
 				8D890305FC46704ED2CF9700 /* MoveMoreView.swift in Sources */,
-				F8D5144A70BB83710A35D8BA /* OnboardingView.swift in Sources */,
 				46298DE0C70D5FAF18E67FB5 /* ProgressRing.swift in Sources */,
 				4F915D7AF25B3F616EDFCFDB /* SeedData.swift in Sources */,
 				5E3120E0D6AAFCFB65C32891 /* SettingsView.swift in Sources */,
@@ -250,7 +246,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = KeepFitApp/KeepFit.entitlements;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				INFOPLIST_FILE = KeepFitApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。";
@@ -261,7 +257,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.9.18;
+				MARKETING_VERSION = 0.9.19;
 				PRODUCT_BUNDLE_IDENTIFIER = com.larry.keepfit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -274,7 +270,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = KeepFitApp/KeepFit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				INFOPLIST_FILE = KeepFitApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。";
@@ -285,7 +281,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.9.18;
+				MARKETING_VERSION = 0.9.19;
 				PRODUCT_BUNDLE_IDENTIFIER = com.larry.keepfit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

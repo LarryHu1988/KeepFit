@@ -194,7 +194,11 @@ enum AppPreferences {
     }
 
     static var language: AppLanguageOption {
-        AppLanguageOption(rawValue: UserDefaults.standard.string(forKey: AppPreferenceKeys.appLanguage) ?? "") ?? .chinese
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-keepfit-screenshot-language"), arguments.indices.contains(index + 1) {
+            return AppLanguageOption(rawValue: arguments[index + 1]) ?? .chinese
+        }
+        return AppLanguageOption(rawValue: UserDefaults.standard.string(forKey: AppPreferenceKeys.appLanguage) ?? "") ?? .chinese
     }
 
     static var locale: Locale {
@@ -486,6 +490,17 @@ enum KeepFitHaptics {
             return softImpactGenerator
         default:
             return lightImpactGenerator
+        }
+    }
+
+    static func prepare() {
+        guard isEnabled else { return }
+        performOnMain {
+            lightImpactGenerator.prepare()
+            mediumImpactGenerator.prepare()
+            rigidImpactGenerator.prepare()
+            softImpactGenerator.prepare()
+            selectionGenerator.prepare()
         }
     }
 

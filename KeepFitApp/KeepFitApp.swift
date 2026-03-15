@@ -10,11 +10,13 @@ final class KeepFitAppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         UNUserNotificationCenter.current().delegate = notificationDelegate
+        KeepFitHaptics.prepare()
         return true
     }
 
     func applicationDidBecomeActive(_: UIApplication) {
         UNUserNotificationCenter.current().delegate = notificationDelegate
+        KeepFitHaptics.prepare()
     }
 }
 
@@ -34,7 +36,6 @@ struct KeepFitApp: App {
     @StateObject private var appState = AppState()
     @AppStorage("keepfit.themeMode") private var themeModeRaw = AppThemeMode.system.rawValue
     @AppStorage("keepfit.appLanguage") private var appLanguageRaw = AppLanguageOption.chinese.rawValue
-    @AppStorage("keepfit.onboarding.completed") private var onboardingCompleted = false
 
     private var themeMode: AppThemeMode {
         AppThemeMode(rawValue: themeModeRaw) ?? .system
@@ -46,7 +47,7 @@ struct KeepFitApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView(onboardingCompleted: $onboardingCompleted)
+            MainTabView()
             .environmentObject(appState)
             .environment(\.locale, Locale(identifier: appLanguage.localeIdentifier))
             .onAppear {
