@@ -80,6 +80,11 @@ struct SettingsView: View {
     @State private var reminderAlertMessage = ""
     @State private var showFeedbackAlert = false
     @State private var showAppleAccountSheet = false
+    @State private var showResetDataSheet = false
+    @State private var showDeleteAllDataAlert = false
+    @State private var showDeleteRangeAlert = false
+    @State private var resetRangeStartDate = Date().startOfDayInCurrentCalendar
+    @State private var resetRangeEndDate = Date().startOfDayInCurrentCalendar
     @State private var didPrimeSettingsView = false
     @State private var deferredSettingsSetupTask: Task<Void, Never>?
 
@@ -213,6 +218,30 @@ struct SettingsView: View {
 
     private var summaryReminderTimeText: String {
         Formatters.hourMinute.string(from: date(fromMinuteOfDay: summaryReminderMinuteOfDay))
+    }
+
+    private var today: Date {
+        Date().startOfDayInCurrentCalendar
+    }
+
+    private var resetDataMinimumDate: Date {
+        appState.earliestRecordedDate ?? today
+    }
+
+    private var resetDataMaximumDate: Date {
+        min(appState.latestRecordedDate ?? today, today)
+    }
+
+    private var allRecordedDataSummary: DataDeletionSummary {
+        appState.recordedDataSummary(startDate: resetDataMinimumDate, endDate: resetDataMaximumDate)
+    }
+
+    private var selectedRangeDataSummary: DataDeletionSummary {
+        appState.recordedDataSummary(startDate: resetRangeStartDate, endDate: resetRangeEndDate)
+    }
+
+    private var hasRecordedData: Bool {
+        allRecordedDataSummary.totalCount > 0
     }
 
     var body: some View {
@@ -349,11 +378,42 @@ struct SettingsView: View {
             } message: {
                 Text(feedbackEmail)
             }
+            .alert(localized("删除所有记录", "Delete All Records"), isPresented: $showDeleteAllDataAlert) {
+                Button(localized("删除", "Delete"), role: .destructive) {
+                    deleteAllRecordedData()
+                }
+                Button(localized("取消", "Cancel"), role: .cancel) {}
+            } message: {
+                let summary = allRecordedDataSummary
+                Text(
+                    localized(
+                        "这会删除 KeepFit 内全部记录：饮食 \(summary.foodLogCount) 条、锻炼 \(summary.exerciseLogCount) 条、体重体脂 \(summary.bodyMetricCount) 条。不会删除 Apple 健康本身的数据。",
+                        "This deletes all KeepFit records: \(summary.foodLogCount) meals, \(summary.exerciseLogCount) workouts, and \(summary.bodyMetricCount) body metrics. Apple Health data itself will not be deleted."
+                    )
+                )
+            }
+            .alert(localized("删除选定时间段", "Delete Selected Range"), isPresented: $showDeleteRangeAlert) {
+                Button(localized("删除", "Delete"), role: .destructive) {
+                    deleteRecordedDataInRange()
+                }
+                Button(localized("取消", "Cancel"), role: .cancel) {}
+            } message: {
+                let summary = selectedRangeDataSummary
+                Text(
+                    localized(
+                        "这会删除所选时间段内的记录：饮食 \(summary.foodLogCount) 条、锻炼 \(summary.exerciseLogCount) 条、体重体脂 \(summary.bodyMetricCount) 条。不会删除 Apple 健康本身的数据。",
+                        "This deletes records in the selected range: \(summary.foodLogCount) meals, \(summary.exerciseLogCount) workouts, and \(summary.bodyMetricCount) body metrics. Apple Health data itself will not be deleted."
+                    )
+                )
+            }
             .sheet(isPresented: $showAboutSheet) {
                 aboutSheet
             }
             .sheet(isPresented: $showAppleAccountSheet) {
                 AppleAccountSheet(requireChoice: false)
+            }
+            .sheet(isPresented: $showResetDataSheet) {
+                resetDataSheet
             }
     }
 
@@ -466,6 +526,29 @@ struct SettingsView: View {
                 settingsToggleLabel(icon: "icloud.fill", title: cloudSyncTitle, color: .blue)
             }
             .disabled(!appState.iCloudAccountAvailable)
+            .keepFitSettingsSeparatorAligned()
+
+            Button {
+                triggerHapticIfNeeded()
+                prepareResetDataSheet()
+                showResetDataSheet = true
+            } label: {
+                HStack(spacing: settingsCompactLayout ? 8 : 10) {
+                    rowIcon("arrow.counterclockwise.circle.fill", .red)
+                    Text(localized("从头再来", "Start Over"))
+                        .font(settingsTitleFont)
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                        .allowsTightening(true)
+                        .layoutPriority(1)
+                    Spacer(minLength: 8)
+                    Image(systemName: "chevron.right")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
             .keepFitSettingsSeparatorAligned()
         } header: {
             Text(localized("数据", "Data"))
@@ -1312,6 +1395,248 @@ struct SettingsView: View {
             }
         }
         .presentationDetents([.height(330)])
+    }
+
+    private var resetDataSheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 14) {
+                    resetDataOverviewCard
+                    resetDeleteAllCard
+                    resetDeleteRangeCard
+                }
+                .padding(.horizontal, 18)
+                .padding(.top, 14)
+                .padding(.bottom, 24)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(sheetBackground(accent: .red))
+            .navigationTitle(localized("从头再来", "Start Over"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(localized("完成", "Done")) {
+                        showResetDataSheet = false
+                    }
+                }
+            }
+        }
+    }
+
+    private var resetDataOverviewCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .overlay(
+                            Circle()
+                                .stroke(.white.opacity(0.24), lineWidth: 0.8)
+                        )
+                        .frame(width: 42, height: 42)
+
+                    Image(systemName: "arrow.counterclockwise.circle.fill")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(.red)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(localized("清理 KeepFit 记录", "Clear KeepFit Records"))
+                        .font(.headline.weight(.semibold))
+                    Text(localized("只删除 App 内数据，不会删除 Apple 健康里的原始记录。", "Only deletes data inside KeepFit. Apple Health source data stays untouched."))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            resetDataSummaryView(summary: allRecordedDataSummary, accent: .red)
+        }
+        .padding(18)
+        .background(resetDataCardBackground(accent: .red))
+    }
+
+    private var resetDeleteAllCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(localized("一键删除全部数据", "Delete All Data"))
+                    .font(.headline.weight(.semibold))
+                Text(localized("清空 KeepFit 里的全部饮食、锻炼、体重与体脂记录。", "Remove every meal, workout, weight, and body-fat record stored in KeepFit."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            resetDataSummaryView(summary: allRecordedDataSummary, accent: .orange)
+
+            Button {
+                triggerHapticIfNeeded(style: .medium)
+                showDeleteAllDataAlert = true
+            } label: {
+                Text(localized("删除全部记录", "Delete All Records"))
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(hasRecordedData ? Color.red : Color.red.opacity(0.35))
+                    )
+            }
+            .buttonStyle(.plain)
+            .disabled(!hasRecordedData)
+            .opacity(hasRecordedData ? 1 : 0.7)
+        }
+        .padding(18)
+        .background(resetDataCardBackground(accent: .orange))
+    }
+
+    private var resetDeleteRangeCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(localized("按时间段删除", "Delete by Date Range"))
+                    .font(.headline.weight(.semibold))
+                Text(localized("选择起始和终止日期，只删除这一段时间内的记录。", "Choose a start and end date to remove records only within that range."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            if hasRecordedData {
+                VStack(spacing: 10) {
+                    resetDatePickerRow(
+                        title: localized("起始日期", "Start Date"),
+                        selection: resetStartDateBinding,
+                        range: resetDataMinimumDate...resetRangeEndDate,
+                        accent: .blue
+                    )
+
+                    resetDatePickerRow(
+                        title: localized("终止日期", "End Date"),
+                        selection: resetEndDateBinding,
+                        range: resetRangeStartDate...resetDataMaximumDate,
+                        accent: .blue
+                    )
+                }
+
+                resetDataSummaryView(summary: selectedRangeDataSummary, accent: .blue)
+            } else {
+                Text(localized("当前还没有可删除的记录。", "There are no records to delete yet."))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(14)
+                    .background(glassRowBackground(accent: .blue))
+            }
+
+            Button {
+                triggerHapticIfNeeded(style: .medium)
+                showDeleteRangeAlert = true
+            } label: {
+                Text(localized("删除所选时间段", "Delete Selected Range"))
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(hasRecordedData ? Color.blue : Color.blue.opacity(0.35))
+                    )
+            }
+            .buttonStyle(.plain)
+            .disabled(!hasRecordedData)
+            .opacity(hasRecordedData ? 1 : 0.7)
+        }
+        .padding(18)
+        .background(resetDataCardBackground(accent: .blue))
+    }
+
+    private func resetDataSummaryView(summary: DataDeletionSummary, accent: Color) -> some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) {
+                resetSummaryChip(title: localized("饮食", "Meals"), count: summary.foodLogCount, accent: accent)
+                resetSummaryChip(title: localized("锻炼", "Workouts"), count: summary.exerciseLogCount, accent: accent)
+                resetSummaryChip(title: localized("体重体脂", "Body"), count: summary.bodyMetricCount, accent: accent)
+            }
+
+            VStack(spacing: 10) {
+                HStack(spacing: 10) {
+                    resetSummaryChip(title: localized("饮食", "Meals"), count: summary.foodLogCount, accent: accent)
+                    resetSummaryChip(title: localized("锻炼", "Workouts"), count: summary.exerciseLogCount, accent: accent)
+                }
+                resetSummaryChip(title: localized("体重体脂", "Body"), count: summary.bodyMetricCount, accent: accent)
+            }
+        }
+    }
+
+    private func resetSummaryChip(title: String, count: Int, accent: Color) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+            Text("\(count) " + localized("条", "items"))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(accent.opacity(colorScheme == .dark ? 0.9 : 0.78))
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(glassRowBackground(accent: accent))
+    }
+
+    private func resetDatePickerRow(
+        title: String,
+        selection: Binding<Date>,
+        range: ClosedRange<Date>,
+        accent: Color
+    ) -> some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(Formatters.yearMonthDay.string(from: selection.wrappedValue))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: 8)
+
+            DatePicker("", selection: selection, in: range, displayedComponents: .date)
+                .labelsHidden()
+                .datePickerStyle(.compact)
+                .tint(accent)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background(glassRowBackground(accent: accent))
+    }
+
+    private func resetDataCardBackground(accent: Color) -> some View {
+        RoundedRectangle(cornerRadius: 24, style: .continuous)
+            .fill(.ultraThinMaterial)
+            .overlay(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                accent.opacity(0.18),
+                                .white.opacity(0.08),
+                                .clear
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .stroke(.white.opacity(0.22), lineWidth: 0.8)
+            )
     }
 
     private func infoLine(title: String, value: String) -> some View {
@@ -2583,6 +2908,68 @@ struct SettingsView: View {
         components.year = (components.year ?? 2000) - age
         components.day = 1
         return calendar.date(from: components) ?? now
+    }
+
+    private var resetStartDateBinding: Binding<Date> {
+        Binding(
+            get: { resetRangeStartDate },
+            set: { newValue in
+                resetRangeStartDate = newValue.startOfDayInCurrentCalendar
+                clampResetRangeDates()
+            }
+        )
+    }
+
+    private var resetEndDateBinding: Binding<Date> {
+        Binding(
+            get: { resetRangeEndDate },
+            set: { newValue in
+                resetRangeEndDate = newValue.startOfDayInCurrentCalendar
+                clampResetRangeDates()
+            }
+        )
+    }
+
+    private func prepareResetDataSheet() {
+        resetRangeStartDate = resetDataMinimumDate
+        resetRangeEndDate = resetDataMaximumDate
+        clampResetRangeDates()
+    }
+
+    private func clampResetRangeDates() {
+        let lowerBound = resetDataMinimumDate
+        let upperBound = resetDataMaximumDate
+        let normalizedStart = min(max(resetRangeStartDate.startOfDayInCurrentCalendar, lowerBound), upperBound)
+        let normalizedEnd = min(max(resetRangeEndDate.startOfDayInCurrentCalendar, lowerBound), upperBound)
+        resetRangeStartDate = min(normalizedStart, normalizedEnd)
+        resetRangeEndDate = max(normalizedStart, normalizedEnd)
+    }
+
+    private func deleteAllRecordedData() {
+        let summary = appState.deleteAllRecordedData()
+        guard summary.totalCount > 0 else {
+            showDeleteAllDataAlert = false
+            return
+        }
+        KeepFitHaptics.impact(.medium)
+        prepareResetDataSheet()
+        showDeleteAllDataAlert = false
+        showDeleteRangeAlert = false
+        showResetDataSheet = false
+    }
+
+    private func deleteRecordedDataInRange() {
+        clampResetRangeDates()
+        let summary = appState.deleteRecordedData(startDate: resetRangeStartDate, endDate: resetRangeEndDate)
+        guard summary.totalCount > 0 else {
+            showDeleteRangeAlert = false
+            return
+        }
+        KeepFitHaptics.impact(.medium)
+        prepareResetDataSheet()
+        showDeleteAllDataAlert = false
+        showDeleteRangeAlert = false
+        showResetDataSheet = false
     }
 
     private func centimetersToFeetInches(_ cm: Double) -> (feet: Int, inches: Int) {

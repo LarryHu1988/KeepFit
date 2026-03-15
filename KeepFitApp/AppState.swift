@@ -28,6 +28,16 @@ struct DailyCalorieTrend: Identifiable {
     let deficit: Double
 }
 
+struct DataDeletionSummary {
+    let foodLogCount: Int
+    let exerciseLogCount: Int
+    let bodyMetricCount: Int
+
+    var totalCount: Int {
+        foodLogCount + exerciseLogCount + bodyMetricCount
+    }
+}
+
 private struct KeepFitCloudSnapshot: Codable {
     let version: Int
     let modifiedAt: Date
@@ -225,17 +235,6 @@ final class AppState: ObservableObject {
         exerciseLogs = loadedExerciseLogs.sorted(by: { $0.date > $1.date })
         bodyMetricLogs = loadedBodyMetrics.sorted(by: { $0.date < $1.date })
         account = loadedAccount
-
-        if bodyMetricLogs.isEmpty {
-            bodyMetricLogs.append(
-                BodyMetricLog(
-                    id: UUID(),
-                    date: Date(),
-                    weightKg: profile.weightKg,
-                    bodyFatPercent: max(10, profile.targetBodyFat + 8)
-                )
-            )
-        }
 
         let savedLocalMutationTS = defaults.double(forKey: SyncKeys.localMutationTS)
         localMutationAt = savedLocalMutationTS > 0 ? Date(timeIntervalSince1970: savedLocalMutationTS) : .distantPast
@@ -543,6 +542,79 @@ final class AppState: ObservableObject {
 
     func deleteExerciseLog(_ log: ExerciseLog) {
         exerciseLogs.removeAll(where: { $0.id == log.id })
+    }
+
+    var earliestRecordedDate: Date? {
+        let dates = foodLogs.map(\.date) + exerciseLogs.map(\.date) + bodyMetricLogs.map(\.date)
+        return dates.min()?.startOfDayInCurrentCalendar
+    }
+
+    var latestRecordedDate: Date? {
+        let dates = foodLogs.map(\.date) + exerciseLogs.map(\.date) + bodyMetricLogs.map(\.date)
+        return dates.max()?.startOfDayInCurrentCalendar
+    }
+
+    func recordedDataSummary(startDate: Date, endDate: Date) -> DataDeletionSummary {
+        let range = normalizedDeletionRange(startDate: startDate, endDate: endDate)
+        let foodCount = foodLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }.count
+        let exerciseCount = exerciseLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }.count
+        let bodyMetricCount = bodyMetricLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }.count
+        return DataDeletionSummary(
+            foodLogCount: foodCount,
+            exerciseLogCount: exerciseCount,
+            bodyMetricCount: bodyMetricCount
+        )
+    }
+
+    @discardableResult
+    func deleteAllRecordedData() -> DataDeletionSummary {
+        let summary = DataDeletionSummary(
+            foodLogCount: foodLogs.count,
+            exerciseLogCount: exerciseLogs.count,
+            bodyMetricCount: bodyMetricLogs.count
+        )
+        guard summary.totalCount > 0 else { return summary }
+
+        let deletedFoodLogs = foodLogs
+        let deletedExerciseLogs = exerciseLogs
+        let deletedBodyMetrics = bodyMetricLogs
+
+        foodLogs = []
+        exerciseLogs = []
+        bodyMetricLogs = []
+        pruneHealthSyncState(
+            deletedFoodLogs: deletedFoodLogs,
+            deletedExerciseLogs: deletedExerciseLogs,
+            deletedBodyMetrics: deletedBodyMetrics
+        )
+        syncProfileWeightAfterBodyMetricDeletion()
+        return summary
+    }
+
+    @discardableResult
+    func deleteRecordedData(startDate: Date, endDate: Date) -> DataDeletionSummary {
+        let range = normalizedDeletionRange(startDate: startDate, endDate: endDate)
+        let deletedFoodLogs = foodLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }
+        let deletedExerciseLogs = exerciseLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }
+        let deletedBodyMetrics = bodyMetricLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }
+
+        let summary = DataDeletionSummary(
+            foodLogCount: deletedFoodLogs.count,
+            exerciseLogCount: deletedExerciseLogs.count,
+            bodyMetricCount: deletedBodyMetrics.count
+        )
+        guard summary.totalCount > 0 else { return summary }
+
+        foodLogs.removeAll { range.contains($0.date.startOfDayInCurrentCalendar) }
+        exerciseLogs.removeAll { range.contains($0.date.startOfDayInCurrentCalendar) }
+        bodyMetricLogs.removeAll { range.contains($0.date.startOfDayInCurrentCalendar) }
+        pruneHealthSyncState(
+            deletedFoodLogs: deletedFoodLogs,
+            deletedExerciseLogs: deletedExerciseLogs,
+            deletedBodyMetrics: deletedBodyMetrics
+        )
+        syncProfileWeightAfterBodyMetricDeletion()
+        return summary
     }
 
     func foodIcon(for food: FoodItem) -> String {
@@ -1416,17 +1488,6 @@ final class AppState: ObservableObject {
         foodLogs = snapshot.foodLogs.sorted(by: { $0.date > $1.date })
         exerciseLogs = snapshot.exerciseLogs.sorted(by: { $0.date > $1.date })
         bodyMetricLogs = snapshot.bodyMetricLogs.sorted(by: { $0.date < $1.date })
-        if bodyMetricLogs.isEmpty {
-            bodyMetricLogs = [
-                BodyMetricLog(
-                    id: UUID(),
-                    date: Date(),
-                    weightKg: profile.weightKg,
-                    bodyFatPercent: max(10, profile.targetBodyFat + 8)
-                )
-            ]
-        }
-
         localMutationAt = snapshot.modifiedAt
         defaults.set(localMutationAt.timeIntervalSince1970, forKey: SyncKeys.localMutationTS)
     }
@@ -1971,6 +2032,37 @@ final class AppState: ObservableObject {
         exportedExerciseIDs.subtract(removedLogs.map(\.id.uuidString))
         importedWorkoutUUIDs.subtract(removedLogs.compactMap(\.healthKitWorkoutUUID))
         return true
+    }
+
+    private func normalizedDeletionRange(startDate: Date, endDate: Date) -> ClosedRange<Date> {
+        let lower = min(startDate.startOfDayInCurrentCalendar, endDate.startOfDayInCurrentCalendar)
+        let upper = max(startDate.startOfDayInCurrentCalendar, endDate.startOfDayInCurrentCalendar)
+        return lower...upper
+    }
+
+    private func pruneHealthSyncState(
+        deletedFoodLogs: [FoodLog],
+        deletedExerciseLogs: [ExerciseLog],
+        deletedBodyMetrics: [BodyMetricLog]
+    ) {
+        var exportedFoodIDs = loadStringSet(forKey: SyncKeys.exportedFoodLogIDs)
+        var exportedExerciseIDs = loadStringSet(forKey: SyncKeys.exportedExerciseLogIDs)
+        var exportedBodyMetricIDs = loadStringSet(forKey: SyncKeys.exportedBodyMetricIDs)
+
+        exportedFoodIDs.subtract(deletedFoodLogs.map { $0.id.uuidString })
+        exportedExerciseIDs.subtract(deletedExerciseLogs.map { $0.id.uuidString })
+        exportedBodyMetricIDs.subtract(deletedBodyMetrics.map { $0.id.uuidString })
+
+        saveStringSet(exportedFoodIDs, forKey: SyncKeys.exportedFoodLogIDs)
+        saveStringSet(exportedExerciseIDs, forKey: SyncKeys.exportedExerciseLogIDs)
+        saveStringSet(exportedBodyMetricIDs, forKey: SyncKeys.exportedBodyMetricIDs)
+    }
+
+    private func syncProfileWeightAfterBodyMetricDeletion() {
+        guard let latestRemaining = bodyMetricLogs.max(by: { $0.date < $1.date }) else { return }
+        if profile.weightKg != latestRemaining.weightKg {
+            profile.weightKg = latestRemaining.weightKg
+        }
     }
 
     private func exportUnsyncedLocalDataToHealth() async throws {
