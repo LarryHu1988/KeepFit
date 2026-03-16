@@ -13,7 +13,6 @@ struct MainTabView: View {
 
     private enum PresentedSheet: String, Identifiable {
         case settings
-        case accountChoice
 
         var id: String { rawValue }
     }
@@ -23,10 +22,6 @@ struct MainTabView: View {
     @State private var eatTabSwitchToken = 0
     @State private var moveTabSwitchToken = 0
     @State private var loseTabSwitchToken = 0
-
-    private var keepfitScreenshotModeEnabled: Bool {
-        ProcessInfo.processInfo.arguments.contains("-keepfit-screenshot-mode")
-    }
 
     private var keepfitLaunchSelectedTab: TabKey? {
         let arguments = ProcessInfo.processInfo.arguments
@@ -80,8 +75,6 @@ struct MainTabView: View {
             case .settings:
                 SettingsView()
                     .environmentObject(appState)
-            case .accountChoice:
-                AppleAccountSheet(requireChoice: true)
             }
         }
         .onAppear {
@@ -89,25 +82,9 @@ struct MainTabView: View {
             if let launchTab = keepfitLaunchSelectedTab {
                 selectedTab = launchTab
             }
-            if !keepfitScreenshotModeEnabled, appState.isAccountChoiceUndecided {
-                presentedSheet = .accountChoice
-            }
         }
         .onChange(of: colorScheme) { _, _ in
             configureSystemTabBarAppearance()
-        }
-        .onChange(of: appState.isAccountChoiceUndecided) { _, isUndecided in
-            guard !keepfitScreenshotModeEnabled else {
-                if presentedSheet == .accountChoice {
-                    presentedSheet = nil
-                }
-                return
-            }
-            if isUndecided {
-                presentedSheet = .accountChoice
-            } else if presentedSheet == .accountChoice {
-                presentedSheet = nil
-            }
         }
     }
 

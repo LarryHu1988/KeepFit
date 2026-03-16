@@ -45,9 +45,19 @@ struct KeepFitApp: App {
         AppLanguageOption(rawValue: appLanguageRaw) ?? .chinese
     }
 
+    private var keepfitScreenshotModeEnabled: Bool {
+        ProcessInfo.processInfo.arguments.contains("-keepfit-screenshot-mode")
+    }
+
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            Group {
+                if !keepfitScreenshotModeEnabled, appState.isAccountChoiceUndecided {
+                    AppleAccountSheet(requireChoice: true)
+                } else {
+                    MainTabView()
+                }
+            }
             .environmentObject(appState)
             .environment(\.locale, Locale(identifier: appLanguage.localeIdentifier))
             .onAppear {

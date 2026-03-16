@@ -222,31 +222,33 @@ struct SettingsView: View {
         }
     }
 
-    private var settingsFormView: some View {
-        Form {
-            basicInfoSection
-            goalsAdviceSection
-            generalSettingsSection
-            unitsSection
-            dataSection
-            remindersSection
-            otherSection
-            rateKeepFitSection
-        }
-        .listStyle(.insetGrouped)
-        .listRowSeparator(.hidden, edges: .all)
-        .listRowSeparatorTint(.clear)
-        .listSectionSeparator(.hidden, edges: .all)
-        .listSectionSeparatorTint(.clear)
-        .navigationTitle(localized("设置", "Settings"))
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(localized("完成", "Done")) {
-                    dismissSettingsImmediately()
+    private var settingsFormView: AnyView {
+        AnyView(
+            Form {
+                basicInfoSection
+                goalsAdviceSection
+                generalSettingsSection
+                unitsSection
+                dataSection
+                remindersSection
+                otherSection
+                rateKeepFitSection
+            }
+            .listStyle(.insetGrouped)
+            .listRowSeparator(.hidden, edges: .all)
+            .listRowSeparatorTint(.clear)
+            .listSectionSeparator(.hidden, edges: .all)
+            .listSectionSeparatorTint(.clear)
+            .navigationTitle(localized("设置", "Settings"))
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(localized("完成", "Done")) {
+                        dismissSettingsImmediately()
+                    }
                 }
             }
-        }
+        )
     }
 
     private var settingsInteractiveView: some View {
@@ -327,194 +329,207 @@ struct SettingsView: View {
             }
     }
 
-    private var settingsPresentedView: some View {
-        settingsInteractiveView
-            .overlay {
-                settingsInfoOverlay
-            }
-            .alert(localized("健康同步", "Health Sync"), isPresented: $showHealthSyncAlert) {
-                Button(localized("知道了", "OK"), role: .cancel) {}
-            } message: {
-                Text(healthSyncAlertMessage)
-            }
-            .alert(localized("提醒", "Reminders"), isPresented: $showReminderAlert) {
-                Button(localized("知道了", "OK"), role: .cancel) {}
-            } message: {
-                Text(reminderAlertMessage)
-            }
-            .alert(localized("意见反馈", "Feedback"), isPresented: $showFeedbackAlert) {
-                Button(localized("发送邮件", "Send Mail")) {
-                    openFeedbackEmail()
+    private var settingsPresentedView: AnyView {
+        AnyView(
+            settingsInteractiveView
+                .overlay {
+                    settingsInfoOverlay
                 }
-                Button(localized("取消", "Cancel"), role: .cancel) {}
-            } message: {
-                Text(feedbackEmail)
-            }
-            .sheet(isPresented: $showAboutSheet) {
-                aboutSheet
-            }
-            .sheet(isPresented: $showAppleAccountSheet) {
-                AppleAccountSheet(requireChoice: false)
-            }
-            .sheet(isPresented: $showResetDataSheet) {
-                ResetDataSheetView()
-                    .environmentObject(appState)
-            }
+                .alert(localized("健康同步", "Health Sync"), isPresented: $showHealthSyncAlert) {
+                    Button(localized("知道了", "OK"), role: .cancel) {}
+                } message: {
+                    Text(healthSyncAlertMessage)
+                }
+                .alert(localized("提醒", "Reminders"), isPresented: $showReminderAlert) {
+                    Button(localized("知道了", "OK"), role: .cancel) {}
+                } message: {
+                    Text(reminderAlertMessage)
+                }
+                .alert(localized("意见反馈", "Feedback"), isPresented: $showFeedbackAlert) {
+                    Button(localized("发送邮件", "Send Mail")) {
+                        openFeedbackEmail()
+                    }
+                    Button(localized("取消", "Cancel"), role: .cancel) {}
+                } message: {
+                    Text(feedbackEmail)
+                }
+                .sheet(isPresented: $showAboutSheet) {
+                    aboutSheet
+                }
+                .sheet(isPresented: $showAppleAccountSheet) {
+                    AppleAccountSheet(requireChoice: false)
+                }
+                .sheet(isPresented: $showResetDataSheet) {
+                    ResetDataSheetView()
+                        .environmentObject(appState)
+                }
+        )
     }
 
-    private var basicInfoSection: some View {
-        Section {
-            avatarSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            usernameRow
-                .keepFitSettingsSeparatorAligned()
-            sexSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            birthSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            heightSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            weightSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            activitySelectionRow
-                .keepFitSettingsSeparatorAligned()
-        } header: {
-            Text(localized("信息", "Info"))
-        }
-    }
-
-    private var goalsAdviceSection: some View {
-        Section {
-            targetWeightSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            targetBodyFatSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            exerciseGoalSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            bmrInfoRow
-                .keepFitSettingsSeparatorAligned()
-            tdeeInfoRow
-                .keepFitSettingsSeparatorAligned()
-            intakeInfoRow
-                .keepFitSettingsSeparatorAligned()
-        } header: {
-            Text(localized("目标", "Goals"))
-        }
-    }
-
-    private var generalSettingsSection: some View {
-        Section {
-            languageSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            themeSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            weekStartSelectionRow
-                .keepFitSettingsSeparatorAligned()
-
-            Toggle(isOn: $hapticEnabled) {
-                settingsToggleLabel(icon: "hand.tap", title: localized("触感反馈", "Haptics"), color: .blue)
+    private var basicInfoSection: AnyView {
+        AnyView(
+            Section {
+                avatarSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                usernameRow
+                    .keepFitSettingsSeparatorAligned()
+                sexSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                birthSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                heightSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                weightSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                activitySelectionRow
+                    .keepFitSettingsSeparatorAligned()
+            } header: {
+                Text(localized("信息", "Info"))
             }
-            .keepFitSettingsSeparatorAligned()
-        } header: {
-            Text(localized("通用", "General"))
-        }
+        )
     }
 
-    private var unitsSection: some View {
-        Section {
-            energyUnitSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            heightUnitSelectionRow
-                .keepFitSettingsSeparatorAligned()
-            weightUnitSelectionRow
-                .keepFitSettingsSeparatorAligned()
-        } header: {
-            Text(localized("单位", "Units"))
-        }
+    private var goalsAdviceSection: AnyView {
+        AnyView(
+            Section {
+                targetWeightSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                targetBodyFatSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                exerciseGoalSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                bmrInfoRow
+                    .keepFitSettingsSeparatorAligned()
+                tdeeInfoRow
+                    .keepFitSettingsSeparatorAligned()
+                intakeInfoRow
+                    .keepFitSettingsSeparatorAligned()
+            } header: {
+                Text(localized("目标", "Goals"))
+            }
+        )
     }
 
-    private var dataSection: some View {
-        Section {
-            Button {
-                triggerHapticIfNeeded()
-                showAppleAccountSheet = true
-            } label: {
-                HStack(spacing: settingsCompactLayout ? 8 : 10) {
-                    appleAccountRowIcon
-                    Text(localized("Apple 账号", "Apple Account"))
-                        .font(settingsTitleFont)
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
-                        .allowsTightening(true)
-                        .layoutPriority(1)
-                    Spacer(minLength: 8)
-                    Text(appState.accountDisplayTitle)
-                        .font(settingsValueFont)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.72)
+    private var generalSettingsSection: AnyView {
+        AnyView(
+            Section {
+                languageSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                themeSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                weekStartSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+
+                Toggle(isOn: $hapticEnabled) {
+                    settingsToggleLabel(icon: "hand.tap", title: localized("触感反馈", "Haptics"), color: .blue)
+                }
+                .keepFitSettingsSeparatorAligned()
+            } header: {
+                Text(localized("通用", "General"))
+            }
+        )
+    }
+
+    private var unitsSection: AnyView {
+        AnyView(
+            Section {
+                energyUnitSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                heightUnitSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+                weightUnitSelectionRow
+                    .keepFitSettingsSeparatorAligned()
+            } header: {
+                Text(localized("单位", "Units"))
+            }
+        )
+    }
+
+    private var dataSection: AnyView {
+        AnyView(
+            Section {
+                Button {
+                    triggerHapticIfNeeded()
+                    showAppleAccountSheet = true
+                } label: {
+                    HStack(spacing: settingsCompactLayout ? 8 : 10) {
+                        appleAccountRowIcon
+                        Text(localized("Apple 账号", "Apple Account"))
+                            .font(settingsTitleFont)
+                            .foregroundStyle(.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
+                            .allowsTightening(true)
+                            .layoutPriority(1)
+                        Spacer(minLength: 8)
+                        Text(appState.accountDisplayTitle)
+                            .font(settingsValueFont)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.72)
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "chevron.right")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .buttonStyle(.plain)
+                .keepFitSettingsSeparatorAligned()
+
+                Toggle(isOn: $healthSyncEnabled) {
+                    settingsToggleLabel(icon: "heart.text.square.fill", title: localized("Apple 健康", "Apple Health"), color: .green)
+                }
+                .keepFitSettingsSeparatorAligned()
+
+                Toggle(isOn: $iCloudSyncEnabled) {
+                    settingsToggleLabel(icon: "icloud.fill", title: cloudSyncTitle, color: .blue)
+                }
+                .disabled(!appState.iCloudAccountAvailable)
+                .keepFitSettingsSeparatorAligned()
+
+                Button {
+                    triggerHapticIfNeeded()
+                    showResetDataSheet = true
+                } label: {
+                    HStack(spacing: settingsCompactLayout ? 8 : 10) {
+                        rowIcon("arrow.counterclockwise.circle.fill", .red)
+                        Text(localized("从头再来", "Start Over"))
+                            .font(settingsTitleFont)
+                            .foregroundStyle(.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
+                            .allowsTightening(true)
+                            .layoutPriority(1)
+                        Spacer(minLength: 8)
+                        Image(systemName: "chevron.right")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .buttonStyle(.plain)
+                .keepFitSettingsSeparatorAligned()
+            } header: {
+                Text(localized("数据", "Data"))
+            } footer: {
+                if appState.isSignedInWithAppleAccount && !appState.iCloudAccountAvailable {
+                    Text(localized("已登录 Apple 账号，但当前设备未登录 iCloud，暂时无法同步到其他设备。", "Signed in with Apple, but iCloud is not signed in on this device. Sync to your other devices is temporarily unavailable."))
+                        .font(.caption)
                         .foregroundStyle(.secondary)
-                    Image(systemName: "chevron.right")
-                        .font(.caption2.weight(.semibold))
+                        .textCase(nil)
+                        .padding(.top, 2)
+                } else if !appState.iCloudAccountAvailable {
+                    Text(localized("当前设备未登录 iCloud，iCloud 同步暂不可用。", "No iCloud account signed in. iCloud sync is unavailable."))
+                        .font(.caption)
                         .foregroundStyle(.secondary)
+                        .textCase(nil)
+                        .padding(.top, 2)
                 }
             }
-            .buttonStyle(.plain)
-            .keepFitSettingsSeparatorAligned()
-
-            Toggle(isOn: $healthSyncEnabled) {
-                settingsToggleLabel(icon: "heart.text.square.fill", title: localized("Apple 健康", "Apple Health"), color: .green)
-            }
-            .keepFitSettingsSeparatorAligned()
-
-            Toggle(isOn: $iCloudSyncEnabled) {
-                settingsToggleLabel(icon: "icloud.fill", title: cloudSyncTitle, color: .blue)
-            }
-            .disabled(!appState.iCloudAccountAvailable)
-            .keepFitSettingsSeparatorAligned()
-
-            Button {
-                triggerHapticIfNeeded()
-                showResetDataSheet = true
-            } label: {
-                HStack(spacing: settingsCompactLayout ? 8 : 10) {
-                    rowIcon("arrow.counterclockwise.circle.fill", .red)
-                    Text(localized("从头再来", "Start Over"))
-                        .font(settingsTitleFont)
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
-                        .allowsTightening(true)
-                        .layoutPriority(1)
-                    Spacer(minLength: 8)
-                    Image(systemName: "chevron.right")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .buttonStyle(.plain)
-            .keepFitSettingsSeparatorAligned()
-        } header: {
-            Text(localized("数据", "Data"))
-        } footer: {
-            if appState.isSignedInWithAppleAccount && !appState.iCloudAccountAvailable {
-                Text(localized("已登录 Apple 账号，但当前设备未登录 iCloud，暂时无法同步到其他设备。", "Signed in with Apple, but iCloud is not signed in on this device. Sync to your other devices is temporarily unavailable."))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .textCase(nil)
-                    .padding(.top, 2)
-            } else if !appState.iCloudAccountAvailable {
-                Text(localized("当前设备未登录 iCloud，iCloud 同步暂不可用。", "No iCloud account signed in. iCloud sync is unavailable."))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .textCase(nil)
-                    .padding(.top, 2)
-            }
-        }
+        )
     }
 
-    private var remindersSection: some View {
-        Section {
+    private var remindersSection: AnyView {
+        AnyView(
+            Section {
             Toggle(isOn: $foodReminderEnabled) {
                 settingsToggleLabel(icon: "fork.knife", title: localized("饮食提醒", "Diet Reminder"), color: .orange)
             }
@@ -559,13 +574,15 @@ struct SettingsView: View {
                 reminder: .summary
             )
             .keepFitSettingsSeparatorAligned()
-        } header: {
-            Text(localized("提醒", "Reminders"))
-        }
+            } header: {
+                Text(localized("提醒", "Reminders"))
+            }
+        )
     }
 
-    private var otherSection: some View {
-        Section {
+    private var otherSection: AnyView {
+        AnyView(
+            Section {
             ShareLink(item: shareText) {
                 HStack(spacing: 10) {
                     rowIcon("square.and.arrow.up", .blue)
@@ -606,13 +623,15 @@ struct SettingsView: View {
             }
             .buttonStyle(.plain)
             .keepFitSettingsSeparatorAligned()
-        } header: {
-            Text(localized("其他", "Other"))
-        }
+            } header: {
+                Text(localized("其他", "Other"))
+            }
+        )
     }
 
-    private var rateKeepFitSection: some View {
-        Section {
+    private var rateKeepFitSection: AnyView {
+        AnyView(
+            Section {
             Button {
                 triggerHapticIfNeeded(style: .medium)
                 requestReview()
@@ -636,7 +655,8 @@ struct SettingsView: View {
             }
             .buttonStyle(.plain)
             .keepFitSettingsSeparatorAligned()
-        }
+            }
+        )
     }
 
     private var avatarSelectionRow: some View {
