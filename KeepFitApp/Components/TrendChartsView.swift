@@ -5,7 +5,6 @@ import UIKit
 private struct CalorieTrendChartModel {
     let displayTrends: [DailyCalorieTrend]
     let indexedDisplayTrends: [(index: Int, entry: DailyCalorieTrend)]
-    let xAxisIndices: [Int]
     let xDomain: ClosedRange<Int>
     let minDeficitRaw: Double
     let maxIntakeRaw: Double
@@ -19,10 +18,6 @@ private struct CalorieTrendChartModel {
         indexedDisplayTrends = displayTrends.enumerated().map { offset, entry in
             (index: offset, entry: entry)
         }
-        let axisLabelCount = maxVisibleXAxisLabels(
-            labels: indexedDisplayTrends.map { compactTrendDateLabel(from: $0.entry.date) }
-        )
-        xAxisIndices = evenlySpacedAxisIndices(count: indexedDisplayTrends.count, maxLabelCount: axisLabelCount)
         xDomain = 0...max(0, indexedDisplayTrends.count - 1)
         minDeficitRaw = displayTrends.map(\.deficit).min() ?? 0
         maxIntakeRaw = displayTrends.map(\.intake).max() ?? 0
@@ -39,17 +34,12 @@ private struct CalorieTrendChartModel {
 
 private struct BodyMetricTrendChartModel {
     let indexedMetrics: [(index: Int, entry: BodyMetricLog)]
-    let xAxisIndices: [Int]
     let xDomain: ClosedRange<Int>
 
     init(bodyMetrics: [BodyMetricLog]) {
         indexedMetrics = bodyMetrics.enumerated().map { offset, entry in
             (index: offset, entry: entry)
         }
-        let axisLabelCount = maxVisibleXAxisLabels(
-            labels: indexedMetrics.map { compactTrendDateLabel(from: $0.entry.date) }
-        )
-        xAxisIndices = evenlySpacedAxisIndices(count: indexedMetrics.count, maxLabelCount: axisLabelCount)
         xDomain = 0...max(0, indexedMetrics.count - 1)
     }
 
@@ -66,6 +56,7 @@ struct CalorieTrendChartView: View {
     @State private var selectedIndex: Int?
     @State private var focusedSeries: TrendSeries?
     @State private var model: CalorieTrendChartModel
+    @State private var chartWidth: CGFloat = UIScreen.main.bounds.width
 
     private var energyUnit: EnergyUnitOption {
         EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
@@ -100,6 +91,13 @@ struct CalorieTrendChartView: View {
 
     private var selectedEntry: DailyCalorieTrend? {
         model.selectedEntry(for: selectedIndex)
+    }
+
+    private var xAxisIndices: [Int] {
+        evenlySpacedAxisIndicesForChart(
+            labels: model.indexedDisplayTrends.map { compactTrendDateLabel(from: $0.entry.date) },
+            chartWidth: chartWidth
+        )
     }
 
     private var yDomain: ClosedRange<Double> {
@@ -176,7 +174,7 @@ struct CalorieTrendChartView: View {
             .chartXSelection(value: $selectedIndex)
             .chartXScale(domain: model.xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
-                AxisMarks(preset: .aligned, values: model.xAxisIndices) { value in
+                AxisMarks(preset: .aligned, values: xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
                         .foregroundStyle(.secondary.opacity(0.18))
                     AxisTick()
@@ -197,6 +195,7 @@ struct CalorieTrendChartView: View {
             .chartYScale(domain: yDomain)
             .chartYAxisLabel(energyUnit.symbol)
             .frame(height: 204)
+            .background(chartWidthBackground(width: $chartWidth))
 
             LazyVGrid(
                 columns: [GridItem(.adaptive(minimum: 96), spacing: 8, alignment: .center)],
@@ -263,6 +262,7 @@ struct WeightTrendChartView: View {
     @AppStorage("keepfit.unit.weight") private var weightUnitRaw = WeightUnitOption.kilogram.rawValue
     @State private var selectedIndex: Int?
     @State private var model: BodyMetricTrendChartModel
+    @State private var chartWidth: CGFloat = UIScreen.main.bounds.width
 
     private var weightUnit: WeightUnitOption {
         WeightUnitOption(rawValue: weightUnitRaw) ?? .kilogram
@@ -276,6 +276,13 @@ struct WeightTrendChartView: View {
 
     private var selectedEntry: BodyMetricLog? {
         model.selectedEntry(for: selectedIndex)
+    }
+
+    private var xAxisIndices: [Int] {
+        evenlySpacedAxisIndicesForChart(
+            labels: model.indexedMetrics.map { compactTrendDateLabel(from: $0.entry.date) },
+            chartWidth: chartWidth
+        )
     }
 
     var body: some View {
@@ -311,7 +318,7 @@ struct WeightTrendChartView: View {
             .chartXSelection(value: $selectedIndex)
             .chartXScale(domain: model.xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
-                AxisMarks(preset: .aligned, values: model.xAxisIndices) { value in
+                AxisMarks(preset: .aligned, values: xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
                         .foregroundStyle(.secondary.opacity(0.18))
                     AxisTick()
@@ -331,6 +338,7 @@ struct WeightTrendChartView: View {
             }
             .chartYAxisLabel(weightUnit.symbol)
             .frame(height: 184)
+            .background(chartWidthBackground(width: $chartWidth))
 
             if let selectedEntry {
                 Text(
@@ -354,6 +362,7 @@ struct BodyFatTrendChartView: View {
     let targetBodyFatPercent: Double
     @State private var selectedIndex: Int?
     @State private var model: BodyMetricTrendChartModel
+    @State private var chartWidth: CGFloat = UIScreen.main.bounds.width
 
     init(bodyMetrics: [BodyMetricLog], targetBodyFatPercent: Double) {
         self.bodyMetrics = bodyMetrics
@@ -363,6 +372,13 @@ struct BodyFatTrendChartView: View {
 
     private var selectedEntry: BodyMetricLog? {
         model.selectedEntry(for: selectedIndex)
+    }
+
+    private var xAxisIndices: [Int] {
+        evenlySpacedAxisIndicesForChart(
+            labels: model.indexedMetrics.map { compactTrendDateLabel(from: $0.entry.date) },
+            chartWidth: chartWidth
+        )
     }
 
     var body: some View {
@@ -398,7 +414,7 @@ struct BodyFatTrendChartView: View {
             .chartXSelection(value: $selectedIndex)
             .chartXScale(domain: model.xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
-                AxisMarks(preset: .aligned, values: model.xAxisIndices) { value in
+                AxisMarks(preset: .aligned, values: xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
                         .foregroundStyle(.secondary.opacity(0.18))
                     AxisTick()
@@ -418,6 +434,7 @@ struct BodyFatTrendChartView: View {
             }
             .chartYAxisLabel("%")
             .frame(height: 184)
+            .background(chartWidthBackground(width: $chartWidth))
 
             if let selectedEntry {
                 Text("\(Formatters.monthDay.string(from: selectedEntry.date))  ·  \(String(format: "%.1f", selectedEntry.bodyFatPercent)) %")
@@ -431,6 +448,18 @@ struct BodyFatTrendChartView: View {
                 self.selectedIndex = min(selectedIndex, max(0, model.indexedMetrics.count - 1))
             }
         }
+    }
+}
+
+private func chartWidthBackground(width: Binding<CGFloat>) -> some View {
+    GeometryReader { proxy in
+        Color.clear
+            .onAppear {
+                width.wrappedValue = proxy.size.width
+            }
+            .onChange(of: proxy.size.width) { _, newWidth in
+                width.wrappedValue = newWidth
+            }
     }
 }
 
@@ -468,18 +497,42 @@ private func compactTrendDateLabel(from date: Date) -> String {
     return "\(month)/\(day)"
 }
 
+private func evenlySpacedAxisIndicesForChart(
+    labels: [String],
+    chartWidth: CGFloat,
+    plotStartPadding: CGFloat = 46,
+    plotEndPadding: CGFloat = 46,
+    trailingAxisReserve: CGFloat = 44,
+    fontSize: CGFloat = 11,
+    interLabelSpacing: CGFloat = 8
+) -> [Int] {
+    let maxLabelCount = maxVisibleXAxisLabels(
+        labels: labels,
+        chartWidth: chartWidth,
+        plotStartPadding: plotStartPadding,
+        plotEndPadding: plotEndPadding,
+        trailingAxisReserve: trailingAxisReserve,
+        fontSize: fontSize,
+        interLabelSpacing: interLabelSpacing
+    )
+    return evenlySpacedAxisIndices(count: labels.count, maxLabelCount: maxLabelCount)
+}
+
 private func maxVisibleXAxisLabels(
     labels: [String],
-    chartHorizontalPadding: CGFloat = 68,
-    plotInnerPadding: CGFloat = 92,
-    minLabelCharacters: Int = 4,
+    chartWidth: CGFloat,
+    plotStartPadding: CGFloat = 46,
+    plotEndPadding: CGFloat = 46,
+    trailingAxisReserve: CGFloat = 44,
     fontSize: CGFloat = 11,
-    interLabelSpacing: CGFloat = 6
+    interLabelSpacing: CGFloat = 8
 ) -> Int {
-    let screenWidth = UIScreen.main.bounds.width
-    let plotWidth = max(120, screenWidth - chartHorizontalPadding - plotInnerPadding)
-    let longestLabelCharacters = max(minLabelCharacters, labels.map(\.count).max() ?? minLabelCharacters)
-    let estimatedLabelWidth = max(28, CGFloat(longestLabelCharacters) * fontSize * 0.58)
-    let requiredSlotWidth = max(32, estimatedLabelWidth + interLabelSpacing)
-    return max(2, Int(floor(plotWidth / requiredSlotWidth)))
+    guard !labels.isEmpty else { return 0 }
+    let availablePlotWidth = max(120, chartWidth - plotStartPadding - plotEndPadding - trailingAxisReserve)
+    let maxMeasuredWidth = labels
+        .map { keepFitMeasuredTextWidth($0, size: fontSize, monospacedDigits: true) }
+        .max() ?? 28
+    let requiredSlotWidth = max(34, maxMeasuredWidth + interLabelSpacing)
+    let maxVisible = Int(floor((availablePlotWidth + interLabelSpacing) / requiredSlotWidth))
+    return max(2, min(labels.count, maxVisible))
 }
