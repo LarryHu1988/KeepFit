@@ -84,7 +84,7 @@ struct SettingsView: View {
     @State private var didPrimeSettingsView = false
     @State private var deferredSettingsSetupTask: Task<Void, Never>?
 
-    private let feedbackEmail = "longyu.huihui@gmail.com"
+    private let feedbackEmail = "keepfit@larryhu.com"
 
     private var settingsCompactLayout: Bool {
         UIScreen.main.bounds.width <= 390 || dynamicTypeSize >= .xLarge
@@ -139,9 +139,7 @@ struct SettingsView: View {
     }
 
     private var cloudSyncTitle: String {
-        appState.isSignedInWithAppleAccount
-            ? localized("账号同步", "Account Sync")
-            : localized("iCloud 同步", "iCloud Sync")
+        localized("iCloud 同步", "iCloud Sync")
     }
 
     private var cloudSyncSummary: String {
@@ -2583,6 +2581,11 @@ struct SettingsView: View {
             healthSyncEnabled = false
             healthSyncAlertMessage = errorMessage
             showHealthSyncAlert = true
+        } else {
+            let effective = appState.isHealthSyncEnabled
+            if healthSyncEnabled != effective {
+                healthSyncEnabled = effective
+            }
         }
     }
 

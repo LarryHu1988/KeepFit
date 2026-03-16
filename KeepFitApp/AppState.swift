@@ -488,11 +488,13 @@ final class AppState: ObservableObject {
     func setHealthSyncEnabled(_ enabled: Bool) async -> String? {
         if enabled {
             guard HKHealthStore.isHealthDataAvailable() else {
+                defaults.set(false, forKey: SyncKeys.healthEnabled)
                 return localized("当前设备不支持 Apple 健康。", "Apple Health is not available on this device.")
             }
             do {
                 let granted = try await requestHealthAuthorization()
                 guard granted else {
+                    defaults.set(false, forKey: SyncKeys.healthEnabled)
                     return localized("未获得 Apple 健康权限。", "Apple Health permission was not granted.")
                 }
                 defaults.set(true, forKey: SyncKeys.healthEnabled)
@@ -501,6 +503,7 @@ final class AppState: ObservableObject {
                 await syncHealthDataIfEnabled()
                 return nil
             } catch {
+                defaults.set(false, forKey: SyncKeys.healthEnabled)
                 return localized("健康数据授权失败，请稍后重试。", "Failed to authorize Apple Health. Please try again.")
             }
         }
