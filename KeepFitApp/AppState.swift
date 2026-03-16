@@ -495,7 +495,10 @@ final class AppState: ObservableObject {
                 let granted = try await requestHealthAuthorization()
                 guard granted else {
                     defaults.set(false, forKey: SyncKeys.healthEnabled)
-                    return localized("未获得 Apple 健康权限。", "Apple Health permission was not granted.")
+                    return localized(
+                        "未获得 KeepFit 所需的 Apple 健康权限，请在授权界面中允许相关项目后再开启。",
+                        "KeepFit did not receive the Apple Health permissions it needs. Please allow the requested items and try again."
+                    )
                 }
                 defaults.set(true, forKey: SyncKeys.healthEnabled)
                 await startHealthObserversIfNeeded()
@@ -1632,9 +1635,36 @@ final class AppState: ObservableObject {
                     continuation.resume(throwing: error)
                     return
                 }
-                continuation.resume(returning: success)
+                guard success else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                Task { @MainActor in
+                    continuation.resume(returning: self.hasRequiredHealthAuthorization())
+                }
             }
         }
+    }
+
+    private func hasRequiredHealthAuthorization() -> Bool {
+        guard HKHealthStore.isHealthDataAvailable() else { return false }
+        return healthRequiredShareTypes.allSatisfy { sampleType in
+            healthStore.authorizationStatus(for: sampleType) == .sharingAuthorized
+        }
+    }
+
+    private var healthRequiredShareTypes: [HKSampleType] {
+        var types: [HKSampleType] = [HKObjectType.workoutType()]
+        if let dietary = HKObjectType.quantityType(forIdentifier: .dietaryEnergyConsumed) {
+            types.append(dietary)
+        }
+        if let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass) {
+            types.append(bodyMass)
+        }
+        if let bodyFat = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage) {
+            types.append(bodyFat)
+        }
+        return types
     }
 
     private var healthReadTypes: Set<HKObjectType> {
