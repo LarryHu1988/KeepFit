@@ -209,7 +209,7 @@ struct ExerciseLog: Identifiable, Codable {
     }
 }
 
-struct BodyMetricLog: Identifiable, Codable {
+struct BodyMetricLog: Identifiable, Codable, Equatable, Hashable {
     var id: UUID
     var date: Date
     var weightKg: Double

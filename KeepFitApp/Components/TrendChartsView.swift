@@ -2,14 +2,78 @@ import Charts
 import SwiftUI
 import UIKit
 
+private struct CalorieTrendChartModel {
+    let displayTrends: [DailyCalorieTrend]
+    let indexedDisplayTrends: [(index: Int, entry: DailyCalorieTrend)]
+    let xAxisIndices: [Int]
+    let xDomain: ClosedRange<Int>
+    let minDeficitRaw: Double
+    let maxIntakeRaw: Double
+    let maxExpenditureRaw: Double
+    let maxDeficitRaw: Double
+
+    init(calorieTrends: [DailyCalorieTrend]) {
+        displayTrends = calorieTrends.filter { trend in
+            trend.intake > 0.01 || trend.expenditure > 0.01
+        }
+        indexedDisplayTrends = displayTrends.enumerated().map { offset, entry in
+            (index: offset, entry: entry)
+        }
+        let axisLabelCount = maxVisibleXAxisLabels(
+            labels: indexedDisplayTrends.map { compactTrendDateLabel(from: $0.entry.date) }
+        )
+        xAxisIndices = evenlySpacedAxisIndices(count: indexedDisplayTrends.count, maxLabelCount: axisLabelCount)
+        xDomain = 0...max(0, indexedDisplayTrends.count - 1)
+        minDeficitRaw = displayTrends.map(\.deficit).min() ?? 0
+        maxIntakeRaw = displayTrends.map(\.intake).max() ?? 0
+        maxExpenditureRaw = displayTrends.map(\.expenditure).max() ?? 0
+        maxDeficitRaw = displayTrends.map(\.deficit).max() ?? 0
+    }
+
+    func selectedEntry(for selectedIndex: Int?) -> DailyCalorieTrend? {
+        guard let selectedIndex, !indexedDisplayTrends.isEmpty else { return nil }
+        let clampedIndex = min(max(selectedIndex, 0), indexedDisplayTrends.count - 1)
+        return indexedDisplayTrends[clampedIndex].entry
+    }
+}
+
+private struct BodyMetricTrendChartModel {
+    let indexedMetrics: [(index: Int, entry: BodyMetricLog)]
+    let xAxisIndices: [Int]
+    let xDomain: ClosedRange<Int>
+
+    init(bodyMetrics: [BodyMetricLog]) {
+        indexedMetrics = bodyMetrics.enumerated().map { offset, entry in
+            (index: offset, entry: entry)
+        }
+        let axisLabelCount = maxVisibleXAxisLabels(
+            labels: indexedMetrics.map { compactTrendDateLabel(from: $0.entry.date) }
+        )
+        xAxisIndices = evenlySpacedAxisIndices(count: indexedMetrics.count, maxLabelCount: axisLabelCount)
+        xDomain = 0...max(0, indexedMetrics.count - 1)
+    }
+
+    func selectedEntry(for selectedIndex: Int?) -> BodyMetricLog? {
+        guard let selectedIndex, !indexedMetrics.isEmpty else { return nil }
+        let clampedIndex = min(max(selectedIndex, 0), indexedMetrics.count - 1)
+        return indexedMetrics[clampedIndex].entry
+    }
+}
+
 struct CalorieTrendChartView: View {
     let calorieTrends: [DailyCalorieTrend]
     @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
     @State private var selectedIndex: Int?
     @State private var focusedSeries: TrendSeries?
+    @State private var model: CalorieTrendChartModel
 
     private var energyUnit: EnergyUnitOption {
         EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
+    }
+
+    init(calorieTrends: [DailyCalorieTrend]) {
+        self.calorieTrends = calorieTrends
+        _model = State(initialValue: CalorieTrendChartModel(calorieTrends: calorieTrends))
     }
 
     private enum TrendSeries {
@@ -34,47 +98,16 @@ struct CalorieTrendChartView: View {
         energyConvertedValue(fromKcal: value, unit: energyUnit)
     }
 
-    private var indexedDisplayTrends: [(index: Int, entry: DailyCalorieTrend)] {
-        displayTrends.enumerated().map { offset, entry in
-            (index: offset, entry: entry)
-        }
-    }
-
     private var selectedEntry: DailyCalorieTrend? {
-        guard
-            let selectedIndex,
-            !indexedDisplayTrends.isEmpty
-        else { return nil }
-        let clampedIndex = min(max(selectedIndex, 0), indexedDisplayTrends.count - 1)
-        return indexedDisplayTrends[clampedIndex].entry
-    }
-
-    private var displayTrends: [DailyCalorieTrend] {
-        calorieTrends.filter { trend in
-            trend.intake > 0.01 || trend.expenditure > 0.01
-        }
-    }
-
-    private var axisLabelCount: Int {
-        maxVisibleXAxisLabels(
-            labels: indexedDisplayTrends.map { compactTrendDateLabel(from: $0.entry.date) }
-        )
-    }
-
-    private var xAxisIndices: [Int] {
-        evenlySpacedAxisIndices(count: indexedDisplayTrends.count, maxLabelCount: axisLabelCount)
-    }
-
-    private var xDomain: ClosedRange<Int> {
-        0...max(0, indexedDisplayTrends.count - 1)
+        model.selectedEntry(for: selectedIndex)
     }
 
     private var yDomain: ClosedRange<Double> {
-        let minDeficit = displayTrends.map { toDisplayEnergy($0.deficit) }.min() ?? 0
+        let minDeficit = toDisplayEnergy(model.minDeficitRaw)
         let maxValue = [
-            displayTrends.map { toDisplayEnergy($0.intake) }.max() ?? 0,
-            displayTrends.map { toDisplayEnergy($0.expenditure) }.max() ?? 0,
-            displayTrends.map { toDisplayEnergy($0.deficit) }.max() ?? 0
+            toDisplayEnergy(model.maxIntakeRaw),
+            toDisplayEnergy(model.maxExpenditureRaw),
+            toDisplayEnergy(model.maxDeficitRaw)
         ].max() ?? 0
         let lower = min(minDeficit * 1.12, 0)
         let upper = max(200, maxValue * 1.12)
@@ -84,7 +117,7 @@ struct CalorieTrendChartView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Chart {
-                ForEach(indexedDisplayTrends, id: \.entry.id) { point in
+                ForEach(model.indexedDisplayTrends, id: \.entry.id) { point in
                     BarMark(
                         x: .value(localized("索引", "Index"), point.index),
                         y: .value(localized("赤字", "Deficit"), toDisplayEnergy(point.entry.deficit)),
@@ -94,7 +127,7 @@ struct CalorieTrendChartView: View {
                     .opacity(seriesOpacity(.deficit))
                 }
 
-                ForEach(indexedDisplayTrends, id: \.entry.id) { point in
+                ForEach(model.indexedDisplayTrends, id: \.entry.id) { point in
                     LineMark(
                         x: .value(localized("索引", "Index"), point.index),
                         y: .value(localized("摄入", "Intake"), toDisplayEnergy(point.entry.intake)),
@@ -114,7 +147,7 @@ struct CalorieTrendChartView: View {
                     .opacity(seriesOpacity(.intake))
                 }
 
-                ForEach(indexedDisplayTrends, id: \.entry.id) { point in
+                ForEach(model.indexedDisplayTrends, id: \.entry.id) { point in
                     LineMark(
                         x: .value(localized("索引", "Index"), point.index),
                         y: .value(localized("支出", "Expenditure"), toDisplayEnergy(point.entry.expenditure)),
@@ -141,9 +174,9 @@ struct CalorieTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedIndex)
-            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
+            .chartXScale(domain: model.xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
-                AxisMarks(preset: .aligned, values: xAxisIndices) { value in
+                AxisMarks(preset: .aligned, values: model.xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
                         .foregroundStyle(.secondary.opacity(0.18))
                     AxisTick()
@@ -151,9 +184,9 @@ struct CalorieTrendChartView: View {
                     AxisValueLabel(anchor: .center, collisionResolution: .disabled) {
                         if
                             let index = value.as(Int.self),
-                            indexedDisplayTrends.indices.contains(index)
+                            model.indexedDisplayTrends.indices.contains(index)
                         {
-                            Text(compactTrendDateLabel(from: indexedDisplayTrends[index].entry.date))
+                            Text(compactTrendDateLabel(from: model.indexedDisplayTrends[index].entry.date))
                                 .font(.system(size: 11, weight: .regular, design: .rounded))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.7)
@@ -190,6 +223,12 @@ struct CalorieTrendChartView: View {
                 .padding(.top, 2)
             }
         }
+        .onChange(of: calorieTrends) { _, newValue in
+            model = CalorieTrendChartModel(calorieTrends: newValue)
+            if let selectedIndex {
+                self.selectedIndex = min(selectedIndex, max(0, model.indexedDisplayTrends.count - 1))
+            }
+        }
     }
 
     private func legendButton(title: String, systemImage: String, color: Color, series: TrendSeries) -> some View {
@@ -223,38 +262,20 @@ struct WeightTrendChartView: View {
     let targetWeightKg: Double
     @AppStorage("keepfit.unit.weight") private var weightUnitRaw = WeightUnitOption.kilogram.rawValue
     @State private var selectedIndex: Int?
+    @State private var model: BodyMetricTrendChartModel
 
     private var weightUnit: WeightUnitOption {
         WeightUnitOption(rawValue: weightUnitRaw) ?? .kilogram
     }
 
-    private var indexedMetrics: [(index: Int, entry: BodyMetricLog)] {
-        bodyMetrics.enumerated().map { offset, entry in
-            (index: offset, entry: entry)
-        }
+    init(bodyMetrics: [BodyMetricLog], targetWeightKg: Double) {
+        self.bodyMetrics = bodyMetrics
+        self.targetWeightKg = targetWeightKg
+        _model = State(initialValue: BodyMetricTrendChartModel(bodyMetrics: bodyMetrics))
     }
 
     private var selectedEntry: BodyMetricLog? {
-        guard
-            let selectedIndex,
-            !indexedMetrics.isEmpty
-        else { return nil }
-        let clampedIndex = min(max(selectedIndex, 0), indexedMetrics.count - 1)
-        return indexedMetrics[clampedIndex].entry
-    }
-
-    private var axisLabelCount: Int {
-        maxVisibleXAxisLabels(
-            labels: indexedMetrics.map { compactTrendDateLabel(from: $0.entry.date) }
-        )
-    }
-
-    private var xAxisIndices: [Int] {
-        evenlySpacedAxisIndices(count: indexedMetrics.count, maxLabelCount: axisLabelCount)
-    }
-
-    private var xDomain: ClosedRange<Int> {
-        0...max(0, indexedMetrics.count - 1)
+        model.selectedEntry(for: selectedIndex)
     }
 
     var body: some View {
@@ -266,7 +287,7 @@ struct WeightTrendChartView: View {
                 .foregroundStyle(.mint.opacity(0.58))
                 .lineStyle(StrokeStyle(lineWidth: 1.2, dash: [6, 4]))
 
-                ForEach(indexedMetrics, id: \.entry.id) { point in
+                ForEach(model.indexedMetrics, id: \.entry.id) { point in
                     LineMark(
                         x: .value(localized("索引", "Index"), point.index),
                         y: .value(localized("体重", "Weight"), weightDisplayValue(fromKg: point.entry.weightKg, unit: weightUnit))
@@ -288,9 +309,9 @@ struct WeightTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedIndex)
-            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
+            .chartXScale(domain: model.xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
-                AxisMarks(preset: .aligned, values: xAxisIndices) { value in
+                AxisMarks(preset: .aligned, values: model.xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
                         .foregroundStyle(.secondary.opacity(0.18))
                     AxisTick()
@@ -298,9 +319,9 @@ struct WeightTrendChartView: View {
                     AxisValueLabel(anchor: .center, collisionResolution: .disabled) {
                         if
                             let index = value.as(Int.self),
-                            indexedMetrics.indices.contains(index)
+                            model.indexedMetrics.indices.contains(index)
                         {
-                            Text(compactTrendDateLabel(from: indexedMetrics[index].entry.date))
+                            Text(compactTrendDateLabel(from: model.indexedMetrics[index].entry.date))
                                 .font(.system(size: 11, weight: .regular, design: .rounded))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.7)
@@ -319,6 +340,12 @@ struct WeightTrendChartView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .onChange(of: bodyMetrics) { _, newValue in
+            model = BodyMetricTrendChartModel(bodyMetrics: newValue)
+            if let selectedIndex {
+                self.selectedIndex = min(selectedIndex, max(0, model.indexedMetrics.count - 1))
+            }
+        }
     }
 }
 
@@ -326,34 +353,16 @@ struct BodyFatTrendChartView: View {
     let bodyMetrics: [BodyMetricLog]
     let targetBodyFatPercent: Double
     @State private var selectedIndex: Int?
+    @State private var model: BodyMetricTrendChartModel
 
-    private var indexedMetrics: [(index: Int, entry: BodyMetricLog)] {
-        bodyMetrics.enumerated().map { offset, entry in
-            (index: offset, entry: entry)
-        }
+    init(bodyMetrics: [BodyMetricLog], targetBodyFatPercent: Double) {
+        self.bodyMetrics = bodyMetrics
+        self.targetBodyFatPercent = targetBodyFatPercent
+        _model = State(initialValue: BodyMetricTrendChartModel(bodyMetrics: bodyMetrics))
     }
 
     private var selectedEntry: BodyMetricLog? {
-        guard
-            let selectedIndex,
-            !indexedMetrics.isEmpty
-        else { return nil }
-        let clampedIndex = min(max(selectedIndex, 0), indexedMetrics.count - 1)
-        return indexedMetrics[clampedIndex].entry
-    }
-
-    private var axisLabelCount: Int {
-        maxVisibleXAxisLabels(
-            labels: indexedMetrics.map { compactTrendDateLabel(from: $0.entry.date) }
-        )
-    }
-
-    private var xAxisIndices: [Int] {
-        evenlySpacedAxisIndices(count: indexedMetrics.count, maxLabelCount: axisLabelCount)
-    }
-
-    private var xDomain: ClosedRange<Int> {
-        0...max(0, indexedMetrics.count - 1)
+        model.selectedEntry(for: selectedIndex)
     }
 
     var body: some View {
@@ -365,7 +374,7 @@ struct BodyFatTrendChartView: View {
                 .foregroundStyle(.pink.opacity(0.58))
                 .lineStyle(StrokeStyle(lineWidth: 1.2, dash: [6, 4]))
 
-                ForEach(indexedMetrics, id: \.entry.id) { point in
+                ForEach(model.indexedMetrics, id: \.entry.id) { point in
                     LineMark(
                         x: .value(localized("索引", "Index"), point.index),
                         y: .value(localized("体脂", "Body Fat"), point.entry.bodyFatPercent)
@@ -387,9 +396,9 @@ struct BodyFatTrendChartView: View {
                 }
             }
             .chartXSelection(value: $selectedIndex)
-            .chartXScale(domain: xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
+            .chartXScale(domain: model.xDomain, range: .plotDimension(startPadding: 46, endPadding: 46))
             .chartXAxis {
-                AxisMarks(preset: .aligned, values: xAxisIndices) { value in
+                AxisMarks(preset: .aligned, values: model.xAxisIndices) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.8, dash: [2, 3]))
                         .foregroundStyle(.secondary.opacity(0.18))
                     AxisTick()
@@ -397,9 +406,9 @@ struct BodyFatTrendChartView: View {
                     AxisValueLabel(anchor: .center, collisionResolution: .disabled) {
                         if
                             let index = value.as(Int.self),
-                            indexedMetrics.indices.contains(index)
+                            model.indexedMetrics.indices.contains(index)
                         {
-                            Text(compactTrendDateLabel(from: indexedMetrics[index].entry.date))
+                            Text(compactTrendDateLabel(from: model.indexedMetrics[index].entry.date))
                                 .font(.system(size: 11, weight: .regular, design: .rounded))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.7)
@@ -414,6 +423,12 @@ struct BodyFatTrendChartView: View {
                 Text("\(Formatters.monthDay.string(from: selectedEntry.date))  ·  \(String(format: "%.1f", selectedEntry.bodyFatPercent)) %")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+            }
+        }
+        .onChange(of: bodyMetrics) { _, newValue in
+            model = BodyMetricTrendChartModel(bodyMetrics: newValue)
+            if let selectedIndex {
+                self.selectedIndex = min(selectedIndex, max(0, model.indexedMetrics.count - 1))
             }
         }
     }

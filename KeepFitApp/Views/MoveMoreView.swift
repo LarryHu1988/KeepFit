@@ -130,8 +130,7 @@ struct MoveMoreView: View {
             selectedDate: $selectedDate,
             accent: .green,
             indicatorColor: { date in
-                let logs = appState.exerciseLogs(on: date)
-                guard !logs.isEmpty else { return nil }
+                guard appState.hasExerciseRecord(on: date) else { return nil }
                 let burned = appState.dayExercise(on: date).caloriesBurned
                 return burned >= appState.profile.dailyExerciseGoal ? .green : .red
             }

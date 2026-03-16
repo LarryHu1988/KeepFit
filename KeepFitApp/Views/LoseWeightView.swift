@@ -112,7 +112,7 @@ struct LoseWeightView: View {
             customStart: calorieCustomStartDate,
             customEnd: calorieCustomEndDate
         )
-        return appState.calorieTrends(days: 400)
+        return calorieTrendSource
             .filter { trend in
                 let day = trend.date.startOfDayInCurrentCalendar
                 guard day >= bounds.start, day <= bounds.end else { return false }
@@ -126,7 +126,7 @@ struct LoseWeightView: View {
             customStart: weightCustomStartDate,
             customEnd: weightCustomEndDate
         )
-        return appState.weightTrends(limit: 400)
+        return bodyMetricTrendSource
             .filter { metric in
                 let day = metric.date.startOfDayInCurrentCalendar
                 return day >= bounds.start && day <= bounds.end
@@ -139,11 +139,34 @@ struct LoseWeightView: View {
             customStart: bodyFatCustomStartDate,
             customEnd: bodyFatCustomEndDate
         )
-        return appState.weightTrends(limit: 400)
+        return bodyMetricTrendSource
             .filter { metric in
                 let day = metric.date.startOfDayInCurrentCalendar
                 return day >= bounds.start && day <= bounds.end
             }
+    }
+
+    private var calorieTrendSource: [DailyCalorieTrend] {
+        appState.calorieTrends(days: 400)
+    }
+
+    private var bodyMetricTrendSource: [BodyMetricLog] {
+        appState.weightTrends(limit: 400)
+    }
+
+    private var monthCalendarStates: [Date: CalendarHeatmapDayState] {
+        Dictionary(
+            uniqueKeysWithValues: appState.monthlyGrid(for: monthCursor).compactMap { value in
+                guard let date = value?.startOfDayInCurrentCalendar else { return nil }
+                return (
+                    date,
+                    CalendarHeatmapDayState(
+                        balance: appState.dailyBalance(on: date),
+                        hasRecord: appState.hasAnyFoodOrExerciseRecord(on: date)
+                    )
+                )
+            }
+        )
     }
 
     var body: some View {
@@ -260,7 +283,7 @@ struct LoseWeightView: View {
             selectedDate: $selectedDate,
             accent: .blue,
             indicatorColor: { date in
-                let hasData = !appState.foodLogs(on: date).isEmpty || !appState.exerciseLogs(on: date).isEmpty
+                let hasData = appState.hasAnyFoodOrExerciseRecord(on: date)
                 guard hasData else { return nil }
                 return appState.dailyBalance(on: date) <= 0 ? .green : .red
             }
@@ -376,12 +399,7 @@ struct LoseWeightView: View {
                 CalendarHeatmapView(
                     cells: appState.monthlyGrid(for: monthCursor),
                     selectedDate: $selectedDate,
-                    dayBalance: { date in
-                        appState.dailyBalance(on: date)
-                    },
-                    hasRecord: { date in
-                        !appState.foodLogs(on: date).isEmpty || !appState.exerciseLogs(on: date).isEmpty
-                    }
+                    dayStates: monthCalendarStates
                 )
             }
         }

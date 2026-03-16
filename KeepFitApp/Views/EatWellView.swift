@@ -153,8 +153,7 @@ struct EatWellView: View {
             selectedDate: $selectedDate,
             accent: .orange,
             indicatorColor: { date in
-                let logs = appState.foodLogs(on: date)
-                guard !logs.isEmpty else { return nil }
+                guard appState.hasFoodRecord(on: date) else { return nil }
                 let intake = appState.dayNutrition(on: date).calories
                 return intake > appState.profile.recommendedIntakeForFatLoss ? .red : .green
             }

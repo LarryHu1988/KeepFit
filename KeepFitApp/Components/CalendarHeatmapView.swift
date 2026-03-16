@@ -1,10 +1,14 @@
 import SwiftUI
 
+struct CalendarHeatmapDayState {
+    let balance: Double
+    let hasRecord: Bool
+}
+
 struct CalendarHeatmapView: View {
     let cells: [Date?]
     @Binding var selectedDate: Date
-    let dayBalance: (Date) -> Double
-    let hasRecord: (Date) -> Bool
+    let dayStates: [Date: CalendarHeatmapDayState]
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
     private var weekTitles: [String] {
@@ -45,8 +49,9 @@ struct CalendarHeatmapView: View {
     private func calendarCell(for date: Date) -> some View {
         let isSelected = date.isSameDay(as: selectedDate)
         let isFuture = date.isFutureDayInCurrentCalendar
-        let balance = dayBalance(date)
-        let hasData = hasRecord(date) && !isFuture
+        let dayState = dayStates[date.startOfDayInCurrentCalendar]
+        let balance = dayState?.balance ?? 0
+        let hasData = (dayState?.hasRecord ?? false) && !isFuture
         let balanceDotColor: Color = {
             if balance <= -80 { return .green }
             if balance >= 80 { return .red }

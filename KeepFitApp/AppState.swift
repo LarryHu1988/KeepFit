@@ -20,7 +20,7 @@ struct DailyExerciseRecord: Identifiable {
     let minutes: Double
 }
 
-struct DailyCalorieTrend: Identifiable {
+struct DailyCalorieTrend: Identifiable, Equatable, Hashable {
     var id: Date { date }
     let date: Date
     let intake: Double
@@ -28,7 +28,7 @@ struct DailyCalorieTrend: Identifiable {
     let deficit: Double
 }
 
-struct DataDeletionSummary {
+struct DataDeletionSummary: Equatable {
     let foodLogCount: Int
     let exerciseLogCount: Int
     let bodyMetricCount: Int
@@ -36,6 +36,8 @@ struct DataDeletionSummary {
     var totalCount: Int {
         foodLogCount + exerciseLogCount + bodyMetricCount
     }
+
+    static let empty = DataDeletionSummary(foodLogCount: 0, exerciseLogCount: 0, bodyMetricCount: 0)
 }
 
 private struct KeepFitCloudSnapshot: Codable {
@@ -90,6 +92,40 @@ struct KeepFitAccount: Codable {
 
 @MainActor
 final class AppState: ObservableObject {
+    private struct RecordedDataOverview {
+        var earliestDate: Date?
+        var latestDate: Date?
+        var summary: DataDeletionSummary
+
+        static let empty = RecordedDataOverview(earliestDate: nil, latestDate: nil, summary: .empty)
+    }
+
+    private struct DailyMetricsCache {
+        var foodLogsByDay: [Date: [FoodLog]]
+        var exerciseLogsByDay: [Date: [ExerciseLog]]
+        var nutritionByDay: [Date: DayNutritionSummary]
+        var exerciseByDay: [Date: DayFitnessSummary]
+        var dailyNutritionRecordsDescending: [DailyNutritionRecord]
+        var dailyExerciseRecordsDescending: [DailyExerciseRecord]
+        var calorieTrendsAscending: [DailyCalorieTrend]
+        var latestBodyMetricByDay: [Date: BodyMetricLog]
+        var bodyMetricsAscending: [BodyMetricLog]
+        var daysWithAnyActivity: Set<Date>
+
+        static let empty = DailyMetricsCache(
+            foodLogsByDay: [:],
+            exerciseLogsByDay: [:],
+            nutritionByDay: [:],
+            exerciseByDay: [:],
+            dailyNutritionRecordsDescending: [],
+            dailyExerciseRecordsDescending: [],
+            calorieTrendsAscending: [],
+            latestBodyMetricByDay: [:],
+            bodyMetricsAscending: [],
+            daysWithAnyActivity: []
+        )
+    }
+
     private enum SyncKeys {
         static let iCloudEnabled = "keepfit.sync.iCloud"
         static let healthEnabled = "keepfit.sync.healthKit"
@@ -141,6 +177,7 @@ final class AppState: ObservableObject {
 
     @Published var profile: UserProfile {
         didSet {
+            rebuildDailyMetricsCache()
             store.save(profile, for: .profile)
             handleLocalStateDidChange()
             refreshDynamicRemindersIfNeeded()
@@ -163,6 +200,8 @@ final class AppState: ObservableObject {
 
     @Published var foodLogs: [FoodLog] {
         didSet {
+            rebuildRecordedDataOverview()
+            rebuildDailyMetricsCache()
             store.save(foodLogs, for: .foodLogs)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
@@ -172,6 +211,8 @@ final class AppState: ObservableObject {
 
     @Published var exerciseLogs: [ExerciseLog] {
         didSet {
+            rebuildRecordedDataOverview()
+            rebuildDailyMetricsCache()
             store.save(exerciseLogs, for: .exerciseLogs)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
@@ -181,6 +222,8 @@ final class AppState: ObservableObject {
 
     @Published var bodyMetricLogs: [BodyMetricLog] {
         didSet {
+            rebuildRecordedDataOverview()
+            rebuildDailyMetricsCache()
             store.save(bodyMetricLogs, for: .bodyMetrics)
             handleLocalStateDidChange()
             scheduleHealthExportIfNeeded()
@@ -218,6 +261,8 @@ final class AppState: ObservableObject {
     private var isRunningHealthSync = false
     private var localMutationAt: Date = .distantPast
     private var healthObserverQueries: [HKObserverQuery] = []
+    private var recordedDataOverview = RecordedDataOverview.empty
+    private var dailyMetricsCache = DailyMetricsCache.empty
 
     init() {
         let loadedProfile = store.load(UserProfile.self, for: .profile) ?? .default
@@ -235,6 +280,8 @@ final class AppState: ObservableObject {
         exerciseLogs = loadedExerciseLogs.sorted(by: { $0.date > $1.date })
         bodyMetricLogs = loadedBodyMetrics.sorted(by: { $0.date < $1.date })
         account = loadedAccount
+        rebuildRecordedDataOverview()
+        rebuildDailyMetricsCache()
 
         let savedLocalMutationTS = defaults.double(forKey: SyncKeys.localMutationTS)
         localMutationAt = savedLocalMutationTS > 0 ? Date(timeIntervalSince1970: savedLocalMutationTS) : .distantPast
@@ -545,17 +592,25 @@ final class AppState: ObservableObject {
     }
 
     var earliestRecordedDate: Date? {
-        let dates = foodLogs.map(\.date) + exerciseLogs.map(\.date) + bodyMetricLogs.map(\.date)
-        return dates.min()?.startOfDayInCurrentCalendar
+        recordedDataOverview.earliestDate
     }
 
     var latestRecordedDate: Date? {
-        let dates = foodLogs.map(\.date) + exerciseLogs.map(\.date) + bodyMetricLogs.map(\.date)
-        return dates.max()?.startOfDayInCurrentCalendar
+        recordedDataOverview.latestDate
+    }
+
+    var allRecordedDataSummary: DataDeletionSummary {
+        recordedDataOverview.summary
     }
 
     func recordedDataSummary(startDate: Date, endDate: Date) -> DataDeletionSummary {
         let range = normalizedDeletionRange(startDate: startDate, endDate: endDate)
+        if let earliest = recordedDataOverview.earliestDate,
+           let latest = recordedDataOverview.latestDate,
+           range.lowerBound <= earliest,
+           range.upperBound >= latest {
+            return recordedDataOverview.summary
+        }
         let foodCount = foodLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }.count
         let exerciseCount = exerciseLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }.count
         let bodyMetricCount = bodyMetricLogs.filter { range.contains($0.date.startOfDayInCurrentCalendar) }.count
@@ -696,31 +751,33 @@ final class AppState: ObservableObject {
     }
 
     func foodLogs(on date: Date) -> [FoodLog] {
-        foodLogs.filter { $0.date.isSameDay(as: date) }.sorted(by: { $0.date > $1.date })
+        dailyMetricsCache.foodLogsByDay[date.startOfDayInCurrentCalendar] ?? []
     }
 
     func exerciseLogs(on date: Date) -> [ExerciseLog] {
-        exerciseLogs.filter { $0.date.isSameDay(as: date) }.sorted(by: { $0.date > $1.date })
+        dailyMetricsCache.exerciseLogsByDay[date.startOfDayInCurrentCalendar] ?? []
     }
 
     func dayNutrition(on date: Date) -> DayNutritionSummary {
-        foodLogs(on: date).reduce(
-            DayNutritionSummary(calories: 0, protein: 0, carbs: 0, fat: 0)
-        ) { partial, log in
-            DayNutritionSummary(
-                calories: partial.calories + log.calories,
-                protein: partial.protein + log.protein,
-                carbs: partial.carbs + log.carbs,
-                fat: partial.fat + log.fat
-            )
-        }
+        dailyMetricsCache.nutritionByDay[date.startOfDayInCurrentCalendar]
+            ?? DayNutritionSummary(calories: 0, protein: 0, carbs: 0, fat: 0)
     }
 
     func dayExercise(on date: Date) -> DayFitnessSummary {
-        let todayLogs = exerciseLogs(on: date)
-        let calories = todayLogs.reduce(0) { $0 + $1.caloriesBurned(weightKg: profile.weightKg) }
-        let minutes = todayLogs.reduce(0) { $0 + $1.durationMinutes }
-        return DayFitnessSummary(caloriesBurned: calories, durationMinutes: minutes)
+        dailyMetricsCache.exerciseByDay[date.startOfDayInCurrentCalendar]
+            ?? DayFitnessSummary(caloriesBurned: 0, durationMinutes: 0)
+    }
+
+    func hasAnyFoodOrExerciseRecord(on date: Date) -> Bool {
+        dailyMetricsCache.daysWithAnyActivity.contains(date.startOfDayInCurrentCalendar)
+    }
+
+    func hasFoodRecord(on date: Date) -> Bool {
+        dailyMetricsCache.foodLogsByDay[date.startOfDayInCurrentCalendar] != nil
+    }
+
+    func hasExerciseRecord(on date: Date) -> Bool {
+        dailyMetricsCache.exerciseLogsByDay[date.startOfDayInCurrentCalendar] != nil
     }
 
     func dailyBalance(on date: Date) -> Double {
@@ -953,86 +1010,38 @@ final class AppState: ObservableObject {
     }
 
     func dailyNutritionRecords(limit: Int = 30) -> [DailyNutritionRecord] {
-        let grouped = Dictionary(grouping: foodLogs) { $0.date.startOfDayInCurrentCalendar }
-        return grouped
-            .map { day, logs in
-                DailyNutritionRecord(
-                    date: day,
-                    calories: logs.reduce(0) { $0 + $1.calories },
-                    protein: logs.reduce(0) { $0 + $1.protein },
-                    carbs: logs.reduce(0) { $0 + $1.carbs },
-                    fat: logs.reduce(0) { $0 + $1.fat }
-                )
-            }
-            .sorted(by: { $0.date > $1.date })
-            .prefix(limit)
-            .map { $0 }
+        Array(dailyMetricsCache.dailyNutritionRecordsDescending.prefix(limit))
     }
 
     func dailyNutritionRecords(inMonthOf date: Date) -> [DailyNutritionRecord] {
         let calendar = AppPreferences.calendar
-        let grouped = Dictionary(grouping: foodLogs) { $0.date.startOfDayInCurrentCalendar }
-        return grouped
-            .compactMap { day, logs -> DailyNutritionRecord? in
-                guard calendar.isDate(day, equalTo: date, toGranularity: .month) else { return nil }
-                return DailyNutritionRecord(
-                    date: day,
-                    calories: logs.reduce(0) { $0 + $1.calories },
-                    protein: logs.reduce(0) { $0 + $1.protein },
-                    carbs: logs.reduce(0) { $0 + $1.carbs },
-                    fat: logs.reduce(0) { $0 + $1.fat }
-                )
-            }
-            .sorted(by: { $0.date > $1.date })
+        return dailyMetricsCache.dailyNutritionRecordsDescending.filter {
+            calendar.isDate($0.date, equalTo: date, toGranularity: .month)
+        }
     }
 
     func dailyExerciseRecords(limit: Int = 30) -> [DailyExerciseRecord] {
-        let grouped = Dictionary(grouping: exerciseLogs) { $0.date.startOfDayInCurrentCalendar }
-        return grouped
-            .map { day, logs in
-                DailyExerciseRecord(
-                    date: day,
-                    caloriesBurned: logs.reduce(0) { $0 + $1.caloriesBurned(weightKg: profile.weightKg) },
-                    minutes: logs.reduce(0) { $0 + $1.durationMinutes }
-                )
-            }
-            .sorted(by: { $0.date > $1.date })
-            .prefix(limit)
-            .map { $0 }
+        Array(dailyMetricsCache.dailyExerciseRecordsDescending.prefix(limit))
     }
 
     func dailyExerciseRecords(inMonthOf date: Date) -> [DailyExerciseRecord] {
         let calendar = AppPreferences.calendar
-        let grouped = Dictionary(grouping: exerciseLogs) { $0.date.startOfDayInCurrentCalendar }
-        return grouped
-            .compactMap { day, logs -> DailyExerciseRecord? in
-                guard calendar.isDate(day, equalTo: date, toGranularity: .month) else { return nil }
-                return DailyExerciseRecord(
-                    date: day,
-                    caloriesBurned: logs.reduce(0) { $0 + $1.caloriesBurned(weightKg: profile.weightKg) },
-                    minutes: logs.reduce(0) { $0 + $1.durationMinutes }
-                )
-            }
-            .sorted(by: { $0.date > $1.date })
+        return dailyMetricsCache.dailyExerciseRecordsDescending.filter {
+            calendar.isDate($0.date, equalTo: date, toGranularity: .month)
+        }
     }
 
     func calorieTrends(days: Int = 30) -> [DailyCalorieTrend] {
         let calendar = AppPreferences.calendar
         let today = Date().startOfDayInCurrentCalendar
-        return (0..<days).reversed().compactMap { offset in
-            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
-            let nutrition = dayNutrition(on: day)
-            let exercise = dayExercise(on: day)
-            let exerciseExpenditure = exercise.caloriesBurned
-            let totalExpenditure = profile.dailyMaintenanceCalories + exerciseExpenditure
-            // Negative means deficit achieved, positive means surplus.
-            let deficit = nutrition.calories - totalExpenditure
-            return DailyCalorieTrend(date: day, intake: nutrition.calories, expenditure: exerciseExpenditure, deficit: deficit)
+        guard let earliestIncludedDay = calendar.date(byAdding: .day, value: -(max(days, 1) - 1), to: today) else {
+            return dailyMetricsCache.calorieTrendsAscending
         }
+        return dailyMetricsCache.calorieTrendsAscending.filter { $0.date >= earliestIncludedDay && $0.date <= today }
     }
 
     func weightTrends(limit: Int = 60) -> [BodyMetricLog] {
-        Array(bodyMetricLogs.sorted(by: { $0.date < $1.date }).suffix(limit))
+        Array(dailyMetricsCache.bodyMetricsAscending.suffix(limit))
     }
 
     func latestBodyMetric() -> BodyMetricLog {
@@ -1041,9 +1050,7 @@ final class AppState: ObservableObject {
     }
 
     func latestBodyMetric(on date: Date) -> BodyMetricLog? {
-        bodyMetricLogs
-            .filter { $0.date.startOfDayInCurrentCalendar == date.startOfDayInCurrentCalendar }
-            .max(by: { $0.date < $1.date })
+        dailyMetricsCache.latestBodyMetricByDay[date.startOfDayInCurrentCalendar]
     }
 
     private func handleLocalStateDidChange() {
@@ -2063,6 +2070,116 @@ final class AppState: ObservableObject {
         if profile.weightKg != latestRemaining.weightKg {
             profile.weightKg = latestRemaining.weightKg
         }
+    }
+
+    private func rebuildRecordedDataOverview() {
+        let allDates = foodLogs.map(\.date) + exerciseLogs.map(\.date) + bodyMetricLogs.map(\.date)
+        recordedDataOverview = RecordedDataOverview(
+            earliestDate: allDates.min()?.startOfDayInCurrentCalendar,
+            latestDate: allDates.max()?.startOfDayInCurrentCalendar,
+            summary: DataDeletionSummary(
+                foodLogCount: foodLogs.count,
+                exerciseLogCount: exerciseLogs.count,
+                bodyMetricCount: bodyMetricLogs.count
+            )
+        )
+    }
+
+    private func rebuildDailyMetricsCache() {
+        var foodLogsByDay: [Date: [FoodLog]] = [:]
+        var exerciseLogsByDay: [Date: [ExerciseLog]] = [:]
+
+        for log in foodLogs {
+            let day = log.date.startOfDayInCurrentCalendar
+            foodLogsByDay[day, default: []].append(log)
+        }
+
+        for log in exerciseLogs {
+            let day = log.date.startOfDayInCurrentCalendar
+            exerciseLogsByDay[day, default: []].append(log)
+        }
+
+        var nutritionByDay: [Date: DayNutritionSummary] = [:]
+        var dailyNutritionRecords: [DailyNutritionRecord] = []
+        for (day, logs) in foodLogsByDay {
+            let summary = logs.reduce(
+                DayNutritionSummary(calories: 0, protein: 0, carbs: 0, fat: 0)
+            ) { partial, log in
+                DayNutritionSummary(
+                    calories: partial.calories + log.calories,
+                    protein: partial.protein + log.protein,
+                    carbs: partial.carbs + log.carbs,
+                    fat: partial.fat + log.fat
+                )
+            }
+            nutritionByDay[day] = summary
+            dailyNutritionRecords.append(
+                DailyNutritionRecord(
+                    date: day,
+                    calories: summary.calories,
+                    protein: summary.protein,
+                    carbs: summary.carbs,
+                    fat: summary.fat
+                )
+            )
+        }
+        dailyNutritionRecords.sort { $0.date > $1.date }
+
+        var exerciseByDay: [Date: DayFitnessSummary] = [:]
+        var dailyExerciseRecords: [DailyExerciseRecord] = []
+        for (day, logs) in exerciseLogsByDay {
+            let summary = DayFitnessSummary(
+                caloriesBurned: logs.reduce(0) { $0 + $1.caloriesBurned(weightKg: profile.weightKg) },
+                durationMinutes: logs.reduce(0) { $0 + $1.durationMinutes }
+            )
+            exerciseByDay[day] = summary
+            dailyExerciseRecords.append(
+                DailyExerciseRecord(
+                    date: day,
+                    caloriesBurned: summary.caloriesBurned,
+                    minutes: summary.durationMinutes
+                )
+            )
+        }
+        dailyExerciseRecords.sort { $0.date > $1.date }
+
+        let daysWithAnyActivity = Set(foodLogsByDay.keys).union(exerciseLogsByDay.keys)
+        let calorieTrendsAscending = daysWithAnyActivity
+            .sorted()
+            .map { day in
+                let nutrition = nutritionByDay[day] ?? DayNutritionSummary(calories: 0, protein: 0, carbs: 0, fat: 0)
+                let exercise = exerciseByDay[day] ?? DayFitnessSummary(caloriesBurned: 0, durationMinutes: 0)
+                let exerciseExpenditure = exercise.caloriesBurned
+                let totalExpenditure = profile.dailyMaintenanceCalories + exerciseExpenditure
+                return DailyCalorieTrend(
+                    date: day,
+                    intake: nutrition.calories,
+                    expenditure: exerciseExpenditure,
+                    deficit: nutrition.calories - totalExpenditure
+                )
+            }
+
+        var latestBodyMetricByDay: [Date: BodyMetricLog] = [:]
+        for metric in bodyMetricLogs {
+            let day = metric.date.startOfDayInCurrentCalendar
+            if let existing = latestBodyMetricByDay[day], existing.date >= metric.date {
+                continue
+            }
+            latestBodyMetricByDay[day] = metric
+        }
+
+        dailyMetricsCache = DailyMetricsCache(
+            foodLogsByDay: foodLogsByDay,
+            exerciseLogsByDay: exerciseLogsByDay,
+            nutritionByDay: nutritionByDay,
+            exerciseByDay: exerciseByDay,
+            dailyNutritionRecordsDescending: dailyNutritionRecords,
+            dailyExerciseRecordsDescending: dailyExerciseRecords,
+            calorieTrendsAscending: calorieTrendsAscending,
+            latestBodyMetricByDay: latestBodyMetricByDay,
+            bodyMetricsAscending: bodyMetricLogs.sorted(by: { $0.date < $1.date }),
+            daysWithAnyActivity: daysWithAnyActivity
+        )
     }
 
     private func exportUnsyncedLocalDataToHealth() async throws {
