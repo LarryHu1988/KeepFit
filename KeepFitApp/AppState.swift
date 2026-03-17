@@ -492,13 +492,25 @@ final class AppState: ObservableObject {
                 return localized("当前设备不支持 Apple 健康。", "Apple Health is not available on this device.")
             }
             do {
-                let granted = try await requestHealthAuthorization()
+                let requestStatus = try await healthAuthorizationRequestStatus()
+                if requestStatus == .shouldRequest || requestStatus == .unknown {
+                    _ = try await requestHealthAuthorization()
+                }
+
+                let granted = await waitForRequiredHealthAuthorization()
                 guard granted else {
                     defaults.set(false, forKey: SyncKeys.healthEnabled)
-                    return localized(
-                        "未获得 KeepFit 所需的 Apple 健康权限，请在授权界面中允许相关项目后再开启。",
-                        "KeepFit did not receive the Apple Health permissions it needs. Please allow the requested items and try again."
-                    )
+                    if requestStatus == .shouldRequest || requestStatus == .unknown {
+                        return localized(
+                            "未获得 KeepFit 所需的 Apple 健康权限，请允许所需项目后再开启。",
+                            "KeepFit did not receive the Apple Health permissions it needs. Please allow the requested items and try again."
+                        )
+                    } else {
+                        return localized(
+                            "Apple 健康权限当前未开启。请前往健康 App 或系统设置中的 KeepFit 打开所需权限后再试。",
+                            "Apple Health permissions are currently off. Please enable the required permissions for KeepFit in the Health app or Settings and try again."
+                        )
+                    }
                 }
                 defaults.set(true, forKey: SyncKeys.healthEnabled)
                 await startHealthObserversIfNeeded()
@@ -1646,11 +1658,37 @@ final class AppState: ObservableObject {
         }
     }
 
+    private func healthAuthorizationRequestStatus() async throws -> HKAuthorizationRequestStatus {
+        try await withCheckedThrowingContinuation { continuation in
+            healthStore.getRequestStatusForAuthorization(toShare: healthWriteTypes, read: healthReadTypes) { status, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: status)
+                }
+            }
+        }
+    }
+
     private func hasRequiredHealthAuthorization() -> Bool {
         guard HKHealthStore.isHealthDataAvailable() else { return false }
         return healthRequiredShareTypes.allSatisfy { sampleType in
             healthStore.authorizationStatus(for: sampleType) == .sharingAuthorized
         }
+    }
+
+    private func waitForRequiredHealthAuthorization(
+        attempts: Int = 5,
+        delayNanoseconds: UInt64 = 250_000_000
+    ) async -> Bool {
+        for attempt in 0..<attempts {
+            if hasRequiredHealthAuthorization() {
+                return true
+            }
+            guard attempt < attempts - 1 else { break }
+            try? await Task.sleep(nanoseconds: delayNanoseconds)
+        }
+        return hasRequiredHealthAuthorization()
     }
 
     private var healthRequiredShareTypes: [HKSampleType] {

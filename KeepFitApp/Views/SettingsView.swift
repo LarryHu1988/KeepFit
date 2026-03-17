@@ -32,6 +32,7 @@ struct SettingsView: View {
     @AppStorage("keepfit.birthDateTS") private var birthDateTimestamp: Double = 0
 
     @State private var selectedAvatarItem: PhotosPickerItem?
+    @State private var showAvatarSheet = false
     @State private var showSexSheet = false
     @State private var showActivitySheet = false
     @State private var showUnitSheet = false
@@ -266,6 +267,7 @@ struct SettingsView: View {
                         appState.profile.avatarJPEGData = compressed
                     }
                     selectedAvatarItem = nil
+                    showAvatarSheet = false
                 }
             }
             .onChange(of: heightUnitRaw) { _, _ in
@@ -353,6 +355,20 @@ struct SettingsView: View {
                 }
                 .sheet(isPresented: $showAboutSheet) {
                     aboutSheet
+                }
+                .sheet(isPresented: $showAvatarSheet) {
+                    AvatarPickerSheet(
+                        selectedAvatarItem: $selectedAvatarItem,
+                        onSelectPreset: { data in
+                            appState.profile.avatarJPEGData = data
+                            showAvatarSheet = false
+                        },
+                        onClearAvatar: {
+                            appState.profile.avatarJPEGData = nil
+                            showAvatarSheet = false
+                        }
+                    )
+                    .environmentObject(appState)
                 }
                 .sheet(isPresented: $showAppleAccountSheet) {
                     AppleAccountSheet(requireChoice: false)
@@ -658,13 +674,20 @@ struct SettingsView: View {
     }
 
     private var avatarSelectionRow: some View {
-        PhotosPicker(selection: $selectedAvatarItem, matching: .images) {
+        Button {
+            triggerHapticIfNeeded()
+            showAvatarSheet = true
+        } label: {
             HStack(spacing: 10) {
                 rowIcon("person.crop.circle", .purple)
                 Text(localized("头像", "Avatar"))
+                    .font(settingsTitleFont)
                     .foregroundStyle(.primary)
                 Spacer()
                 avatarView(size: 36)
+                Image(systemName: "chevron.right")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
             }
         }
         .buttonStyle(.plain)
@@ -2829,6 +2852,188 @@ private extension View {
                             .frame(height: 1)
                     }
             )
+    }
+}
+
+private struct PresetAvatarDefinition: Identifiable, Hashable {
+    let id: String
+    let emoji: String
+    let colors: [Color]
+
+    static let all: [PresetAvatarDefinition] = [
+        .init(id: "sunny", emoji: "😄", colors: [Color.orange, Color.yellow]),
+        .init(id: "cool", emoji: "😎", colors: [Color.blue, Color.cyan]),
+        .init(id: "fox", emoji: "🦊", colors: [Color.orange, Color.red]),
+        .init(id: "cat", emoji: "🐱", colors: [Color.pink, Color.orange]),
+        .init(id: "panda", emoji: "🐼", colors: [Color.gray, Color.black.opacity(0.8)]),
+        .init(id: "frog", emoji: "🐸", colors: [Color.green, Color.mint]),
+        .init(id: "bear", emoji: "🐻", colors: [Color.brown, Color.orange.opacity(0.8)]),
+        .init(id: "tiger", emoji: "🐯", colors: [Color.yellow, Color.orange]),
+        .init(id: "rabbit", emoji: "🐰", colors: [Color.pink, Color.purple.opacity(0.8)]),
+        .init(id: "koala", emoji: "🐨", colors: [Color.gray.opacity(0.9), Color.blue.opacity(0.65)])
+    ]
+}
+
+private struct AvatarPickerSheet: View {
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+
+    @Binding var selectedAvatarItem: PhotosPickerItem?
+
+    let onSelectPreset: (Data?) -> Void
+    let onClearAvatar: () -> Void
+
+    private let gridColumns = [
+        GridItem(.adaptive(minimum: 74, maximum: 92), spacing: 16)
+    ]
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(localized("选择头像", "Choose Avatar"))
+                            .font(.headline.weight(.semibold))
+                        Text(syncDescription)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    PhotosPicker(selection: $selectedAvatarItem, matching: .images) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "photo.on.rectangle.angled")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundStyle(.blue)
+                            Text(localized("从相册选择", "Choose from Photos"))
+                                .font(.headline.weight(.semibold))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 14)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .fill(.ultraThinMaterial)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                        .stroke(.white.opacity(0.22), lineWidth: 0.8)
+                                )
+                        )
+                    }
+                    .buttonStyle(.plain)
+
+                    LazyVGrid(columns: gridColumns, spacing: 16) {
+                        ForEach(PresetAvatarDefinition.all) { preset in
+                            Button {
+                                KeepFitHaptics.selection()
+                                onSelectPreset(generatedAvatarJPEGData(for: preset))
+                            } label: {
+                                VStack(spacing: 8) {
+                                    PresetAvatarPreview(preset: preset, size: 72)
+                                    Text(preset.emoji)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+
+                    Button(role: .destructive) {
+                        KeepFitHaptics.selection()
+                        onClearAvatar()
+                    } label: {
+                        Text(localized("恢复默认头像", "Use Default Avatar"))
+                            .font(.headline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.red)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(Color.red.opacity(0.10))
+                    )
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 18)
+                .padding(.bottom, 24)
+            }
+            .navigationTitle(localized("头像", "Avatar"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(localized("完成", "Done")) {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private var syncDescription: String {
+        if appState.isSignedInWithAppleAccount && appState.isICloudSyncEnabled {
+            return localized(
+                "已登录 Apple 账号并开启 iCloud 同步时，头像会和资料一起同步到你的其他设备。",
+                "When signed in with Apple and iCloud Sync is on, your avatar will sync with your profile across devices."
+            )
+        }
+        return localized(
+            "可从相册选择，也可直接使用 KeepFit 内置默认头像。",
+            "Choose a photo from your library or use one of KeepFit’s built-in avatars."
+        )
+    }
+
+    private func generatedAvatarJPEGData(for preset: PresetAvatarDefinition) -> Data? {
+        let renderer = ImageRenderer(content: PresetAvatarPreview(preset: preset, size: 180))
+        renderer.scale = UIScreen.main.scale
+        return renderer.uiImage?.jpegData(compressionQuality: 0.9)
+    }
+}
+
+private struct PresetAvatarPreview: View {
+    let preset: PresetAvatarDefinition
+    let size: CGFloat
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            preset.colors.first?.opacity(0.96) ?? .orange,
+                            preset.colors.last?.opacity(0.88) ?? .yellow
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [.white.opacity(0.30), .clear],
+                                center: .topLeading,
+                                startRadius: 4,
+                                endRadius: size * 0.7
+                            )
+                        )
+                )
+                .overlay(
+                    Circle()
+                        .stroke(.white.opacity(0.28), lineWidth: max(1, size * 0.02))
+                )
+
+            Text(preset.emoji)
+                .font(.system(size: size * 0.46))
+                .minimumScaleFactor(0.6)
+        }
+        .frame(width: size, height: size)
+        .shadow(color: .black.opacity(0.12), radius: size * 0.08, x: 0, y: size * 0.04)
     }
 }
 
