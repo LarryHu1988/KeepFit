@@ -40,6 +40,18 @@ struct DataDeletionSummary: Equatable {
     static let empty = DataDeletionSummary(foodLogCount: 0, exerciseLogCount: 0, bodyMetricCount: 0)
 }
 
+struct AppleHealthPermissionItem: Identifiable, Hashable {
+    enum Section: Hashable {
+        case activity
+        case healthData
+    }
+
+    let id: String
+    let title: String
+    let section: Section
+    let isEnabled: Bool
+}
+
 private struct KeepFitCloudSnapshot: Codable {
     let version: Int
     let modifiedAt: Date
@@ -261,6 +273,7 @@ final class AppState: ObservableObject {
     private var isRunningHealthSync = false
     private var localMutationAt: Date = .distantPast
     private var healthObserverQueries: [HKObserverQuery] = []
+    private var hadKnownHealthWriteAuthorization = false
     private var recordedDataOverview = RecordedDataOverview.empty
     private var dailyMetricsCache = DailyMetricsCache.empty
 
@@ -285,6 +298,9 @@ final class AppState: ObservableObject {
 
         let savedLocalMutationTS = defaults.double(forKey: SyncKeys.localMutationTS)
         localMutationAt = savedLocalMutationTS > 0 ? Date(timeIntervalSince1970: savedLocalMutationTS) : .distantPast
+        if defaults.bool(forKey: SyncKeys.healthEnabled), HKHealthStore.isHealthDataAvailable() {
+            hadKnownHealthWriteAuthorization = hasAnyHealthAuthorization()
+        }
         refreshICloudAccountAvailability()
         setupUbiquityIdentityObserver()
         setupForegroundObserver()
@@ -359,6 +375,52 @@ final class AppState: ObservableObject {
 
     var isSignedInWithAppleAccount: Bool {
         account.isSignedInWithApple
+    }
+
+    var appleHealthPermissionItems: [AppleHealthPermissionItem] {
+        [
+            AppleHealthPermissionItem(
+                id: "workout",
+                title: localized("体能训练", "Workouts"),
+                section: .activity,
+                isEnabled: shareAuthorizationStatus(for: HKObjectType.workoutType())
+            ),
+            AppleHealthPermissionItem(
+                id: "activeEnergy",
+                title: localized("运动消耗", "Exercise Burn"),
+                section: .activity,
+                isEnabled: shareAuthorizationStatus(for: HKObjectType.quantityType(forIdentifier: .activeEnergyBurned))
+            ),
+            AppleHealthPermissionItem(
+                id: "dietaryEnergy",
+                title: localized("饮食摄入", "Diet Intake"),
+                section: .activity,
+                isEnabled: shareAuthorizationStatus(for: HKObjectType.quantityType(forIdentifier: .dietaryEnergyConsumed))
+            ),
+            AppleHealthPermissionItem(
+                id: "bodyMass",
+                title: localized("体重", "Weight"),
+                section: .healthData,
+                isEnabled: shareAuthorizationStatus(for: HKObjectType.quantityType(forIdentifier: .bodyMass))
+            ),
+            AppleHealthPermissionItem(
+                id: "bodyFat",
+                title: localized("体脂率", "Body Fat"),
+                section: .healthData,
+                isEnabled: shareAuthorizationStatus(for: HKObjectType.quantityType(forIdentifier: .bodyFatPercentage))
+            )
+        ]
+    }
+
+    var appleHealthPermissionSummaryText: String {
+        if !isHealthSyncEnabled {
+            return localized("未开启", "Off")
+        }
+        let enabledCount = appleHealthPermissionItems.filter(\.isEnabled).count
+        if enabledCount > 0 {
+            return localized("已开启 \(enabledCount) 项", "\(enabledCount) Enabled")
+        }
+        return localized("已连接", "Connected")
     }
 
     var isAccountChoiceUndecided: Bool {
@@ -492,42 +554,66 @@ final class AppState: ObservableObject {
                 return localized("当前设备不支持 Apple 健康。", "Apple Health is not available on this device.")
             }
             do {
-                let requestStatus = try await healthAuthorizationRequestStatus()
-                if requestStatus == .shouldRequest || requestStatus == .unknown {
-                    _ = try await requestHealthAuthorization()
-                }
+                let authorizationFlowCompleted = try await requestHealthAuthorization()
+                let grantedWritePermission = await waitForAnyHealthAuthorization()
+                let effectiveGranted = authorizationFlowCompleted || grantedWritePermission
 
-                let granted = await waitForRequiredHealthAuthorization()
-                guard granted else {
+                guard effectiveGranted else {
                     defaults.set(false, forKey: SyncKeys.healthEnabled)
-                    if requestStatus == .shouldRequest || requestStatus == .unknown {
-                        return localized(
-                            "未获得 KeepFit 所需的 Apple 健康权限，请允许所需项目后再开启。",
-                            "KeepFit did not receive the Apple Health permissions it needs. Please allow the requested items and try again."
-                        )
-                    } else {
-                        return localized(
-                            "Apple 健康权限当前未开启。请前往健康 App 或系统设置中的 KeepFit 打开所需权限后再试。",
-                            "Apple Health permissions are currently off. Please enable the required permissions for KeepFit in the Health app or Settings and try again."
-                        )
-                    }
+                    return localized(
+                        "未获得 Apple 健康权限。请在授权界面或健康 App 中至少开启一项 KeepFit 需要的项目后再试。",
+                        "No Apple Health permission was granted. Please allow at least one KeepFit health item in the authorization screen or Health app and try again."
+                    )
                 }
                 defaults.set(true, forKey: SyncKeys.healthEnabled)
+                hadKnownHealthWriteAuthorization = grantedWritePermission
                 await startHealthObserversIfNeeded()
                 startHealthPollingIfNeeded()
                 await syncHealthDataIfEnabled()
                 return nil
             } catch {
                 defaults.set(false, forKey: SyncKeys.healthEnabled)
+                hadKnownHealthWriteAuthorization = false
                 return localized("健康数据授权失败，请稍后重试。", "Failed to authorize Apple Health. Please try again.")
             }
         }
 
         defaults.set(false, forKey: SyncKeys.healthEnabled)
+        hadKnownHealthWriteAuthorization = false
         pendingHealthSyncTask?.cancel()
         stopHealthPolling()
         stopHealthObservers()
         return nil
+    }
+
+    @discardableResult
+    func refreshHealthSyncEffectiveState() -> Bool {
+        guard defaults.bool(forKey: SyncKeys.healthEnabled) else {
+            hadKnownHealthWriteAuthorization = false
+            return false
+        }
+        guard HKHealthStore.isHealthDataAvailable() else {
+            defaults.set(false, forKey: SyncKeys.healthEnabled)
+            hadKnownHealthWriteAuthorization = false
+            stopHealthPolling()
+            stopHealthObservers()
+            return false
+        }
+
+        let currentlyHasWriteAuthorization = hasAnyHealthAuthorization()
+        if hadKnownHealthWriteAuthorization && !currentlyHasWriteAuthorization {
+            defaults.set(false, forKey: SyncKeys.healthEnabled)
+            hadKnownHealthWriteAuthorization = false
+            pendingHealthSyncTask?.cancel()
+            stopHealthPolling()
+            stopHealthObservers()
+            return false
+        }
+
+        if currentlyHasWriteAuthorization {
+            hadKnownHealthWriteAuthorization = true
+        }
+        return defaults.bool(forKey: SyncKeys.healthEnabled)
     }
 
     func syncHealthDataIfEnabled() async {
@@ -1301,6 +1387,7 @@ final class AppState: ObservableObject {
         ) { [weak self] _ in
             Task { @MainActor [weak self] in
                 guard let self else { return }
+                guard self.refreshHealthSyncEffectiveState() else { return }
                 self.startHealthPollingIfNeeded()
                 await self.syncHealthDataIfEnabled()
             }
@@ -1651,50 +1738,39 @@ final class AppState: ObservableObject {
                     continuation.resume(returning: false)
                     return
                 }
-                Task { @MainActor in
-                    continuation.resume(returning: self.hasRequiredHealthAuthorization())
-                }
+                continuation.resume(returning: true)
             }
         }
     }
 
-    private func healthAuthorizationRequestStatus() async throws -> HKAuthorizationRequestStatus {
-        try await withCheckedThrowingContinuation { continuation in
-            healthStore.getRequestStatusForAuthorization(toShare: healthWriteTypes, read: healthReadTypes) { status, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: status)
-                }
-            }
-        }
-    }
-
-    private func hasRequiredHealthAuthorization() -> Bool {
+    private func hasAnyHealthAuthorization() -> Bool {
         guard HKHealthStore.isHealthDataAvailable() else { return false }
-        return healthRequiredShareTypes.allSatisfy { sampleType in
+        return healthToggleEligibleShareTypes.contains { sampleType in
             healthStore.authorizationStatus(for: sampleType) == .sharingAuthorized
         }
     }
 
-    private func waitForRequiredHealthAuthorization(
+    private func waitForAnyHealthAuthorization(
         attempts: Int = 5,
         delayNanoseconds: UInt64 = 250_000_000
     ) async -> Bool {
         for attempt in 0..<attempts {
-            if hasRequiredHealthAuthorization() {
+            if hasAnyHealthAuthorization() {
                 return true
             }
             guard attempt < attempts - 1 else { break }
             try? await Task.sleep(nanoseconds: delayNanoseconds)
         }
-        return hasRequiredHealthAuthorization()
+        return hasAnyHealthAuthorization()
     }
 
-    private var healthRequiredShareTypes: [HKSampleType] {
+    private var healthToggleEligibleShareTypes: [HKSampleType] {
         var types: [HKSampleType] = [HKObjectType.workoutType()]
         if let dietary = HKObjectType.quantityType(forIdentifier: .dietaryEnergyConsumed) {
             types.append(dietary)
+        }
+        if let activeEnergy = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) {
+            types.append(activeEnergy)
         }
         if let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass) {
             types.append(bodyMass)
@@ -1703,6 +1779,11 @@ final class AppState: ObservableObject {
             types.append(bodyFat)
         }
         return types
+    }
+
+    private func shareAuthorizationStatus(for sampleType: HKSampleType?) -> Bool {
+        guard let sampleType, HKHealthStore.isHealthDataAvailable() else { return false }
+        return healthStore.authorizationStatus(for: sampleType) == .sharingAuthorized
     }
 
     private var healthReadTypes: Set<HKObjectType> {

@@ -81,6 +81,7 @@ struct SettingsView: View {
     @State private var reminderAlertMessage = ""
     @State private var showFeedbackAlert = false
     @State private var showAppleAccountSheet = false
+    @State private var showAppleHealthSheet = false
     @State private var showResetDataSheet = false
     @State private var didPrimeSettingsView = false
     @State private var deferredSettingsSetupTask: Task<Void, Never>?
@@ -297,6 +298,7 @@ struct SettingsView: View {
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 refreshICloudSyncState()
+                refreshHealthSyncState()
             }
             .onChange(of: healthSyncEnabled) { _, isEnabled in
                 Task {
@@ -372,6 +374,18 @@ struct SettingsView: View {
                 }
                 .sheet(isPresented: $showAppleAccountSheet) {
                     AppleAccountSheet(requireChoice: false)
+                }
+                .sheet(isPresented: $showAppleHealthSheet) {
+                    NavigationStack {
+                        appleHealthSettingsView
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button(localized("完成", "Done")) {
+                                        showAppleHealthSheet = false
+                                    }
+                                }
+                            }
+                    }
                 }
                 .sheet(isPresented: $showResetDataSheet) {
                     ResetDataSheetView()
@@ -489,9 +503,19 @@ struct SettingsView: View {
                 .buttonStyle(.plain)
                 .keepFitSettingsSeparatorAligned()
 
-                Toggle(isOn: $healthSyncEnabled) {
-                    settingsToggleLabel(icon: "heart.text.square.fill", title: localized("Apple 健康", "Apple Health"), color: .green)
+                Button {
+                    triggerHapticIfNeeded()
+                    showAppleHealthSheet = true
+                } label: {
+                    HStack(spacing: settingsCompactLayout ? 8 : 10) {
+                        settingsToggleLabel(icon: "heart.text.square.fill", title: localized("Apple 健康", "Apple Health"), color: .green)
+                        Spacer(minLength: 8)
+                        Image(systemName: "chevron.right")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
                 }
+                .buttonStyle(.plain)
                 .keepFitSettingsSeparatorAligned()
 
                 Toggle(isOn: $iCloudSyncEnabled) {
@@ -671,6 +695,181 @@ struct SettingsView: View {
             .keepFitSettingsSeparatorAligned()
             }
         )
+    }
+
+    private var appleHealthSettingsView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                appleHealthHeroCard
+
+                appleHealthPermissionSection(
+                    title: localized("活动记录", "Activity"),
+                    items: appState.appleHealthPermissionItems.filter { $0.section == .activity }
+                )
+
+                appleHealthPermissionSection(
+                    title: localized("健康数据", "Health Data"),
+                    items: appState.appleHealthPermissionItems.filter { $0.section == .healthData }
+                )
+
+                Text(
+                    localized(
+                        "上方勾选会优先显示 Apple 当前可查询到的权限状态；如果你只开启了读取权限，部分项目可能不会逐项显示，但同步仍可正常使用。",
+                        "The checkmarks above show Apple Health permission states that iOS currently exposes. If you only allow read access, some items may not appear one by one here, but sync can still work normally."
+                    )
+                )
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 10)
+            .padding(.bottom, 24)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(sheetBackground(accent: .green))
+        .navigationTitle(localized("Apple 健康", "Apple Health"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
+    }
+
+    private var appleHealthHeroCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 16) {
+                heroAppIcon("KeepFitBrandIcon")
+
+                Image(systemName: "arrow.left.arrow.right")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(.secondary)
+
+                heroAppIcon("AppleHealthBrandIcon")
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.top, 4)
+
+            Text(
+                localized(
+                    "打开下方同步开关后，系统会请求 Apple 健康权限。如果没有再次弹出授权页，请点“打开「健康」App”，然后前往 健康 App > 个人头像 > App 与服务 > KeepFit，开启你希望同步的项目。",
+                    "Turn on the sync switch below to request Apple Health access. If iOS does not show the permission sheet again, tap “Open Health App”, then go to Health app > profile picture > Apps and Services > KeepFit, and enable the items you want to sync."
+                )
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            HStack(spacing: 10) {
+                Button {
+                    openHealthPermissionsManager()
+                } label: {
+                    Text(localized("打开「健康」App", "Open Health App"))
+                        .font(.headline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.white)
+                .background(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.green.opacity(0.96), Color.teal.opacity(0.9)],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                )
+            }
+
+            HStack(spacing: 12) {
+                settingsToggleLabel(icon: "heart.text.square.fill", title: localized("Apple 健康同步", "Apple Health Sync"), color: .green)
+                Spacer(minLength: 8)
+                Toggle("", isOn: $healthSyncEnabled)
+                    .labelsHidden()
+                    .fixedSize()
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(Color.white.opacity(colorScheme == .dark ? 0.05 : 0.42))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .stroke(.white.opacity(0.16), lineWidth: 0.8)
+                    )
+            )
+        }
+        .padding(18)
+        .background(healthSettingsCardBackground)
+    }
+
+    private func heroAppIcon(_ assetName: String) -> some View {
+        Image(assetName)
+            .resizable()
+            .interpolation(.high)
+            .scaledToFill()
+            .frame(width: 72, height: 72)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(.white.opacity(0.18), lineWidth: 0.8)
+            )
+            .shadow(color: .black.opacity(0.14), radius: 10, x: 0, y: 4)
+    }
+
+    private func appleHealthPermissionSection(title: String, items: [AppleHealthPermissionItem]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+
+            VStack(spacing: 0) {
+                ForEach(items) { item in
+                    HStack(spacing: 12) {
+                        Text(item.title)
+                            .font(settingsTitleFont)
+                            .foregroundStyle(.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
+                        Spacer(minLength: 8)
+                        Image(systemName: item.isEnabled ? "checkmark" : "circle")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(item.isEnabled ? Color.blue.opacity(0.95) : .secondary.opacity(0.45))
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 16)
+
+                    if item.id != items.last?.id {
+                        Divider()
+                            .overlay(.white.opacity(0.06))
+                            .padding(.leading, 16)
+                    }
+                }
+            }
+            .background(healthSettingsCardBackground)
+        }
+    }
+
+    private var healthSettingsCardBackground: some View {
+        RoundedRectangle(cornerRadius: 24, style: .continuous)
+            .fill(.ultraThinMaterial)
+            .overlay(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.green.opacity(0.16),
+                                .white.opacity(0.08),
+                                .clear
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .stroke(.white.opacity(0.22), lineWidth: 0.8)
+            )
     }
 
     private var avatarSelectionRow: some View {
@@ -1409,6 +1608,35 @@ struct SettingsView: View {
         openURL(url)
     }
 
+    private func openHealthPermissionsManager() {
+        triggerHapticIfNeeded()
+        let candidates = [
+            URL(string: "x-apple-health://sources"),
+            URL(string: "x-apple-health://"),
+            URL(string: UIApplication.openSettingsURLString)
+        ].compactMap { $0 }
+
+        openNextHealthDestination(from: candidates)
+    }
+
+    private func openNextHealthDestination(from candidates: [URL]) {
+        guard let url = candidates.first else {
+            healthSyncAlertMessage = localized(
+                "请前往健康 App > 个人头像 > App > KeepFit，或系统设置 > KeepFit > 健康，开启需要同步的项目。",
+                "Go to Health app > profile picture > Apps > KeepFit, or Settings > KeepFit > Health, and enable the items you want to sync."
+            )
+            showHealthSyncAlert = true
+            return
+        }
+
+        openURL(url) { accepted in
+            if accepted {
+                return
+            }
+            openNextHealthDestination(from: Array(candidates.dropFirst()))
+        }
+    }
+
     private func prepareSettingsPresentation() {
         guard !didPrimeSettingsView else { return }
         didPrimeSettingsView = true
@@ -1418,6 +1646,7 @@ struct SettingsView: View {
             try? await Task.sleep(for: .milliseconds(220))
             guard !Task.isCancelled else { return }
             refreshICloudSyncState()
+            refreshHealthSyncState()
             try? await Task.sleep(for: .milliseconds(180))
             guard !Task.isCancelled else { return }
             await syncReminderSchedulesOnAppear()
@@ -1436,6 +1665,13 @@ struct SettingsView: View {
         let effective = appState.isICloudSyncEnabled
         if iCloudSyncEnabled != effective {
             iCloudSyncEnabled = effective
+        }
+    }
+
+    private func refreshHealthSyncState() {
+        let effective = appState.refreshHealthSyncEffectiveState()
+        if healthSyncEnabled != effective {
+            healthSyncEnabled = effective
         }
     }
 
@@ -2857,20 +3093,20 @@ private extension View {
 
 private struct PresetAvatarDefinition: Identifiable, Hashable {
     let id: String
-    let emoji: String
+    let symbol: String
     let colors: [Color]
 
     static let all: [PresetAvatarDefinition] = [
-        .init(id: "sunny", emoji: "😄", colors: [Color.orange, Color.yellow]),
-        .init(id: "cool", emoji: "😎", colors: [Color.blue, Color.cyan]),
-        .init(id: "fox", emoji: "🦊", colors: [Color.orange, Color.red]),
-        .init(id: "cat", emoji: "🐱", colors: [Color.pink, Color.orange]),
-        .init(id: "panda", emoji: "🐼", colors: [Color.gray, Color.black.opacity(0.8)]),
-        .init(id: "frog", emoji: "🐸", colors: [Color.green, Color.mint]),
-        .init(id: "bear", emoji: "🐻", colors: [Color.brown, Color.orange.opacity(0.8)]),
-        .init(id: "tiger", emoji: "🐯", colors: [Color.yellow, Color.orange]),
-        .init(id: "rabbit", emoji: "🐰", colors: [Color.pink, Color.purple.opacity(0.8)]),
-        .init(id: "koala", emoji: "🐨", colors: [Color.gray.opacity(0.9), Color.blue.opacity(0.65)])
+        .init(id: "heart", symbol: "heart.fill", colors: [Color.red, Color.pink]),
+        .init(id: "walk", symbol: "figure.walk", colors: [Color.green, Color.mint]),
+        .init(id: "run", symbol: "figure.run", colors: [Color.green.opacity(0.92), Color.blue.opacity(0.82)]),
+        .init(id: "leaf", symbol: "leaf.fill", colors: [Color.green, Color.teal]),
+        .init(id: "flame", symbol: "flame.fill", colors: [Color.orange, Color.yellow]),
+        .init(id: "drop", symbol: "drop.fill", colors: [Color.cyan, Color.blue]),
+        .init(id: "sleep", symbol: "moon.stars.fill", colors: [Color.indigo, Color.purple]),
+        .init(id: "nutrition", symbol: "fork.knife.circle.fill", colors: [Color.orange, Color.red.opacity(0.85)]),
+        .init(id: "pulse", symbol: "bolt.heart.fill", colors: [Color.pink, Color.indigo.opacity(0.9)]),
+        .init(id: "medical", symbol: "cross.case.fill", colors: [Color.teal, Color.blue.opacity(0.8)])
     ]
 }
 
@@ -2931,13 +3167,8 @@ private struct AvatarPickerSheet: View {
                                 KeepFitHaptics.selection()
                                 onSelectPreset(generatedAvatarJPEGData(for: preset))
                             } label: {
-                                VStack(spacing: 8) {
-                                    PresetAvatarPreview(preset: preset, size: 72)
-                                    Text(preset.emoji)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .frame(maxWidth: .infinity)
+                                PresetAvatarPreview(preset: preset, size: 72)
+                                    .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.plain)
                         }
@@ -3028,9 +3259,10 @@ private struct PresetAvatarPreview: View {
                         .stroke(.white.opacity(0.28), lineWidth: max(1, size * 0.02))
                 )
 
-            Text(preset.emoji)
-                .font(.system(size: size * 0.46))
-                .minimumScaleFactor(0.6)
+            Image(systemName: preset.symbol)
+                .font(.system(size: size * 0.34, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.96))
+                .shadow(color: .black.opacity(0.12), radius: size * 0.04, x: 0, y: size * 0.02)
         }
         .frame(width: size, height: size)
         .shadow(color: .black.opacity(0.12), radius: size * 0.08, x: 0, y: size * 0.04)
