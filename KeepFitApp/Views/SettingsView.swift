@@ -3423,15 +3423,16 @@ struct AppleAccountSheet: View {
                 } label: {
                     Text(localized("退出 Apple 账号并切换为本地使用", "Sign Out and Use Local Mode"))
                         .font(.headline.weight(.semibold))
+                        .foregroundStyle(.red)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
+                        .background(
+                            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                .fill(Color.red.opacity(0.10))
+                        )
+                        .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.red)
-                .background(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Color.red.opacity(0.10))
-                )
             } else {
                 SignInWithAppleButton(.signIn) { request in
                     request.requestedScopes = [.fullName, .email]
@@ -3449,19 +3450,20 @@ struct AppleAccountSheet: View {
                 } label: {
                     Text(localModeButtonTitle)
                         .font(.headline.weight(.semibold))
+                        .foregroundStyle(.primary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
+                        .background(
+                            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                .fill(.ultraThinMaterial)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                        .stroke(.white.opacity(0.2), lineWidth: 0.8)
+                                )
+                        )
+                        .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.primary)
-                .background(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .stroke(.white.opacity(0.2), lineWidth: 0.8)
-                        )
-                )
             }
         }
         .padding(18)
