@@ -434,11 +434,18 @@ final class AppState: ObservableObject {
         if let email = trimmedNonEmpty(account.email) {
             return email
         }
+        if account.mode == .apple {
+            let profileName = trimmedNonEmpty(profile.name)
+            if let profileName, profileName != UserProfile.default.name {
+                return profileName
+            }
+            return localized("已登录", "Signed In")
+        }
         switch account.mode {
-        case .apple:
-            return localized("Apple 账号", "Apple Account")
         case .local, .undecided:
             return localized("本地使用", "Local Mode")
+        case .apple:
+            return localized("已登录", "Signed In")
         }
     }
 
@@ -2434,20 +2441,7 @@ final class AppState: ObservableObject {
         var exportedExerciseIDs = loadStringSet(forKey: SyncKeys.exportedExerciseLogIDs)
         var exportedBodyMetricIDs = loadStringSet(forKey: SyncKeys.exportedBodyMetricIDs)
 
-        let didCompleteInitialImport = defaults.bool(forKey: SyncKeys.healthInitialImportCompleted)
-        let hasHistoricalImportState =
-            !importedDietaryUUIDs.isEmpty ||
-            !importedWorkoutUUIDs.isEmpty ||
-            !importedBodyMassUUIDs.isEmpty ||
-            !importedBodyFatUUIDs.isEmpty
-        let calendar = AppPreferences.calendar
-        let since: Date = {
-            if didCompleteInitialImport || hasHistoricalImportState {
-                return calendar.date(byAdding: .day, value: -90, to: Date()) ?? .distantPast
-            }
-            // First-time Health sync should import all available historical records.
-            return .distantPast
-        }()
+        let since: Date = .distantPast
 
         let dietarySince = min(
             since,

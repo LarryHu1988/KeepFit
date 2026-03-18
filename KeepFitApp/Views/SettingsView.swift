@@ -749,35 +749,34 @@ struct SettingsView: View {
 
             Text(
                 localized(
-                    "打开下方同步开关后，系统会请求 Apple 健康权限。如果没有再次弹出授权页，请点“打开「健康」App”，然后前往 健康 App > 个人头像 > App 与服务 > KeepFit，开启你希望同步的项目。",
-                    "Turn on the sync switch below to request Apple Health access. If iOS does not show the permission sheet again, tap “Open Health App”, then go to Health app > profile picture > Apps and Services > KeepFit, and enable the items you want to sync."
+                    "打开下方同步开关后，系统会请求 Apple 健康权限。如果没有再次弹出授权页，请点“打开「健康」App”，然后前往 健康 App > 个人头像 > App > KeepFit，开启你希望同步的项目。",
+                    "Turn on the sync switch below to request Apple Health access. If iOS does not show the permission sheet again, tap “Open Health App”, then go to Health app > profile picture > Apps > KeepFit, and enable the items you want to sync."
                 )
             )
             .font(.subheadline)
             .foregroundStyle(.secondary)
 
-            HStack(spacing: 10) {
-                Button {
-                    openHealthPermissionsManager()
-                } label: {
-                    Text(localized("打开「健康」App", "Open Health App"))
-                        .font(.headline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(.white)
-                .background(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.green.opacity(0.96), Color.teal.opacity(0.9)],
-                                startPoint: .leading,
-                                endPoint: .trailing
+            Button {
+                openHealthPermissionsManager()
+            } label: {
+                Text(localized("打开「健康」App", "Open Health App"))
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.green.opacity(0.96), Color.teal.opacity(0.9)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
                             )
-                        )
-                )
+                    )
+                    .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
+            .buttonStyle(.plain)
 
             HStack(spacing: 12) {
                 settingsToggleLabel(icon: "heart.text.square.fill", title: localized("Apple 健康同步", "Apple Health Sync"), color: .green)
@@ -798,6 +797,7 @@ struct SettingsView: View {
             )
         }
         .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(healthSettingsCardBackground)
     }
 
@@ -846,6 +846,7 @@ struct SettingsView: View {
                 }
             }
             .background(healthSettingsCardBackground)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -1623,7 +1624,7 @@ struct SettingsView: View {
         guard let url = candidates.first else {
             healthSyncAlertMessage = localized(
                 "请前往健康 App > 个人头像 > App > KeepFit，或系统设置 > KeepFit > 健康，开启需要同步的项目。",
-                "Go to Health app > profile picture > Apps > KeepFit, or Settings > KeepFit > Health, and enable the items you want to sync."
+                "Go to Health app > profile picture > App > KeepFit, or Settings > KeepFit > Health, and enable the items you want to sync."
             )
             showHealthSyncAlert = true
             return
@@ -3326,6 +3327,8 @@ struct AppleAccountSheet: View {
                     heroCard
                     actionCard
                 }
+                .frame(maxWidth: 760)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.horizontal, 20)
                 .padding(.top, 18)
                 .padding(.bottom, 24)
@@ -3382,6 +3385,7 @@ struct AppleAccountSheet: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(.ultraThinMaterial)
@@ -3461,6 +3465,7 @@ struct AppleAccountSheet: View {
             }
         }
         .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(.ultraThinMaterial)
