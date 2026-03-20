@@ -77,6 +77,7 @@ struct SettingsView: View {
     @State private var showHealthSyncAlert = false
     @State private var healthSyncAlertMessage = ""
     @State private var showAboutSheet = false
+    @State private var showPrivacyPolicySheet = false
     @State private var showReminderAlert = false
     @State private var reminderAlertMessage = ""
     @State private var showFeedbackAlert = false
@@ -1542,33 +1543,52 @@ struct SettingsView: View {
         return "v\(version) (\(build))"
     }
 
+    private var privacyPolicyURL: URL? {
+        URL(string: "https://larryhu1988.github.io/KeepFit/privacy/")
+    }
+
     private var aboutSheet: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 14) {
-                HStack(spacing: 12) {
-                    avatarView(size: 52)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("KeepFit")
-                            .font(.headline)
-                        Text(localized("管住嘴迈开腿", "Eat Well · Move More"))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(spacing: 12) {
+                        avatarView(size: 52)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("KeepFit")
+                                .font(.headline)
+                            Text(localized("管住嘴迈开腿", "Eat Well · Move More"))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
                     }
+
+                    separatorLine()
+
+                    infoLine(title: localized("版本", "Version"), value: appVersionLabel)
+                    infoLine(title: localized("开发支持", "Support"), value: feedbackEmail)
+
+                    Button {
+                        triggerHapticIfNeeded()
+                        showPrivacyPolicySheet = true
+                    } label: {
+                        HStack {
+                            Text(localized("隐私政策", "Privacy Policy"))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+
+                    Text(localized("KeepFit 专注于饮食记录、运动消耗和热量平衡管理。", "KeepFit focuses on food logs, workout burn, and calorie balance."))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 4)
                 }
-
-                separatorLine()
-
-                infoLine(title: localized("版本", "Version"), value: appVersionLabel)
-                infoLine(title: localized("开发支持", "Support"), value: feedbackEmail)
-
-                Text(localized("KeepFit 专注于饮食记录、运动消耗和热量平衡管理。", "KeepFit focuses on food logs, workout burn, and calorie balance."))
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 4)
-
-                Spacer(minLength: 0)
+                .padding(18)
             }
-            .padding(18)
             .navigationTitle(localized("关于 KeepFit", "About KeepFit"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -1579,7 +1599,129 @@ struct SettingsView: View {
                 }
             }
         }
-        .presentationDetents([.height(330)])
+        .sheet(isPresented: $showPrivacyPolicySheet) {
+            privacyPolicySheet
+        }
+        .presentationDetents([.height(400), .large])
+    }
+
+    private var privacyPolicySheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(localized("KeepFit 隐私政策", "KeepFit Privacy Policy"))
+                            .font(.headline)
+                        Text(localized("最后更新：2026-03-20", "Last updated: 2026-03-20"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    privacySection(
+                        title: localized("我们会处理哪些信息", "What We Process"),
+                        points: [
+                            localized("你主动输入的资料与记录，例如用户名、头像、饮食、锻炼、体重与体脂。", "Data you enter, such as your name, avatar, food logs, workouts, weight, and body fat."),
+                            localized("你授权后由 Apple 健康提供的相关项目。", "Relevant Apple Health items only after you grant permission."),
+                            localized("你开启 iCloud 同步后，用于跨设备同步的资料、设置与记录。", "Profile, settings, and records synced across devices when you enable iCloud Sync.")
+                        ]
+                    )
+
+                    privacySection(
+                        title: localized("这些信息的用途", "Why We Use It"),
+                        points: [
+                            localized("用于计算热量摄入、运动消耗、基础代谢与趋势图。", "To calculate calorie intake, exercise burn, basal metabolism, and trends."),
+                            localized("用于展示历史记录、个性化建议与提醒。", "To show history, personalized guidance, and reminders."),
+                            localized("用于提供 Apple 健康与 iCloud 同步功能。", "To provide Apple Health and iCloud sync features.")
+                        ]
+                    )
+
+                    privacySection(
+                        title: localized("存储与共享", "Storage and Sharing"),
+                        points: [
+                            localized("默认情况下，数据主要保存在你的设备本地。", "By default, your data is primarily stored on your device."),
+                            localized("你主动开启 iCloud 同步后，相关资料、设置与记录会同步到你的 iCloud 账户。", "If you turn on iCloud Sync, related profile, settings, and records are synced to your iCloud account."),
+                            localized("我们不会将你的个人健康数据出售给第三方。", "We do not sell your personal health data to third parties.")
+                        ]
+                    )
+
+                    privacySection(
+                        title: localized("权限说明", "Permissions"),
+                        points: [
+                            localized("照片权限：用于选择头像。", "Photo Library: used for avatar selection."),
+                            localized("健康权限：用于与 Apple 健康读写同步（可选）。", "Health: used for Apple Health read/write sync (optional)."),
+                            localized("通知权限：用于饮食、运动与每日总结提醒（可选）。", "Notifications: used for meal, workout, and daily summary reminders (optional).")
+                        ]
+                    )
+
+                    privacySection(
+                        title: localized("联系方式", "Contact"),
+                        points: [
+                            localized("如有隐私相关问题，请联系 keepfit@larryhu.com。", "For privacy-related questions, contact keepfit@larryhu.com.")
+                        ]
+                    )
+
+                    if let privacyPolicyURL {
+                        Button {
+                            triggerHapticIfNeeded()
+                            openURL(privacyPolicyURL)
+                        } label: {
+                            HStack {
+                                Text(localized("打开在线版隐私政策", "Open Online Privacy Policy"))
+                                    .font(.headline.weight(.semibold))
+                                    .foregroundStyle(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 14)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                            .fill(
+                                                LinearGradient(
+                                                    colors: [Color.teal.opacity(0.95), Color.blue.opacity(0.88)],
+                                                    startPoint: .leading,
+                                                    endPoint: .trailing
+                                                )
+                                            )
+                                    )
+                                    .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(18)
+            }
+            .navigationTitle(localized("隐私政策", "Privacy Policy"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(localized("完成", "Done")) {
+                        showPrivacyPolicySheet = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    private func privacySection(title: String, points: [String]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(.headline.weight(.semibold))
+
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(points, id: \.self) { point in
+                    HStack(alignment: .top, spacing: 8) {
+                        Circle()
+                            .fill(Color.teal.opacity(0.9))
+                            .frame(width: 6, height: 6)
+                            .padding(.top, 7)
+                        Text(point)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+        }
     }
 
     private func infoLine(title: String, value: String) -> some View {
