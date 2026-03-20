@@ -1567,20 +1567,13 @@ struct SettingsView: View {
                     infoLine(title: localized("版本", "Version"), value: appVersionLabel)
                     infoLine(title: localized("开发支持", "Support"), value: feedbackEmail)
 
-                    Button {
+                    infoActionLine(
+                        title: localized("隐私政策", "Privacy Policy"),
+                        value: localized("查看", "View")
+                    ) {
                         triggerHapticIfNeeded()
                         showPrivacyPolicySheet = true
-                    } label: {
-                        HStack {
-                            Text(localized("隐私政策", "Privacy Policy"))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                        }
                     }
-                    .buttonStyle(.plain)
 
                     Text(localized("KeepFit 专注于饮食记录、运动消耗和热量平衡管理。", "KeepFit focuses on food logs, workout burn, and calorie balance."))
                         .font(.footnote)
@@ -1734,6 +1727,22 @@ struct SettingsView: View {
                 .multilineTextAlignment(.trailing)
         }
         .font(.subheadline)
+    }
+
+    private func infoActionLine(title: String, value: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(title)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text(value)
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.trailing)
+            }
+            .font(.subheadline)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     private func separatorLine() -> some View {
