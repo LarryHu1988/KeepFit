@@ -548,7 +548,7 @@ struct LoseWeightView: View {
                             .fixedSize(horizontal: true, vertical: false)
                     }
                     .padding(.horizontal, layout.horizontalPadding - 1)
-                    .frame(width: layout.metricWidth, height: fieldHeight)
+                    .frame(width: layout.weightWidth, height: fieldHeight)
                     .background(metricFieldBackground)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -586,7 +586,7 @@ struct LoseWeightView: View {
                             .fixedSize(horizontal: true, vertical: false)
                     }
                     .padding(.horizontal, layout.horizontalPadding - 1)
-                    .frame(width: layout.metricWidth, height: fieldHeight)
+                    .frame(width: layout.bodyFatWidth, height: fieldHeight)
                     .background(metricFieldBackground)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -642,6 +642,7 @@ struct LoseWeightView: View {
                     .frame(width: layout.actionWidth, height: fieldHeight)
                     .disabled(!canDelete)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(height: fieldHeight)
         }
@@ -1266,7 +1267,8 @@ private extension LoseWeightView {
         let fontSize: CGFloat
         let spacing: CGFloat
         let dateWidth: CGFloat
-        let metricWidth: CGFloat
+        let weightWidth: CGFloat
+        let bodyFatWidth: CGFloat
         let actionWidth: CGFloat
         let iconSize: CGFloat
         let horizontalPadding: CGFloat
@@ -1308,65 +1310,95 @@ private extension LoseWeightView {
         let dateSample = Formatters.monthDay.string(from: selectedDate)
         let weightSample = weightText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "70.0" : weightText
         let bodyFatSample = bodyFatText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "26.0" : bodyFatText
-        let presets: [(fontSize: CGFloat, spacing: CGFloat, actionWidth: CGFloat, padding: CGFloat, unitSpacing: CGFloat, iconSize: CGFloat)] = [
-            (14, 6, 30, 8, 4, 12),
-            (13, 5, 28, 7, 4, 11),
-            (12, 4, 26, 6, 3, 10)
+        let isCompact = totalWidth <= 330 || dynamicTypeSize >= .xLarge
+        let presets: [(fontSize: CGFloat, spacing: CGFloat, actionWidth: CGFloat, padding: CGFloat, unitSpacing: CGFloat, iconSize: CGFloat, minDateWidth: CGFloat, minMetricWidth: CGFloat)] = isCompact
+        ? [
+            (12, 4, 24, 6, 3, 10, 58, 62),
+            (11, 4, 23, 5, 3, 10, 56, 58),
+            (10.5, 3, 22, 5, 2, 9, 54, 54)
+        ]
+        : [
+            (14, 6, 30, 8, 4, 12, 74, 78),
+            (13, 5, 28, 7, 4, 11, 70, 74),
+            (12, 4, 26, 6, 3, 10, 66, 70),
+            (11, 4, 24, 5, 3, 9, 60, 64)
         ]
 
-        for preset in presets {
-            let baseDateWidth = max(
-                keepFitMeasuredTextWidth(dateSample, size: preset.fontSize, weight: .medium, monospacedDigits: true) + preset.padding * 2 + 18,
-                78
-            )
-            let weightWidth = keepFitMeasuredTextWidth(weightSample, size: preset.fontSize, weight: .medium, monospacedDigits: true)
-                + keepFitMeasuredTextWidth(weightUnit.symbol, size: preset.fontSize, weight: .medium)
-                + preset.padding * 2 + preset.unitSpacing + preset.iconSize + 6
-            let bodyFatWidth = keepFitMeasuredTextWidth(bodyFatSample, size: preset.fontSize, weight: .medium, monospacedDigits: true)
-                + keepFitMeasuredTextWidth("%", size: preset.fontSize, weight: .medium)
-                + preset.padding * 2 + preset.unitSpacing + preset.iconSize + 6
-            let baseMetricWidth = max(max(weightWidth, bodyFatWidth), 78)
-            let fieldBudget = totalWidth - preset.actionWidth * 2 - preset.spacing * 4
-            let totalNeeded = baseDateWidth + baseMetricWidth * 2 + preset.actionWidth * 2 + preset.spacing * 4
+        let availableWidth = max(0, totalWidth - 1)
 
-            if totalNeeded <= totalWidth {
-                let extraWidth = max(0, fieldBudget - (baseDateWidth + baseMetricWidth * 2))
-                let maxDateWidth = min(max(baseDateWidth, fieldBudget * 0.28), baseDateWidth + 26)
-                let dateWidth = min(baseDateWidth + extraWidth * 0.18, maxDateWidth)
-                let metricWidth = max(baseMetricWidth, (fieldBudget - dateWidth) / 2)
+        for preset in presets {
+            let chevronWidth: CGFloat = 16
+            let baseDateWidth = max(
+                keepFitMeasuredTextWidth(dateSample, size: preset.fontSize, weight: .medium, monospacedDigits: true) + preset.padding * 2 + chevronWidth,
+                preset.minDateWidth
+            )
+            let baseWeightWidth = max(
+                keepFitMeasuredTextWidth(weightSample, size: preset.fontSize, weight: .medium, monospacedDigits: true)
+                    + keepFitMeasuredTextWidth(weightUnit.symbol, size: preset.fontSize, weight: .medium)
+                    + preset.padding * 2 + preset.unitSpacing + preset.iconSize + 6,
+                preset.minMetricWidth
+            )
+            let baseBodyFatWidth = max(
+                keepFitMeasuredTextWidth(bodyFatSample, size: preset.fontSize, weight: .medium, monospacedDigits: true)
+                    + keepFitMeasuredTextWidth("%", size: preset.fontSize, weight: .medium)
+                    + preset.padding * 2 + preset.unitSpacing + preset.iconSize + 6,
+                preset.minMetricWidth
+            )
+            let controlWidth = preset.actionWidth * 2 + preset.spacing * 4
+            let fieldBudget = max(0, availableWidth - controlWidth)
+            let totalNeeded = baseDateWidth + baseWeightWidth + baseBodyFatWidth + controlWidth
+
+            if totalNeeded <= availableWidth {
+                let extraWidth = max(0, fieldBudget - (baseDateWidth + baseWeightWidth + baseBodyFatWidth))
+                let dateShare = isCompact ? 0.12 : 0.16
+                let weightShare = isCompact ? 0.46 : 0.44
+                let maxDateWidth = min(max(baseDateWidth, fieldBudget * (isCompact ? 0.22 : 0.26)), baseDateWidth + (isCompact ? 8 : 18))
+                let dateWidth = min(baseDateWidth + extraWidth * dateShare, maxDateWidth)
+                let remainingMetricWidth = max(0, fieldBudget - dateWidth)
+                let weightWidth = max(baseWeightWidth, min(baseWeightWidth + extraWidth * weightShare, remainingMetricWidth - baseBodyFatWidth))
+                let bodyFatWidth = max(baseBodyFatWidth, remainingMetricWidth - weightWidth)
 
                 return BodyMetricRowLayout(
                     fontSize: preset.fontSize,
                     spacing: preset.spacing,
-                    dateWidth: dateWidth,
-                    metricWidth: metricWidth,
+                    dateWidth: floor(dateWidth),
+                    weightWidth: floor(weightWidth),
+                    bodyFatWidth: floor(bodyFatWidth),
                     actionWidth: preset.actionWidth,
                     iconSize: preset.iconSize,
                     horizontalPadding: preset.padding,
                     unitSpacing: preset.unitSpacing,
-                    actionIconSize: max(11, preset.fontSize - 1)
+                    actionIconSize: max(10, preset.fontSize - 1)
                 )
             }
         }
 
+        let fallbackActionWidth: CGFloat = isCompact ? 22 : 24
+        let fallbackSpacing: CGFloat = isCompact ? 3 : 4
+        let fallbackPadding: CGFloat = isCompact ? 5 : 6
+        let fallbackFieldBudget = max(0, availableWidth - fallbackActionWidth * 2 - fallbackSpacing * 4)
         let fallbackDateWidth = max(
-            74,
-            keepFitMeasuredTextWidth(dateSample, size: 12, weight: .medium, monospacedDigits: true) + 28
+            isCompact ? 54 : 60,
+            min(
+                keepFitMeasuredTextWidth(dateSample, size: isCompact ? 10.5 : 11, weight: .medium, monospacedDigits: true) + fallbackPadding * 2 + 16,
+                fallbackFieldBudget * (isCompact ? 0.2 : 0.24)
+            )
         )
-        let fallbackFieldBudget = totalWidth - 26 * 2 - 4 * 4
-        let fallbackDateTarget = min(max(fallbackDateWidth, fallbackFieldBudget * 0.28), fallbackDateWidth + 18)
-        let fallbackMetricWidth = max(72, (fallbackFieldBudget - fallbackDateTarget) / 2)
+        let remainingFallbackMetrics = max(0, fallbackFieldBudget - fallbackDateWidth)
+        let fallbackWeightWidth = max(isCompact ? 58 : 64, remainingFallbackMetrics * 0.52)
+        let fallbackBodyFatWidth = max(isCompact ? 54 : 60, remainingFallbackMetrics - fallbackWeightWidth)
 
         return BodyMetricRowLayout(
-            fontSize: 12,
-            spacing: 4,
-            dateWidth: fallbackDateTarget,
-            metricWidth: fallbackMetricWidth,
-            actionWidth: 26,
-            iconSize: 10,
-            horizontalPadding: 6,
-            unitSpacing: 3,
-            actionIconSize: 11
+            fontSize: isCompact ? 10.5 : 11,
+            spacing: fallbackSpacing,
+            dateWidth: floor(fallbackDateWidth),
+            weightWidth: floor(fallbackWeightWidth),
+            bodyFatWidth: floor(fallbackBodyFatWidth),
+            actionWidth: fallbackActionWidth,
+            iconSize: isCompact ? 9 : 10,
+            horizontalPadding: fallbackPadding,
+            unitSpacing: isCompact ? 2 : 3,
+            actionIconSize: isCompact ? 10 : 11
         )
     }
 }

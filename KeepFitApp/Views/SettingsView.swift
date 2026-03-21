@@ -80,7 +80,7 @@ struct SettingsView: View {
     @State private var showPrivacyPolicySheet = false
     @State private var showReminderAlert = false
     @State private var reminderAlertMessage = ""
-    @State private var showFeedbackAlert = false
+    @State private var showFeedbackSheet = false
     @State private var showAppleAccountSheet = false
     @State private var showAppleHealthSheet = false
     @State private var showResetDataSheet = false
@@ -348,16 +348,11 @@ struct SettingsView: View {
                 } message: {
                     Text(reminderAlertMessage)
                 }
-                .alert(localized("意见反馈", "Feedback"), isPresented: $showFeedbackAlert) {
-                    Button(localized("发送邮件", "Send Mail")) {
-                        openFeedbackEmail()
-                    }
-                    Button(localized("取消", "Cancel"), role: .cancel) {}
-                } message: {
-                    Text(feedbackEmail)
-                }
                 .sheet(isPresented: $showAboutSheet) {
                     aboutSheet
+                }
+                .sheet(isPresented: $showFeedbackSheet) {
+                    feedbackSheet
                 }
                 .sheet(isPresented: $showAvatarSheet) {
                     AvatarPickerSheet(
@@ -639,7 +634,7 @@ struct SettingsView: View {
 
             Button {
                 triggerHapticIfNeeded()
-                showFeedbackAlert = true
+                showFeedbackSheet = true
             } label: {
                 HStack(spacing: 10) {
                     rowIcon("envelope", .orange)
@@ -1596,6 +1591,84 @@ struct SettingsView: View {
             privacyPolicySheet
         }
         .presentationDetents([.height(400), .large])
+    }
+
+    private var feedbackSheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(localized("意见反馈", "Feedback"))
+                            .font(.headline)
+                        Text(localized("你可以直接发送邮件给我们，我们会尽快查看并回复。", "You can send us an email directly and we will review it as soon as possible."))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(localized("联系邮箱", "Contact Email"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text(feedbackEmail)
+                            .font(.body.weight(.semibold))
+                            .foregroundStyle(.primary)
+                            .textSelection(.enabled)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.76)
+                    }
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(.ultraThinMaterial)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                    .stroke(.white.opacity(0.18), lineWidth: 0.8)
+                            )
+                    )
+
+                    Button {
+                        triggerHapticIfNeeded()
+                        openFeedbackEmail()
+                    } label: {
+                        Text(localized("发送邮件", "Send Mail"))
+                            .font(.headline.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(
+                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [Color.orange.opacity(0.95), Color.pink.opacity(0.82)],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                            )
+                            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                }
+                .frame(maxWidth: 640)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 18)
+                .padding(.top, 18)
+                .padding(.bottom, 24)
+            }
+            .navigationTitle(localized("意见反馈", "Feedback"))
+            .navigationBarTitleDisplayMode(.inline)
+            .background(sheetBackground(accent: .orange))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(localized("完成", "Done")) {
+                        showFeedbackSheet = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.height(280), .medium])
     }
 
     private var privacyPolicySheet: some View {
@@ -3654,6 +3727,7 @@ struct ResetDataSheetView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @State private var showDeleteAllDataAlert = false
     @State private var showDeleteRangeAlert = false
@@ -3669,6 +3743,10 @@ struct ResetDataSheetView: View {
         allSummary.totalCount > 0
     }
 
+    private var compactLayout: Bool {
+        UIScreen.main.bounds.width <= 390 || dynamicTypeSize >= .xLarge
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -3677,7 +3755,7 @@ struct ResetDataSheetView: View {
                     resetDeleteAllCard
                     resetDeleteRangeCard
                 }
-                .padding(.horizontal, 18)
+                .padding(.horizontal, compactLayout ? 14 : 18)
                 .padding(.top, 14)
                 .padding(.bottom, 24)
             }
@@ -3752,7 +3830,7 @@ struct ResetDataSheetView: View {
                     Text(localized("清理 KeepFit 记录", "Clear KeepFit Records"))
                         .font(.headline.weight(.semibold))
                     Text(localized("只删除 App 内数据，不会删除 Apple 健康里的原始记录。", "Only deletes data inside KeepFit. Apple Health source data stays untouched."))
-                        .font(.caption)
+                        .font(compactLayout ? .caption2 : .caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -3770,7 +3848,7 @@ struct ResetDataSheetView: View {
                 Text(localized("一键删除全部数据", "Delete All Data"))
                     .font(.headline.weight(.semibold))
                 Text(localized("清空 KeepFit 里的全部饮食、锻炼、体重与体脂记录。", "Remove every meal, workout, weight, and body-fat record stored in KeepFit."))
-                    .font(.caption)
+                    .font(compactLayout ? .caption2 : .caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -3786,6 +3864,8 @@ struct ResetDataSheetView: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.84)
                     .background(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
                             .fill(hasRecordedData ? Color.red : Color.red.opacity(0.35))
@@ -3805,7 +3885,7 @@ struct ResetDataSheetView: View {
                 Text(localized("按时间段删除", "Delete by Date Range"))
                     .font(.headline.weight(.semibold))
                 Text(localized("选择起始和终止日期，只删除这一段时间内的记录。", "Choose a start and end date to remove records only within that range."))
-                    .font(.caption)
+                    .font(compactLayout ? .caption2 : .caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -3830,7 +3910,7 @@ struct ResetDataSheetView: View {
                 resetDataSummaryView(summary: selectedSummary, accent: .blue)
             } else {
                 Text(localized("当前还没有可删除的记录。", "There are no records to delete yet."))
-                    .font(.subheadline)
+                    .font(compactLayout ? .footnote : .subheadline)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(14)
@@ -3846,6 +3926,8 @@ struct ResetDataSheetView: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.84)
                     .background(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
                             .fill(hasRecordedData ? Color.blue : Color.blue.opacity(0.35))
@@ -3860,37 +3942,29 @@ struct ResetDataSheetView: View {
     }
 
     private func resetDataSummaryView(summary: DataDeletionSummary, accent: Color) -> some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 10) {
-                resetSummaryChip(title: localized("饮食", "Meals"), count: summary.foodLogCount, accent: accent)
-                resetSummaryChip(title: localized("锻炼", "Workouts"), count: summary.exerciseLogCount, accent: accent)
-                resetSummaryChip(title: localized("体重体脂", "Body"), count: summary.bodyMetricCount, accent: accent)
-            }
-
-            VStack(spacing: 10) {
-                HStack(spacing: 10) {
-                    resetSummaryChip(title: localized("饮食", "Meals"), count: summary.foodLogCount, accent: accent)
-                    resetSummaryChip(title: localized("锻炼", "Workouts"), count: summary.exerciseLogCount, accent: accent)
-                }
-                resetSummaryChip(title: localized("体重体脂", "Body"), count: summary.bodyMetricCount, accent: accent)
-            }
+        HStack(spacing: compactLayout ? 8 : 10) {
+            resetSummaryChip(title: localized("饮食", "Meals"), count: summary.foodLogCount, accent: accent)
+            resetSummaryChip(title: localized("锻炼", "Workouts"), count: summary.exerciseLogCount, accent: accent)
+            resetSummaryChip(title: localized("体重体脂", "Body"), count: summary.bodyMetricCount, accent: accent)
         }
     }
 
     private func resetSummaryChip(title: String, count: Int, accent: Color) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
-                .font(.caption)
+                .font(compactLayout ? .caption2 : .caption)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
+                .minimumScaleFactor(0.74)
             Text("\(count) " + localized("条", "items"))
-                .font(.subheadline.weight(.semibold))
+                .font((compactLayout ? Font.footnote : Font.subheadline).weight(.semibold))
                 .foregroundStyle(accent.opacity(colorScheme == .dark ? 0.9 : 0.78))
                 .lineLimit(1)
+                .minimumScaleFactor(0.72)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.horizontal, compactLayout ? 10 : 12)
+        .padding(.vertical, compactLayout ? 9 : 10)
         .background(glassRowBackground(accent: accent))
     }
 
@@ -3900,27 +3974,45 @@ struct ResetDataSheetView: View {
         range: ClosedRange<Date>,
         accent: Color
     ) -> some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Text(Formatters.yearMonthDay.string(from: selection.wrappedValue))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                resetDatePickerInfo(title: title, selection: selection)
+                Spacer(minLength: 8)
+                resetCompactDatePicker(selection: selection, range: range, accent: accent)
             }
 
-            Spacer(minLength: 8)
-
-            DatePicker("", selection: selection, in: range, displayedComponents: .date)
-                .labelsHidden()
-                .datePickerStyle(.compact)
-                .tint(accent)
+            VStack(alignment: .leading, spacing: 10) {
+                resetDatePickerInfo(title: title, selection: selection)
+                HStack {
+                    Spacer(minLength: 0)
+                    resetCompactDatePicker(selection: selection, range: range, accent: accent)
+                }
+            }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
         .background(glassRowBackground(accent: accent))
+    }
+
+    private func resetDatePickerInfo(title: String, selection: Binding<Date>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(compactLayout ? .caption2 : .caption)
+                .foregroundStyle(.secondary)
+            Text(Formatters.yearMonthDay.string(from: selection.wrappedValue))
+                .font((compactLayout ? Font.footnote : Font.subheadline).weight(.semibold))
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+    }
+
+    private func resetCompactDatePicker(selection: Binding<Date>, range: ClosedRange<Date>, accent: Color) -> some View {
+        DatePicker("", selection: selection, in: range, displayedComponents: .date)
+            .labelsHidden()
+            .datePickerStyle(.compact)
+            .tint(accent)
+            .fixedSize()
     }
 
     private var resetStartDateBinding: Binding<Date> {
