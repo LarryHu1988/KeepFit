@@ -4,6 +4,7 @@ import UIKit
 struct MainTabView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("keepfit.appLanguage") private var appLanguageRaw = AppLanguageOption.chinese.rawValue
 
     private enum TabKey: Hashable {
         case eat
@@ -59,6 +60,7 @@ struct MainTabView: View {
                     Label(localized("减个肥", "Lose Weight"), systemImage: "sun.max")
                 }
         }
+        .id("main-tab-language-\(appLanguageRaw)")
         .tint(Color.accentColor)
         .onChange(of: selectedTab) { _, newValue in
             switch newValue {
