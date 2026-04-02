@@ -52,7 +52,9 @@ struct KeepFitApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if !keepfitScreenshotModeEnabled, appState.isAccountChoiceUndecided {
+                if keepfitScreenshotModeEnabled, KeepFitScreenshotConfig.root == .settings {
+                    SettingsView()
+                } else if !keepfitScreenshotModeEnabled, appState.isAccountChoiceUndecided {
                     AppleAccountSheet(requireChoice: true)
                 } else {
                     MainTabView()
@@ -61,11 +63,11 @@ struct KeepFitApp: App {
             .environmentObject(appState)
             .environment(\.locale, Locale(identifier: appLanguage.localeIdentifier))
             .onAppear {
-                applyThemeMode(themeMode)
+                applyThemeMode(keepfitScreenshotModeEnabled ? .light : themeMode)
             }
             .onChange(of: themeModeRaw) { _, newValue in
                 let mode = AppThemeMode(rawValue: newValue) ?? .system
-                applyThemeMode(mode)
+                applyThemeMode(keepfitScreenshotModeEnabled ? .light : mode)
             }
         }
     }

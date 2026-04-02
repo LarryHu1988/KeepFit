@@ -213,6 +213,70 @@ enum AppPreferences {
     }
 }
 
+enum KeepFitScreenshotRoot: String {
+    case main
+    case settings
+}
+
+enum KeepFitScreenshotFocus: String {
+    case eatLog = "eat-log"
+    case eatNutrition = "eat-nutrition"
+    case moveLog = "move-log"
+    case moveGoal = "move-goal"
+    case loseOverview = "lose-overview"
+    case loseTrends = "lose-trends"
+    case settingsData = "settings-data"
+}
+
+enum KeepFitScreenshotConfig {
+    static var isEnabled: Bool {
+        ProcessInfo.processInfo.arguments.contains("-keepfit-screenshot-mode")
+    }
+
+    static var root: KeepFitScreenshotRoot {
+        value(after: "-keepfit-screenshot-root")
+            .flatMap(KeepFitScreenshotRoot.init(rawValue:)) ?? .main
+    }
+
+    static var selectedTab: String? {
+        value(after: "-keepfit-selected-tab")
+    }
+
+    static var focus: KeepFitScreenshotFocus? {
+        value(after: "-keepfit-screenshot-focus")
+            .flatMap(KeepFitScreenshotFocus.init(rawValue:))
+    }
+
+    static var referenceDate: Date {
+        if let raw = value(after: "-keepfit-screenshot-date") {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = TimeZone(secondsFromGMT: 0)
+            formatter.dateFormat = "yyyy-MM-dd"
+            if let date = formatter.date(from: raw) {
+                return date
+            }
+        }
+        return AppPreferences.calendar.date(from: DateComponents(year: 2026, month: 3, day: 21))
+            ?? Date()
+    }
+
+    private static func value(after flag: String) -> String? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: flag), arguments.indices.contains(index + 1) else {
+            return nil
+        }
+        return arguments[index + 1]
+    }
+}
+
+func keepFitInitialSelectedDate() -> Date {
+    if KeepFitScreenshotConfig.isEnabled {
+        return KeepFitScreenshotConfig.referenceDate.startOfDayInCurrentCalendar
+    }
+    return Date().startOfDayInCurrentCalendar
+}
+
 struct DynamicDateFormatter {
     let builder: () -> DateFormatter
 
@@ -418,6 +482,86 @@ func durationDisplayText(fromMinutes minutes: Double, includeUnit: Bool = true) 
 
 func localized(_ chinese: String, _ english: String) -> String {
     AppPreferences.language == .english ? english : chinese
+}
+
+struct KeepFitNutritionSource: Identifiable, Hashable {
+    let id: String
+    let titleZH: String
+    let titleEN: String
+    let summaryZH: String
+    let summaryEN: String
+    let urlString: String
+
+    var title: String {
+        localized(titleZH, titleEN)
+    }
+
+    var summary: String {
+        localized(summaryZH, summaryEN)
+    }
+
+    var url: URL? {
+        URL(string: urlString)
+    }
+}
+
+enum KeepFitNutritionReferences {
+    static let dietaryGuidelines = KeepFitNutritionSource(
+        id: "dietary_guidelines_2025_2030",
+        titleZH: "MedlinePlus：美国膳食指南 2025-2030",
+        titleEN: "MedlinePlus: Dietary Guidelines 2025-2030",
+        summaryZH: "支持应用中的均衡饮食、蔬菜/蛋白优先与减少含糖饮料等通用营养建议。",
+        summaryEN: "Supports the app's general nutrition tips about balanced meals, vegetables/protein, and limiting sugary drinks.",
+        urlString: "https://medlineplus.gov/ency/article/002093.htm"
+    )
+
+    static let fiber = KeepFitNutritionSource(
+        id: "medlineplus_fiber",
+        titleZH: "MedlinePlus：膳食纤维",
+        titleEN: "MedlinePlus: Dietary Fiber",
+        summaryZH: "支持应用中的高纤维碳水与全谷物提醒。",
+        summaryEN: "Supports the app's reminders about high-fiber carbs and whole grains.",
+        urlString: "https://medlineplus.gov/ency/article/002470.htm"
+    )
+
+    static let mifflinStJeor = KeepFitNutritionSource(
+        id: "mifflin_st_jeor",
+        titleZH: "PubMed：Mifflin-St Jeor 代谢公式",
+        titleEN: "PubMed: Mifflin-St Jeor Equation",
+        summaryZH: "支持应用用于估算基础代谢与热量目标的公式。",
+        summaryEN: "Supports the formula KeepFit uses to estimate BMR and calorie targets.",
+        urlString: "https://pubmed.ncbi.nlm.nih.gov/2305711/"
+    )
+
+    static let foodDataCentral = KeepFitNutritionSource(
+        id: "food_data_central",
+        titleZH: "USDA：FoodData Central",
+        titleEN: "USDA: FoodData Central",
+        summaryZH: "可用于查询常见食物营养组成；包装食品请以产品标签为准。",
+        summaryEN: "A standard nutrient-composition reference for common foods; packaged foods should be verified against the label.",
+        urlString: "https://fdc.nal.usda.gov/"
+    )
+
+    static let visibleSources: [KeepFitNutritionSource] = [
+        dietaryGuidelines,
+        fiber,
+        mifflinStJeor,
+        foodDataCentral
+    ]
+
+    static var intro: String {
+        localized(
+            "以下链接对应 KeepFit 中营养提示与热量估算所依据的公开参考来源。",
+            "These public references support the nutrition tips and calorie estimates shown in KeepFit."
+        )
+    }
+
+    static var disclaimer: String {
+        localized(
+            "KeepFit 的营养信息仅用于一般健康管理，不替代医生或注册营养师的个体化建议。",
+            "KeepFit's nutrition guidance is for general wellness only and does not replace personalized advice from a clinician or registered dietitian."
+        )
+    }
 }
 
 func englishDisplayName(from identifier: String) -> String {

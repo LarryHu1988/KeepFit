@@ -138,6 +138,16 @@ final class AppState: ObservableObject {
         )
     }
 
+    private struct ScreenshotSeedState {
+        let profile: UserProfile
+        let foodLibrary: [FoodItem]
+        let exerciseLibrary: [ExerciseItem]
+        let foodLogs: [FoodLog]
+        let exerciseLogs: [ExerciseLog]
+        let bodyMetricLogs: [BodyMetricLog]
+        let account: KeepFitAccount
+    }
+
     private enum SyncKeys {
         static let iCloudEnabled = "keepfit.sync.iCloud"
         static let healthEnabled = "keepfit.sync.healthKit"
@@ -278,6 +288,20 @@ final class AppState: ObservableObject {
     private var dailyMetricsCache = DailyMetricsCache.empty
 
     init() {
+        if KeepFitScreenshotConfig.isEnabled {
+            let seed = Self.makeScreenshotSeed(referenceDate: KeepFitScreenshotConfig.referenceDate)
+            profile = seed.profile
+            foodLibrary = seed.foodLibrary
+            exerciseLibrary = seed.exerciseLibrary
+            foodLogs = seed.foodLogs.sorted(by: { $0.date > $1.date })
+            exerciseLogs = seed.exerciseLogs.sorted(by: { $0.date > $1.date })
+            bodyMetricLogs = seed.bodyMetricLogs.sorted(by: { $0.date < $1.date })
+            account = seed.account
+            rebuildRecordedDataOverview()
+            rebuildDailyMetricsCache()
+            return
+        }
+
         let loadedProfile = store.load(UserProfile.self, for: .profile) ?? .default
         let loadedFoods = store.load([FoodItem].self, for: .foods) ?? SeedData.foodLibrary
         let loadedExercises = store.load([ExerciseItem].self, for: .exercises) ?? SeedData.exerciseLibrary
@@ -363,6 +387,132 @@ final class AppState: ObservableObject {
     private static func loadAccount(from defaults: UserDefaults) -> KeepFitAccount? {
         guard let data = defaults.data(forKey: SyncKeys.account) else { return nil }
         return try? JSONDecoder().decode(KeepFitAccount.self, from: data)
+    }
+
+    private static func makeScreenshotSeed(referenceDate: Date) -> ScreenshotSeedState {
+        let calendar = AppPreferences.calendar
+        let selectedDay = referenceDate.startOfDayInCurrentCalendar
+        let profile = UserProfile(
+            name: "KeepFit",
+            heightCm: 170,
+            weightKg: 71.2,
+            age: 28,
+            sex: .male,
+            activityLevel: .lightlyActive,
+            targetWeightKg: 68,
+            targetBodyFat: 19,
+            dailyExerciseGoal: 420,
+            avatarJPEGData: nil
+        )
+
+        let foods = SeedData.foodLibrary
+        let exercises = SeedData.exerciseLibrary
+        let foodLookup = Dictionary(uniqueKeysWithValues: foods.map { ($0.id, $0) })
+        let exerciseLookup = Dictionary(uniqueKeysWithValues: exercises.map { ($0.id, $0) })
+
+        func day(_ offset: Int, hour: Int, minute: Int) -> Date {
+            let base = calendar.date(byAdding: .day, value: offset, to: selectedDay) ?? selectedDay
+            return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: base) ?? base
+        }
+
+        func foodLog(_ foodID: String, dayOffset: Int, hour: Int, minute: Int, grams: Double) -> FoodLog {
+            let item = foodLookup[foodID] ?? foods[0]
+            return FoodLog(
+                id: UUID(),
+                date: day(dayOffset, hour: hour, minute: minute),
+                foodID: item.id,
+                foodName: item.name,
+                foodIcon: item.icon,
+                weightGrams: grams,
+                caloriesPer100g: item.caloriesPer100g,
+                proteinPer100g: item.proteinPer100g,
+                carbsPer100g: item.carbsPer100g,
+                fatPer100g: item.fatPer100g
+            )
+        }
+
+        func exerciseLog(_ exerciseID: String, dayOffset: Int, hour: Int, minute: Int, durationMinutes: Double) -> ExerciseLog {
+            let item = exerciseLookup[exerciseID] ?? exercises[0]
+            return ExerciseLog(
+                id: UUID(),
+                date: day(dayOffset, hour: hour, minute: minute),
+                exerciseID: item.id,
+                exerciseName: item.name,
+                exerciseIcon: item.icon,
+                durationMinutes: durationMinutes,
+                met: item.met
+            )
+        }
+
+        func bodyMetric(_ dayOffset: Int, weightKg: Double, bodyFat: Double) -> BodyMetricLog {
+            BodyMetricLog(
+                id: UUID(),
+                date: calendar.date(byAdding: .day, value: dayOffset, to: selectedDay) ?? selectedDay,
+                weightKg: weightKg,
+                bodyFatPercent: bodyFat
+            )
+        }
+
+        let foodLogs = [
+            foodLog("oatmeal", dayOffset: -8, hour: 8, minute: 10, grams: 75),
+            foodLog("banana", dayOffset: -8, hour: 12, minute: 40, grams: 140),
+            foodLog("chicken_breast", dayOffset: -8, hour: 18, minute: 20, grams: 180),
+            foodLog("rice_brown", dayOffset: -8, hour: 18, minute: 22, grams: 160),
+            foodLog("broccoli", dayOffset: -8, hour: 18, minute: 25, grams: 150),
+
+            foodLog("greek_yogurt", dayOffset: -6, hour: 8, minute: 20, grams: 180),
+            foodLog("blueberry", dayOffset: -6, hour: 8, minute: 24, grams: 90),
+            foodLog("salmon", dayOffset: -6, hour: 13, minute: 5, grams: 170),
+            foodLog("sweet_potato", dayOffset: -6, hour: 13, minute: 8, grams: 180),
+            foodLog("spinach", dayOffset: -6, hour: 19, minute: 2, grams: 120),
+
+            foodLog("whole_wheat_bread", dayOffset: -4, hour: 7, minute: 55, grams: 90),
+            foodLog("egg", dayOffset: -4, hour: 8, minute: 0, grams: 100),
+            foodLog("tuna", dayOffset: -4, hour: 12, minute: 18, grams: 140),
+            foodLog("quinoa", dayOffset: -4, hour: 12, minute: 20, grams: 160),
+            foodLog("lettuce", dayOffset: -4, hour: 18, minute: 46, grams: 120),
+
+            foodLog("rice_white", dayOffset: -2, hour: 8, minute: 12, grams: 120),
+            foodLog("latte", dayOffset: -2, hour: 10, minute: 14, grams: 260),
+            foodLog("beef_lean", dayOffset: -2, hour: 13, minute: 6, grams: 160),
+            foodLog("potato", dayOffset: -2, hour: 13, minute: 10, grams: 180),
+            foodLog("tomato", dayOffset: -2, hour: 18, minute: 38, grams: 150),
+
+            foodLog("greek_yogurt", dayOffset: 0, hour: 8, minute: 10, grams: 200),
+            foodLog("blueberry", dayOffset: 0, hour: 8, minute: 12, grams: 80),
+            foodLog("rice_white", dayOffset: 0, hour: 12, minute: 32, grams: 150),
+            foodLog("salmon", dayOffset: 0, hour: 12, minute: 35, grams: 170),
+            foodLog("broccoli", dayOffset: 0, hour: 18, minute: 46, grams: 180),
+            foodLog("sweet_potato", dayOffset: 0, hour: 18, minute: 48, grams: 190)
+        ]
+
+        let exerciseLogs = [
+            exerciseLog("walking_fast", dayOffset: -8, hour: 18, minute: 50, durationMinutes: 32),
+            exerciseLog("cycling_light", dayOffset: -6, hour: 19, minute: 12, durationMinutes: 42),
+            exerciseLog("jogging", dayOffset: -4, hour: 7, minute: 8, durationMinutes: 36),
+            exerciseLog("hiit", dayOffset: -2, hour: 18, minute: 8, durationMinutes: 24),
+            exerciseLog("walking_fast", dayOffset: 0, hour: 19, minute: 6, durationMinutes: 30),
+            exerciseLog("stretching", dayOffset: 0, hour: 21, minute: 5, durationMinutes: 15)
+        ]
+
+        let bodyMetricLogs = [
+            bodyMetric(-10, weightKg: 72.6, bodyFat: 26.4),
+            bodyMetric(-8, weightKg: 72.3, bodyFat: 26.1),
+            bodyMetric(-6, weightKg: 72.0, bodyFat: 25.8),
+            bodyMetric(-4, weightKg: 71.7, bodyFat: 25.5),
+            bodyMetric(-2, weightKg: 71.4, bodyFat: 25.2),
+            bodyMetric(0, weightKg: 71.2, bodyFat: 24.9)
+        ]
+
+        return ScreenshotSeedState(
+            profile: profile,
+            foodLibrary: foods,
+            exerciseLibrary: exercises,
+            foodLogs: foodLogs,
+            exerciseLogs: exerciseLogs,
+            bodyMetricLogs: bodyMetricLogs,
+            account: .local
+        )
     }
 
     var isICloudSyncEnabled: Bool {

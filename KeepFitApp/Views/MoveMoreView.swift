@@ -8,8 +8,16 @@ struct MoveMoreView: View {
     let onSettingsTap: () -> Void
     var onExerciseLogged: (() -> Void)? = nil
 
+    private enum ScreenshotSectionID: String {
+        case header
+        case progress
+        case metrics
+        case workoutLog
+        case history
+    }
+
     @State private var selectedExercise: ExerciseItem?
-    @State private var selectedDate = Date().startOfDayInCurrentCalendar
+    @State private var selectedDate = keepFitInitialSelectedDate()
     @State private var exerciseTime = Date()
     @State private var durationText = "30"
     @State private var showExerciseSheet = false
@@ -40,34 +48,63 @@ struct MoveMoreView: View {
         min(ringSize, UIScreen.main.bounds.width - 84)
     }
 
+    private var screenshotFocusTarget: ScreenshotSectionID? {
+        guard KeepFitScreenshotConfig.isEnabled else { return nil }
+        switch KeepFitScreenshotConfig.focus {
+        case .moveGoal:
+            return .progress
+        case .moveLog:
+            return .workoutLog
+        default:
+            return nil
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 GrowPageBackground(accent: .green)
 
-                ScrollView {
-                    VStack(spacing: cardSpacing) {
-                        weekCalendarStrip
-                        exerciseProgressCard
-                        exerciseMetricsCard
-                        todayExerciseCard
-                        dailyHistoryCard
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 18)
-                    .frame(maxWidth: .infinity)
-                }
-                .scrollDismissesKeyboard(.immediately)
-                .gesture(
-                    TapGesture().onEnded {
-                        if focusedField != nil {
-                            keepFitDismissKeyboard()
-                            focusedField = nil
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        VStack(spacing: cardSpacing) {
+                            weekCalendarStrip
+                                .id(ScreenshotSectionID.header)
+                            exerciseProgressCard
+                                .id(ScreenshotSectionID.progress)
+                            exerciseMetricsCard
+                                .id(ScreenshotSectionID.metrics)
+                            todayExerciseCard
+                                .id(ScreenshotSectionID.workoutLog)
+                            dailyHistoryCard
+                                .id(ScreenshotSectionID.history)
                         }
-                    },
-                    including: focusedField != nil ? .gesture : .none
-                )
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .padding(.bottom, 18)
+                        .frame(maxWidth: .infinity)
+                    }
+                    .scrollDismissesKeyboard(.immediately)
+                    .gesture(
+                        TapGesture().onEnded {
+                            if focusedField != nil {
+                                keepFitDismissKeyboard()
+                                focusedField = nil
+                            }
+                        },
+                        including: focusedField != nil ? .gesture : .none
+                    )
+                    .onAppear {
+                        guard let target = screenshotFocusTarget else { return }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                            var transaction = Transaction()
+                            transaction.animation = nil
+                            withTransaction(transaction) {
+                                proxy.scrollTo(target, anchor: .top)
+                            }
+                        }
+                    }
+                }
             }
             .navigationTitle(localized("迈开腿", "Move More"))
             .navigationBarTitleDisplayMode(.large)

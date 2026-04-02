@@ -11,7 +11,18 @@ struct LoseWeightView: View {
     let onSettingsTap: () -> Void
     var onBodyMetricSaved: (() -> Void)? = nil
 
-    @State private var selectedDate = Date().startOfDayInCurrentCalendar
+    private enum ScreenshotSectionID: String {
+        case header
+        case summary
+        case components
+        case calendar
+        case body
+        case calorieTrend
+        case weightTrend
+        case bodyFatTrend
+    }
+
+    @State private var selectedDate = keepFitInitialSelectedDate()
     @State private var monthCursor = Date()
     @State private var weightText = ""
     @State private var bodyFatText = ""
@@ -169,38 +180,70 @@ struct LoseWeightView: View {
         )
     }
 
+    private var screenshotFocusTarget: ScreenshotSectionID? {
+        guard KeepFitScreenshotConfig.isEnabled else { return nil }
+        switch KeepFitScreenshotConfig.focus {
+        case .loseOverview:
+            return .calendar
+        case .loseTrends:
+            return .calorieTrend
+        default:
+            return nil
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 GrowPageBackground(accent: .blue)
 
-                ScrollView {
-                    VStack(spacing: cardSpacing) {
-                        weekCalendarStrip
-                        summaryRingCard
-                        summaryMetricsCard
-                        calendarCard
-                        selectedDayCard
-                        bodyMetricInputCard
-                        calorieTrendCard
-                        weightTrendCard
-                        bodyFatTrendCard
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 18)
-                    .frame(maxWidth: .infinity)
-                }
-                .scrollDismissesKeyboard(.immediately)
-                .gesture(
-                    TapGesture().onEnded {
-                        if focusedField != nil {
-                            keepFitDismissKeyboard()
-                            focusedField = nil
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        VStack(spacing: cardSpacing) {
+                            weekCalendarStrip
+                                .id(ScreenshotSectionID.header)
+                            summaryRingCard
+                                .id(ScreenshotSectionID.summary)
+                            summaryMetricsCard
+                                .id(ScreenshotSectionID.components)
+                            calendarCard
+                                .id(ScreenshotSectionID.calendar)
+                            selectedDayCard
+                            bodyMetricInputCard
+                                .id(ScreenshotSectionID.body)
+                            calorieTrendCard
+                                .id(ScreenshotSectionID.calorieTrend)
+                            weightTrendCard
+                                .id(ScreenshotSectionID.weightTrend)
+                            bodyFatTrendCard
+                                .id(ScreenshotSectionID.bodyFatTrend)
                         }
-                    },
-                    including: focusedField != nil ? .gesture : .none
-                )
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .padding(.bottom, 18)
+                        .frame(maxWidth: .infinity)
+                    }
+                    .scrollDismissesKeyboard(.immediately)
+                    .gesture(
+                        TapGesture().onEnded {
+                            if focusedField != nil {
+                                keepFitDismissKeyboard()
+                                focusedField = nil
+                            }
+                        },
+                        including: focusedField != nil ? .gesture : .none
+                    )
+                    .onAppear {
+                        guard let target = screenshotFocusTarget else { return }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                            var transaction = Transaction()
+                            transaction.animation = nil
+                            withTransaction(transaction) {
+                                proxy.scrollTo(target, anchor: .top)
+                            }
+                        }
+                    }
+                }
             }
             .navigationTitle(localized("减个肥", "Lose Weight"))
             .navigationBarTitleDisplayMode(.large)

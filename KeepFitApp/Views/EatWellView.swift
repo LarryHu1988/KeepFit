@@ -9,8 +9,16 @@ struct EatWellView: View {
     let onSettingsTap: () -> Void
     var onFoodLogged: (() -> Void)? = nil
 
+    private enum ScreenshotSectionID: String {
+        case header
+        case progress
+        case nutrition
+        case foodLog
+        case history
+    }
+
     @State private var selectedFood: FoodItem?
-    @State private var selectedDate = Date().startOfDayInCurrentCalendar
+    @State private var selectedDate = keepFitInitialSelectedDate()
     @State private var intakeTime = Date()
     @State private var amountText = "120"
     @State private var showFoodSheet = false
@@ -58,34 +66,63 @@ struct EatWellView: View {
         max(1, todayNutrition.protein * 4 + todayNutrition.carbs * 4 + todayNutrition.fat * 9)
     }
 
+    private var screenshotFocusTarget: ScreenshotSectionID? {
+        guard KeepFitScreenshotConfig.isEnabled else { return nil }
+        switch KeepFitScreenshotConfig.focus {
+        case .eatNutrition:
+            return .nutrition
+        case .eatLog:
+            return .foodLog
+        default:
+            return nil
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 GrowPageBackground(accent: .orange)
 
-                ScrollView {
-                    VStack(spacing: cardSpacing) {
-                        weekCalendarStrip
-                        intakeProgressCard
-                        intakeMacroCard
-                        todayIntakeCard
-                        dailyHistoryCard
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 18)
-                    .frame(maxWidth: .infinity)
-                }
-                .scrollDismissesKeyboard(.immediately)
-                .gesture(
-                    TapGesture().onEnded {
-                        if focusedField != nil {
-                            keepFitDismissKeyboard()
-                            focusedField = nil
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        VStack(spacing: cardSpacing) {
+                            weekCalendarStrip
+                                .id(ScreenshotSectionID.header)
+                            intakeProgressCard
+                                .id(ScreenshotSectionID.progress)
+                            intakeMacroCard
+                                .id(ScreenshotSectionID.nutrition)
+                            todayIntakeCard
+                                .id(ScreenshotSectionID.foodLog)
+                            dailyHistoryCard
+                                .id(ScreenshotSectionID.history)
                         }
-                    },
-                    including: focusedField != nil ? .gesture : .none
-                )
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .padding(.bottom, 18)
+                        .frame(maxWidth: .infinity)
+                    }
+                    .scrollDismissesKeyboard(.immediately)
+                    .gesture(
+                        TapGesture().onEnded {
+                            if focusedField != nil {
+                                keepFitDismissKeyboard()
+                                focusedField = nil
+                            }
+                        },
+                        including: focusedField != nil ? .gesture : .none
+                    )
+                    .onAppear {
+                        guard let target = screenshotFocusTarget else { return }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                            var transaction = Transaction()
+                            transaction.animation = nil
+                            withTransaction(transaction) {
+                                proxy.scrollTo(target, anchor: .top)
+                            }
+                        }
+                    }
+                }
             }
             .navigationTitle(localized("管住嘴", "Eat Well"))
             .navigationBarTitleDisplayMode(.large)

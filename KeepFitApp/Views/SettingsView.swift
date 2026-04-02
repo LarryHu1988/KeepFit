@@ -81,6 +81,7 @@ struct SettingsView: View {
     @State private var showReminderAlert = false
     @State private var reminderAlertMessage = ""
     @State private var showFeedbackSheet = false
+    @State private var showDisclosureDetail = false
     @State private var showAppleAccountSheet = false
     @State private var showAppleHealthSheet = false
     @State private var showResetDataSheet = false
@@ -88,6 +89,16 @@ struct SettingsView: View {
     @State private var deferredSettingsSetupTask: Task<Void, Never>?
 
     private let feedbackEmail = "keepfit@larryhu.com"
+
+    private enum ScreenshotSectionID: String {
+        case info
+        case goals
+        case general
+        case units
+        case data
+        case reminders
+        case other
+    }
 
     private var settingsCompactLayout: Bool {
         UIScreen.main.bounds.width <= 390 || dynamicTypeSize >= .xLarge
@@ -217,6 +228,16 @@ struct SettingsView: View {
         Formatters.hourMinute.string(from: date(fromMinuteOfDay: summaryReminderMinuteOfDay))
     }
 
+    private var screenshotFocusTarget: ScreenshotSectionID? {
+        guard KeepFitScreenshotConfig.isEnabled else { return nil }
+        switch KeepFitScreenshotConfig.focus {
+        case .settingsData:
+            return .data
+        default:
+            return nil
+        }
+    }
+
     var body: some View {
         NavigationStack {
             settingsPresentedView
@@ -225,27 +246,46 @@ struct SettingsView: View {
 
     private var settingsFormView: AnyView {
         AnyView(
-            Form {
-                basicInfoSection
-                goalsAdviceSection
-                generalSettingsSection
-                unitsSection
-                dataSection
-                remindersSection
-                otherSection
-                rateKeepFitSection
-            }
-            .listStyle(.insetGrouped)
-            .listRowSeparator(.hidden, edges: .all)
-            .listRowSeparatorTint(.clear)
-            .listSectionSeparator(.hidden, edges: .all)
-            .listSectionSeparatorTint(.clear)
-            .navigationTitle(localized("设置", "Settings"))
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(localized("完成", "Done")) {
-                        dismissSettingsImmediately()
+            ScrollViewReader { proxy in
+                Form {
+                    basicInfoSection
+                        .id(ScreenshotSectionID.info)
+                    goalsAdviceSection
+                        .id(ScreenshotSectionID.goals)
+                    generalSettingsSection
+                        .id(ScreenshotSectionID.general)
+                    unitsSection
+                        .id(ScreenshotSectionID.units)
+                    dataSection
+                        .id(ScreenshotSectionID.data)
+                    remindersSection
+                        .id(ScreenshotSectionID.reminders)
+                    otherSection
+                        .id(ScreenshotSectionID.other)
+                    rateKeepFitSection
+                }
+                .listStyle(.insetGrouped)
+                .listRowSeparator(.hidden, edges: .all)
+                .listRowSeparatorTint(.clear)
+                .listSectionSeparator(.hidden, edges: .all)
+                .listSectionSeparatorTint(.clear)
+                .navigationTitle(localized("设置", "Settings"))
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(localized("完成", "Done")) {
+                            dismissSettingsImmediately()
+                        }
+                    }
+                }
+                .onAppear {
+                    guard let target = screenshotFocusTarget else { return }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        var transaction = Transaction()
+                        transaction.animation = nil
+                        withTransaction(transaction) {
+                            proxy.scrollTo(target, anchor: .top)
+                        }
                     }
                 }
             }
@@ -335,6 +375,9 @@ struct SettingsView: View {
     private var settingsPresentedView: AnyView {
         AnyView(
             settingsInteractiveView
+                .navigationDestination(isPresented: $showDisclosureDetail) {
+                    disclosureDetailView
+                }
                 .overlay {
                     settingsInfoOverlay
                 }
@@ -652,6 +695,19 @@ struct SettingsView: View {
                 HStack(spacing: 10) {
                     rowIcon("info.circle", .teal)
                     Text(localized("关于", "About"))
+                        .foregroundStyle(.primary)
+                }
+            }
+            .buttonStyle(.plain)
+            .keepFitSettingsSeparatorAligned()
+
+            Button {
+                triggerHapticIfNeeded()
+                showDisclosureDetail = true
+            } label: {
+                HStack(spacing: 10) {
+                    rowIcon("exclamationmark.shield", .indigo)
+                    Text(localized("声明", "Disclosures"))
                         .foregroundStyle(.primary)
                 }
             }
@@ -1671,6 +1727,43 @@ struct SettingsView: View {
         .presentationDetents([.height(280), .medium])
     }
 
+    private var disclosureDetailView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(localized("营养与健康说明", "Nutrition and Wellness"))
+                        .font(.headline)
+                    Text(KeepFitNutritionReferences.intro)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(localized("参考来源", "Sources"))
+                        .font(.headline.weight(.semibold))
+
+                    ForEach(KeepFitNutritionReferences.visibleSources) { source in
+                        disclosureSourceRow(source)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(localized("一般声明", "General Disclaimer"))
+                        .font(.headline.weight(.semibold))
+                    Text(KeepFitNutritionReferences.disclaimer)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .padding(18)
+        }
+        .background(sheetBackground(accent: .indigo))
+        .navigationTitle(localized("声明", "Disclosures"))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
     private var privacyPolicySheet: some View {
         NavigationStack {
             ScrollView {
@@ -1787,6 +1880,51 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func disclosureSourceRow(_ source: KeepFitNutritionSource) -> some View {
+        if let url = source.url {
+            Link(destination: url) {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "link.circle.fill")
+                        .font(.system(size: 16))
+                        .foregroundStyle(.indigo)
+                        .padding(.top, 1)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(source.title)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.primary)
+                            .multilineTextAlignment(.leading)
+
+                        Text(source.summary)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.leading)
+                    }
+
+                    Spacer(minLength: 8)
+
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 2)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(Color.white.opacity(colorScheme == .dark ? 0.05 : 0.42))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                .stroke(.white.opacity(0.16), lineWidth: 0.8)
+                        )
+                )
+            }
+            .buttonStyle(.plain)
         }
     }
 
