@@ -506,6 +506,33 @@ struct KeepFitNutritionSource: Identifiable, Hashable {
 }
 
 enum KeepFitNutritionReferences {
+    static let bodyWeightPlanner = KeepFitNutritionSource(
+        id: "niddk_body_weight_planner",
+        titleZH: "NIDDK：Body Weight Planner",
+        titleEN: "NIDDK: Body Weight Planner",
+        summaryZH: "支持体重管理中的热量消耗、活动水平与目标体重估算概念。",
+        summaryEN: "Supports the concepts behind calorie expenditure, activity level, and goal-weight planning.",
+        urlString: "https://www.niddk.nih.gov/health-information/weight-management/body-weight-planner"
+    )
+
+    static let weightControl = KeepFitNutritionSource(
+        id: "medlineplus_weight_control",
+        titleZH: "MedlinePlus：体重控制",
+        titleEN: "MedlinePlus: Weight Control",
+        summaryZH: "支持设置页中的体重管理、热量平衡与生活方式建议说明。",
+        summaryEN: "Supports the settings guidance about weight management, calorie balance, and lifestyle changes.",
+        urlString: "https://medlineplus.gov/weightcontrol.html"
+    )
+
+    static let calorieDeficit = KeepFitNutritionSource(
+        id: "medlineplus_cut_500_calories",
+        titleZH: "MedlinePlus：每天减少 500 卡路里的方法",
+        titleEN: "MedlinePlus: 10 Ways to Cut 500 Calories a Day",
+        summaryZH: "支持减重中“适度热量缺口”的一般健康概念。",
+        summaryEN: "Supports the general wellness concept of a moderate calorie deficit for weight loss.",
+        urlString: "https://medlineplus.gov/ency/patientinstructions/000892.htm"
+    )
+
     static let dietaryGuidelines = KeepFitNutritionSource(
         id: "dietary_guidelines_2025_2030",
         titleZH: "MedlinePlus：美国膳食指南 2025-2030",
@@ -543,9 +570,12 @@ enum KeepFitNutritionReferences {
     )
 
     static let visibleSources: [KeepFitNutritionSource] = [
+        mifflinStJeor,
+        bodyWeightPlanner,
+        weightControl,
+        calorieDeficit,
         dietaryGuidelines,
         fiber,
-        mifflinStJeor,
         foodDataCentral
     ]
 

@@ -471,6 +471,8 @@ struct SettingsView: View {
                     .keepFitSettingsSeparatorAligned()
                 intakeInfoRow
                     .keepFitSettingsSeparatorAligned()
+                calculationSourcesRow
+                    .keepFitSettingsSeparatorAligned()
             } header: {
                 Text(localized("目标", "Goals"))
             }
@@ -695,19 +697,6 @@ struct SettingsView: View {
                 HStack(spacing: 10) {
                     rowIcon("info.circle", .teal)
                     Text(localized("关于", "About"))
-                        .foregroundStyle(.primary)
-                }
-            }
-            .buttonStyle(.plain)
-            .keepFitSettingsSeparatorAligned()
-
-            Button {
-                triggerHapticIfNeeded()
-                showDisclosureDetail = true
-            } label: {
-                HStack(spacing: 10) {
-                    rowIcon("exclamationmark.shield", .indigo)
-                    Text(localized("声明", "Disclosures"))
                         .foregroundStyle(.primary)
                 }
             }
@@ -1475,6 +1464,29 @@ struct SettingsView: View {
         }
     }
 
+    private var calculationSourcesRow: some View {
+        Button {
+            triggerHapticIfNeeded()
+            showDisclosureDetail = true
+        } label: {
+            HStack(spacing: settingsCompactLayout ? 8 : 10) {
+                rowIcon("text.book.closed.fill", .indigo)
+                Text(localized("公式来源与声明", "Sources & Disclaimer"))
+                    .font(settingsTitleFont)
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.82)
+                    .allowsTightening(true)
+                    .layoutPriority(1)
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.right")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
     private var languageSelectionRow: some View {
         selectionPopoverRow(icon: "globe", title: localized("语言选择", "Language Selection"), color: .blue, value: appLanguage.title, isPresented: $showLanguageSheet) {
             glassOptionPopover(
@@ -1731,7 +1743,7 @@ struct SettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(localized("营养与健康说明", "Nutrition and Wellness"))
+                    Text(localized("健康估算与营养说明", "Health Estimates and Nutrition"))
                         .font(.headline)
                     Text(KeepFitNutritionReferences.intro)
                         .font(.subheadline)
@@ -1740,10 +1752,38 @@ struct SettingsView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Text(localized("参考来源", "Sources"))
+                    Text(localized("设置页中的热量估算", "Settings Calculation Sources"))
                         .font(.headline.weight(.semibold))
 
-                    ForEach(KeepFitNutritionReferences.visibleSources) { source in
+                    Text(
+                        localized(
+                            "BMR、TDEE 和“减脂建议摄入”用于一般健康管理。KeepFit 会展示公开来源，并说明其中哪些是应用内的通用估算规则。",
+                            "BMR, TDEE, and Fat-Loss Intake are presented for general wellness only. KeepFit shows the public references and clarifies which parts are app estimation rules."
+                        )
+                    )
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                    ForEach([
+                        KeepFitNutritionReferences.mifflinStJeor,
+                        KeepFitNutritionReferences.bodyWeightPlanner,
+                        KeepFitNutritionReferences.weightControl,
+                        KeepFitNutritionReferences.calorieDeficit
+                    ]) { source in
+                        disclosureSourceRow(source)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(localized("营养建议来源", "Nutrition Guidance Sources"))
+                        .font(.headline.weight(.semibold))
+
+                    ForEach([
+                        KeepFitNutritionReferences.dietaryGuidelines,
+                        KeepFitNutritionReferences.fiber,
+                        KeepFitNutritionReferences.foodDataCentral
+                    ]) { source in
                         disclosureSourceRow(source)
                     }
                 }
@@ -1880,6 +1920,41 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func settingsInfoSourceButton(_ source: KeepFitNutritionSource) -> some View {
+        if let url = source.url {
+            Button {
+                triggerHapticIfNeeded()
+                openURL(url)
+            } label: {
+                HStack(alignment: .top, spacing: 6) {
+                    Image(systemName: "link")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.indigo)
+                        .padding(.top, 2)
+
+                    Text(source.title)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.primary)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 2)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.white.opacity(colorScheme == .dark ? 0.07 : 0.34))
+                )
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -3039,8 +3114,9 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
-    private func glassInfoPopover(topic: SettingsInfoTopic, width: CGFloat? = nil) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
+    @ViewBuilder
+    private func infoPopoverContent(topic: SettingsInfoTopic) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
             ForEach(Array(topic.paragraphs.enumerated()), id: \.offset) { _, paragraph in
                 Text(paragraph)
                     .font(.caption2)
@@ -3051,10 +3127,55 @@ struct SettingsView: View {
                     .foregroundStyle(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
+
+            if !topic.sources.isEmpty {
+                Divider()
+                    .overlay(Color.white.opacity(0.12))
+
+                Text(localized("来源", "Sources"))
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                ForEach(topic.sources) { source in
+                    settingsInfoSourceButton(source)
+                }
+            }
+
+            if let disclaimer = topic.disclaimer {
+                Divider()
+                    .overlay(Color.white.opacity(0.12))
+
+                Text(disclaimer)
+                    .font(.caption2)
+                    .lineLimit(nil)
+                    .minimumScaleFactor(0.75)
+                    .allowsTightening(true)
+                    .multilineTextAlignment(.leading)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func glassInfoPopover(topic: SettingsInfoTopic, width: CGFloat? = nil) -> some View {
+        let resolvedWidth = width ?? estimatedParagraphPopoverWidth(topic.popoverMeasurementTexts, minWidth: 280, maxWidth: 360)
+        let contentHeight = measuredInfoPopoverContentHeight(for: topic, width: resolvedWidth)
+        let maxPopoverHeight: CGFloat = 260
+        let shouldScroll = contentHeight > maxPopoverHeight
+
+        Group {
+            if shouldScroll {
+                ScrollView(.vertical, showsIndicators: false) {
+                    infoPopoverContent(topic: topic)
+                }
+            } else {
+                infoPopoverContent(topic: topic)
+            }
         }
         .padding(12)
-        .frame(width: width ?? estimatedParagraphPopoverWidth(topic.paragraphs), alignment: .topLeading)
-        .fixedSize(horizontal: false, vertical: true)
+        .frame(width: resolvedWidth, alignment: .topLeading)
+        .frame(maxHeight: shouldScroll ? maxPopoverHeight : nil, alignment: .topLeading)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(.ultraThinMaterial)
@@ -3073,7 +3194,7 @@ struct SettingsView: View {
     private var settingsInfoOverlay: some View {
         GeometryReader { proxy in
             if let topic = activeInfo {
-                let bubbleWidth = estimatedParagraphPopoverWidth(topic.paragraphs)
+                let bubbleWidth = estimatedParagraphPopoverWidth(topic.popoverMeasurementTexts, minWidth: 280, maxWidth: 360)
                 let bubbleHeight = measuredInfoPopoverHeight(for: topic, width: bubbleWidth)
                 let rootFrame = proxy.frame(in: .global)
                 let showBelow = infoPopoverSourceRect.midY < rootFrame.midY
@@ -3110,10 +3231,10 @@ struct SettingsView: View {
         .allowsHitTesting(activeInfo != nil)
     }
 
-    private func measuredInfoPopoverHeight(for topic: SettingsInfoTopic, width: CGFloat) -> CGFloat {
+    private func measuredInfoPopoverContentHeight(for topic: SettingsInfoTopic, width: CGFloat) -> CGFloat {
         let font = UIFont.preferredFont(forTextStyle: .caption2)
         let usableWidth = max(120, width - 24)
-        let textHeight = topic.paragraphs.reduce(CGFloat.zero) { partial, paragraph in
+        let textHeight = topic.popoverMeasurementTexts.reduce(CGFloat.zero) { partial, paragraph in
             let rect = (paragraph as NSString).boundingRect(
                 with: CGSize(width: usableWidth, height: .greatestFiniteMagnitude),
                 options: [.usesLineFragmentOrigin, .usesFontLeading],
@@ -3122,7 +3243,14 @@ struct SettingsView: View {
             )
             return partial + ceil(rect.height)
         }
-        return textHeight + CGFloat(max(topic.paragraphs.count - 1, 0)) * 5 + 24
+        let spacing = CGFloat(max(topic.popoverMeasurementTexts.count - 1, 0)) * 6
+        let sectionChrome = CGFloat(topic.sources.count) * 18
+        let dividerChrome: CGFloat = topic.sources.isEmpty ? 20 : 46
+        return textHeight + spacing + sectionChrome + dividerChrome
+    }
+
+    private func measuredInfoPopoverHeight(for topic: SettingsInfoTopic, width: CGFloat) -> CGFloat {
+        min(measuredInfoPopoverContentHeight(for: topic, width: width), 260)
     }
 
     private func ensureBirthDateSeeded() {
@@ -3412,16 +3540,63 @@ private enum SettingsInfoTopic: String, Identifiable {
             ]
         case .tdee:
             return [
-                localized("TDEE = BMR × 活动系数。", "TDEE = BMR × activity multiplier."),
-                localized("活动系数：久坐1.2/轻度1.375/中度1.55/高强度1.725。", "Multiplier: sedentary 1.2 / light 1.375 / moderate 1.55 / very active 1.725.")
+                localized("KeepFit 会用 BMR 和你选择的活动水平来估算维持消耗。", "KeepFit estimates maintenance calories from BMR and your selected activity level."),
+                localized("活动系数：久坐 1.2 / 轻度 1.375 / 中度 1.55 / 高强度 1.725。", "Activity factors: sedentary 1.2 / light 1.375 / moderate 1.55 / very active 1.725.")
             ]
         case .intake:
             return [
-                localized("减脂建议摄入 = max(1200, TDEE - 450)。", "Recommended intake = max(1200, TDEE - 450)."),
-                localized("当日净差 = 摄入 - (TDEE + 运动消耗)。", "Daily net = intake - (TDEE + exercise)."),
-                localized("负值为赤字，正值为超量。", "Negative is deficit, positive is surplus.")
+                localized("KeepFit 会在 TDEE 基础上给出一个适度热量缺口，作为一般健康场景下的参考摄入。", "KeepFit applies a moderate calorie deficit to TDEE as a general wellness intake target."),
+                localized("当前应用规则：max(1200, TDEE - 450)。", "Current app rule: max(1200, TDEE - 450)."),
+                localized("当日净差 = 摄入 - (TDEE + 运动消耗)。", "Daily net = intake - (TDEE + exercise).")
             ]
         }
+    }
+
+    var sources: [KeepFitNutritionSource] {
+        switch self {
+        case .bmr:
+            return [KeepFitNutritionReferences.mifflinStJeor]
+        case .tdee:
+            return [
+                KeepFitNutritionReferences.bodyWeightPlanner,
+                KeepFitNutritionReferences.mifflinStJeor
+            ]
+        case .intake:
+            return [
+                KeepFitNutritionReferences.weightControl,
+                KeepFitNutritionReferences.bodyWeightPlanner,
+                KeepFitNutritionReferences.calorieDeficit
+            ]
+        }
+    }
+
+    var disclaimer: String? {
+        switch self {
+        case .bmr:
+            return localized(
+                "该数值仅用于一般健康管理估算，不替代临床代谢评估。",
+                "This value is a general wellness estimate and does not replace clinical metabolic assessment."
+            )
+        case .tdee:
+            return localized(
+                "活动系数为 KeepFit 的通用估算因子，仅用于一般健康管理。",
+                "The activity factors are KeepFit's general estimation factors for wellness use only."
+            )
+        case .intake:
+            return localized(
+                "1200 kcal 下限与 -450 kcal 缺口是 KeepFit 的通用估算规则，不是个体化医疗或营养治疗建议。",
+                "The 1200 kcal floor and -450 kcal deficit are KeepFit heuristics for general wellness, not individualized medical or nutrition treatment advice."
+            )
+        }
+    }
+
+    var popoverMeasurementTexts: [String] {
+        var texts = paragraphs
+        texts.append(contentsOf: sources.map(\.title))
+        if let disclaimer {
+            texts.append(disclaimer)
+        }
+        return texts
     }
 }
 
@@ -3640,6 +3815,9 @@ struct AppleAccountSheet: View {
 
     @State private var errorMessage = ""
     @State private var showError = false
+    @State private var showDeleteAccountAlert = false
+    @State private var showDeletionCompletedAlert = false
+    @State private var deletionCompletedMessage = ""
 
     private var isSignedIn: Bool {
         appState.isSignedInWithAppleAccount
@@ -3682,6 +3860,13 @@ struct AppleAccountSheet: View {
             : localized("继续本地使用", "Use Local Mode")
     }
 
+    private var deletionExplanation: String {
+        localized(
+            "删除后，KeepFit 会清除该 Apple 账号对应的应用内资料、饮食/运动/体重记录、本地账号状态，并移除该账号在 iCloud 中的同步快照，同时关闭 Apple 健康同步。你的 Apple ID 本身不会被删除。",
+            "Deleting your account removes the in-app profile, meal/workout/body records, local account state, and this account's iCloud sync snapshot, and turns off Apple Health sync. Your Apple ID itself is not deleted."
+        )
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -3712,6 +3897,23 @@ struct AppleAccountSheet: View {
             Button(localized("知道了", "OK"), role: .cancel) {}
         } message: {
             Text(errorMessage)
+        }
+        .alert(localized("删除账号", "Delete Account"), isPresented: $showDeleteAccountAlert) {
+            Button(localized("删除账号", "Delete Account"), role: .destructive) {
+                deleteAccount()
+            }
+            Button(localized("取消", "Cancel"), role: .cancel) {}
+        } message: {
+            Text(deletionExplanation)
+        }
+        .alert(localized("账号已删除", "Account Deleted"), isPresented: $showDeletionCompletedAlert) {
+            Button(localized("知道了", "OK"), role: .cancel) {
+                if !requireChoice {
+                    dismiss()
+                }
+            }
+        } message: {
+            Text(deletionCompletedMessage)
         }
     }
 
@@ -3776,25 +3978,60 @@ struct AppleAccountSheet: View {
     private var actionCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             if isSignedIn {
-                Button(role: .destructive) {
-                    KeepFitHaptics.impact(.medium)
-                    appState.signOutAppleAccount()
-                    if !requireChoice {
-                        dismiss()
+                VStack(alignment: .leading, spacing: 10) {
+                    Button {
+                        KeepFitHaptics.impact(.medium)
+                        appState.signOutAppleAccount()
+                        if !requireChoice {
+                            dismiss()
+                        }
+                    } label: {
+                        Text(localized("退出 Apple 账号并切换为本地使用", "Sign Out and Use Local Mode"))
+                            .font(.headline.weight(.semibold))
+                            .foregroundStyle(.primary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(
+                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                            .stroke(.white.opacity(0.2), lineWidth: 0.8)
+                                    )
+                            )
+                            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                     }
-                } label: {
-                    Text(localized("退出 Apple 账号并切换为本地使用", "Sign Out and Use Local Mode"))
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.red)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .fill(Color.red.opacity(0.10))
-                        )
-                        .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .buttonStyle(.plain)
+
+                    Text(localized("此操作只会退出当前 Apple 账号，现有 KeepFit 数据会保留在本机。", "This only signs out the current Apple account. Your existing KeepFit data stays on this device."))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .buttonStyle(.plain)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Button(role: .destructive) {
+                        KeepFitHaptics.impact(.medium)
+                        showDeleteAccountAlert = true
+                    } label: {
+                        Text(localized("删除账号和数据", "Delete Account and Data"))
+                            .font(.headline.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(
+                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                    .fill(Color.red)
+                            )
+                            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+
+                    Text(deletionExplanation)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             } else {
                 SignInWithAppleButton(.signIn) { request in
                     request.requestedScopes = [.fullName, .email]
@@ -3859,6 +4096,15 @@ struct AppleAccountSheet: View {
             errorMessage = localized("Apple 登录失败，请稍后再试。", "Apple sign-in failed. Please try again.")
             showError = true
         }
+    }
+
+    private func deleteAccount() {
+        let summary = appState.deleteAppleAccountAndAllData()
+        deletionCompletedMessage = localized(
+            "KeepFit 已删除该账号对应的应用内数据：饮食 \(summary.foodLogCount) 条、锻炼 \(summary.exerciseLogCount) 条、体重体脂 \(summary.bodyMetricCount) 条，并已关闭 iCloud 与 Apple 健康同步。应用现已切换为本地使用。",
+            "KeepFit deleted the app data for this account: \(summary.foodLogCount) meals, \(summary.exerciseLogCount) workouts, and \(summary.bodyMetricCount) body metrics. iCloud and Apple Health sync were also turned off, and the app is now in Local Mode."
+        )
+        showDeletionCompletedAlert = true
     }
 }
 struct ResetDataSheetView: View {

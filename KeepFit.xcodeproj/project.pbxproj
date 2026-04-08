@@ -246,7 +246,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = KeepFitApp/KeepFit.entitlements;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				INFOPLIST_FILE = KeepFitApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。";
@@ -270,7 +270,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = KeepFitApp/KeepFit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				INFOPLIST_FILE = KeepFitApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeepFit;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。";

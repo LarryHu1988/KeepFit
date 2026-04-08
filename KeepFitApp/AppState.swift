@@ -650,6 +650,39 @@ final class AppState: ObservableObject {
         stopICloudSync()
     }
 
+    @discardableResult
+    func deleteAppleAccountAndAllData() -> DataDeletionSummary {
+        let summary = DataDeletionSummary(
+            foodLogCount: foodLogs.count,
+            exerciseLogCount: exerciseLogs.count,
+            bodyMetricCount: bodyMetricLogs.count
+        )
+        let snapshotKeys = cloudSnapshotKeysForAccountDeletion()
+
+        defaults.set(false, forKey: SyncKeys.iCloudEnabled)
+        stopICloudSync()
+        disableHealthSyncForAccountDeletion()
+
+        foodLogs = []
+        exerciseLogs = []
+        bodyMetricLogs = []
+
+        profile = .default
+        foodLibrary = SeedData.foodLibrary
+        exerciseLibrary = SeedData.exerciseLibrary
+        persistAccount(.local)
+
+        localMutationAt = .distantPast
+        defaults.removeObject(forKey: SyncKeys.localMutationTS)
+
+        for key in snapshotKeys {
+            iCloudStore.removeObject(forKey: key)
+        }
+        iCloudStore.synchronize()
+
+        return summary
+    }
+
     func completeAppleSignIn(with authorization: ASAuthorization) async -> String? {
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
             return localized("Apple 登录返回的数据无效。", "Apple sign-in returned invalid credentials.")
@@ -1600,6 +1633,14 @@ final class AppState: ObservableObject {
         return trimmed.isEmpty ? nil : trimmed
     }
 
+    private func cloudSnapshotKeysForAccountDeletion() -> Set<String> {
+        var keys: Set<String> = [SyncKeys.cloudSnapshot]
+        if let userID = trimmedNonEmpty(account.userID) {
+            keys.insert("\(SyncKeys.cloudSnapshotAccountPrefix)\(stableHashHex(of: userID)).v1")
+        }
+        return keys
+    }
+
     private func currentCloudSnapshotKey() -> String {
         guard account.isSignedInWithApple, let userID = trimmedNonEmpty(account.userID) else {
             return SyncKeys.cloudSnapshot
@@ -1836,6 +1877,16 @@ final class AppState: ObservableObject {
         for sampleType in healthObserverTypes {
             healthStore.disableBackgroundDelivery(for: sampleType) { _, _ in }
         }
+    }
+
+    private func disableHealthSyncForAccountDeletion() {
+        defaults.set(false, forKey: SyncKeys.healthEnabled)
+        hadKnownHealthWriteAuthorization = false
+        pendingHealthSyncTask?.cancel()
+        pendingHealthSyncTask = nil
+        stopHealthPolling()
+        stopHealthObservers()
+        clearHealthSyncState()
     }
 
     private func startHealthPollingIfNeeded() {
@@ -2909,5 +2960,22 @@ final class AppState: ObservableObject {
 
     private func saveStringSet(_ values: Set<String>, forKey key: String) {
         defaults.set(Array(values), forKey: key)
+    }
+
+    private func clearHealthSyncState() {
+        let keys = [
+            SyncKeys.exportedFoodLogIDs,
+            SyncKeys.exportedExerciseLogIDs,
+            SyncKeys.exportedBodyMetricIDs,
+            SyncKeys.importedDietarySampleUUIDs,
+            SyncKeys.importedWorkoutUUIDs,
+            SyncKeys.importedBodyMassUUIDs,
+            SyncKeys.importedBodyFatUUIDs,
+            SyncKeys.healthInitialImportCompleted
+        ]
+
+        for key in keys {
+            defaults.removeObject(forKey: key)
+        }
     }
 }
