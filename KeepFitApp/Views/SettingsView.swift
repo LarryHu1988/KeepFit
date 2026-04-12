@@ -76,10 +76,14 @@ struct SettingsView: View {
     @State private var handlingReminderToggle = false
     @State private var showHealthSyncAlert = false
     @State private var healthSyncAlertMessage = ""
+    @State private var showRateAppAlert = false
+    @State private var rateAppAlertMessage = ""
     @State private var showAboutSheet = false
     @State private var showPrivacyPolicySheet = false
     @State private var showReminderAlert = false
     @State private var reminderAlertMessage = ""
+    @State private var shareItems: [Any] = []
+    @State private var showShareSheet = false
     @State private var showFeedbackSheet = false
     @State private var showDisclosureDetail = false
     @State private var showAppleAccountSheet = false
@@ -369,6 +373,7 @@ struct SettingsView: View {
                 if isEnabled {
                     triggerHapticIfNeeded()
                 }
+                appState.noteSettingsDidChange()
             }
     }
 
@@ -386,6 +391,11 @@ struct SettingsView: View {
                 } message: {
                     Text(healthSyncAlertMessage)
                 }
+                .alert(localized("评分", "Rating"), isPresented: $showRateAppAlert) {
+                    Button(localized("知道了", "OK"), role: .cancel) {}
+                } message: {
+                    Text(rateAppAlertMessage)
+                }
                 .alert(localized("提醒", "Reminders"), isPresented: $showReminderAlert) {
                     Button(localized("知道了", "OK"), role: .cancel) {}
                 } message: {
@@ -393,6 +403,9 @@ struct SettingsView: View {
                 }
                 .sheet(isPresented: $showAboutSheet) {
                     aboutSheet
+                }
+                .sheet(isPresented: $showShareSheet) {
+                    ActivityShareSheet(activityItems: shareItems)
                 }
                 .sheet(isPresented: $showFeedbackSheet) {
                     feedbackSheet
@@ -662,7 +675,10 @@ struct SettingsView: View {
     private var otherSection: AnyView {
         AnyView(
             Section {
-            ShareLink(item: shareText) {
+            Button {
+                triggerHapticIfNeeded()
+                presentAppShareSheet()
+            } label: {
                 HStack(spacing: 10) {
                     rowIcon("square.and.arrow.up", .blue)
                     Text(localized("分享 APP", "Share App"))
@@ -670,11 +686,6 @@ struct SettingsView: View {
                 }
             }
             .buttonStyle(.plain)
-            .simultaneousGesture(
-                TapGesture().onEnded {
-                    triggerHapticIfNeeded()
-                }
-            )
             .keepFitSettingsSeparatorAligned()
 
             Button {
@@ -713,7 +724,9 @@ struct SettingsView: View {
             Section {
             Button {
                 triggerHapticIfNeeded(style: .medium)
-                requestReview()
+                Task {
+                    await openAppStoreReviewPage()
+                }
             } label: {
                 HStack(spacing: settingsCompactLayout ? 10 : 12) {
                     Image(systemName: "star.bubble.fill")
@@ -1497,6 +1510,7 @@ struct SettingsView: View {
                 ForEach(AppLanguageOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == appLanguage, accent: .blue) {
                         appLanguageRaw = option.rawValue
+                        noteSyncedSettingDidChange()
                         showLanguageSheet = false
                     }
                 }
@@ -1515,6 +1529,7 @@ struct SettingsView: View {
                     popoverOptionCell(title: option.title, selected: option == energyUnit, accent: .teal) {
                         energyUnitRaw = option.rawValue
                         syncGoalDrafts()
+                        noteSyncedSettingDidChange()
                         showEnergyUnitSheet = false
                     }
                 }
@@ -1533,6 +1548,7 @@ struct SettingsView: View {
                     popoverOptionCell(title: option.title, selected: option == heightUnit, accent: .blue) {
                         heightUnitRaw = option.rawValue
                         syncHeightDrafts()
+                        noteSyncedSettingDidChange()
                         showHeightUnitSheet = false
                     }
                 }
@@ -1552,6 +1568,7 @@ struct SettingsView: View {
                         weightUnitRaw = option.rawValue
                         syncWeightDrafts()
                         syncGoalDrafts()
+                        noteSyncedSettingDidChange()
                         showWeightUnitSheet = false
                     }
                 }
@@ -1569,6 +1586,7 @@ struct SettingsView: View {
                 ForEach(WeekStartOption.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == weekStart, accent: .orange) {
                         weekStartRaw = option.rawValue
+                        noteSyncedSettingDidChange()
                         showWeekStartSheet = false
                     }
                 }
@@ -1586,6 +1604,7 @@ struct SettingsView: View {
                 ForEach(AppThemeMode.allCases) { option in
                     popoverOptionCell(title: option.title, selected: option == themeMode, accent: .indigo) {
                         themeModeRaw = option.rawValue
+                        noteSyncedSettingDidChange()
                         showThemeSheet = false
                     }
                 }
@@ -1593,10 +1612,14 @@ struct SettingsView: View {
         }
     }
 
+    private var keepFitAppStoreURL: URL {
+        URL(string: "https://apps.apple.com/app/id6759662867")!
+    }
+
     private var shareText: String {
         localized(
-            "我在用 KeepFit（管住嘴迈开腿）记录饮食和运动，推荐你也试试。",
-            "I am using KeepFit to track food and workouts. Give it a try."
+            "我在用 KeepFit（管住嘴迈开腿）记录饮食、运动和热量平衡，推荐你也试试。",
+            "I'm using KeepFit to track food, workouts, and calorie balance. Give it a try."
         )
     }
 
@@ -2046,6 +2069,99 @@ struct SettingsView: View {
         openURL(url)
     }
 
+    private func presentAppShareSheet() {
+        shareItems = [shareText, keepFitAppStoreURL]
+        showShareSheet = true
+    }
+
+    private func openAppStoreReviewPage() async {
+        if let trackID = await lookupKeepFitTrackID() {
+            let candidates = [
+                URL(string: "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=\(trackID)&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"),
+                URL(string: "itms-apps://itunes.apple.com/app/id\(trackID)?action=write-review"),
+                URL(string: "https://apps.apple.com/app/id\(trackID)?action=write-review"),
+                URL(string: "itms-apps://itunes.apple.com/app/id\(trackID)")
+            ].compactMap { $0 }
+
+            for url in candidates {
+                let opened = await openURLAsync(url)
+                if opened {
+                    return
+                }
+            }
+        }
+
+        await MainActor.run {
+            requestReview()
+            rateAppAlertMessage = localized(
+                "如果系统没有显示评分弹窗，请稍后再试，或在 App Store 中搜索 KeepFit 后进行评分。",
+                "If the rating screen does not appear, please try again later, or search for KeepFit in the App Store to leave a rating."
+            )
+            showRateAppAlert = true
+        }
+    }
+
+    private func lookupKeepFitTrackID() async -> Int? {
+        guard let bundleID = Bundle.main.bundleIdentifier else { return nil }
+        let countries = appStoreLookupCountries()
+
+        for country in countries {
+            if let trackID = await fetchTrackID(bundleID: bundleID, country: country) {
+                return trackID
+            }
+        }
+
+        return await fetchTrackID(bundleID: bundleID, country: nil)
+    }
+
+    private func appStoreLookupCountries() -> [String] {
+        var candidates: [String] = []
+
+        if let region = Locale.autoupdatingCurrent.region?.identifier.lowercased() {
+            candidates.append(region)
+        }
+        if let preferredLanguage = Locale.preferredLanguages.first,
+           let languageRegion = Locale(identifier: preferredLanguage).region?.identifier.lowercased() {
+            candidates.append(languageRegion)
+        }
+
+        candidates.append(contentsOf: ["cn", "us"])
+
+        var seen = Set<String>()
+        return candidates.filter { seen.insert($0).inserted }
+    }
+
+    private func fetchTrackID(bundleID: String, country: String?) async -> Int? {
+        guard var components = URLComponents(string: "https://itunes.apple.com/lookup") else { return nil }
+
+        var queryItems = [URLQueryItem(name: "bundleId", value: bundleID)]
+        if let country {
+            queryItems.append(URLQueryItem(name: "country", value: country))
+        }
+        components.queryItems = queryItems
+
+        guard let url = components.url else { return nil }
+
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                return nil
+            }
+            let payload = try JSONDecoder().decode(AppStoreLookupResponse.self, from: data)
+            return payload.results.first?.trackId
+        } catch {
+            return nil
+        }
+    }
+
+    private func openURLAsync(_ url: URL) async -> Bool {
+        await withCheckedContinuation { continuation in
+            openURL(url) { accepted in
+                continuation.resume(returning: accepted)
+            }
+        }
+    }
+
     private func openHealthPermissionsManager() {
         triggerHapticIfNeeded()
         let candidates = [
@@ -2115,6 +2231,10 @@ struct SettingsView: View {
 
     private func triggerHapticIfNeeded(style: UIImpactFeedbackGenerator.FeedbackStyle = .light) {
         KeepFitHaptics.impact(style)
+    }
+
+    private func noteSyncedSettingDidChange() {
+        appState.noteSettingsDidChange()
     }
 
     @MainActor
@@ -2708,7 +2828,10 @@ struct SettingsView: View {
                             selected: energyUnit,
                             accent: .teal,
                             label: { $0.title },
-                            onSelect: { value in energyUnitRaw = value.rawValue }
+                            onSelect: { value in
+                                energyUnitRaw = value.rawValue
+                                noteSyncedSettingDidChange()
+                            }
                         )
                     } label: {
                         unitTopicLabel(title: localized("能量单位", "Energy Unit"), value: energyUnit.title, accent: .teal)
@@ -2724,6 +2847,7 @@ struct SettingsView: View {
                             onSelect: { value in
                                 heightUnitRaw = value.rawValue
                                 syncHeightDrafts()
+                                noteSyncedSettingDidChange()
                             }
                         )
                     } label: {
@@ -2740,6 +2864,7 @@ struct SettingsView: View {
                             onSelect: { value in
                                 weightUnitRaw = value.rawValue
                                 syncWeightDrafts()
+                                noteSyncedSettingDidChange()
                             }
                         )
                     } label: {
@@ -2777,6 +2902,7 @@ struct SettingsView: View {
                             accent: .blue,
                             action: {
                                 appLanguageRaw = option.rawValue
+                                noteSyncedSettingDidChange()
                                 showLanguageSheet = false
                             }
                         )
@@ -4524,4 +4650,22 @@ struct ResetDataSheetView: View {
         .compositingGroup()
         .ignoresSafeArea()
     }
+}
+
+private struct AppStoreLookupResponse: Decodable {
+    let results: [AppStoreLookupItem]
+}
+
+private struct AppStoreLookupItem: Decodable {
+    let trackId: Int
+}
+
+private struct ActivityShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

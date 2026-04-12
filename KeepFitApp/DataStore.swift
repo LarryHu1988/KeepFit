@@ -1,6 +1,6 @@
 import Foundation
 
-enum DataFile: String {
+enum DataFile: String, CaseIterable {
     case profile = "profile.json"
     case foods = "food_library.json"
     case exercises = "exercise_library.json"
@@ -40,5 +40,16 @@ final class DataStore {
         let url = directoryURL.appendingPathComponent(file.rawValue)
         guard let data = try? encoder.encode(value) else { return }
         try? data.write(to: url, options: .atomic)
+    }
+
+    func latestModificationDate(for files: [DataFile] = DataFile.allCases) -> Date? {
+        files.compactMap { file in
+            let url = directoryURL.appendingPathComponent(file.rawValue)
+            guard let values = try? url.resourceValues(forKeys: [.contentModificationDateKey]) else {
+                return nil
+            }
+            return values.contentModificationDate
+        }
+        .max()
     }
 }

@@ -321,7 +321,14 @@ final class AppState: ObservableObject {
         rebuildDailyMetricsCache()
 
         let savedLocalMutationTS = defaults.double(forKey: SyncKeys.localMutationTS)
-        localMutationAt = savedLocalMutationTS > 0 ? Date(timeIntervalSince1970: savedLocalMutationTS) : .distantPast
+        if savedLocalMutationTS > 0 {
+            localMutationAt = Date(timeIntervalSince1970: savedLocalMutationTS)
+        } else if let fallbackLocalMutationAt = store.latestModificationDate() {
+            localMutationAt = fallbackLocalMutationAt
+            defaults.set(fallbackLocalMutationAt.timeIntervalSince1970, forKey: SyncKeys.localMutationTS)
+        } else {
+            localMutationAt = .distantPast
+        }
         if defaults.bool(forKey: SyncKeys.healthEnabled), HKHealthStore.isHealthDataAvailable() {
             hadKnownHealthWriteAuthorization = hasAnyHealthAuthorization()
         }
@@ -708,11 +715,6 @@ final class AppState: ObservableObject {
         if iCloudAccountAvailable {
             defaults.set(true, forKey: SyncKeys.iCloudEnabled)
             startICloudSync()
-            if hasCloudSnapshot(forKey: currentCloudSnapshotKey()) {
-                pullCloudSnapshotIfNeeded(force: true)
-            } else {
-                queueCloudPush(immediate: true)
-            }
         }
 
         await refreshAppleCredentialStateIfNeeded()
@@ -729,8 +731,6 @@ final class AppState: ObservableObject {
             }
             defaults.set(true, forKey: SyncKeys.iCloudEnabled)
             startICloudSync()
-            pullCloudSnapshotIfNeeded(force: true)
-            queueCloudPush(immediate: true)
         } else {
             defaults.set(false, forKey: SyncKeys.iCloudEnabled)
             stopICloudSync()
@@ -1590,6 +1590,7 @@ final class AppState: ObservableObject {
         ) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.stopHealthPolling()
+                self?.flushPendingCloudPushIfNeeded()
             }
         }
     }
@@ -1719,18 +1720,19 @@ final class AppState: ObservableObject {
 
     private func startICloudSync() {
         guard iCloudAccountAvailable else { return }
-        guard cloudObserver == nil else { return }
-        cloudObserver = NotificationCenter.default.addObserver(
-            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
-            object: iCloudStore,
-            queue: .main
-        ) { [weak self] _ in
-            Task { @MainActor [weak self] in
-                self?.pullCloudSnapshotIfNeeded(force: false)
+        if cloudObserver == nil {
+            cloudObserver = NotificationCenter.default.addObserver(
+                forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+                object: iCloudStore,
+                queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.pullCloudSnapshotIfNeeded(force: false)
+                }
             }
         }
         iCloudStore.synchronize()
-        pullCloudSnapshotIfNeeded(force: true)
+        reconcileCloudSnapshotOnSyncStart()
     }
 
     private func stopICloudSync() {
@@ -1740,6 +1742,13 @@ final class AppState: ObservableObject {
         }
         pendingCloudPushTask?.cancel()
         pendingCloudPushTask = nil
+    }
+
+    private func flushPendingCloudPushIfNeeded() {
+        guard isICloudSyncEnabled, iCloudAccountAvailable, !isApplyingCloudSnapshot else { return }
+        pendingCloudPushTask?.cancel()
+        pendingCloudPushTask = nil
+        pushCloudSnapshotToICloud()
     }
 
     private func queueCloudPush(immediate: Bool = false) {
@@ -1776,16 +1785,49 @@ final class AppState: ObservableObject {
         iCloudStore.synchronize()
     }
 
-    private func pullCloudSnapshotIfNeeded(force: Bool) {
+    private func reconcileCloudSnapshotOnSyncStart() {
         guard isICloudSyncEnabled, iCloudAccountAvailable else { return }
-        guard let data = iCloudStore.data(forKey: currentCloudSnapshotKey()) else { return }
-        guard let snapshot = try? cloudDecoder.decode(KeepFitCloudSnapshot.self, from: data) else { return }
-        guard (1...2).contains(snapshot.version) else { return }
+        guard let snapshot = loadCurrentCloudSnapshot() else {
+            queueCloudPush(immediate: true)
+            return
+        }
 
         let remoteTS = snapshot.modifiedAt.timeIntervalSince1970
-        let localTS = localMutationAt.timeIntervalSince1970
+        let localTS = effectiveLocalMutationAt().timeIntervalSince1970
+
+        if remoteTS > localTS + 1 {
+            applyCloudSnapshot(snapshot)
+        } else {
+            queueCloudPush(immediate: true)
+        }
+    }
+
+    private func pullCloudSnapshotIfNeeded(force: Bool) {
+        guard isICloudSyncEnabled, iCloudAccountAvailable else { return }
+        guard let snapshot = loadCurrentCloudSnapshot() else { return }
+
+        let remoteTS = snapshot.modifiedAt.timeIntervalSince1970
+        let localTS = effectiveLocalMutationAt().timeIntervalSince1970
         guard force || remoteTS > localTS + 1 else { return }
 
+        applyCloudSnapshot(snapshot)
+    }
+
+    private func loadCurrentCloudSnapshot() -> KeepFitCloudSnapshot? {
+        guard let data = iCloudStore.data(forKey: currentCloudSnapshotKey()) else { return nil }
+        guard let snapshot = try? cloudDecoder.decode(KeepFitCloudSnapshot.self, from: data) else { return nil }
+        guard (1...2).contains(snapshot.version) else { return nil }
+        return snapshot
+    }
+
+    private func effectiveLocalMutationAt() -> Date {
+        if localMutationAt != .distantPast {
+            return localMutationAt
+        }
+        return store.latestModificationDate() ?? .distantPast
+    }
+
+    private func applyCloudSnapshot(_ snapshot: KeepFitCloudSnapshot) {
         isApplyingCloudSnapshot = true
         defer { isApplyingCloudSnapshot = false }
 
