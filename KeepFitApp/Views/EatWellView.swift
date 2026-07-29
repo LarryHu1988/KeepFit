@@ -23,6 +23,10 @@ struct EatWellView: View {
     @State private var amountText = "120"
     @State private var showFoodSheet = false
     @State private var showIntakeTimeSheet = false
+    @State private var naturalLanguageText = ""
+    @State private var parsedFoodIntake: ParsedFoodIntake?
+    @State private var foodTextErrorMessage = ""
+    @State private var showFoodTextError = false
     @FocusState private var focusedField: InputField?
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
@@ -182,6 +186,24 @@ struct EatWellView: View {
                     .presentationCornerRadius(24)
                     .presentationBackground(.ultraThinMaterial)
             }
+            .sheet(item: $parsedFoodIntake) { intake in
+                NaturalFoodIntakeConfirmationSheet(intake: intake) { date, entries in
+                    for entry in entries where entry.grams > 0 {
+                        appState.addFoodLog(date: date, item: entry.food, grams: entry.grams)
+                    }
+                    naturalLanguageText = ""
+                    onFoodLogged?()
+                }
+                .environmentObject(appState)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+                .presentationCornerRadius(24)
+            }
+            .alert(localized("无法识别", "Unable to Recognize"), isPresented: $showFoodTextError) {
+                Button(localized("知道了", "OK"), role: .cancel) {}
+            } message: {
+                Text(foodTextErrorMessage)
+            }
         }
     }
 
@@ -261,6 +283,57 @@ struct EatWellView: View {
             let canEdit = !isFutureDateSelected
 
             VStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label(localized("文字识别录入", "Text Food Entry"), systemImage: "text.viewfinder")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.orange)
+
+                    TextField(
+                        localized(
+                            "例如：今天中午 12 点吃了 20 个猪肉白菜饺子",
+                            "Example: 20 pork and cabbage dumplings at noon today"
+                        ),
+                        text: $naturalLanguageText,
+                        axis: .vertical
+                    )
+                    .font(.subheadline)
+                    .lineLimit(2...4)
+                    .textInputAutocapitalization(.sentences)
+                    .autocorrectionDisabled()
+                    .focused($focusedField, equals: .naturalLanguage)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .background(inputFieldBackground)
+                    .disabled(!canEdit)
+
+                    HStack(spacing: 10) {
+                        Text(localized(
+                            "识别后可核对时间、食物和重量",
+                            "Review the time, food, and weight before saving"
+                        ))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                        Spacer(minLength: 4)
+
+                        Button {
+                            parseNaturalLanguageFood()
+                        } label: {
+                            Label(localized("识别", "Recognize"), systemImage: "wand.and.stars")
+                                .font(.caption.weight(.semibold))
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.orange)
+                        .disabled(
+                            !canEdit ||
+                            naturalLanguageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                        )
+                    }
+                }
+
+                Divider()
+
                 GeometryReader { proxy in
                     let totalWidth = max(0, proxy.size.width)
                     let layout = intakeRowLayout(for: totalWidth)
@@ -492,6 +565,26 @@ struct EatWellView: View {
         onFoodLogged?()
     }
 
+    private func parseNaturalLanguageFood() {
+        guard !selectedDate.isFutureDayInCurrentCalendar else { return }
+        focusedField = nil
+        keepFitDismissKeyboard()
+
+        do {
+            parsedFoodIntake = try FoodTextParser.parse(
+                naturalLanguageText,
+                referenceDate: selectedDate,
+                foodLibrary: appState.foodLibrary,
+                defaultAmount: { appState.defaultEntryAmount(for: $0) }
+            )
+            KeepFitHaptics.impact(.medium)
+        } catch {
+            foodTextErrorMessage = error.localizedDescription
+            showFoodTextError = true
+            KeepFitHaptics.impact(.rigid)
+        }
+    }
+
     private var intakeTimeSheet: some View {
         NavigationStack {
             VStack(spacing: 10) {
@@ -573,6 +666,213 @@ private extension EatWellView {
 
     enum InputField {
         case amount
+        case naturalLanguage
+    }
+}
+
+private struct NaturalFoodIntakeConfirmationSheet: View {
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage("keepfit.unit.energy") private var energyUnitRaw = EnergyUnitOption.kcal.rawValue
+
+    let originalText: String
+    let notes: [String]
+    let onConfirm: (Date, [ParsedFoodEntry]) -> Void
+
+    @State private var date: Date
+    @State private var entries: [ParsedFoodEntry]
+
+    init(
+        intake: ParsedFoodIntake,
+        onConfirm: @escaping (Date, [ParsedFoodEntry]) -> Void
+    ) {
+        originalText = intake.originalText
+        notes = intake.notes
+        self.onConfirm = onConfirm
+        _date = State(initialValue: intake.date)
+        _entries = State(initialValue: intake.entries)
+    }
+
+    private var energyUnit: EnergyUnitOption {
+        EnergyUnitOption(rawValue: energyUnitRaw) ?? .kcal
+    }
+
+    private var canSave: Bool {
+        !entries.isEmpty && entries.allSatisfy { $0.grams > 0 }
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                GrowPageBackground(accent: .orange)
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(localized("原始输入", "Original Entry"))
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                            Text(originalText)
+                                .font(.subheadline)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .padding(14)
+                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Label(localized("进食时间", "Intake Time"), systemImage: "clock")
+                                .font(.subheadline.weight(.semibold))
+                            DatePicker(
+                                localized("日期与时间", "Date and Time"),
+                                selection: $date,
+                                displayedComponents: [.date, .hourAndMinute]
+                            )
+                            .labelsHidden()
+                        }
+                        .padding(14)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+                        ForEach($entries) { $entry in
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack(spacing: 10) {
+                                    AppIconBadge(
+                                        icon: appState.foodIcon(for: entry.food),
+                                        seed: entry.food.id,
+                                        size: 32
+                                    )
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(appState.foodDisplayName(for: entry.food))
+                                            .font(.headline)
+                                        Text(entry.quantityDescription)
+                                            .font(.caption)
+                                            .foregroundStyle(entry.amountWasEstimated ? Color.orange : Color.secondary)
+                                    }
+                                    Spacer()
+                                }
+
+                                HStack {
+                                    Text(localized("确认重量", "Confirm Weight"))
+                                        .font(.subheadline)
+                                    Spacer()
+                                    TextField(
+                                        localized("克", "Grams"),
+                                        value: $entry.grams,
+                                        format: .number.precision(.fractionLength(0...1))
+                                    )
+                                    .keyboardType(.decimalPad)
+                                    .multilineTextAlignment(.trailing)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 100)
+                                    Text("g")
+                                        .foregroundStyle(.secondary)
+                                }
+
+                                HStack(spacing: 8) {
+                                    nutritionPill(
+                                        energyText(fromKcal: entry.calories, unit: energyUnit),
+                                        color: .orange
+                                    )
+                                    nutritionPill("P \(formatted(entry.protein)) g", color: .red)
+                                    nutritionPill("C \(formatted(entry.carbs)) g", color: .blue)
+                                    nutritionPill("F \(formatted(entry.fat)) g", color: .yellow)
+                                }
+
+                                if let reference = entry.food.nutritionReference {
+                                    VStack(alignment: .leading, spacing: 5) {
+                                        Label(reference.basis.title, systemImage: sourceIcon(for: reference.basis))
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(reference.basis == .recipeEstimate ? Color.orange : Color.green)
+                                        if let note = reference.note {
+                                            Text(note)
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                                .fixedSize(horizontal: false, vertical: true)
+                                        }
+                                        if let url = reference.sourceURL {
+                                            Link(destination: url) {
+                                                Label(reference.sourceName, systemImage: "arrow.up.right.square")
+                                                    .font(.caption)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(14)
+                            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        }
+
+                        if !notes.isEmpty {
+                            VStack(alignment: .leading, spacing: 7) {
+                                ForEach(notes, id: \.self) { note in
+                                    Label(note, systemImage: "info.circle")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                            .padding(.horizontal, 2)
+                        }
+
+                        Button {
+                            KeepFitHaptics.impact(.medium)
+                            onConfirm(date, entries)
+                            dismiss()
+                        } label: {
+                            Text(localized("确认并保存记录", "Confirm and Save"))
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.orange)
+                        .controlSize(.large)
+                        .disabled(!canSave)
+                    }
+                    .padding(16)
+                }
+                .scrollDismissesKeyboard(.interactively)
+            }
+            .navigationTitle(localized("确认识别结果", "Review Result"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(localized("取消", "Cancel")) {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private func nutritionPill(_ text: String, color: Color) -> some View {
+        Text(text)
+            .font(.caption2.weight(.semibold))
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 5)
+            .foregroundStyle(color)
+            .background(color.opacity(0.12), in: Capsule())
+    }
+
+    private func sourceIcon(for basis: FoodNutritionBasis) -> String {
+        switch basis {
+        case .licensedChinaFoodComposition:
+            return "checkmark.seal.fill"
+        case .manufacturerLabel:
+            return "doc.text"
+        case .recipeEstimate:
+            return "exclamationmark.triangle.fill"
+        case .genericReference:
+            return "book.closed"
+        }
+    }
+
+    private func formatted(_ value: Double) -> String {
+        if abs(value.rounded() - value) < 0.05 {
+            return String(Int(value.rounded()))
+        }
+        return String(format: "%.1f", value)
     }
 }
 

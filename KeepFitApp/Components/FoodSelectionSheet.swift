@@ -17,7 +17,8 @@ struct FoodSelectionSheet: View {
     private var filtered: [FoodItem] {
         if keyword.isEmpty { return items }
         return items.filter { item in
-            let candidate = "\(item.name) \(displayName(item))"
+            let candidate = ([item.name, displayName(item)] + (item.aliases ?? []))
+                .joined(separator: " ")
             return candidate.localizedCaseInsensitiveContains(keyword)
         }
     }
@@ -45,6 +46,20 @@ struct FoodSelectionSheet: View {
                                             )
                                                 .font(.caption)
                                                 .foregroundStyle(.secondary)
+                                            if let reference = item.nutritionReference {
+                                                Label(
+                                                    reference.basis.title,
+                                                    systemImage: reference.basis == .recipeEstimate
+                                                        ? "exclamationmark.triangle"
+                                                        : "checkmark.seal"
+                                                )
+                                                .font(.caption2)
+                                                .foregroundStyle(
+                                                    reference.basis == .recipeEstimate
+                                                        ? Color.orange
+                                                        : Color.green
+                                                )
+                                            }
                                         }
                                         Spacer()
                                     }

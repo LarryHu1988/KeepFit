@@ -53,3 +53,61 @@ final class DataStore {
         .max()
     }
 }
+
+private struct BundledFoodCompositionDataset: Codable {
+    let schemaVersion: Int
+    let sourceName: String
+    let sourceURLString: String?
+    let referenceCode: String?
+    let commercialUseAuthorized: Bool
+    let noteZH: String?
+    let noteEN: String?
+    let foods: [FoodItem]
+}
+
+enum FoodCompositionDataLoader {
+    private static let resourceName = "ChineseFoodCompositionLicensed"
+
+    static func mergedFoodLibrary(with builtIn: [FoodItem], bundle: Bundle = .main) -> [FoodItem] {
+        guard
+            let url = bundle.url(forResource: resourceName, withExtension: "json"),
+            let data = try? Data(contentsOf: url),
+            let dataset = try? JSONDecoder().decode(BundledFoodCompositionDataset.self, from: data),
+            dataset.schemaVersion == 1,
+            dataset.commercialUseAuthorized
+        else {
+            return builtIn
+        }
+
+        let datasetReference = FoodNutritionReference(
+            basis: .licensedChinaFoodComposition,
+            sourceName: dataset.sourceName,
+            sourceURLString: dataset.sourceURLString,
+            referenceCode: dataset.referenceCode,
+            noteZH: dataset.noteZH,
+            noteEN: dataset.noteEN
+        )
+
+        let licensedFoods = dataset.foods.map { food in
+            var resolved = food
+            if resolved.nutritionReference == nil {
+                resolved.nutritionReference = datasetReference
+            }
+            return resolved
+        }
+
+        var merged = builtIn
+        var indexByID = Dictionary(uniqueKeysWithValues: merged.indices.map { (merged[$0].id, $0) })
+
+        for food in licensedFoods {
+            if let index = indexByID[food.id] {
+                merged[index] = food
+            } else {
+                indexByID[food.id] = merged.count
+                merged.append(food)
+            }
+        }
+
+        return merged
+    }
+}

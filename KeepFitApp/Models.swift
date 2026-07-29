@@ -142,6 +142,92 @@ struct FoodItem: Identifiable, Codable, Hashable {
     var proteinPer100g: Double
     var carbsPer100g: Double
     var fatPer100g: Double
+    var aliases: [String]? = nil
+    var portions: [FoodPortion]? = nil
+    var nutritionReference: FoodNutritionReference? = nil
+}
+
+struct FoodPortion: Codable, Hashable {
+    var unit: String
+    var grams: Double
+    var aliases: [String]
+
+    init(unit: String, grams: Double, aliases: [String] = []) {
+        self.unit = unit
+        self.grams = grams
+        self.aliases = aliases
+    }
+}
+
+enum FoodNutritionBasis: String, Codable, Hashable {
+    case licensedChinaFoodComposition
+    case manufacturerLabel
+    case recipeEstimate
+    case genericReference
+
+    var title: String {
+        switch self {
+        case .licensedChinaFoodComposition:
+            return localized("授权中国食物成分数据", "Licensed China Food Composition Data")
+        case .manufacturerLabel:
+            return localized("产品营养标签", "Product Nutrition Label")
+        case .recipeEstimate:
+            return localized("常见配方估算", "Recipe Estimate")
+        case .genericReference:
+            return localized("通用营养参考值", "Generic Nutrition Reference")
+        }
+    }
+}
+
+struct FoodNutritionReference: Codable, Hashable {
+    var basis: FoodNutritionBasis
+    var sourceName: String
+    var sourceURLString: String?
+    var referenceCode: String?
+    var noteZH: String?
+    var noteEN: String?
+
+    var note: String? {
+        AppPreferences.language == .english ? noteEN : noteZH
+    }
+
+    var sourceURL: URL? {
+        guard let sourceURLString else { return nil }
+        return URL(string: sourceURLString)
+    }
+}
+
+struct ParsedFoodEntry: Identifiable {
+    let id = UUID()
+    let food: FoodItem
+    var grams: Double
+    let quantityDescription: String
+    let confidence: Double
+    let amountWasEstimated: Bool
+
+    var calories: Double {
+        food.caloriesPer100g * grams / 100
+    }
+
+    var protein: Double {
+        food.proteinPer100g * grams / 100
+    }
+
+    var carbs: Double {
+        food.carbsPer100g * grams / 100
+    }
+
+    var fat: Double {
+        food.fatPer100g * grams / 100
+    }
+}
+
+struct ParsedFoodIntake: Identifiable {
+    let id = UUID()
+    let originalText: String
+    var date: Date
+    var entries: [ParsedFoodEntry]
+    let notes: [String]
 }
 
 struct FoodLog: Identifiable, Codable {

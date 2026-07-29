@@ -9,7 +9,10 @@ enum SeedData {
         _ protein: Double,
         _ carbs: Double,
         _ fat: Double,
-        icon: String? = nil
+        icon: String? = nil,
+        aliases: [String] = [],
+        portions: [FoodPortion] = [],
+        reference: FoodNutritionReference? = nil
     ) -> FoodItem {
         FoodItem(
             id: id,
@@ -19,7 +22,10 @@ enum SeedData {
             caloriesPer100g: calories,
             proteinPer100g: protein,
             carbsPer100g: carbs,
-            fatPer100g: fat
+            fatPer100g: fat,
+            aliases: aliases.isEmpty ? nil : aliases,
+            portions: portions.isEmpty ? nil : portions,
+            nutritionReference: reference
         )
     }
 
@@ -33,12 +39,42 @@ enum SeedData {
         ExerciseItem(id: id, name: name, icon: icon ?? IconCatalog.exerciseIcon(id: id, category: category), category: category, met: met)
     }
 
-    static let foodLibrary: [FoodItem] = [
+    private static let recipeEstimateReference = FoodNutritionReference(
+        basis: .recipeEstimate,
+        sourceName: "KeepFit Recipe Estimate",
+        sourceURLString: nil,
+        referenceCode: nil,
+        noteZH: "按常见配方和熟制份量估算；实际数值会随原料、用油、大小和品牌变化，请在确认页按实际重量修正。",
+        noteEN: "Estimated from a typical recipe and cooked serving. Ingredients, oil, size, and brand can change the result; adjust the weight before saving."
+    )
+
+    private static let builtInFoodLibrary: [FoodItem] = [
         // Staple (20)
         food("rice_white", "米饭(熟)", .staple, 116, 2.6, 25.9, 0.3),
         food("rice_brown", "糙米饭(熟)", .staple, 111, 2.6, 23, 0.9),
         food("oatmeal", "燕麦片", .staple, 389, 16.9, 66.3, 6.9),
-        food("whole_wheat_bread", "全麦面包", .staple, 247, 13, 41, 4.2),
+        food(
+            "whole_wheat_bread",
+            "全麦面包",
+            .staple,
+            247,
+            13,
+            41,
+            4.2,
+            aliases: ["全麦吐司", "全麦面包片"],
+            portions: [FoodPortion(unit: "片", grams: 30, aliases: ["块"])]
+        ),
+        food(
+            "bread_white",
+            "白面包",
+            .staple,
+            266,
+            8.7,
+            49,
+            3.2,
+            aliases: ["面包", "面包片", "白吐司"],
+            portions: [FoodPortion(unit: "片", grams: 30, aliases: ["块"])]
+        ),
         food("sweet_potato", "红薯", .staple, 86, 1.6, 20.1, 0.1),
         food("potato", "土豆", .staple, 77, 2, 17.6, 0.1),
         food("corn", "玉米", .staple, 96, 3.4, 21, 1.5),
@@ -223,8 +259,317 @@ enum SeedData {
         food("pizza", "披萨", .snack, 266, 11, 33, 10, icon: "🍕"),
         food("hot_dog", "热狗", .snack, 290, 10, 23, 18, icon: "🌭"),
         food("spring_roll", "春卷", .snack, 220, 4.8, 24, 11, icon: "🌯"),
-        food("seaweed_snack", "海苔脆", .snack, 430, 20, 35, 25, icon: "🌿🍘")
+        food("seaweed_snack", "海苔脆", .snack, 430, 20, 35, 25, icon: "🌿🍘"),
+
+        // Common Chinese dishes. Values are recipe estimates until a commercially licensed dataset is bundled.
+        food(
+            "pork_cabbage_dumpling",
+            "猪肉白菜水饺(熟)",
+            .staple,
+            218,
+            8.2,
+            27.5,
+            8.3,
+            icon: "🥟",
+            aliases: ["猪肉白菜饺子", "猪肉白菜馅饺子", "猪肉白菜馅水饺", "白菜猪肉饺子"],
+            portions: [
+                FoodPortion(unit: "个", grams: 20, aliases: ["只", "枚"]),
+                FoodPortion(unit: "份", grams: 200)
+            ],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "chive_egg_dumpling",
+            "韭菜鸡蛋水饺(熟)",
+            .staple,
+            190,
+            8,
+            28,
+            5.5,
+            icon: "🥟",
+            aliases: ["韭菜鸡蛋饺子", "韭菜鸡蛋馅饺子", "素三鲜饺子"],
+            portions: [
+                FoodPortion(unit: "个", grams: 20, aliases: ["只", "枚"]),
+                FoodPortion(unit: "份", grams: 200)
+            ],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "pork_baozi",
+            "猪肉包子",
+            .staple,
+            227,
+            8.6,
+            34.4,
+            6.2,
+            icon: "🥟☁️",
+            aliases: ["肉包", "鲜肉包", "猪肉馅包子"],
+            portions: [FoodPortion(unit: "个", grams: 100, aliases: ["只"]), FoodPortion(unit: "份", grams: 200)],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "vegetable_baozi",
+            "素菜包子",
+            .staple,
+            168,
+            5.5,
+            32,
+            2.2,
+            icon: "🥟🥬",
+            aliases: ["菜包", "素包子", "蔬菜包"],
+            portions: [FoodPortion(unit: "个", grams: 100, aliases: ["只"]), FoodPortion(unit: "份", grams: 200)],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "jianbing_guozi",
+            "煎饼果子",
+            .staple,
+            230,
+            8,
+            28,
+            10,
+            icon: "🥞",
+            aliases: ["煎饼馃子", "杂粮煎饼"],
+            portions: [FoodPortion(unit: "套", grams: 250, aliases: ["个", "份"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "youtiao",
+            "油条",
+            .staple,
+            388,
+            6.9,
+            51,
+            18,
+            icon: "🥖",
+            aliases: ["炸油条"],
+            portions: [FoodPortion(unit: "根", grams: 70, aliases: ["条"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "egg_fried_rice_cn",
+            "蛋炒饭",
+            .staple,
+            188,
+            5.1,
+            30.7,
+            5.2,
+            icon: "🍛",
+            aliases: ["鸡蛋炒饭", "扬州炒饭"],
+            portions: [FoodPortion(unit: "碗", grams: 300, aliases: ["份", "盘"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "beef_noodle_soup_cn",
+            "牛肉汤面",
+            .staple,
+            105,
+            6.2,
+            13.8,
+            2.8,
+            icon: "🍜",
+            aliases: ["牛肉面", "兰州牛肉面", "牛肉拉面"],
+            portions: [FoodPortion(unit: "碗", grams: 500, aliases: ["份"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "pork_wonton_soup",
+            "鲜肉馄饨",
+            .staple,
+            90,
+            5.4,
+            13,
+            2,
+            icon: "🥟🥣",
+            aliases: ["猪肉馄饨", "小馄饨", "云吞"],
+            portions: [FoodPortion(unit: "碗", grams: 350, aliases: ["份"]), FoodPortion(unit: "个", grams: 15, aliases: ["只"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "pork_preserved_egg_congee",
+            "皮蛋瘦肉粥",
+            .staple,
+            68,
+            3.2,
+            9.2,
+            2,
+            icon: "🥣",
+            aliases: ["瘦肉粥", "皮蛋粥"],
+            portions: [FoodPortion(unit: "碗", grams: 400, aliases: ["份"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "guilin_rice_noodles",
+            "桂林米粉",
+            .staple,
+            92,
+            3.5,
+            16.8,
+            1.2,
+            icon: "🍜",
+            aliases: ["米粉汤", "汤米粉"],
+            portions: [FoodPortion(unit: "碗", grams: 500, aliases: ["份"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "scallion_pancake_cn",
+            "葱油饼",
+            .staple,
+            265,
+            6,
+            40,
+            9,
+            icon: "🥞",
+            aliases: ["葱花饼", "香葱饼"],
+            portions: [FoodPortion(unit: "张", grams: 100, aliases: ["个", "份"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "pork_zongzi",
+            "鲜肉粽子",
+            .staple,
+            220,
+            7.5,
+            32,
+            7,
+            icon: "🍙",
+            aliases: ["肉粽", "猪肉粽"],
+            portions: [FoodPortion(unit: "个", grams: 180, aliases: ["只"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "red_bean_zongzi",
+            "红豆粽子",
+            .staple,
+            185,
+            4.5,
+            39,
+            1.5,
+            icon: "🍙",
+            aliases: ["豆沙粽", "甜粽"],
+            portions: [FoodPortion(unit: "个", grams: 160, aliases: ["只"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "sesame_tangyuan",
+            "黑芝麻汤圆",
+            .staple,
+            280,
+            5,
+            43,
+            10,
+            icon: "⚪️🥣",
+            aliases: ["芝麻汤圆", "汤圆"],
+            portions: [FoodPortion(unit: "个", grams: 25, aliases: ["只", "枚"]), FoodPortion(unit: "碗", grams: 200, aliases: ["份"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "shrimp_rice_roll",
+            "鲜虾肠粉",
+            .staple,
+            110,
+            4.8,
+            20,
+            1.2,
+            icon: "🍚🦐",
+            aliases: ["虾仁肠粉", "肠粉"],
+            portions: [FoodPortion(unit: "份", grams: 250, aliases: ["盘"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "roujiamo",
+            "肉夹馍",
+            .staple,
+            250,
+            11,
+            31,
+            9,
+            icon: "🥙",
+            aliases: ["腊汁肉夹馍"],
+            portions: [FoodPortion(unit: "个", grams: 180, aliases: ["只", "份"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "tomato_scrambled_egg",
+            "番茄炒鸡蛋",
+            .protein,
+            105,
+            5.5,
+            4.5,
+            7,
+            icon: "🍅🥚",
+            aliases: ["西红柿炒鸡蛋", "番茄炒蛋", "西红柿炒蛋"],
+            portions: [FoodPortion(unit: "份", grams: 200, aliases: ["盘"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "mapo_tofu",
+            "麻婆豆腐",
+            .protein,
+            130,
+            8,
+            6,
+            8.5,
+            icon: "🌶️🫘",
+            aliases: ["麻辣豆腐"],
+            portions: [FoodPortion(unit: "份", grams: 250, aliases: ["盘"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "kung_pao_chicken",
+            "宫保鸡丁",
+            .protein,
+            185,
+            14,
+            10,
+            10,
+            icon: "🍗🥜",
+            aliases: ["宫爆鸡丁"],
+            portions: [FoodPortion(unit: "份", grams: 250, aliases: ["盘"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "braised_pork_cn",
+            "红烧肉",
+            .protein,
+            320,
+            13,
+            6,
+            27,
+            icon: "🍖",
+            aliases: ["毛氏红烧肉"],
+            portions: [FoodPortion(unit: "份", grams: 150, aliases: ["盘"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "steamed_fish_cn",
+            "清蒸鱼",
+            .protein,
+            125,
+            18,
+            2,
+            5,
+            icon: "🐟",
+            aliases: ["清蒸鲈鱼", "蒸鱼"],
+            portions: [FoodPortion(unit: "份", grams: 200, aliases: ["盘"])],
+            reference: recipeEstimateReference
+        ),
+        food(
+            "stir_fried_bok_choy",
+            "清炒小白菜",
+            .vegetable,
+            55,
+            2,
+            5,
+            3,
+            icon: "🥬",
+            aliases: ["炒青菜", "清炒青菜", "炒小白菜"],
+            portions: [FoodPortion(unit: "份", grams: 200, aliases: ["盘"])],
+            reference: recipeEstimateReference
+        )
     ]
+
+    static let foodLibrary: [FoodItem] = FoodCompositionDataLoader.mergedFoodLibrary(with: builtInFoodLibrary)
 
     static let exerciseLibrary: [ExerciseItem] = [
         // Cardio (38)
