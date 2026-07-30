@@ -507,6 +507,12 @@ enum FoodTextParser {
         let score: Int
     }
 
+    private struct FoodMention {
+        let food: FoodItem
+        let score: Int
+        let range: NSRange
+    }
+
     private struct QuantityMatch {
         let grams: Double
         let description: String
@@ -515,16 +521,25 @@ enum FoodTextParser {
     }
 
     private static let compositeKeywordRules: [String: [[String]]] = [
-        "pork_cabbage_dumpling": [["饺子", "水饺"], ["猪肉"], ["白菜"]],
-        "chive_egg_dumpling": [["饺子", "水饺"], ["韭菜"], ["鸡蛋", "蛋"]],
-        "pork_baozi": [["包子", "肉包"], ["猪肉", "鲜肉"]],
-        "vegetable_baozi": [["包子", "菜包"], ["素", "蔬菜", "菜"]],
-        "egg_fried_rice_cn": [["炒饭"], ["蛋", "鸡蛋"]],
-        "beef_noodle_soup_cn": [["牛肉"], ["面", "拉面"]],
-        "pork_wonton_soup": [["馄饨", "云吞"], ["猪肉", "鲜肉"]],
+        "pork_cabbage_dumpling": [["饺子", "水饺"], ["猪肉"], ["白菜"], ["馅"]],
+        "chive_egg_dumpling": [["饺子", "水饺"], ["韭菜"], ["鸡蛋", "蛋"], ["馅"]],
+        "pork_baozi": [["包子", "肉包"], ["猪肉", "鲜肉"], ["馅"]],
+        "vegetable_baozi": [["包子", "菜包"], ["素馅", "菜馅", "蔬菜馅", "青菜馅"]],
+        "pork_wonton_soup": [["馄饨", "云吞"], ["猪肉", "鲜肉"], ["馅"]],
         "pork_preserved_egg_congee": [["粥"], ["皮蛋"], ["瘦肉"]],
-        "tomato_scrambled_egg": [["番茄", "西红柿"], ["鸡蛋", "炒蛋"]],
+        "tomato_scrambled_egg": [["番茄", "西红柿"], ["鸡蛋", "炒蛋"], ["炒"]],
         "steamed_fish_cn": [["蒸鱼", "清蒸"], ["鱼", "鲈鱼"]]
+    ]
+
+    private static let compositeSuppressedFoodIDs: [String: Set<String>] = [
+        "pork_cabbage_dumpling": ["dumpling", "pork_lean", "cabbage"],
+        "chive_egg_dumpling": ["dumpling", "egg"],
+        "pork_baozi": ["bun_steamed", "pork_lean"],
+        "vegetable_baozi": ["bun_steamed"],
+        "pork_wonton_soup": ["wonton", "pork_lean"],
+        "pork_preserved_egg_congee": ["congee", "pork_lean"],
+        "tomato_scrambled_egg": ["egg", "tomato"],
+        "steamed_fish_cn": ["tilapia", "cod"]
     ]
 
     private static let spokenNumberPattern =
@@ -532,6 +547,12 @@ enum FoodTextParser {
 
     private static let quantityPattern =
         #"("# + spokenNumberPattern + #")\s*([大中小满]?)\s*(公斤|千克|kg|KG|克|g|G|斤|两|毫升|ml|ML|个|只|枚|份|碗|盘|杯|根|片|块儿?|串|包|袋|盒|张|套|条)"#
+
+    private static let clauseSeparatorPattern =
+        #"(?:还吃了|还喝了|又吃了|又喝了|再加上|以及|并且|而且|还有|加上|外加|再加|再来|配上|搭配|另外|然后|跟|与|和|\band\b|\bwith\b|\bplus\b|，|,|、|；|;|。|/|\+|\n)"#
+
+    // Short aliases require an explicit count and a standalone boundary to avoid partial-word matches.
+    private static let countQualifiedShortAliases: Set<String> = ["蛋"]
 
     static func parse(
         _ input: String,
@@ -542,25 +563,29 @@ enum FoodTextParser {
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { throw FoodTextParserError.emptyInput }
 
-        let wholeMatch = bestFoodMatch(in: text, foodLibrary: foodLibrary)
-        guard let wholeMatch else { throw FoodTextParserError.foodNotRecognized }
-
-        let segmentMatches = parsedSegments(
+        let mentions = explicitFoodMentions(in: text, foodLibrary: foodLibrary)
+        var entries = entries(
             in: text,
-            foodLibrary: foodLibrary,
+            mentions: mentions,
             defaultAmount: defaultAmount
         )
+        let compositeMatches = compositeFoodMatches(in: text, foodLibrary: foodLibrary)
 
-        let entries: [ParsedFoodEntry]
-        if wholeMatch.score >= 400 || segmentMatches.count <= 1 {
-            entries = [makeEntry(
-                foodMatch: wholeMatch,
-                quantityText: text,
-                defaultAmount: defaultAmount
-            )]
-        } else {
-            entries = segmentMatches
+        for compositeMatch in compositeMatches where !entries.contains(where: { $0.food.id == compositeMatch.food.id }) {
+            let suppressedIDs = compositeSuppressedFoodIDs[compositeMatch.food.id] ?? []
+            let insertionIndex = entries.firstIndex(where: { suppressedIDs.contains($0.food.id) }) ?? entries.endIndex
+            entries.removeAll { suppressedIDs.contains($0.food.id) }
+            entries.insert(
+                makeEntry(
+                    foodMatch: compositeMatch,
+                    quantityText: text,
+                    defaultAmount: defaultAmount
+                ),
+                at: min(insertionIndex, entries.endIndex)
+            )
         }
+
+        guard !entries.isEmpty else { throw FoodTextParserError.foodNotRecognized }
 
         var notes: [String] = []
         if entries.contains(where: \.amountWasEstimated) {
@@ -575,6 +600,17 @@ enum FoodTextParser {
                 "Dish nutrition uses a typical recipe estimate; ingredients, oil, size, and brand can change the result."
             ))
         }
+        let unrecognizedFragments = unrecognizedFragments(
+            in: text,
+            mentions: mentions,
+            compositeMatches: compositeMatches
+        )
+        if !unrecognizedFragments.isEmpty {
+            notes.append(localized(
+                "以下内容未能识别，请手动补充：\(unrecognizedFragments.joined(separator: "、"))",
+                "These parts were not recognized; add them manually: \(unrecognizedFragments.joined(separator: ", "))"
+            ))
+        }
 
         return ParsedFoodIntake(
             originalText: text,
@@ -584,32 +620,34 @@ enum FoodTextParser {
         )
     }
 
-    private static func parsedSegments(
+    private static func entries(
         in text: String,
-        foodLibrary: [FoodItem],
+        mentions: [FoodMention],
         defaultAmount: (FoodItem) -> Double
     ) -> [ParsedFoodEntry] {
-        let segments = text
-            .components(separatedBy: CharacterSet(charactersIn: "，,、；;。"))
-            .flatMap { $0.components(separatedBy: "以及") }
-            .flatMap { $0.components(separatedBy: "和") }
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
+        guard !mentions.isEmpty else { return [] }
 
-        var seenFoodIDs = Set<String>()
-        var entries: [ParsedFoodEntry] = []
+        let amountTexts = assignedQuantityTexts(in: text, mentions: mentions)
+        let source = text as NSString
 
-        for segment in segments {
-            guard let match = bestFoodMatch(in: segment, foodLibrary: foodLibrary) else { continue }
-            guard seenFoodIDs.insert(match.food.id).inserted else { continue }
-            entries.append(makeEntry(
-                foodMatch: match,
-                quantityText: segment,
+        return mentions.enumerated().map { index, mention in
+            let previousEnd = index == 0 ? 0 : NSMaxRange(mentions[index - 1].range)
+            let nextStart = index == mentions.count - 1 ? source.length : mentions[index + 1].range.location
+            let localRange = NSRange(
+                location: previousEnd,
+                length: max(0, nextStart - previousEnd)
+            )
+            let localText = source.substring(with: localRange)
+            let quantityText = amountTexts[index].isEmpty
+                ? localText
+                : amountTexts[index].joined(separator: "，")
+
+            return makeEntry(
+                foodMatch: FoodMatch(food: mention.food, score: mention.score),
+                quantityText: quantityText,
                 defaultAmount: defaultAmount
-            ))
+            )
         }
-
-        return entries
     }
 
     private static func makeEntry(
@@ -637,37 +675,309 @@ enum FoodTextParser {
         )
     }
 
-    private static func bestFoodMatch(in text: String, foodLibrary: [FoodItem]) -> FoodMatch? {
-        let normalizedText = normalized(text)
-        guard !normalizedText.isEmpty else { return nil }
-
-        var best: FoodMatch?
+    private static func explicitFoodMentions(
+        in text: String,
+        foodLibrary: [FoodItem]
+    ) -> [FoodMention] {
+        let fullRange = NSRange(text.startIndex..<text.endIndex, in: text)
+        var candidates: [FoodMention] = []
 
         for food in foodLibrary {
-            var score = 0
+            for (term, score) in foodSearchTerms(for: food) {
+                let flexiblePattern = term.map {
+                    NSRegularExpression.escapedPattern(for: String($0))
+                }.joined(separator: #"\s*"#)
+                let isShortAlias = countQualifiedShortAliases.contains(normalized(term))
+                let searchPattern = isShortAlias
+                    ? #"(?:("# + spokenNumberPattern + #")\s*(?:个|只|枚)\s*)("# +
+                        flexiblePattern + #")(?=$|[\s和与、，,；;。/\+])"#
+                    : flexiblePattern
+                guard let expression = try? NSRegularExpression(
+                    pattern: searchPattern,
+                    options: [.caseInsensitive]
+                ) else {
+                    continue
+                }
 
-            if let groups = compositeKeywordRules[food.id],
-               groups.allSatisfy({ alternatives in
-                   alternatives.contains(where: { normalizedText.contains(normalized($0)) })
-               }) {
-                score = 500
-            }
-
-            let names = [food.name, englishDisplayName(from: food.id)] + (food.aliases ?? [])
-            for (index, name) in names.enumerated() {
-                let candidate = normalized(name)
-                guard candidate.count >= 2, normalizedText.contains(candidate) else { continue }
-                let aliasBonus = index >= 2 ? 5 : 0
-                score = max(score, candidate.count * 20 + aliasBonus)
-            }
-
-            guard score > 0 else { continue }
-            if best == nil || score > best!.score {
-                best = FoodMatch(food: food, score: score)
+                for match in expression.matches(in: text, range: fullRange) {
+                    let foodRange = isShortAlias ? match.range(at: 2) : match.range
+                    candidates.append(FoodMention(
+                        food: food,
+                        score: score,
+                        range: foodRange
+                    ))
+                }
             }
         }
 
-        return best
+        let prioritized = candidates.sorted {
+            if $0.range.length != $1.range.length {
+                return $0.range.length > $1.range.length
+            }
+            if $0.score != $1.score {
+                return $0.score > $1.score
+            }
+            return $0.range.location < $1.range.location
+        }
+
+        var selected: [FoodMention] = []
+        for candidate in prioritized {
+            guard !selected.contains(where: {
+                NSIntersectionRange($0.range, candidate.range).length > 0
+            }) else {
+                continue
+            }
+            selected.append(candidate)
+        }
+
+        return selected.sorted { $0.range.location < $1.range.location }
+    }
+
+    private static func foodSearchTerms(for food: FoodItem) -> [(String, Int)] {
+        let nameWithoutParentheses = food.name.replacingOccurrences(
+            of: #"[（(][^）)]*[）)]"#,
+            with: "",
+            options: .regularExpression
+        )
+        let terms = [
+            (nameWithoutParentheses, 10),
+            (food.name, 10),
+            (englishDisplayName(from: food.id), 0)
+        ] + (food.aliases ?? []).map { ($0, 5) }
+        var seen = Set<String>()
+
+        return terms.compactMap { term, bonus in
+            let trimmed = term.trimmingCharacters(in: .whitespacesAndNewlines)
+            let candidate = normalized(trimmed)
+            let deduplicationKey = trimmed.folding(
+                options: [.caseInsensitive, .widthInsensitive],
+                locale: Locale(identifier: "zh_Hans_CN")
+            )
+            let isEligibleShortAlias = countQualifiedShortAliases.contains(candidate)
+            guard
+                (candidate.count >= 2 || isEligibleShortAlias),
+                seen.insert(deduplicationKey).inserted
+            else {
+                return nil
+            }
+            return (trimmed, candidate.count * 20 + bonus)
+        }
+    }
+
+    private static func compositeFoodMatches(
+        in text: String,
+        foodLibrary: [FoodItem]
+    ) -> [FoodMatch] {
+        let normalizedText = normalized(text)
+        guard !normalizedText.isEmpty else { return [] }
+
+        return compositeKeywordRules.compactMap { foodID, groups in
+            guard
+                groups.allSatisfy({ alternatives in
+                    alternatives.contains(where: { normalizedText.contains(normalized($0)) })
+                }),
+                let food = foodLibrary.first(where: { $0.id == foodID })
+            else {
+                return nil
+            }
+            return FoodMatch(food: food, score: 500)
+        }
+    }
+
+    private static func assignedQuantityTexts(
+        in text: String,
+        mentions: [FoodMention]
+    ) -> [[String]] {
+        guard !mentions.isEmpty else { return [] }
+        guard let expression = try? NSRegularExpression(pattern: quantityPattern) else {
+            return Array(repeating: [], count: mentions.count)
+        }
+
+        let source = text as NSString
+        let fullRange = NSRange(location: 0, length: source.length)
+        let quantityMatches = expression.matches(in: text, range: fullRange)
+        guard let firstQuantity = quantityMatches.first else {
+            return Array(repeating: [], count: mentions.count)
+        }
+
+        let prefersPrefixAmounts = firstQuantity.range.location < mentions[0].range.location
+        var assignments = Array(repeating: [String](), count: mentions.count)
+
+        for quantity in quantityMatches {
+            let previousIndex = mentions.lastIndex {
+                NSMaxRange($0.range) <= quantity.range.location
+            }
+            let nextIndex = mentions.firstIndex {
+                $0.range.location >= NSMaxRange(quantity.range)
+            }
+
+            let targetIndex: Int?
+            switch (previousIndex, nextIndex) {
+            case (nil, let next?):
+                targetIndex = next
+            case (let previous?, nil):
+                targetIndex = previous
+            case (let previous?, let next?):
+                let beforeGap = NSRange(
+                    location: NSMaxRange(mentions[previous].range),
+                    length: max(0, quantity.range.location - NSMaxRange(mentions[previous].range))
+                )
+                let afterGap = NSRange(
+                    location: NSMaxRange(quantity.range),
+                    length: max(0, mentions[next].range.location - NSMaxRange(quantity.range))
+                )
+                let separatorBefore = containsClauseSeparator(source.substring(with: beforeGap))
+                let separatorAfter = containsClauseSeparator(source.substring(with: afterGap))
+
+                if separatorBefore != separatorAfter {
+                    targetIndex = separatorBefore ? next : previous
+                } else {
+                    targetIndex = prefersPrefixAmounts ? next : previous
+                }
+            case (nil, nil):
+                targetIndex = nil
+            }
+
+            if let targetIndex {
+                assignments[targetIndex].append(source.substring(with: quantity.range))
+            }
+        }
+
+        return assignments
+    }
+
+    private static func containsClauseSeparator(_ text: String) -> Bool {
+        guard let expression = try? NSRegularExpression(
+            pattern: clauseSeparatorPattern,
+            options: [.caseInsensitive]
+        ) else {
+            return false
+        }
+        let range = NSRange(text.startIndex..<text.endIndex, in: text)
+        return expression.firstMatch(in: text, range: range) != nil
+    }
+
+    private static func unrecognizedFragments(
+        in text: String,
+        mentions: [FoodMention],
+        compositeMatches: [FoodMatch]
+    ) -> [String] {
+        guard let separator = try? NSRegularExpression(
+            pattern: clauseSeparatorPattern,
+            options: [.caseInsensitive]
+        ) else {
+            return []
+        }
+
+        let source = text as NSString
+        let fullRange = NSRange(location: 0, length: source.length)
+        let separators = separator.matches(in: text, range: fullRange)
+        var clauseRanges: [NSRange] = []
+        var clauseStart = 0
+        for match in separators {
+            clauseRanges.append(NSRange(
+                location: clauseStart,
+                length: max(0, match.range.location - clauseStart)
+            ))
+            clauseStart = NSMaxRange(match.range)
+        }
+        clauseRanges.append(NSRange(
+            location: clauseStart,
+            length: max(0, source.length - clauseStart)
+        ))
+
+        var fragments: [String] = []
+
+        for clauseRange in clauseRanges where clauseRange.length > 0 {
+            let remainder = NSMutableString(string: source.substring(with: clauseRange))
+            let clauseMentions = mentions.filter {
+                $0.range.location >= clauseRange.location &&
+                    NSMaxRange($0.range) <= NSMaxRange(clauseRange)
+            }
+            for mention in clauseMentions.sorted(by: { $0.range.location > $1.range.location }) {
+                let localRange = NSRange(
+                    location: mention.range.location - clauseRange.location,
+                    length: mention.range.length
+                )
+                remainder.replaceCharacters(in: localRange, with: "")
+            }
+            let withoutCompositeKeywords = removingCompositeKeywords(
+                from: remainder as String,
+                matches: compositeMatches
+            )
+            guard let unknownText = meaningfulFoodText(in: withoutCompositeKeywords) else {
+                continue
+            }
+            if !fragments.contains(unknownText) {
+                fragments.append(unknownText)
+            }
+        }
+
+        return fragments
+    }
+
+    private static func removingCompositeKeywords(
+        from text: String,
+        matches: [FoodMatch]
+    ) -> String {
+        let normalizedText = normalized(text)
+        let relevantGroups = matches.compactMap {
+            compositeKeywordRules[$0.food.id]
+        }.filter { groups in
+            let matchingGroupCount = groups.filter { alternatives in
+                alternatives.contains {
+                    normalizedText.contains(normalized($0))
+                }
+            }.count
+            return matchingGroupCount >= 2 ||
+                normalizedText.contains("馅") ||
+                normalizedText.contains("炒") ||
+                normalizedText.contains("清蒸")
+        }
+        let keywords = relevantGroups
+            .flatMap { $0 }
+            .flatMap { $0 }
+            .sorted { $0.count > $1.count }
+
+        return keywords.reduce(text) { remainder, keyword in
+            remainder.replacingOccurrences(
+                of: keyword,
+                with: "",
+                options: [.caseInsensitive, .widthInsensitive]
+            )
+        }
+    }
+
+    private static func meaningfulFoodText(in fragment: String) -> String? {
+        var remainder = fragment
+        let removablePatterns = [
+            quantityPattern,
+            #"(?:(?:凌晨|清晨|早晨|早上|上午|中午|下午|傍晚|晚上)\s*)?(?:[0-9]{1,2}|[零〇一二两兩三四五六七八九十]+)\s*(?::|：|点|时)\s*(?:[0-9]{1,2}\s*分?|半|一刻|三刻)?"#,
+            #"[0-9]{1,2}月[0-9]{1,2}[日号]?"#
+        ]
+        for pattern in removablePatterns {
+            remainder = remainder.replacingOccurrences(
+                of: pattern,
+                with: "",
+                options: .regularExpression
+            )
+        }
+
+        let fillerWords = [
+            "今天", "昨天", "前天", "今晚", "早餐", "早饭", "午餐", "午饭", "晚餐", "晚饭", "夜宵",
+            "凌晨", "清晨", "早晨", "早上", "上午", "中午", "下午", "傍晚", "晚上",
+            "我们", "我", "吃了", "吃", "喝了", "喝", "的是", "大约", "大概", "差不多", "左右",
+            "一点", "一些", "请帮我记录", "帮我记录", "记录", "然后", "另外", "又", "还", "的", "了"
+        ]
+        for word in fillerWords {
+            remainder = remainder.replacingOccurrences(of: word, with: "")
+        }
+
+        let cleaned = remainder.trimmingCharacters(
+            in: CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters)
+        )
+        guard normalized(cleaned).count >= 2 else { return nil }
+        return cleaned
     }
 
     private static func bestQuantityMatch(in text: String, for food: FoodItem) -> QuantityMatch? {

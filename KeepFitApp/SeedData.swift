@@ -50,8 +50,31 @@ enum SeedData {
 
     private static let builtInFoodLibrary: [FoodItem] = [
         // Staple (20)
-        food("rice_white", "米饭(熟)", .staple, 116, 2.6, 25.9, 0.3),
-        food("rice_brown", "糙米饭(熟)", .staple, 111, 2.6, 23, 0.9),
+        food(
+            "rice_white",
+            "米饭(熟)",
+            .staple,
+            116,
+            2.6,
+            25.9,
+            0.3,
+            aliases: ["白米饭", "白饭", "大米饭", "熟米饭", "大米"],
+            portions: [
+                FoodPortion(unit: "碗", grams: 150, aliases: ["份"]),
+                FoodPortion(unit: "盘", grams: 200)
+            ]
+        ),
+        food(
+            "rice_brown",
+            "糙米饭(熟)",
+            .staple,
+            111,
+            2.6,
+            23,
+            0.9,
+            aliases: ["糙米", "杂粮糙米饭"],
+            portions: [FoodPortion(unit: "碗", grams: 150, aliases: ["份"])]
+        ),
         food("oatmeal", "燕麦片", .staple, 389, 16.9, 66.3, 6.9),
         food(
             "whole_wheat_bread",
@@ -79,7 +102,20 @@ enum SeedData {
         food("potato", "土豆", .staple, 77, 2, 17.6, 0.1),
         food("corn", "玉米", .staple, 96, 3.4, 21, 1.5),
         food("noodles", "面条(熟)", .staple, 138, 4.5, 25, 1.1),
-        food("dumpling", "饺子(熟)", .staple, 218, 8.2, 27.5, 8.3),
+        food(
+            "dumpling",
+            "饺子(熟)",
+            .staple,
+            218,
+            8.2,
+            27.5,
+            8.3,
+            aliases: ["水饺"],
+            portions: [
+                FoodPortion(unit: "个", grams: 20, aliases: ["只", "枚"]),
+                FoodPortion(unit: "份", grams: 200)
+            ]
+        ),
         food("quinoa", "藜麦(熟)", .staple, 120, 4.4, 21.3, 1.9),
         food("millet", "小米饭(熟)", .staple, 119, 3.5, 23, 1),
         food("barley", "大麦(熟)", .staple, 123, 2.3, 28, 0.4),
@@ -87,8 +123,26 @@ enum SeedData {
         food("rice_noodle", "米线(熟)", .staple, 109, 1.8, 24, 0.2),
         food("udon", "乌冬面(熟)", .staple, 127, 3, 25.8, 0.4),
         food("pasta_wholewheat", "全麦意面(熟)", .staple, 124, 5, 25, 0.8),
-        food("bun_steamed", "包子", .staple, 214, 7.5, 40, 2.5),
-        food("mantou", "馒头", .staple, 223, 7, 47, 1.1),
+        food(
+            "bun_steamed",
+            "包子",
+            .staple,
+            214,
+            7.5,
+            40,
+            2.5,
+            portions: [FoodPortion(unit: "个", grams: 100, aliases: ["只"])]
+        ),
+        food(
+            "mantou",
+            "馒头",
+            .staple,
+            223,
+            7,
+            47,
+            1.1,
+            portions: [FoodPortion(unit: "个", grams: 100, aliases: ["只"])]
+        ),
         food("bagel", "贝果", .staple, 250, 10, 49, 1.5),
         food("congee", "白粥", .staple, 46, 1.1, 10.2, 0.2),
 
@@ -111,7 +165,17 @@ enum SeedData {
         food("salmon", "三文鱼", .protein, 208, 20, 0, 13),
         food("tuna", "金枪鱼", .protein, 132, 28, 0, 1.3),
         food("shrimp", "虾仁", .protein, 99, 24, 0.2, 0.3),
-        food("egg", "鸡蛋", .protein, 155, 13, 1.1, 11),
+        food(
+            "egg",
+            "鸡蛋",
+            .protein,
+            155,
+            13,
+            1.1,
+            11,
+            aliases: ["蛋"],
+            portions: [FoodPortion(unit: "个", grams: 50, aliases: ["只", "枚"])]
+        ),
         food("egg_white", "蛋清", .protein, 52, 11, 0.7, 0.2),
         food("tofu", "北豆腐", .protein, 76, 8.1, 1.9, 4.2),
         food("duck_breast", "鸭胸肉", .protein, 201, 19, 0, 14),
@@ -191,8 +255,28 @@ enum SeedData {
 
         // Dairy (12)
         food("greek_yogurt", "希腊酸奶", .dairy, 97, 9, 3.6, 5),
-        food("milk", "牛奶", .dairy, 62, 3.4, 4.8, 3.3),
-        food("soy_milk", "无糖豆浆", .dairy, 33, 2.9, 1.6, 1.6),
+        food(
+            "milk",
+            "牛奶",
+            .dairy,
+            62,
+            3.4,
+            4.8,
+            3.3,
+            aliases: ["纯牛奶", "鲜牛奶"],
+            portions: [FoodPortion(unit: "杯", grams: 240, aliases: ["盒"])]
+        ),
+        food(
+            "soy_milk",
+            "无糖豆浆",
+            .dairy,
+            33,
+            2.9,
+            1.6,
+            1.6,
+            aliases: ["豆浆", "豆奶"],
+            portions: [FoodPortion(unit: "杯", grams: 240, aliases: ["碗"])]
+        ),
         food("lowfat_milk", "低脂牛奶", .dairy, 46, 3.4, 4.9, 1.5),
         food("kefir", "开菲尔", .dairy, 56, 3.5, 4.5, 2.2),
         food("cottage_cheese", "茅屋奶酪", .dairy, 98, 11.1, 3.4, 4.3),
