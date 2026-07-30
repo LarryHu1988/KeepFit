@@ -912,6 +912,9 @@ enum FoodTextParser {
         if text.contains("晚餐") || text.contains("晚饭") {
             return (18, 0)
         }
+        if text.contains("傍晚") || text.contains("晚上") || text.contains("今晚") {
+            return (19, 0)
+        }
         if text.contains("夜宵") {
             return (22, 0)
         }

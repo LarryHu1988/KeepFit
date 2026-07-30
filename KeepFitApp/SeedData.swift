@@ -263,6 +263,19 @@ enum SeedData {
 
         // Common Chinese dishes. Values are recipe estimates until a commercially licensed dataset is bundled.
         food(
+            "grilled_sausage_cn",
+            "烤肠",
+            .protein,
+            250,
+            11,
+            8,
+            19.5,
+            icon: "🌭",
+            aliases: ["烤香肠", "台湾烤肠", "脆皮肠", "香肠"],
+            portions: [FoodPortion(unit: "根", grams: 50, aliases: ["条", "个"])],
+            reference: recipeEstimateReference
+        ),
+        food(
             "pork_cabbage_dumpling",
             "猪肉白菜水饺(熟)",
             .staple,
