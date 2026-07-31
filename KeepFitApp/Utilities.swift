@@ -549,7 +549,10 @@ enum FoodTextParser {
         #"("# + spokenNumberPattern + #")\s*([大中小满]?)\s*(公斤|千克|kg|KG|克|g|G|斤|两|毫升|ml|ML|个|只|枚|份|碗|盘|杯|根|片|块儿?|串|包|袋|盒|张|套|条)"#
 
     private static let clauseSeparatorPattern =
-        #"(?:还吃了|还喝了|又吃了|又喝了|再加上|以及|并且|而且|还有|加上|外加|再加|再来|配上|搭配|另外|然后|跟|与|和|\band\b|\bwith\b|\bplus\b|，|,|、|；|;|。|/|\+|\n)"#
+        #"(?:还吃了|还喝了|又吃了|又喝了|只吃了|只喝了|再加上|以及|并且|而且|还有|但是|不过|而是|加上|外加|再加|再来|配上|搭配|另外|然后|后来|随后|之后|跟|与|和|加|配|\band\b|\bwith\b|\bplus\b|，|,|、|；|;|。|/|\+|\n)"#
+
+    private static let negativeIntakeSpanPattern =
+        #"(?:没(?:有)?|未|不曾|不)\s*(?:吃|喝|点|要)(?:(?!(?:只(?:吃|喝)(?:了)?|还(?:吃|喝)了|又(?:吃|喝)了|但是|但|不过|而是|然后|后来|随后|之后|，|,|；|;|。|\n)).)*"#
 
     // Short aliases require an explicit count and a standalone boundary to avoid partial-word matches.
     private static let countQualifiedShortAliases: Set<String> = ["蛋"]
@@ -563,7 +566,30 @@ enum FoodTextParser {
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { throw FoodTextParserError.emptyInput }
 
-        let mentions = explicitFoodMentions(in: text, foodLibrary: foodLibrary)
+        let negativeRanges = negativeIntakeRanges(in: text)
+        let explicitMentions = explicitFoodMentions(
+            in: text,
+            foodLibrary: foodLibrary
+        ).filter { mention in
+            !negativeRanges.contains {
+                NSIntersectionRange($0, mention.range).length > 0
+            }
+        }
+        let inferredMentions = inferredDishMentions(
+            in: text,
+            explicitMentions: explicitMentions,
+            ignoredRanges: negativeRanges,
+            foodLibrary: foodLibrary
+        )
+        let inferredRanges = inferredMentions.map(\.range)
+        let mentions = (
+            explicitMentions.filter { explicit in
+                !inferredRanges.contains {
+                    NSIntersectionRange($0, explicit.range).length > 0
+                }
+            } + inferredMentions
+        )
+        .sorted { $0.range.location < $1.range.location }
         var entries = entries(
             in: text,
             mentions: mentions,
@@ -600,9 +626,16 @@ enum FoodTextParser {
                 "Dish nutrition uses a typical recipe estimate; ingredients, oil, size, and brand can change the result."
             ))
         }
+        if entries.contains(where: { $0.food.id.hasPrefix("estimated_dish_") }) {
+            notes.append(localized(
+                "未收录菜品已根据菜名中的主要食材和烹饪方式生成估算，请重点核对份量。",
+                "An unlisted dish was estimated from the main ingredients and cooking method in its name. Please verify the serving size."
+            ))
+        }
         let unrecognizedFragments = unrecognizedFragments(
             in: text,
             mentions: mentions,
+            ignoredRanges: negativeRanges,
             compositeMatches: compositeMatches
         )
         if !unrecognizedFragments.isEmpty {
@@ -629,14 +662,19 @@ enum FoodTextParser {
 
         let amountTexts = assignedQuantityTexts(in: text, mentions: mentions)
         let source = text as NSString
+        let rangesByClause = clauseRanges(in: text)
 
         return mentions.enumerated().map { index, mention in
             let previousEnd = index == 0 ? 0 : NSMaxRange(mentions[index - 1].range)
             let nextStart = index == mentions.count - 1 ? source.length : mentions[index + 1].range.location
-            let localRange = NSRange(
+            let mentionNeighborhood = NSRange(
                 location: previousEnd,
                 length: max(0, nextStart - previousEnd)
             )
+            let localRange = rangesByClause.first {
+                mention.range.location >= $0.location &&
+                    NSMaxRange(mention.range) <= NSMaxRange($0)
+            } ?? mentionNeighborhood
             let localText = source.substring(with: localRange)
             let quantityText = amountTexts[index].isEmpty
                 ? localText
@@ -656,7 +694,10 @@ enum FoodTextParser {
         defaultAmount: (FoodItem) -> Double
     ) -> ParsedFoodEntry {
         let quantity = bestQuantityMatch(in: quantityText, for: foodMatch.food)
-        let fallbackGrams = max(1, defaultAmount(foodMatch.food))
+        let fallbackGrams = max(
+            1,
+            foodMatch.food.portions?.first?.grams ?? defaultAmount(foodMatch.food)
+        )
         let grams = quantity?.grams ?? fallbackGrams
         let quantityDescription = quantity?.description ?? localized(
             "未识别份量，暂按 \(formattedNumber(fallbackGrams)) 克",
@@ -731,6 +772,61 @@ enum FoodTextParser {
         }
 
         return selected.sorted { $0.range.location < $1.range.location }
+    }
+
+    private static func inferredDishMentions(
+        in text: String,
+        explicitMentions: [FoodMention],
+        ignoredRanges: [NSRange],
+        foodLibrary: [FoodItem]
+    ) -> [FoodMention] {
+        let source = text as NSString
+        var inferred: [FoodMention] = []
+
+        for clauseRange in clauseRanges(in: text) where clauseRange.length > 0 {
+            guard !ignoredRanges.contains(where: {
+                NSIntersectionRange($0, clauseRange).length > 0
+            }) else {
+                continue
+            }
+            let clause = source.substring(with: clauseRange)
+            let clauseMentions = explicitMentions.filter {
+                NSIntersectionRange($0.range, clauseRange).length > 0
+            }
+            if clauseMentions.contains(where: {
+                $0.food.nutritionReference?.basis == .recipeEstimate
+            }) {
+                continue
+            }
+
+            guard
+                let dishName = meaningfulFoodText(in: clause),
+                let food = ChineseDishNutritionEstimator.estimatedFood(
+                    named: dishName,
+                    foodLibrary: foodLibrary
+                )
+            else {
+                continue
+            }
+
+            let localRange = (clause as NSString).range(
+                of: dishName,
+                options: [.caseInsensitive, .widthInsensitive]
+            )
+            guard localRange.location != NSNotFound else { continue }
+            inferred.append(
+                FoodMention(
+                    food: food,
+                    score: 470,
+                    range: NSRange(
+                        location: clauseRange.location + localRange.location,
+                        length: localRange.length
+                    )
+                )
+            )
+        }
+
+        return inferred
     }
 
     private static func foodSearchTerms(for food: FoodItem) -> [(String, Int)] {
@@ -860,35 +956,18 @@ enum FoodTextParser {
     private static func unrecognizedFragments(
         in text: String,
         mentions: [FoodMention],
+        ignoredRanges: [NSRange],
         compositeMatches: [FoodMatch]
     ) -> [String] {
-        guard let separator = try? NSRegularExpression(
-            pattern: clauseSeparatorPattern,
-            options: [.caseInsensitive]
-        ) else {
-            return []
-        }
-
         let source = text as NSString
-        let fullRange = NSRange(location: 0, length: source.length)
-        let separators = separator.matches(in: text, range: fullRange)
-        var clauseRanges: [NSRange] = []
-        var clauseStart = 0
-        for match in separators {
-            clauseRanges.append(NSRange(
-                location: clauseStart,
-                length: max(0, match.range.location - clauseStart)
-            ))
-            clauseStart = NSMaxRange(match.range)
-        }
-        clauseRanges.append(NSRange(
-            location: clauseStart,
-            length: max(0, source.length - clauseStart)
-        ))
-
         var fragments: [String] = []
 
-        for clauseRange in clauseRanges where clauseRange.length > 0 {
+        for clauseRange in clauseRanges(in: text) where clauseRange.length > 0 {
+            guard !ignoredRanges.contains(where: {
+                NSIntersectionRange($0, clauseRange).length > 0
+            }) else {
+                continue
+            }
             let remainder = NSMutableString(string: source.substring(with: clauseRange))
             let clauseMentions = mentions.filter {
                 $0.range.location >= clauseRange.location &&
@@ -914,6 +993,43 @@ enum FoodTextParser {
         }
 
         return fragments
+    }
+
+    private static func clauseRanges(in text: String) -> [NSRange] {
+        guard let separator = try? NSRegularExpression(
+            pattern: clauseSeparatorPattern,
+            options: [.caseInsensitive]
+        ) else {
+            return []
+        }
+
+        let source = text as NSString
+        let fullRange = NSRange(location: 0, length: source.length)
+        let separators = separator.matches(in: text, range: fullRange)
+        var ranges: [NSRange] = []
+        var clauseStart = 0
+        for match in separators {
+            ranges.append(NSRange(
+                location: clauseStart,
+                length: max(0, match.range.location - clauseStart)
+            ))
+            clauseStart = NSMaxRange(match.range)
+        }
+        ranges.append(NSRange(
+            location: clauseStart,
+            length: max(0, source.length - clauseStart)
+        ))
+        return ranges
+    }
+
+    private static func negativeIntakeRanges(in text: String) -> [NSRange] {
+        guard let expression = try? NSRegularExpression(
+            pattern: negativeIntakeSpanPattern
+        ) else {
+            return []
+        }
+        let range = NSRange(text.startIndex..<text.endIndex, in: text)
+        return expression.matches(in: text, range: range).map(\.range)
     }
 
     private static func removingCompositeKeywords(
@@ -967,7 +1083,7 @@ enum FoodTextParser {
             "今天", "昨天", "前天", "今晚", "早餐", "早饭", "午餐", "午饭", "晚餐", "晚饭", "夜宵",
             "凌晨", "清晨", "早晨", "早上", "上午", "中午", "下午", "傍晚", "晚上",
             "我们", "我", "吃了", "吃", "喝了", "喝", "的是", "大约", "大概", "差不多", "左右",
-            "一点", "一些", "请帮我记录", "帮我记录", "记录", "然后", "另外", "又", "还", "的", "了"
+            "一点", "一些", "请帮我记录", "帮我记录", "记录", "然后", "另外", "又", "还", "加", "配", "的", "了"
         ]
         for word in fillerWords {
             remainder = remainder.replacingOccurrences(of: word, with: "")

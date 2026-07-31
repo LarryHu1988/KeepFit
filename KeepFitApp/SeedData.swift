@@ -1,5 +1,397 @@
 import Foundation
 
+enum ChineseDishNutritionEstimator {
+    private struct DishSpec {
+        let id: String
+        let name: String
+        let category: FoodCategory
+        let calories: Double
+        let protein: Double
+        let carbs: Double
+        let fat: Double
+        let portionGrams: Double
+        let aliases: [String]
+        let icon: String
+
+        init(
+            _ id: String,
+            _ name: String,
+            _ category: FoodCategory,
+            _ calories: Double,
+            _ protein: Double,
+            _ carbs: Double,
+            _ fat: Double,
+            portionGrams: Double = 250,
+            aliases: [String] = [],
+            icon: String
+        ) {
+            self.id = id
+            self.name = name
+            self.category = category
+            self.calories = calories
+            self.protein = protein
+            self.carbs = carbs
+            self.fat = fat
+            self.portionGrams = portionGrams
+            self.aliases = aliases
+            self.icon = icon
+        }
+    }
+
+    private struct NutritionValues {
+        var calories: Double
+        var protein: Double
+        var carbs: Double
+        var fat: Double
+    }
+
+    private struct WeightedFood {
+        let food: FoodItem
+        let weight: Double
+    }
+
+    private static let recipeReference = FoodNutritionReference(
+        basis: .recipeEstimate,
+        sourceName: "USDA FoodData Central",
+        sourceURLString: "https://fdc.nal.usda.gov/",
+        referenceCode: nil,
+        noteZH: "基于内置基础食材营养值、常见配方比例和烹饪方式估算；实际数值会随原料、用油、调味和份量变化，请在确认页核对重量。",
+        noteEN: "Estimated from built-in ingredient values, typical recipe ratios, and cooking method. Ingredients, oil, seasoning, and serving size can change the result; verify the weight before saving."
+    )
+
+    private static let commonDishSpecs: [DishSpec] = [
+        DishSpec("yu_xiang_shredded_pork", "鱼香肉丝", .protein, 156, 10.5, 11, 8, aliases: ["鱼香肉片"], icon: "🍖🌶️"),
+        DishSpec("twice_cooked_pork", "回锅肉", .protein, 270, 12, 7, 22, aliases: ["川味回锅肉"], icon: "🥓🌶️"),
+        DishSpec("green_pepper_pork", "青椒肉丝", .protein, 135, 11, 5, 7.5, aliases: ["辣椒炒肉丝"], icon: "🫑🍖"),
+        DishSpec("beijing_sauce_pork", "京酱肉丝", .protein, 185, 12, 13, 9.5, icon: "🍖🥢"),
+        DishSpec("moo_shu_pork", "木须肉", .protein, 145, 10, 5, 9, aliases: ["木樨肉"], icon: "🥚🍖"),
+        DishSpec("boiled_pork_slices", "水煮肉片", .protein, 180, 14, 6, 11, icon: "🌶️🍖"),
+        DishSpec("sweet_sour_pork", "糖醋里脊", .protein, 235, 12, 24, 10, aliases: ["糖醋肉"], icon: "🍖🍬"),
+        DishSpec("farmhouse_pork", "农家小炒肉", .protein, 230, 13, 6, 19, aliases: ["小炒肉"], icon: "🌶️🥓"),
+        DishSpec("mei_cai_pork", "梅菜扣肉", .protein, 300, 11, 9, 25, icon: "🥓🥬"),
+        DishSpec("braised_ribs", "红烧排骨", .protein, 260, 16, 8, 20, icon: "🍖"),
+        DishSpec("sweet_sour_ribs", "糖醋排骨", .protein, 285, 15, 20, 21, icon: "🍖🍬"),
+        DishSpec("spicy_chicken", "辣子鸡", .protein, 245, 18, 8, 16, aliases: ["辣子鸡丁"], icon: "🌶️🍗"),
+        DishSpec("poached_chicken", "白切鸡", .protein, 180, 19, 1, 11, aliases: ["白斩鸡"], icon: "🍗"),
+        DishSpec("braised_chicken", "黄焖鸡", .protein, 170, 14, 7, 10, aliases: ["黄焖鸡块"], icon: "🍗🥘"),
+        DishSpec("cola_wings", "可乐鸡翅", .protein, 220, 14, 12, 13, icon: "🍗🥤"),
+        DishSpec("potato_chicken", "土豆烧鸡", .protein, 145, 10, 10, 7.5, aliases: ["土豆炖鸡", "土豆鸡块"], icon: "🥔🍗"),
+        DishSpec("braised_beef_potato", "土豆烧牛肉", .protein, 155, 11, 11, 8, aliases: ["土豆炖牛肉"], icon: "🥔🥩"),
+        DishSpec("tomato_beef_brisket", "番茄炖牛腩", .protein, 130, 10, 7, 7, aliases: ["西红柿炖牛腩"], icon: "🍅🥩"),
+        DishSpec("onion_beef", "洋葱炒牛肉", .protein, 155, 13, 6, 9, icon: "🧅🥩"),
+        DishSpec("cumin_lamb", "孜然羊肉", .protein, 230, 18, 5, 16, icon: "🥩🌿"),
+        DishSpec("sauerkraut_fish", "酸菜鱼", .protein, 120, 13, 4, 6, icon: "🐟🥬"),
+        DishSpec("boiled_fish", "水煮鱼", .protein, 170, 15, 5, 10, aliases: ["水煮鱼片"], icon: "🐟🌶️"),
+        DishSpec("braised_fish", "红烧鱼", .protein, 150, 15, 7, 7.5, aliases: ["红烧鱼块"], icon: "🐟"),
+        DishSpec("sweet_sour_fish", "糖醋鱼", .protein, 185, 13, 18, 7, icon: "🐟🍬"),
+        DishSpec("garlic_shrimp", "蒜蓉虾", .protein, 125, 15, 5, 5, aliases: ["蒜蓉大虾"], icon: "🦐🧄"),
+        DishSpec("spicy_crayfish", "麻辣小龙虾", .protein, 110, 15, 5, 3.5, aliases: ["香辣小龙虾", "小龙虾"], icon: "🦞🌶️"),
+        DishSpec("home_style_tofu", "家常豆腐", .protein, 145, 8, 8, 9, icon: "🫘🥘"),
+        DishSpec("braised_tofu", "红烧豆腐", .protein, 125, 7.5, 7, 7.5, icon: "🫘"),
+        DishSpec("yu_xiang_eggplant", "鱼香茄子", .vegetable, 150, 3, 14, 9.5, aliases: ["鱼香茄子煲"], icon: "🍆🌶️"),
+        DishSpec("di_san_xian", "地三鲜", .vegetable, 170, 3, 19, 9.5, icon: "🥔🍆"),
+        DishSpec("dry_fried_green_beans", "干煸四季豆", .vegetable, 145, 5, 12, 9, aliases: ["干煸豆角"], icon: "🫛🌶️"),
+        DishSpec("sour_spicy_potato", "酸辣土豆丝", .vegetable, 105, 2, 16, 4, icon: "🥔🌶️"),
+        DishSpec("hand_torn_cabbage", "手撕包菜", .vegetable, 100, 2, 8, 7, aliases: ["手撕圆白菜"], icon: "🥬"),
+        DishSpec("oyster_sauce_lettuce", "蚝油生菜", .vegetable, 75, 2, 7, 4.5, icon: "🥬"),
+        DishSpec("garlic_broccoli", "蒜蓉西兰花", .vegetable, 75, 3.5, 8, 3.5, aliases: ["蒜炒西兰花"], icon: "🥦🧄"),
+        DishSpec("chive_scrambled_egg", "韭菜炒鸡蛋", .protein, 145, 9, 4, 10, aliases: ["韭菜炒蛋"], icon: "🥚🥬"),
+        DishSpec("eggplant_minced_pork", "肉末茄子", .protein, 155, 7, 10, 10, aliases: ["肉沫茄子"], icon: "🍆🍖"),
+        DishSpec("fo_tiao_qiang", "佛跳墙", .protein, 105, 11, 5, 4.5, portionGrams: 350, icon: "🥘"),
+        DishSpec("fuqi_feipian", "夫妻肺片", .protein, 220, 17, 6, 15, icon: "🥩🌶️"),
+        DishSpec("ants_climbing_tree", "蚂蚁上树", .staple, 170, 6, 24, 6, icon: "🍜🍖"),
+        DishSpec("braised_lion_head", "红烧狮子头", .protein, 250, 13, 8, 19, aliases: ["四喜丸子", "狮子头"], icon: "🍖🥘"),
+        DishSpec("squirrel_mandarin_fish", "松鼠桂鱼", .protein, 220, 13, 20, 10, aliases: ["松鼠鳜鱼"], icon: "🐟"),
+        DishSpec("beggars_chicken", "叫花鸡", .protein, 200, 20, 3, 12, aliases: ["叫化鸡"], icon: "🍗"),
+        DishSpec("dongpo_pork", "东坡肉", .protein, 330, 11, 8, 28, icon: "🥓"),
+        DishSpec("guobaorou", "锅包肉", .protein, 250, 12, 24, 12, icon: "🍖"),
+        DishSpec("saliva_chicken", "口水鸡", .protein, 190, 17, 5, 12, icon: "🍗🌶️"),
+        DishSpec("big_plate_chicken", "大盘鸡", .protein, 160, 11, 12, 8, portionGrams: 350, icon: "🍗🥔"),
+        DishSpec("chopped_pepper_fish_head", "剁椒鱼头", .protein, 150, 15, 5, 8, icon: "🐟🌶️"),
+        DishSpec("steamed_pork_rice_flour", "粉蒸肉", .protein, 240, 11, 16, 15, icon: "🍖🍚"),
+        DishSpec("winter_melon_rib_soup", "冬瓜排骨汤", .protein, 55, 5, 2, 3, portionGrams: 400, icon: "🥣🍖"),
+        DishSpec("seaweed_egg_soup", "紫菜蛋花汤", .protein, 35, 3, 3, 1.5, portionGrams: 400, aliases: ["紫菜鸡蛋汤"], icon: "🥣🥚"),
+        DishSpec("tomato_egg_soup", "番茄鸡蛋汤", .protein, 40, 3, 4, 1.5, portionGrams: 400, aliases: ["西红柿鸡蛋汤", "番茄蛋花汤"], icon: "🥣🍅"),
+        DishSpec("mushroom_soup", "菌菇汤", .vegetable, 35, 2.5, 5, 1, portionGrams: 400, aliases: ["蘑菇汤", "杂菌汤"], icon: "🥣🍄"),
+        DishSpec("malatang", "麻辣烫", .protein, 105, 6, 11, 4.5, portionGrams: 500, icon: "🍲🌶️"),
+        DishSpec("maocai", "冒菜", .protein, 120, 7, 10, 6, portionGrams: 450, icon: "🍲🥬"),
+        DishSpec("chinese_hotpot", "火锅", .protein, 130, 8, 8, 7.5, portionGrams: 600, aliases: ["涮火锅"], icon: "🍲"),
+        DishSpec("luosifen", "螺蛳粉", .staple, 135, 4.5, 20, 4.5, portionGrams: 500, icon: "🍜"),
+        DishSpec("zhajiang_noodles", "炸酱面", .staple, 165, 7, 24, 5.5, portionGrams: 450, icon: "🍜"),
+        DishSpec("reganmian", "热干面", .staple, 215, 7, 31, 7.5, portionGrams: 400, icon: "🍜"),
+        DishSpec("chongqing_noodles", "重庆小面", .staple, 175, 6, 25, 6, portionGrams: 450, aliases: ["重庆麻辣小面"], icon: "🍜🌶️"),
+        DishSpec("sour_spicy_noodles", "酸辣粉", .staple, 125, 3, 22, 3.5, portionGrams: 450, icon: "🍜🌶️"),
+        DishSpec("liangpi", "凉皮", .staple, 155, 4, 25, 4.5, portionGrams: 350, aliases: ["陕西凉皮"], icon: "🍜"),
+        DishSpec("beef_rice_bowl", "牛肉盖饭", .staple, 165, 7.5, 23, 5, portionGrams: 400, aliases: ["牛肉盖浇饭"], icon: "🍛🥩"),
+        DishSpec("braised_pork_rice", "卤肉饭", .staple, 195, 7, 24, 8, portionGrams: 400, aliases: ["台湾卤肉饭"], icon: "🍛🍖")
+    ]
+
+    static let commonDishes: [FoodItem] = commonDishSpecs.map { spec in
+        FoodItem(
+            id: spec.id,
+            name: spec.name,
+            icon: spec.icon,
+            category: spec.category,
+            caloriesPer100g: spec.calories,
+            proteinPer100g: spec.protein,
+            carbsPer100g: spec.carbs,
+            fatPer100g: spec.fat,
+            aliases: spec.aliases.isEmpty ? nil : spec.aliases,
+            portions: [FoodPortion(unit: "份", grams: spec.portionGrams, aliases: ["盘"])],
+            nutritionReference: recipeReference
+        )
+    }
+
+    static func estimatedFood(named rawName: String, foodLibrary: [FoodItem]) -> FoodItem? {
+        let name = cleanedDishName(rawName)
+        let key = normalized(name)
+        guard key.count >= 2 else { return nil }
+        guard exactFood(named: key, in: foodLibrary) == nil else { return nil }
+
+        let components = ingredientComponents(for: key, foodLibrary: foodLibrary)
+        guard !components.isEmpty || looksLikeDish(key) else { return nil }
+
+        let category = inferredCategory(for: key, components: components)
+        var nutrition = components.isEmpty
+            ? fallbackNutrition(for: key, category: category)
+            : blendedNutrition(from: components)
+        applyCookingMethod(in: key, to: &nutrition)
+
+        let id = "estimated_dish_\(stableHash(key))"
+        let portionGrams = inferredPortionGrams(for: key)
+        return FoodItem(
+            id: id,
+            name: name,
+            icon: IconCatalog.foodIcon(id: id, category: category),
+            category: category,
+            caloriesPer100g: max(10, nutrition.calories.rounded(toPlaces: 1)),
+            proteinPer100g: max(0, nutrition.protein.rounded(toPlaces: 1)),
+            carbsPer100g: max(0, nutrition.carbs.rounded(toPlaces: 1)),
+            fatPer100g: max(0, nutrition.fat.rounded(toPlaces: 1)),
+            aliases: nil,
+            portions: [FoodPortion(unit: "份", grams: portionGrams, aliases: ["盘"])],
+            nutritionReference: recipeReference
+        )
+    }
+
+    private static func exactFood(named key: String, in foodLibrary: [FoodItem]) -> FoodItem? {
+        foodLibrary.first { food in
+            ([food.name] + (food.aliases ?? [])).contains {
+                normalized($0) == key
+            }
+        }
+    }
+
+    private static func ingredientComponents(
+        for name: String,
+        foodLibrary: [FoodItem]
+    ) -> [WeightedFood] {
+        var components: [WeightedFood] = []
+        var usedIDs = Set<String>()
+
+        func add(_ id: String, weight: Double, when condition: Bool) {
+            guard
+                condition,
+                usedIDs.insert(id).inserted,
+                let food = foodLibrary.first(where: { $0.id == id })
+            else {
+                return
+            }
+            components.append(WeightedFood(food: food, weight: weight))
+        }
+
+        let hasSpecificMeat = containsAny(
+            ["牛", "羊", "鸡", "鸭", "鹅", "鱼", "虾", "蟹", "排骨", "五花", "猪"],
+            in: name
+        )
+        add("beef_lean", weight: 0.58, when: containsAny(["牛肉", "牛腩", "牛柳", "牛杂", "牛"], in: name))
+        add("lean_lamb", weight: 0.58, when: containsAny(["羊肉", "羊排", "羊杂", "羊"], in: name))
+        add("chicken_leg", weight: 0.58, when: containsAny(["鸡肉", "鸡丁", "鸡块", "鸡腿", "鸡翅", "鸡"], in: name))
+        add("duck_breast", weight: 0.58, when: containsAny(["鸭肉", "鸭"], in: name))
+        add("pork_lean", weight: 0.58, when: containsAny(
+            ["猪肉", "肉丝", "肉片", "肉丁", "肉末", "肉沫", "里脊", "排骨", "五花肉"],
+            in: name
+        ) || (name.contains("肉") && !hasSpecificMeat))
+        add("egg", weight: 0.45, when: containsAny(["鸡蛋", "炒蛋", "蛋花", "蛋"], in: name))
+        add("shrimp", weight: 0.55, when: containsAny(["虾仁", "大虾", "鲜虾", "虾"], in: name))
+        add("tilapia", weight: 0.58, when: name.contains("鱼") && !name.contains("鱼香"))
+        add("squid", weight: 0.55, when: containsAny(["鱿鱼", "墨鱼"], in: name))
+        add("crab", weight: 0.55, when: containsAny(["蟹肉", "螃蟹", "蟹"], in: name))
+        add("tofu", weight: 0.5, when: containsAny(["豆腐", "豆干", "香干"], in: name))
+
+        add("rice_white", weight: 0.72, when: containsAny(["米饭", "盖饭", "盖浇饭", "炒饭", "烩饭"], in: name))
+        add("noodles", weight: 0.72, when: containsAny(["面条", "拌面", "炒面", "汤面", "小面", "面"], in: name))
+        add("rice_noodle", weight: 0.72, when: containsAny(["米粉", "米线", "粉丝", "酸辣粉"], in: name))
+        add("potato", weight: 0.35, when: containsAny(["土豆", "马铃薯"], in: name))
+        add("sweet_potato", weight: 0.35, when: containsAny(["红薯", "地瓜"], in: name))
+        add("tomato", weight: 0.35, when: containsAny(["番茄", "西红柿"], in: name))
+        add("bell_pepper", weight: 0.32, when: containsAny(["青椒", "彩椒", "辣椒"], in: name))
+        add("eggplant", weight: 0.35, when: containsAny(["茄子", "茄丁"], in: name))
+        add("cabbage", weight: 0.35, when: containsAny(["包菜", "圆白菜", "卷心菜", "白菜"], in: name))
+        add("bok_choy", weight: 0.35, when: containsAny(["青菜", "小白菜", "油菜", "上海青"], in: name))
+        add("broccoli", weight: 0.35, when: containsAny(["西兰花", "花椰菜"], in: name))
+        add("spinach", weight: 0.35, when: name.contains("菠菜"))
+        add("cucumber", weight: 0.35, when: containsAny(["黄瓜", "青瓜"], in: name))
+        add("carrot", weight: 0.3, when: name.contains("胡萝卜"))
+        add("mushroom", weight: 0.35, when: containsAny(["蘑菇", "香菇", "菌菇", "金针菇", "杏鲍菇", "木耳"], in: name))
+        add("green_beans", weight: 0.35, when: containsAny(["四季豆", "豆角"], in: name))
+        add("lotus_root", weight: 0.35, when: containsAny(["莲藕", "藕片"], in: name))
+        add("onion", weight: 0.3, when: containsAny(["洋葱", "葱头"], in: name))
+        add("pumpkin", weight: 0.35, when: name.contains("南瓜"))
+
+        return components
+    }
+
+    private static func blendedNutrition(from components: [WeightedFood]) -> NutritionValues {
+        let totalWeight = max(0.01, components.reduce(0) { $0 + $1.weight })
+        return components.reduce(
+            NutritionValues(calories: 0, protein: 0, carbs: 0, fat: 0)
+        ) { result, component in
+            let ratio = component.weight / totalWeight
+            return NutritionValues(
+                calories: result.calories + component.food.caloriesPer100g * ratio,
+                protein: result.protein + component.food.proteinPer100g * ratio,
+                carbs: result.carbs + component.food.carbsPer100g * ratio,
+                fat: result.fat + component.food.fatPer100g * ratio
+            )
+        }
+    }
+
+    private static func applyCookingMethod(in name: String, to nutrition: inout NutritionValues) {
+        if containsAny(["汤", "羹"], in: name) {
+            nutrition.calories = nutrition.calories * 0.35 + 8
+            nutrition.protein *= 0.4
+            nutrition.carbs = nutrition.carbs * 0.35 + 1
+            nutrition.fat = nutrition.fat * 0.35 + 0.5
+            return
+        }
+
+        if containsAny(["油炸", "炸", "酥", "脆皮"], in: name) {
+            nutrition.calories += 110
+            nutrition.carbs += 5
+            nutrition.fat += 10
+        } else if containsAny(["干锅", "干煸", "香锅"], in: name) {
+            nutrition.calories += 75
+            nutrition.carbs += 3
+            nutrition.fat += 7
+        } else if containsAny(["糖醋", "鱼香", "宫保", "京酱", "红烧", "黄焖", "可乐"], in: name) {
+            nutrition.calories += 55
+            nutrition.carbs += 7
+            nutrition.fat += 3
+        } else if containsAny(["炒", "爆", "煎", "烧", "烩"], in: name) {
+            nutrition.calories += 45
+            nutrition.carbs += 2
+            nutrition.fat += 4
+        } else if containsAny(["凉拌", "拌"], in: name) {
+            nutrition.calories += 25
+            nutrition.carbs += 2
+            nutrition.fat += 2
+        } else if containsAny(["蒸", "煮", "炖", "焖", "白灼"], in: name) {
+            nutrition.calories += 10
+            nutrition.carbs += 1
+            nutrition.fat += 0.5
+        } else {
+            nutrition.calories += 25
+            nutrition.carbs += 1.5
+            nutrition.fat += 2
+        }
+    }
+
+    private static func fallbackNutrition(
+        for name: String,
+        category: FoodCategory
+    ) -> NutritionValues {
+        if containsAny(["粥"], in: name) {
+            return NutritionValues(calories: 65, protein: 2.5, carbs: 11, fat: 1.2)
+        }
+        if containsAny(["粉", "面", "饭", "饼", "包", "馍"], in: name) {
+            return NutritionValues(calories: 150, protein: 5, carbs: 25, fat: 3.5)
+        }
+        switch category {
+        case .protein:
+            return NutritionValues(calories: 145, protein: 12, carbs: 5, fat: 8)
+        case .vegetable:
+            return NutritionValues(calories: 55, protein: 2.5, carbs: 7, fat: 2)
+        default:
+            return NutritionValues(calories: 110, protein: 5, carbs: 12, fat: 4.5)
+        }
+    }
+
+    private static func inferredCategory(
+        for name: String,
+        components: [WeightedFood]
+    ) -> FoodCategory {
+        if containsAny(["饭", "面", "粉", "粥", "饼", "包", "馍", "饺", "馄饨"], in: name) {
+            return .staple
+        }
+        if components.contains(where: { $0.food.category == .protein }) ||
+            containsAny(["肉", "鸡", "鸭", "鱼", "虾", "蟹", "蛋", "豆腐"], in: name) {
+            return .protein
+        }
+        return .vegetable
+    }
+
+    private static func inferredPortionGrams(for name: String) -> Double {
+        if containsAny(["火锅", "麻辣烫", "冒菜"], in: name) { return 500 }
+        if containsAny(["汤", "羹", "粥", "面", "粉"], in: name) { return 400 }
+        if containsAny(["饭", "盖浇"], in: name) { return 350 }
+        return 250
+    }
+
+    private static func looksLikeDish(_ name: String) -> Bool {
+        containsAny(
+            [
+                "炒", "烧", "炖", "焖", "煮", "蒸", "炸", "煎", "烤", "拌", "爆", "烩",
+                "汤", "羹", "粥", "饭", "面", "粉", "饼", "包", "锅", "煲", "菜",
+                "肉", "鸡", "鸭", "鱼", "虾", "蟹", "蛋", "豆腐", "茄子", "土豆"
+            ],
+            in: name
+        )
+    }
+
+    private static func cleanedDishName(_ value: String) -> String {
+        value.trimmingCharacters(
+            in: CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters)
+        )
+    }
+
+    private static func containsAny(_ values: [String], in text: String) -> Bool {
+        values.contains(where: text.contains)
+    }
+
+    private static func normalized(_ value: String) -> String {
+        let folded = value.folding(
+            options: [.caseInsensitive, .widthInsensitive],
+            locale: Locale(identifier: "zh_Hans_CN")
+        )
+        let withoutParentheses = folded.replacingOccurrences(
+            of: #"[（(][^）)]*[）)]"#,
+            with: "",
+            options: .regularExpression
+        )
+        return withoutParentheses.unicodeScalars
+        .filter { CharacterSet.alphanumerics.contains($0) }
+        .map(String.init)
+        .joined()
+    }
+
+    private static func stableHash(_ value: String) -> String {
+        var hash: UInt64 = 14_695_981_039_346_656_037
+        for byte in value.utf8 {
+            hash ^= UInt64(byte)
+            hash &*= 1_099_511_628_211
+        }
+        return String(hash, radix: 16)
+    }
+}
+
+private extension Double {
+    func rounded(toPlaces places: Int) -> Double {
+        let scale = pow(10, Double(places))
+        return (self * scale).rounded() / scale
+    }
+}
+
 enum SeedData {
     private static func food(
         _ id: String,
@@ -666,7 +1058,9 @@ enum SeedData {
         )
     ]
 
-    static let foodLibrary: [FoodItem] = FoodCompositionDataLoader.mergedFoodLibrary(with: builtInFoodLibrary)
+    static let foodLibrary: [FoodItem] = FoodCompositionDataLoader.mergedFoodLibrary(
+        with: builtInFoodLibrary + ChineseDishNutritionEstimator.commonDishes
+    )
 
     static let exerciseLibrary: [ExerciseItem] = [
         // Cardio (38)
