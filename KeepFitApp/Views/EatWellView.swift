@@ -27,6 +27,7 @@ struct EatWellView: View {
     @State private var parsedFoodIntake: ParsedFoodIntake?
     @State private var foodTextErrorMessage = ""
     @State private var showFoodTextError = false
+    @State private var foodSaveFeedback = 0
     @FocusState private var focusedField: InputField?
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
@@ -89,17 +90,22 @@ struct EatWellView: View {
 
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(spacing: cardSpacing) {
+                        LazyVStack(spacing: cardSpacing) {
                             weekCalendarStrip
                                 .id(ScreenshotSectionID.header)
+                                .keepFitEntrance(index: 0, trigger: tabSwitchToken)
                             intakeProgressCard
                                 .id(ScreenshotSectionID.progress)
+                                .keepFitEntrance(index: 1, trigger: tabSwitchToken)
                             intakeMacroCard
                                 .id(ScreenshotSectionID.nutrition)
+                                .keepFitEntrance(index: 2, trigger: tabSwitchToken)
                             todayIntakeCard
                                 .id(ScreenshotSectionID.foodLog)
+                                .keepFitEntrance(index: 3, trigger: tabSwitchToken)
                             dailyHistoryCard
                                 .id(ScreenshotSectionID.history)
+                                .keepFitEntrance(index: 4, trigger: tabSwitchToken)
                         }
                         .padding(.horizontal, 16)
                         .padding(.top, 8)
@@ -190,6 +196,9 @@ struct EatWellView: View {
                 NaturalFoodIntakeConfirmationSheet(intake: intake) { date, entries in
                     for entry in entries where entry.grams > 0 {
                         appState.addFoodLog(date: date, item: entry.food, grams: entry.grams)
+                    }
+                    if entries.contains(where: { $0.grams > 0 }) {
+                        foodSaveFeedback += 1
                     }
                     naturalLanguageText = ""
                     onFoodLogged?()
@@ -427,28 +436,21 @@ struct EatWellView: View {
                         }
                         .disabled(!canEdit)
 
-                        Button {
+                        KeepFitFluidActionButton(
+                            systemImage: "plus",
+                            accent: .orange,
+                            size: layout.actionWidth,
+                            iconSize: layout.actionIconSize,
+                            feedbackToken: foodSaveFeedback
+                        ) {
                             guard canEdit else { return }
                             focusedField = nil
                             KeepFitHaptics.impact(.medium)
                             addFoodLog()
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.system(size: layout.actionIconSize, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .frame(width: layout.actionWidth, height: layout.actionWidth)
-                                .background(
-                                    Circle()
-                                        .fill(Color.orange.opacity(0.9))
-                                        .overlay(
-                                            Circle()
-                                                .stroke(.white.opacity(0.8), lineWidth: 1)
-                                        )
-                                )
                         }
-                        .buttonStyle(.plain)
                         .frame(width: layout.actionWidth, height: fieldHeight)
                         .disabled(!canEdit)
+                        .accessibilityLabel(localized("添加进食记录", "Add Food Log"))
                     }
                 }
                 .frame(height: fieldHeight)
@@ -560,6 +562,7 @@ struct EatWellView: View {
         let date = calendar.date(bySettingHour: selectedComponents.hour ?? 0, minute: selectedComponents.minute ?? 0, second: 0, of: now) ?? now
 
         appState.addFoodLog(date: date, item: food, grams: amount)
+        foodSaveFeedback += 1
         amountText = String(Int(appState.defaultEntryAmount(for: food)))
         focusedField = nil
         onFoodLogged?()

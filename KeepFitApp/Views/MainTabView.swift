@@ -95,6 +95,12 @@ struct MainTabView: View {
     }
 
     private func configureSystemTabBarAppearance() {
+        // Xcode 26 gives TabView a native Liquid Glass bar. Keep the custom
+        // material only as the visual fallback for iOS 17 through iOS 25.
+        if #available(iOS 26.0, *) {
+            return
+        }
+
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundEffect = UIBlurEffect(

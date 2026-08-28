@@ -22,6 +22,7 @@ struct MoveMoreView: View {
     @State private var durationText = "30"
     @State private var showExerciseSheet = false
     @State private var showExerciseTimeSheet = false
+    @State private var exerciseSaveFeedback = 0
     @FocusState private var focusedField: InputField?
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
@@ -67,17 +68,22 @@ struct MoveMoreView: View {
 
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(spacing: cardSpacing) {
+                        LazyVStack(spacing: cardSpacing) {
                             weekCalendarStrip
                                 .id(ScreenshotSectionID.header)
+                                .keepFitEntrance(index: 0, trigger: tabSwitchToken)
                             exerciseProgressCard
                                 .id(ScreenshotSectionID.progress)
+                                .keepFitEntrance(index: 1, trigger: tabSwitchToken)
                             exerciseMetricsCard
                                 .id(ScreenshotSectionID.metrics)
+                                .keepFitEntrance(index: 2, trigger: tabSwitchToken)
                             todayExerciseCard
                                 .id(ScreenshotSectionID.workoutLog)
+                                .keepFitEntrance(index: 3, trigger: tabSwitchToken)
                             dailyHistoryCard
                                 .id(ScreenshotSectionID.history)
+                                .keepFitEntrance(index: 4, trigger: tabSwitchToken)
                         }
                         .padding(.horizontal, 16)
                         .padding(.top, 8)
@@ -334,28 +340,21 @@ struct MoveMoreView: View {
                         }
                         .disabled(!canEdit)
 
-                        Button {
+                        KeepFitFluidActionButton(
+                            systemImage: "plus",
+                            accent: .green,
+                            size: layout.actionWidth,
+                            iconSize: layout.actionIconSize,
+                            feedbackToken: exerciseSaveFeedback
+                        ) {
                             guard canEdit else { return }
                             focusedField = nil
                             KeepFitHaptics.impact(.medium)
                             addExerciseLog()
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.system(size: layout.actionIconSize, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .frame(width: layout.actionWidth, height: layout.actionWidth)
-                                .background(
-                                    Circle()
-                                        .fill(Color.green.opacity(0.9))
-                                        .overlay(
-                                            Circle()
-                                                .stroke(.white.opacity(0.8), lineWidth: 1)
-                                        )
-                                )
                         }
-                        .buttonStyle(.plain)
                         .frame(width: layout.actionWidth, height: fieldHeight)
                         .disabled(!canEdit)
+                        .accessibilityLabel(localized("添加锻炼记录", "Add Workout Log"))
                     }
                 }
                 .frame(height: fieldHeight)
@@ -463,6 +462,7 @@ struct MoveMoreView: View {
         let date = calendar.date(bySettingHour: selectedComponents.hour ?? 0, minute: selectedComponents.minute ?? 0, second: 0, of: now) ?? now
 
         appState.addExerciseLog(date: date, item: exercise, durationMinutes: minutes)
+        exerciseSaveFeedback += 1
         durationText = "30"
         focusedField = nil
         onExerciseLogged?()

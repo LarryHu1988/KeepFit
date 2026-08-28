@@ -48,6 +48,7 @@ struct LoseWeightView: View {
     @State private var customRangeEndDraft = Date().startOfDayInCurrentCalendar
     @State private var bodyMetricSheetMeasuredHeight: CGFloat = 0
     @State private var trendCustomSheetMeasuredHeight: CGFloat = 0
+    @State private var bodyMetricSaveFeedback = 0
     @FocusState private var focusedField: InputField?
 
     @ScaledMetric(relativeTo: .body) private var cardSpacing: CGFloat = 22
@@ -199,24 +200,33 @@ struct LoseWeightView: View {
 
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(spacing: cardSpacing) {
+                        LazyVStack(spacing: cardSpacing) {
                             weekCalendarStrip
                                 .id(ScreenshotSectionID.header)
+                                .keepFitEntrance(index: 0, trigger: tabSwitchToken)
                             summaryRingCard
                                 .id(ScreenshotSectionID.summary)
+                                .keepFitEntrance(index: 1, trigger: tabSwitchToken)
                             summaryMetricsCard
                                 .id(ScreenshotSectionID.components)
+                                .keepFitEntrance(index: 2, trigger: tabSwitchToken)
                             calendarCard
                                 .id(ScreenshotSectionID.calendar)
+                                .keepFitEntrance(index: 3, trigger: tabSwitchToken)
                             selectedDayCard
+                                .keepFitEntrance(index: 4, trigger: tabSwitchToken)
                             bodyMetricInputCard
                                 .id(ScreenshotSectionID.body)
+                                .keepFitEntrance(index: 5, trigger: tabSwitchToken)
                             calorieTrendCard
                                 .id(ScreenshotSectionID.calorieTrend)
+                                .keepFitEntrance(index: 6, trigger: tabSwitchToken)
                             weightTrendCard
                                 .id(ScreenshotSectionID.weightTrend)
+                                .keepFitEntrance(index: 7, trigger: tabSwitchToken)
                             bodyFatTrendCard
                                 .id(ScreenshotSectionID.bodyFatTrend)
+                                .keepFitEntrance(index: 8, trigger: tabSwitchToken)
                         }
                         .padding(.horizontal, 16)
                         .padding(.top, 8)
@@ -639,28 +649,21 @@ struct LoseWeightView: View {
                     }
                     .disabled(!canEdit)
 
-                    Button {
+                    KeepFitFluidActionButton(
+                        systemImage: "plus",
+                        accent: .blue,
+                        size: layout.actionWidth,
+                        iconSize: layout.actionIconSize,
+                        feedbackToken: bodyMetricSaveFeedback
+                    ) {
                         guard canEdit else { return }
                         focusedField = nil
                         KeepFitHaptics.impact(.medium)
                         saveBodyMetric()
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: layout.actionIconSize, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .frame(width: layout.actionWidth, height: layout.actionWidth)
-                            .background(
-                                Circle()
-                                    .fill(Color.blue.opacity(0.9))
-                                    .overlay(
-                                        Circle()
-                                            .stroke(.white.opacity(0.8), lineWidth: 1)
-                                    )
-                            )
                     }
-                    .buttonStyle(.plain)
                     .frame(width: layout.actionWidth, height: fieldHeight)
                     .disabled(!canEdit)
+                    .accessibilityLabel(localized("保存体重体脂", "Save Weight and Body Fat"))
 
                     Button {
                         guard canDelete else { return }
@@ -1135,6 +1138,7 @@ struct LoseWeightView: View {
         let weight = weightFromDisplayValue(displayWeight, unit: weightUnit)
         appState.upsertBodyMetric(date: selectedDate, weightKg: weight, bodyFatPercent: bodyFat)
         appState.profile.weightKg = weight
+        bodyMetricSaveFeedback += 1
         focusedField = nil
         onBodyMetricSaved?()
     }
