@@ -1,0 +1,42 @@
+name: Publish support and privacy pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '125_Docs/index.html'
+      - '125_Docs/support/**'
+      - '125_Docs/privacy/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare public pages
+        run: |
+          mkdir -p _site
+          cp 125_Docs/index.html _site/index.html
+          cp -R 125_Docs/support 125_Docs/privacy _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
