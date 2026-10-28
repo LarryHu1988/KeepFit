@@ -1,0 +1,19 @@
+{
+  "version": "1.2.0",
+  "build_number": "0",
+  "bundle_id": "com.larry.keepfit",
+  "ipa_sha256": "ebecfc833e8aa689dc0175ccb6ce0cb186e88069d8ba1d79ebc6285e580a80f7",
+  "ipa_bytes": 6746782,
+  "atlas_foods": 13535,
+  "common_foods": 100,
+  "atlas_version": "2026-10-26T18:23:40+00:00",
+  "profile_uuid": "0476478c-6077-4686-a84b-95121d3ed63f",
+  "profile_name": "KeepFit-AppStore-20261024-1.1.1",
+  "distribution_certificate_sha1": [
+    "5379D112F4842B9FF41CC26EFD614A3AB3186B2F"
+  ],
+  "get_task_allow": false,
+  "icloud_environment": null,
+  "signature_verified": true,
+  "production_model_url": "https://keepfit-api.larryhu.com/"
+}

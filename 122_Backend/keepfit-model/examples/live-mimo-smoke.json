@@ -1,0 +1,1867 @@
+{
+  "passed": true,
+  "failure": null,
+  "paid_requests_issued": 3,
+  "vendor_usage": [
+    {
+      "completion_tokens": 613,
+      "prompt_tokens": 2168,
+      "total_tokens": 2781,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens_details": null
+    },
+    {
+      "completion_tokens": 686,
+      "prompt_tokens": 2165,
+      "total_tokens": 2851,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 2048
+      }
+    },
+    {
+      "completion_tokens": 949,
+      "prompt_tokens": 3237,
+      "total_tokens": 4186,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 2048
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "step": "breakfast",
+      "http": 201,
+      "elapsed_seconds": 9.52,
+      "result": {
+        "id": "f4c15dda-171d-4e23-a834-7eee14c54073",
+        "revision": 1,
+        "status": "ready_for_confirmation",
+        "source": "text",
+        "reference_time": "2026-10-24T09:00:00+08:00",
+        "timezone": "Asia/Shanghai",
+        "created_at": "2026-10-24T13:13:33.811324Z",
+        "updated_at": "2026-10-24T13:13:33.811324Z",
+        "original_text": "今天早饭我吃了两个去壳后合计100克的水煮鸡蛋，还有50克熟米饭。面包没吃，牛奶是同事喝的。",
+        "understanding": {
+          "meal_time": "2026-10-24T08:00:00+08:00",
+          "meal_time_note": "用户描述为今天早饭，参考时间为2026-10-24上午，按当天早餐处理",
+          "normalized_text": "本人早餐吃了两个去壳后合计100克的水煮鸡蛋，以及50克熟米饭；面包未吃；牛奶为同事饮用",
+          "items": [
+            {
+              "id": "boiled_egg",
+              "name": "水煮鸡蛋",
+              "original_portion": "两个去壳后合计100克",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": false,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:173424",
+                "name": "Egg, whole, cooked, hard-boiled",
+                "url": "https://fdc.nal.usda.gov/food-details/173424/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 155,
+                "protein_g": 12.58,
+                "fat_g": 10.61,
+                "carbs_g": 1.12
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "用户明确给出去壳后可食部分合计100克，直接采用"
+              ]
+            },
+            {
+              "id": "rice",
+              "name": "熟白米饭",
+              "original_portion": "50克",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 50,
+              "portion_is_estimate": false,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:168878",
+                "name": "Rice, white, long-grain, regular, enriched, cooked",
+                "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 130,
+                "protein_g": 2.69,
+                "fat_g": 0.28,
+                "carbs_g": 28.17
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "用户明确给出50克熟米饭，直接采用"
+              ]
+            },
+            {
+              "id": "bread",
+              "name": "面包",
+              "original_portion": "未说明份量",
+              "eater": "self",
+              "consumption": "not_eaten",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "用户明确说明面包没吃，不计入摄入"
+              ]
+            },
+            {
+              "id": "milk",
+              "name": "牛奶",
+              "original_portion": "未说明份量",
+              "eater": "other",
+              "consumption": "unknown",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "牛奶为同事饮用，不属于本人摄入，不计入总量"
+              ]
+            }
+          ],
+          "questions": [],
+          "warnings": [
+            "面包和牛奶均未计入本人摄入总量"
+          ]
+        },
+        "items": [
+          {
+            "id": "boiled_egg",
+            "name": "水煮鸡蛋",
+            "original_portion": "两个去壳后合计100克",
+            "eater": "self",
+            "consumption": "eaten",
+            "parent_id": null,
+            "consumed_grams": 100,
+            "portion_is_estimate": false,
+            "nutrition_basis": "food_database",
+            "nutrition_source": {
+              "id": "usda:173424",
+              "name": "Egg, whole, cooked, hard-boiled",
+              "url": "https://fdc.nal.usda.gov/food-details/173424/nutrients",
+              "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+              "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+              "ingredients": []
+            },
+            "nutrients_per_100g": {
+              "calories_kcal": 155,
+              "protein_g": 12.58,
+              "fat_g": 10.61,
+              "carbs_g": 1.12
+            },
+            "estimation_notes": [
+              "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+              "用户明确给出去壳后可食部分合计100克，直接采用"
+            ],
+            "included_in_totals": true,
+            "nutrients": {
+              "calories_kcal": 155,
+              "protein_g": 12.6,
+              "fat_g": 10.6,
+              "carbs_g": 1.1
+            }
+          },
+          {
+            "id": "rice",
+            "name": "熟白米饭",
+            "original_portion": "50克",
+            "eater": "self",
+            "consumption": "eaten",
+            "parent_id": null,
+            "consumed_grams": 50,
+            "portion_is_estimate": false,
+            "nutrition_basis": "food_database",
+            "nutrition_source": {
+              "id": "usda:168878",
+              "name": "Rice, white, long-grain, regular, enriched, cooked",
+              "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+              "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+              "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+              "ingredients": []
+            },
+            "nutrients_per_100g": {
+              "calories_kcal": 130,
+              "protein_g": 2.69,
+              "fat_g": 0.28,
+              "carbs_g": 28.17
+            },
+            "estimation_notes": [
+              "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+              "用户明确给出50克熟米饭，直接采用"
+            ],
+            "included_in_totals": true,
+            "nutrients": {
+              "calories_kcal": 65,
+              "protein_g": 1.3,
+              "fat_g": 0.1,
+              "carbs_g": 14.1
+            }
+          },
+          {
+            "id": "bread",
+            "name": "面包",
+            "original_portion": "未说明份量",
+            "eater": "self",
+            "consumption": "not_eaten",
+            "parent_id": null,
+            "consumed_grams": null,
+            "portion_is_estimate": false,
+            "nutrition_basis": "unknown",
+            "nutrition_source": null,
+            "nutrients_per_100g": null,
+            "estimation_notes": [
+              "用户明确说明面包没吃，不计入摄入"
+            ],
+            "included_in_totals": false,
+            "nutrients": null
+          },
+          {
+            "id": "milk",
+            "name": "牛奶",
+            "original_portion": "未说明份量",
+            "eater": "other",
+            "consumption": "unknown",
+            "parent_id": null,
+            "consumed_grams": null,
+            "portion_is_estimate": false,
+            "nutrition_basis": "unknown",
+            "nutrition_source": null,
+            "nutrients_per_100g": null,
+            "estimation_notes": [
+              "牛奶为同事饮用，不属于本人摄入，不计入总量"
+            ],
+            "included_in_totals": false,
+            "nutrients": null
+          }
+        ],
+        "totals": {
+          "calories_kcal": 220,
+          "protein_g": 13.9,
+          "fat_g": 10.8,
+          "carbs_g": 15.2
+        },
+        "known_subtotal": {
+          "calories_kcal": 220,
+          "protein_g": 13.9,
+          "fat_g": 10.8,
+          "carbs_g": 15.2
+        },
+        "totals_complete": true,
+        "requires_estimate_acceptance": false,
+        "model": {
+          "name": "keepfit-v1",
+          "schema_version": "1.0",
+          "prompt_version": "2026-10-24.1-r1",
+          "provider": "mimo",
+          "base_model": "mimo-v2.6-flash",
+          "simulated": false,
+          "nutrition_version": "usda-sr-2018-keepfit-2026-10-24+recipes-1"
+        },
+        "record_id": null,
+        "answer_history": [],
+        "demo_fixture": null
+      }
+    },
+    {
+      "step": "confirm-breakfast",
+      "http": 201,
+      "elapsed_seconds": 0.01,
+      "result": {
+        "id": "7707dcdf-ad4e-436d-b139-a1083976181a",
+        "intake_id": "f4c15dda-171d-4e23-a834-7eee14c54073",
+        "confirmed_at": "2026-10-24T13:13:33.827764Z",
+        "accepted_estimates": true,
+        "snapshot": {
+          "id": "f4c15dda-171d-4e23-a834-7eee14c54073",
+          "revision": 2,
+          "status": "confirmed",
+          "source": "text",
+          "reference_time": "2026-10-24T09:00:00+08:00",
+          "timezone": "Asia/Shanghai",
+          "created_at": "2026-10-24T13:13:33.811324Z",
+          "updated_at": "2026-10-24T13:13:33.827764Z",
+          "original_text": "今天早饭我吃了两个去壳后合计100克的水煮鸡蛋，还有50克熟米饭。面包没吃，牛奶是同事喝的。",
+          "understanding": {
+            "meal_time": "2026-10-24T08:00:00+08:00",
+            "meal_time_note": "用户描述为今天早饭，参考时间为2026-10-24上午，按当天早餐处理",
+            "normalized_text": "本人早餐吃了两个去壳后合计100克的水煮鸡蛋，以及50克熟米饭；面包未吃；牛奶为同事饮用",
+            "items": [
+              {
+                "id": "boiled_egg",
+                "name": "水煮鸡蛋",
+                "original_portion": "两个去壳后合计100克",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 100,
+                "portion_is_estimate": false,
+                "nutrition_basis": "food_database",
+                "nutrition_source": {
+                  "id": "usda:173424",
+                  "name": "Egg, whole, cooked, hard-boiled",
+                  "url": "https://fdc.nal.usda.gov/food-details/173424/nutrients",
+                  "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                  "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "ingredients": []
+                },
+                "nutrients_per_100g": {
+                  "calories_kcal": 155,
+                  "protein_g": 12.58,
+                  "fat_g": 10.61,
+                  "carbs_g": 1.12
+                },
+                "estimation_notes": [
+                  "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "用户明确给出去壳后可食部分合计100克，直接采用"
+                ]
+              },
+              {
+                "id": "rice",
+                "name": "熟白米饭",
+                "original_portion": "50克",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 50,
+                "portion_is_estimate": false,
+                "nutrition_basis": "food_database",
+                "nutrition_source": {
+                  "id": "usda:168878",
+                  "name": "Rice, white, long-grain, regular, enriched, cooked",
+                  "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                  "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                  "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "ingredients": []
+                },
+                "nutrients_per_100g": {
+                  "calories_kcal": 130,
+                  "protein_g": 2.69,
+                  "fat_g": 0.28,
+                  "carbs_g": 28.17
+                },
+                "estimation_notes": [
+                  "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "用户明确给出50克熟米饭，直接采用"
+                ]
+              },
+              {
+                "id": "bread",
+                "name": "面包",
+                "original_portion": "未说明份量",
+                "eater": "self",
+                "consumption": "not_eaten",
+                "parent_id": null,
+                "consumed_grams": null,
+                "portion_is_estimate": false,
+                "nutrition_basis": "unknown",
+                "nutrition_source": null,
+                "nutrients_per_100g": null,
+                "estimation_notes": [
+                  "用户明确说明面包没吃，不计入摄入"
+                ]
+              },
+              {
+                "id": "milk",
+                "name": "牛奶",
+                "original_portion": "未说明份量",
+                "eater": "other",
+                "consumption": "unknown",
+                "parent_id": null,
+                "consumed_grams": null,
+                "portion_is_estimate": false,
+                "nutrition_basis": "unknown",
+                "nutrition_source": null,
+                "nutrients_per_100g": null,
+                "estimation_notes": [
+                  "牛奶为同事饮用，不属于本人摄入，不计入总量"
+                ]
+              }
+            ],
+            "questions": [],
+            "warnings": [
+              "面包和牛奶均未计入本人摄入总量"
+            ]
+          },
+          "items": [
+            {
+              "id": "boiled_egg",
+              "name": "水煮鸡蛋",
+              "original_portion": "两个去壳后合计100克",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": false,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:173424",
+                "name": "Egg, whole, cooked, hard-boiled",
+                "url": "https://fdc.nal.usda.gov/food-details/173424/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 155,
+                "protein_g": 12.58,
+                "fat_g": 10.61,
+                "carbs_g": 1.12
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "用户明确给出去壳后可食部分合计100克，直接采用"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 155,
+                "protein_g": 12.6,
+                "fat_g": 10.6,
+                "carbs_g": 1.1
+              }
+            },
+            {
+              "id": "rice",
+              "name": "熟白米饭",
+              "original_portion": "50克",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 50,
+              "portion_is_estimate": false,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:168878",
+                "name": "Rice, white, long-grain, regular, enriched, cooked",
+                "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 130,
+                "protein_g": 2.69,
+                "fat_g": 0.28,
+                "carbs_g": 28.17
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "用户明确给出50克熟米饭，直接采用"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 65,
+                "protein_g": 1.3,
+                "fat_g": 0.1,
+                "carbs_g": 14.1
+              }
+            },
+            {
+              "id": "bread",
+              "name": "面包",
+              "original_portion": "未说明份量",
+              "eater": "self",
+              "consumption": "not_eaten",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "用户明确说明面包没吃，不计入摄入"
+              ],
+              "included_in_totals": false,
+              "nutrients": null
+            },
+            {
+              "id": "milk",
+              "name": "牛奶",
+              "original_portion": "未说明份量",
+              "eater": "other",
+              "consumption": "unknown",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "牛奶为同事饮用，不属于本人摄入，不计入总量"
+              ],
+              "included_in_totals": false,
+              "nutrients": null
+            }
+          ],
+          "totals": {
+            "calories_kcal": 220,
+            "protein_g": 13.9,
+            "fat_g": 10.8,
+            "carbs_g": 15.2
+          },
+          "known_subtotal": {
+            "calories_kcal": 220,
+            "protein_g": 13.9,
+            "fat_g": 10.8,
+            "carbs_g": 15.2
+          },
+          "totals_complete": true,
+          "requires_estimate_acceptance": false,
+          "model": {
+            "name": "keepfit-v1",
+            "schema_version": "1.0",
+            "prompt_version": "2026-10-24.1-r1",
+            "provider": "mimo",
+            "base_model": "mimo-v2.6-flash",
+            "simulated": false,
+            "nutrition_version": "usda-sr-2018-keepfit-2026-10-24+recipes-1"
+          },
+          "record_id": "7707dcdf-ad4e-436d-b139-a1083976181a",
+          "answer_history": [],
+          "demo_fixture": null
+        }
+      }
+    },
+    {
+      "step": "confirm-breakfast",
+      "http": 201,
+      "elapsed_seconds": 0.01,
+      "result": {
+        "id": "7707dcdf-ad4e-436d-b139-a1083976181a",
+        "intake_id": "f4c15dda-171d-4e23-a834-7eee14c54073",
+        "confirmed_at": "2026-10-24T13:13:33.827764Z",
+        "accepted_estimates": true,
+        "snapshot": {
+          "id": "f4c15dda-171d-4e23-a834-7eee14c54073",
+          "revision": 2,
+          "status": "confirmed",
+          "source": "text",
+          "reference_time": "2026-10-24T09:00:00+08:00",
+          "timezone": "Asia/Shanghai",
+          "created_at": "2026-10-24T13:13:33.811324Z",
+          "updated_at": "2026-10-24T13:13:33.827764Z",
+          "original_text": "今天早饭我吃了两个去壳后合计100克的水煮鸡蛋，还有50克熟米饭。面包没吃，牛奶是同事喝的。",
+          "understanding": {
+            "meal_time": "2026-10-24T08:00:00+08:00",
+            "meal_time_note": "用户描述为今天早饭，参考时间为2026-10-24上午，按当天早餐处理",
+            "normalized_text": "本人早餐吃了两个去壳后合计100克的水煮鸡蛋，以及50克熟米饭；面包未吃；牛奶为同事饮用",
+            "items": [
+              {
+                "id": "boiled_egg",
+                "name": "水煮鸡蛋",
+                "original_portion": "两个去壳后合计100克",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 100,
+                "portion_is_estimate": false,
+                "nutrition_basis": "food_database",
+                "nutrition_source": {
+                  "id": "usda:173424",
+                  "name": "Egg, whole, cooked, hard-boiled",
+                  "url": "https://fdc.nal.usda.gov/food-details/173424/nutrients",
+                  "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                  "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "ingredients": []
+                },
+                "nutrients_per_100g": {
+                  "calories_kcal": 155,
+                  "protein_g": 12.58,
+                  "fat_g": 10.61,
+                  "carbs_g": 1.12
+                },
+                "estimation_notes": [
+                  "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "用户明确给出去壳后可食部分合计100克，直接采用"
+                ]
+              },
+              {
+                "id": "rice",
+                "name": "熟白米饭",
+                "original_portion": "50克",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 50,
+                "portion_is_estimate": false,
+                "nutrition_basis": "food_database",
+                "nutrition_source": {
+                  "id": "usda:168878",
+                  "name": "Rice, white, long-grain, regular, enriched, cooked",
+                  "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                  "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                  "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "ingredients": []
+                },
+                "nutrients_per_100g": {
+                  "calories_kcal": 130,
+                  "protein_g": 2.69,
+                  "fat_g": 0.28,
+                  "carbs_g": 28.17
+                },
+                "estimation_notes": [
+                  "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "用户明确给出50克熟米饭，直接采用"
+                ]
+              },
+              {
+                "id": "bread",
+                "name": "面包",
+                "original_portion": "未说明份量",
+                "eater": "self",
+                "consumption": "not_eaten",
+                "parent_id": null,
+                "consumed_grams": null,
+                "portion_is_estimate": false,
+                "nutrition_basis": "unknown",
+                "nutrition_source": null,
+                "nutrients_per_100g": null,
+                "estimation_notes": [
+                  "用户明确说明面包没吃，不计入摄入"
+                ]
+              },
+              {
+                "id": "milk",
+                "name": "牛奶",
+                "original_portion": "未说明份量",
+                "eater": "other",
+                "consumption": "unknown",
+                "parent_id": null,
+                "consumed_grams": null,
+                "portion_is_estimate": false,
+                "nutrition_basis": "unknown",
+                "nutrition_source": null,
+                "nutrients_per_100g": null,
+                "estimation_notes": [
+                  "牛奶为同事饮用，不属于本人摄入，不计入总量"
+                ]
+              }
+            ],
+            "questions": [],
+            "warnings": [
+              "面包和牛奶均未计入本人摄入总量"
+            ]
+          },
+          "items": [
+            {
+              "id": "boiled_egg",
+              "name": "水煮鸡蛋",
+              "original_portion": "两个去壳后合计100克",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": false,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:173424",
+                "name": "Egg, whole, cooked, hard-boiled",
+                "url": "https://fdc.nal.usda.gov/food-details/173424/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 155,
+                "protein_g": 12.58,
+                "fat_g": 10.61,
+                "carbs_g": 1.12
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "用户明确给出去壳后可食部分合计100克，直接采用"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 155,
+                "protein_g": 12.6,
+                "fat_g": 10.6,
+                "carbs_g": 1.1
+              }
+            },
+            {
+              "id": "rice",
+              "name": "熟白米饭",
+              "original_portion": "50克",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 50,
+              "portion_is_estimate": false,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:168878",
+                "name": "Rice, white, long-grain, regular, enriched, cooked",
+                "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 130,
+                "protein_g": 2.69,
+                "fat_g": 0.28,
+                "carbs_g": 28.17
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "用户明确给出50克熟米饭，直接采用"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 65,
+                "protein_g": 1.3,
+                "fat_g": 0.1,
+                "carbs_g": 14.1
+              }
+            },
+            {
+              "id": "bread",
+              "name": "面包",
+              "original_portion": "未说明份量",
+              "eater": "self",
+              "consumption": "not_eaten",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "用户明确说明面包没吃，不计入摄入"
+              ],
+              "included_in_totals": false,
+              "nutrients": null
+            },
+            {
+              "id": "milk",
+              "name": "牛奶",
+              "original_portion": "未说明份量",
+              "eater": "other",
+              "consumption": "unknown",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "牛奶为同事饮用，不属于本人摄入，不计入总量"
+              ],
+              "included_in_totals": false,
+              "nutrients": null
+            }
+          ],
+          "totals": {
+            "calories_kcal": 220,
+            "protein_g": 13.9,
+            "fat_g": 10.8,
+            "carbs_g": 15.2
+          },
+          "known_subtotal": {
+            "calories_kcal": 220,
+            "protein_g": 13.9,
+            "fat_g": 10.8,
+            "carbs_g": 15.2
+          },
+          "totals_complete": true,
+          "requires_estimate_acceptance": false,
+          "model": {
+            "name": "keepfit-v1",
+            "schema_version": "1.0",
+            "prompt_version": "2026-10-24.1-r1",
+            "provider": "mimo",
+            "base_model": "mimo-v2.6-flash",
+            "simulated": false,
+            "nutrition_version": "usda-sr-2018-keepfit-2026-10-24+recipes-1"
+          },
+          "record_id": "7707dcdf-ad4e-436d-b139-a1083976181a",
+          "answer_history": [],
+          "demo_fixture": null
+        }
+      }
+    },
+    {
+      "step": "shared-hotpot",
+      "http": 201,
+      "elapsed_seconds": 15.24,
+      "result": {
+        "id": "cf082e0a-de47-4970-8466-1964cf95558d",
+        "revision": 1,
+        "status": "needs_clarification",
+        "source": "voice",
+        "reference_time": "2026-10-24T12:30:00+08:00",
+        "timezone": "Asia/Shanghai",
+        "created_at": "2026-10-24T13:13:49.073808Z",
+        "updated_at": "2026-10-24T13:13:49.073808Z",
+        "original_text": "午饭我和三位同事吃火锅，桌上有肥牛、土豆和米饭。我没称重，记不清自己吃了多少，不能按四个人平均分。",
+        "understanding": {
+          "meal_time": "2026-10-24T12:30:00+08:00",
+          "meal_time_note": "按 reference_time 2026-10-24 12:30（Asia/Shanghai）理解为当天午饭",
+          "normalized_text": "本人与三位同事一起吃火锅，桌上有肥牛、土豆和米饭；本人未称重，记不清自己吃了多少，不能按四人平均分摊。",
+          "items": [
+            {
+              "id": "hotpot_beef",
+              "name": "肥牛（火锅）",
+              "original_portion": "火锅桌上的肥牛，本人实际吃了多少不详",
+              "eater": "unknown",
+              "consumption": "unknown",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "多人火锅，不能按四人均分",
+                "用户明确表示记不清自己吃了多少，需追问"
+              ]
+            },
+            {
+              "id": "hotpot_potato",
+              "name": "土豆（火锅）",
+              "original_portion": "火锅桌上的土豆，本人实际吃了多少不详",
+              "eater": "unknown",
+              "consumption": "unknown",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "多人火锅，不能按四人均分",
+                "用户明确表示记不清自己吃了多少，需追问"
+              ]
+            },
+            {
+              "id": "hotpot_rice",
+              "name": "米饭",
+              "original_portion": "火锅桌上的米饭，本人实际吃了多少不详",
+              "eater": "unknown",
+              "consumption": "unknown",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:168878",
+                "name": "Rice, white, long-grain, regular, enriched, cooked",
+                "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 130,
+                "protein_g": 2.69,
+                "fat_g": 0.28,
+                "carbs_g": 28.17
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "多人火锅，不能按四人均分",
+                "用户明确表示记不清自己吃了多少，需追问"
+              ]
+            }
+          ],
+          "questions": [
+            {
+              "id": "q_beef",
+              "text": "肥牛您大概吃了多少？（可按盘/份估算，例如小半盘、一盘）",
+              "item_ids": [
+                "hotpot_beef"
+              ],
+              "options": [
+                "大约小半盘",
+                "大约半盘",
+                "大约一盘",
+                "记不清，按常见单人火锅量估算"
+              ]
+            },
+            {
+              "id": "q_potato",
+              "text": "土豆您大概吃了多少？",
+              "item_ids": [
+                "hotpot_potato"
+              ],
+              "options": [
+                "只吃了几片",
+                "大约一小碗",
+                "大约两小碗",
+                "记不清，按常见单人火锅量估算"
+              ]
+            },
+            {
+              "id": "q_rice",
+              "text": "米饭您吃了多少？",
+              "item_ids": [
+                "hotpot_rice"
+              ],
+              "options": [
+                "半碗左右",
+                "一碗左右",
+                "一碗半左右",
+                "没怎么吃"
+              ]
+            }
+          ],
+          "warnings": [
+            "多人聚餐，未按人数均分，需本人实际摄入量",
+            "火锅底料、蘸料、用油未提及，营养可能被低估"
+          ]
+        },
+        "items": [
+          {
+            "id": "hotpot_beef",
+            "name": "肥牛（火锅）",
+            "original_portion": "火锅桌上的肥牛，本人实际吃了多少不详",
+            "eater": "unknown",
+            "consumption": "unknown",
+            "parent_id": null,
+            "consumed_grams": null,
+            "portion_is_estimate": false,
+            "nutrition_basis": "unknown",
+            "nutrition_source": null,
+            "nutrients_per_100g": null,
+            "estimation_notes": [
+              "多人火锅，不能按四人均分",
+              "用户明确表示记不清自己吃了多少，需追问"
+            ],
+            "included_in_totals": false,
+            "nutrients": null
+          },
+          {
+            "id": "hotpot_potato",
+            "name": "土豆（火锅）",
+            "original_portion": "火锅桌上的土豆，本人实际吃了多少不详",
+            "eater": "unknown",
+            "consumption": "unknown",
+            "parent_id": null,
+            "consumed_grams": null,
+            "portion_is_estimate": false,
+            "nutrition_basis": "unknown",
+            "nutrition_source": null,
+            "nutrients_per_100g": null,
+            "estimation_notes": [
+              "多人火锅，不能按四人均分",
+              "用户明确表示记不清自己吃了多少，需追问"
+            ],
+            "included_in_totals": false,
+            "nutrients": null
+          },
+          {
+            "id": "hotpot_rice",
+            "name": "米饭",
+            "original_portion": "火锅桌上的米饭，本人实际吃了多少不详",
+            "eater": "unknown",
+            "consumption": "unknown",
+            "parent_id": null,
+            "consumed_grams": null,
+            "portion_is_estimate": false,
+            "nutrition_basis": "food_database",
+            "nutrition_source": {
+              "id": "usda:168878",
+              "name": "Rice, white, long-grain, regular, enriched, cooked",
+              "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+              "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+              "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+              "ingredients": []
+            },
+            "nutrients_per_100g": {
+              "calories_kcal": 130,
+              "protein_g": 2.69,
+              "fat_g": 0.28,
+              "carbs_g": 28.17
+            },
+            "estimation_notes": [
+              "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+              "多人火锅，不能按四人均分",
+              "用户明确表示记不清自己吃了多少，需追问"
+            ],
+            "included_in_totals": false,
+            "nutrients": null
+          }
+        ],
+        "totals": null,
+        "known_subtotal": {
+          "calories_kcal": 0,
+          "protein_g": 0,
+          "fat_g": 0,
+          "carbs_g": 0
+        },
+        "totals_complete": false,
+        "requires_estimate_acceptance": false,
+        "model": {
+          "name": "keepfit-v1",
+          "schema_version": "1.0",
+          "prompt_version": "2026-10-24.1-r1",
+          "provider": "mimo",
+          "base_model": "mimo-v2.6-flash",
+          "simulated": false,
+          "nutrition_version": "usda-sr-2018-keepfit-2026-10-24+recipes-1"
+        },
+        "record_id": null,
+        "answer_history": [],
+        "demo_fixture": null
+      }
+    },
+    {
+      "step": "answer-hotpot",
+      "http": 200,
+      "elapsed_seconds": 16.69,
+      "result": {
+        "id": "cf082e0a-de47-4970-8466-1964cf95558d",
+        "revision": 2,
+        "status": "ready_for_confirmation",
+        "source": "voice",
+        "reference_time": "2026-10-24T12:30:00+08:00",
+        "timezone": "Asia/Shanghai",
+        "created_at": "2026-10-24T13:13:49.073808Z",
+        "updated_at": "2026-10-24T13:14:05.764410Z",
+        "original_text": "午饭我和三位同事吃火锅，桌上有肥牛、土豆和米饭。我没称重，记不清自己吃了多少，不能按四个人平均分。",
+        "understanding": {
+          "meal_time": "2026-10-24T12:30:00+08:00",
+          "meal_time_note": "按 reference_time 2026-10-24 12:30（Asia/Shanghai）理解为当天午饭",
+          "normalized_text": "本人与三位同事一起吃火锅，桌上有肥牛、土豆和米饭。本人实际吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。",
+          "items": [
+            {
+              "id": "hotpot_beef",
+              "name": "肥牛（火锅）",
+              "original_portion": "六片薄肥牛",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 90,
+              "portion_is_estimate": true,
+              "nutrition_basis": "model_estimate",
+              "nutrition_source": null,
+              "nutrients_per_100g": {
+                "calories_kcal": 250,
+                "protein_g": 17,
+                "fat_g": 20,
+                "carbs_g": 0
+              },
+              "estimation_notes": [
+                "未命中核验数据：本项营养由模型估算。",
+                "按普通火锅薄切肥牛片估算，每片约15克，六片约90克",
+                "火锅肥牛脂肪含量较高，按约20%脂肪的肥牛卷模型估算",
+                "服务端可用核验数据库覆盖营养值"
+              ]
+            },
+            {
+              "id": "hotpot_potato",
+              "name": "土豆（火锅）",
+              "original_portion": "四片土豆",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": true,
+              "nutrition_basis": "model_estimate",
+              "nutrition_source": null,
+              "nutrients_per_100g": {
+                "calories_kcal": 87,
+                "protein_g": 2,
+                "fat_g": 0.1,
+                "carbs_g": 20
+              },
+              "estimation_notes": [
+                "未命中核验数据：本项营养由模型估算。",
+                "按普通火锅土豆片每片约25克估算，四片约100克",
+                "为生土豆估算值，实际为涮煮后食用，含水量可能略有变化",
+                "服务端可用核验数据库覆盖营养值"
+              ]
+            },
+            {
+              "id": "hotpot_rice",
+              "name": "米饭",
+              "original_portion": "半碗熟米饭",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": true,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:168878",
+                "name": "Rice, white, long-grain, regular, enriched, cooked",
+                "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 130,
+                "protein_g": 2.69,
+                "fat_g": 0.28,
+                "carbs_g": 28.17
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "按普通家用饭碗半碗熟米饭约100克估算",
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。"
+              ]
+            },
+            {
+              "id": "hotpot_soup",
+              "name": "火锅汤底",
+              "original_portion": "没有喝汤",
+              "eater": "self",
+              "consumption": "not_eaten",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "用户明确表示没有喝汤，不计入摄入"
+              ]
+            }
+          ],
+          "questions": [],
+          "warnings": [
+            "火锅底料、蘸料、用油未提及，若实际使用，营养可能被低估",
+            "肥牛和土豆为按常见火锅食材大小的估算克重，非实测"
+          ]
+        },
+        "items": [
+          {
+            "id": "hotpot_beef",
+            "name": "肥牛（火锅）",
+            "original_portion": "六片薄肥牛",
+            "eater": "self",
+            "consumption": "eaten",
+            "parent_id": null,
+            "consumed_grams": 90,
+            "portion_is_estimate": true,
+            "nutrition_basis": "model_estimate",
+            "nutrition_source": null,
+            "nutrients_per_100g": {
+              "calories_kcal": 250,
+              "protein_g": 17,
+              "fat_g": 20,
+              "carbs_g": 0
+            },
+            "estimation_notes": [
+              "未命中核验数据：本项营养由模型估算。",
+              "按普通火锅薄切肥牛片估算，每片约15克，六片约90克",
+              "火锅肥牛脂肪含量较高，按约20%脂肪的肥牛卷模型估算",
+              "服务端可用核验数据库覆盖营养值"
+            ],
+            "included_in_totals": true,
+            "nutrients": {
+              "calories_kcal": 225,
+              "protein_g": 15.3,
+              "fat_g": 18,
+              "carbs_g": 0
+            }
+          },
+          {
+            "id": "hotpot_potato",
+            "name": "土豆（火锅）",
+            "original_portion": "四片土豆",
+            "eater": "self",
+            "consumption": "eaten",
+            "parent_id": null,
+            "consumed_grams": 100,
+            "portion_is_estimate": true,
+            "nutrition_basis": "model_estimate",
+            "nutrition_source": null,
+            "nutrients_per_100g": {
+              "calories_kcal": 87,
+              "protein_g": 2,
+              "fat_g": 0.1,
+              "carbs_g": 20
+            },
+            "estimation_notes": [
+              "未命中核验数据：本项营养由模型估算。",
+              "按普通火锅土豆片每片约25克估算，四片约100克",
+              "为生土豆估算值，实际为涮煮后食用，含水量可能略有变化",
+              "服务端可用核验数据库覆盖营养值"
+            ],
+            "included_in_totals": true,
+            "nutrients": {
+              "calories_kcal": 87,
+              "protein_g": 2,
+              "fat_g": 0.1,
+              "carbs_g": 20
+            }
+          },
+          {
+            "id": "hotpot_rice",
+            "name": "米饭",
+            "original_portion": "半碗熟米饭",
+            "eater": "self",
+            "consumption": "eaten",
+            "parent_id": null,
+            "consumed_grams": 100,
+            "portion_is_estimate": true,
+            "nutrition_basis": "food_database",
+            "nutrition_source": {
+              "id": "usda:168878",
+              "name": "Rice, white, long-grain, regular, enriched, cooked",
+              "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+              "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+              "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+              "ingredients": []
+            },
+            "nutrients_per_100g": {
+              "calories_kcal": 130,
+              "protein_g": 2.69,
+              "fat_g": 0.28,
+              "carbs_g": 28.17
+            },
+            "estimation_notes": [
+              "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+              "按普通家用饭碗半碗熟米饭约100克估算",
+              "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。"
+            ],
+            "included_in_totals": true,
+            "nutrients": {
+              "calories_kcal": 130,
+              "protein_g": 2.7,
+              "fat_g": 0.3,
+              "carbs_g": 28.2
+            }
+          },
+          {
+            "id": "hotpot_soup",
+            "name": "火锅汤底",
+            "original_portion": "没有喝汤",
+            "eater": "self",
+            "consumption": "not_eaten",
+            "parent_id": null,
+            "consumed_grams": null,
+            "portion_is_estimate": false,
+            "nutrition_basis": "unknown",
+            "nutrition_source": null,
+            "nutrients_per_100g": null,
+            "estimation_notes": [
+              "用户明确表示没有喝汤，不计入摄入"
+            ],
+            "included_in_totals": false,
+            "nutrients": null
+          }
+        ],
+        "totals": {
+          "calories_kcal": 442,
+          "protein_g": 20,
+          "fat_g": 18.4,
+          "carbs_g": 48.2
+        },
+        "known_subtotal": {
+          "calories_kcal": 442,
+          "protein_g": 20,
+          "fat_g": 18.4,
+          "carbs_g": 48.2
+        },
+        "totals_complete": true,
+        "requires_estimate_acceptance": true,
+        "model": {
+          "name": "keepfit-v1",
+          "schema_version": "1.0",
+          "prompt_version": "2026-10-24.1-r1",
+          "provider": "mimo",
+          "base_model": "mimo-v2.6-flash",
+          "simulated": false,
+          "nutrition_version": "usda-sr-2018-keepfit-2026-10-24+recipes-1"
+        },
+        "record_id": null,
+        "answer_history": [
+          {
+            "q_beef": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。",
+            "q_potato": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。",
+            "q_rice": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。"
+          }
+        ],
+        "demo_fixture": null
+      }
+    },
+    {
+      "step": "confirm-hotpot",
+      "http": 201,
+      "elapsed_seconds": 0.01,
+      "result": {
+        "id": "3b3952c7-ec4b-47fd-af39-fd8e753bc2d9",
+        "intake_id": "cf082e0a-de47-4970-8466-1964cf95558d",
+        "confirmed_at": "2026-10-24T13:14:05.777391Z",
+        "accepted_estimates": true,
+        "snapshot": {
+          "id": "cf082e0a-de47-4970-8466-1964cf95558d",
+          "revision": 3,
+          "status": "confirmed",
+          "source": "voice",
+          "reference_time": "2026-10-24T12:30:00+08:00",
+          "timezone": "Asia/Shanghai",
+          "created_at": "2026-10-24T13:13:49.073808Z",
+          "updated_at": "2026-10-24T13:14:05.777391Z",
+          "original_text": "午饭我和三位同事吃火锅，桌上有肥牛、土豆和米饭。我没称重，记不清自己吃了多少，不能按四个人平均分。",
+          "understanding": {
+            "meal_time": "2026-10-24T12:30:00+08:00",
+            "meal_time_note": "按 reference_time 2026-10-24 12:30（Asia/Shanghai）理解为当天午饭",
+            "normalized_text": "本人与三位同事一起吃火锅，桌上有肥牛、土豆和米饭。本人实际吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。",
+            "items": [
+              {
+                "id": "hotpot_beef",
+                "name": "肥牛（火锅）",
+                "original_portion": "六片薄肥牛",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 90,
+                "portion_is_estimate": true,
+                "nutrition_basis": "model_estimate",
+                "nutrition_source": null,
+                "nutrients_per_100g": {
+                  "calories_kcal": 250,
+                  "protein_g": 17,
+                  "fat_g": 20,
+                  "carbs_g": 0
+                },
+                "estimation_notes": [
+                  "未命中核验数据：本项营养由模型估算。",
+                  "按普通火锅薄切肥牛片估算，每片约15克，六片约90克",
+                  "火锅肥牛脂肪含量较高，按约20%脂肪的肥牛卷模型估算",
+                  "服务端可用核验数据库覆盖营养值"
+                ]
+              },
+              {
+                "id": "hotpot_potato",
+                "name": "土豆（火锅）",
+                "original_portion": "四片土豆",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 100,
+                "portion_is_estimate": true,
+                "nutrition_basis": "model_estimate",
+                "nutrition_source": null,
+                "nutrients_per_100g": {
+                  "calories_kcal": 87,
+                  "protein_g": 2,
+                  "fat_g": 0.1,
+                  "carbs_g": 20
+                },
+                "estimation_notes": [
+                  "未命中核验数据：本项营养由模型估算。",
+                  "按普通火锅土豆片每片约25克估算，四片约100克",
+                  "为生土豆估算值，实际为涮煮后食用，含水量可能略有变化",
+                  "服务端可用核验数据库覆盖营养值"
+                ]
+              },
+              {
+                "id": "hotpot_rice",
+                "name": "米饭",
+                "original_portion": "半碗熟米饭",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 100,
+                "portion_is_estimate": true,
+                "nutrition_basis": "food_database",
+                "nutrition_source": {
+                  "id": "usda:168878",
+                  "name": "Rice, white, long-grain, regular, enriched, cooked",
+                  "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                  "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                  "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "ingredients": []
+                },
+                "nutrients_per_100g": {
+                  "calories_kcal": 130,
+                  "protein_g": 2.69,
+                  "fat_g": 0.28,
+                  "carbs_g": 28.17
+                },
+                "estimation_notes": [
+                  "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "按普通家用饭碗半碗熟米饭约100克估算",
+                  "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。"
+                ]
+              },
+              {
+                "id": "hotpot_soup",
+                "name": "火锅汤底",
+                "original_portion": "没有喝汤",
+                "eater": "self",
+                "consumption": "not_eaten",
+                "parent_id": null,
+                "consumed_grams": null,
+                "portion_is_estimate": false,
+                "nutrition_basis": "unknown",
+                "nutrition_source": null,
+                "nutrients_per_100g": null,
+                "estimation_notes": [
+                  "用户明确表示没有喝汤，不计入摄入"
+                ]
+              }
+            ],
+            "questions": [],
+            "warnings": [
+              "火锅底料、蘸料、用油未提及，若实际使用，营养可能被低估",
+              "肥牛和土豆为按常见火锅食材大小的估算克重，非实测"
+            ]
+          },
+          "items": [
+            {
+              "id": "hotpot_beef",
+              "name": "肥牛（火锅）",
+              "original_portion": "六片薄肥牛",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 90,
+              "portion_is_estimate": true,
+              "nutrition_basis": "model_estimate",
+              "nutrition_source": null,
+              "nutrients_per_100g": {
+                "calories_kcal": 250,
+                "protein_g": 17,
+                "fat_g": 20,
+                "carbs_g": 0
+              },
+              "estimation_notes": [
+                "未命中核验数据：本项营养由模型估算。",
+                "按普通火锅薄切肥牛片估算，每片约15克，六片约90克",
+                "火锅肥牛脂肪含量较高，按约20%脂肪的肥牛卷模型估算",
+                "服务端可用核验数据库覆盖营养值"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 225,
+                "protein_g": 15.3,
+                "fat_g": 18,
+                "carbs_g": 0
+              }
+            },
+            {
+              "id": "hotpot_potato",
+              "name": "土豆（火锅）",
+              "original_portion": "四片土豆",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": true,
+              "nutrition_basis": "model_estimate",
+              "nutrition_source": null,
+              "nutrients_per_100g": {
+                "calories_kcal": 87,
+                "protein_g": 2,
+                "fat_g": 0.1,
+                "carbs_g": 20
+              },
+              "estimation_notes": [
+                "未命中核验数据：本项营养由模型估算。",
+                "按普通火锅土豆片每片约25克估算，四片约100克",
+                "为生土豆估算值，实际为涮煮后食用，含水量可能略有变化",
+                "服务端可用核验数据库覆盖营养值"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 87,
+                "protein_g": 2,
+                "fat_g": 0.1,
+                "carbs_g": 20
+              }
+            },
+            {
+              "id": "hotpot_rice",
+              "name": "米饭",
+              "original_portion": "半碗熟米饭",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": true,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:168878",
+                "name": "Rice, white, long-grain, regular, enriched, cooked",
+                "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 130,
+                "protein_g": 2.69,
+                "fat_g": 0.28,
+                "carbs_g": 28.17
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "按普通家用饭碗半碗熟米饭约100克估算",
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 130,
+                "protein_g": 2.7,
+                "fat_g": 0.3,
+                "carbs_g": 28.2
+              }
+            },
+            {
+              "id": "hotpot_soup",
+              "name": "火锅汤底",
+              "original_portion": "没有喝汤",
+              "eater": "self",
+              "consumption": "not_eaten",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "用户明确表示没有喝汤，不计入摄入"
+              ],
+              "included_in_totals": false,
+              "nutrients": null
+            }
+          ],
+          "totals": {
+            "calories_kcal": 442,
+            "protein_g": 20,
+            "fat_g": 18.4,
+            "carbs_g": 48.2
+          },
+          "known_subtotal": {
+            "calories_kcal": 442,
+            "protein_g": 20,
+            "fat_g": 18.4,
+            "carbs_g": 48.2
+          },
+          "totals_complete": true,
+          "requires_estimate_acceptance": true,
+          "model": {
+            "name": "keepfit-v1",
+            "schema_version": "1.0",
+            "prompt_version": "2026-10-24.1-r1",
+            "provider": "mimo",
+            "base_model": "mimo-v2.6-flash",
+            "simulated": false,
+            "nutrition_version": "usda-sr-2018-keepfit-2026-10-24+recipes-1"
+          },
+          "record_id": "3b3952c7-ec4b-47fd-af39-fd8e753bc2d9",
+          "answer_history": [
+            {
+              "q_beef": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。",
+              "q_potato": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。",
+              "q_rice": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。"
+            }
+          ],
+          "demo_fixture": null
+        }
+      }
+    },
+    {
+      "step": "confirm-hotpot",
+      "http": 201,
+      "elapsed_seconds": 0.01,
+      "result": {
+        "id": "3b3952c7-ec4b-47fd-af39-fd8e753bc2d9",
+        "intake_id": "cf082e0a-de47-4970-8466-1964cf95558d",
+        "confirmed_at": "2026-10-24T13:14:05.777391Z",
+        "accepted_estimates": true,
+        "snapshot": {
+          "id": "cf082e0a-de47-4970-8466-1964cf95558d",
+          "revision": 3,
+          "status": "confirmed",
+          "source": "voice",
+          "reference_time": "2026-10-24T12:30:00+08:00",
+          "timezone": "Asia/Shanghai",
+          "created_at": "2026-10-24T13:13:49.073808Z",
+          "updated_at": "2026-10-24T13:14:05.777391Z",
+          "original_text": "午饭我和三位同事吃火锅，桌上有肥牛、土豆和米饭。我没称重，记不清自己吃了多少，不能按四个人平均分。",
+          "understanding": {
+            "meal_time": "2026-10-24T12:30:00+08:00",
+            "meal_time_note": "按 reference_time 2026-10-24 12:30（Asia/Shanghai）理解为当天午饭",
+            "normalized_text": "本人与三位同事一起吃火锅，桌上有肥牛、土豆和米饭。本人实际吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。",
+            "items": [
+              {
+                "id": "hotpot_beef",
+                "name": "肥牛（火锅）",
+                "original_portion": "六片薄肥牛",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 90,
+                "portion_is_estimate": true,
+                "nutrition_basis": "model_estimate",
+                "nutrition_source": null,
+                "nutrients_per_100g": {
+                  "calories_kcal": 250,
+                  "protein_g": 17,
+                  "fat_g": 20,
+                  "carbs_g": 0
+                },
+                "estimation_notes": [
+                  "未命中核验数据：本项营养由模型估算。",
+                  "按普通火锅薄切肥牛片估算，每片约15克，六片约90克",
+                  "火锅肥牛脂肪含量较高，按约20%脂肪的肥牛卷模型估算",
+                  "服务端可用核验数据库覆盖营养值"
+                ]
+              },
+              {
+                "id": "hotpot_potato",
+                "name": "土豆（火锅）",
+                "original_portion": "四片土豆",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 100,
+                "portion_is_estimate": true,
+                "nutrition_basis": "model_estimate",
+                "nutrition_source": null,
+                "nutrients_per_100g": {
+                  "calories_kcal": 87,
+                  "protein_g": 2,
+                  "fat_g": 0.1,
+                  "carbs_g": 20
+                },
+                "estimation_notes": [
+                  "未命中核验数据：本项营养由模型估算。",
+                  "按普通火锅土豆片每片约25克估算，四片约100克",
+                  "为生土豆估算值，实际为涮煮后食用，含水量可能略有变化",
+                  "服务端可用核验数据库覆盖营养值"
+                ]
+              },
+              {
+                "id": "hotpot_rice",
+                "name": "米饭",
+                "original_portion": "半碗熟米饭",
+                "eater": "self",
+                "consumption": "eaten",
+                "parent_id": null,
+                "consumed_grams": 100,
+                "portion_is_estimate": true,
+                "nutrition_basis": "food_database",
+                "nutrition_source": {
+                  "id": "usda:168878",
+                  "name": "Rice, white, long-grain, regular, enriched, cooked",
+                  "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                  "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                  "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "ingredients": []
+                },
+                "nutrients_per_100g": {
+                  "calories_kcal": 130,
+                  "protein_g": 2.69,
+                  "fat_g": 0.28,
+                  "carbs_g": 28.17
+                },
+                "estimation_notes": [
+                  "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                  "按普通家用饭碗半碗熟米饭约100克估算",
+                  "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。"
+                ]
+              },
+              {
+                "id": "hotpot_soup",
+                "name": "火锅汤底",
+                "original_portion": "没有喝汤",
+                "eater": "self",
+                "consumption": "not_eaten",
+                "parent_id": null,
+                "consumed_grams": null,
+                "portion_is_estimate": false,
+                "nutrition_basis": "unknown",
+                "nutrition_source": null,
+                "nutrients_per_100g": null,
+                "estimation_notes": [
+                  "用户明确表示没有喝汤，不计入摄入"
+                ]
+              }
+            ],
+            "questions": [],
+            "warnings": [
+              "火锅底料、蘸料、用油未提及，若实际使用，营养可能被低估",
+              "肥牛和土豆为按常见火锅食材大小的估算克重，非实测"
+            ]
+          },
+          "items": [
+            {
+              "id": "hotpot_beef",
+              "name": "肥牛（火锅）",
+              "original_portion": "六片薄肥牛",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 90,
+              "portion_is_estimate": true,
+              "nutrition_basis": "model_estimate",
+              "nutrition_source": null,
+              "nutrients_per_100g": {
+                "calories_kcal": 250,
+                "protein_g": 17,
+                "fat_g": 20,
+                "carbs_g": 0
+              },
+              "estimation_notes": [
+                "未命中核验数据：本项营养由模型估算。",
+                "按普通火锅薄切肥牛片估算，每片约15克，六片约90克",
+                "火锅肥牛脂肪含量较高，按约20%脂肪的肥牛卷模型估算",
+                "服务端可用核验数据库覆盖营养值"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 225,
+                "protein_g": 15.3,
+                "fat_g": 18,
+                "carbs_g": 0
+              }
+            },
+            {
+              "id": "hotpot_potato",
+              "name": "土豆（火锅）",
+              "original_portion": "四片土豆",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": true,
+              "nutrition_basis": "model_estimate",
+              "nutrition_source": null,
+              "nutrients_per_100g": {
+                "calories_kcal": 87,
+                "protein_g": 2,
+                "fat_g": 0.1,
+                "carbs_g": 20
+              },
+              "estimation_notes": [
+                "未命中核验数据：本项营养由模型估算。",
+                "按普通火锅土豆片每片约25克估算，四片约100克",
+                "为生土豆估算值，实际为涮煮后食用，含水量可能略有变化",
+                "服务端可用核验数据库覆盖营养值"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 87,
+                "protein_g": 2,
+                "fat_g": 0.1,
+                "carbs_g": 20
+              }
+            },
+            {
+              "id": "hotpot_rice",
+              "name": "米饭",
+              "original_portion": "半碗熟米饭",
+              "eater": "self",
+              "consumption": "eaten",
+              "parent_id": null,
+              "consumed_grams": 100,
+              "portion_is_estimate": true,
+              "nutrition_basis": "food_database",
+              "nutrition_source": {
+                "id": "usda:168878",
+                "name": "Rice, white, long-grain, regular, enriched, cooked",
+                "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients",
+                "version": "usda-sr-2018-keepfit-2026-10-24+recipes-1",
+                "note": "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "ingredients": []
+              },
+              "nutrients_per_100g": {
+                "calories_kcal": 130,
+                "protein_g": 2.69,
+                "fat_g": 0.28,
+                "carbs_g": 28.17
+              },
+              "estimation_notes": [
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。",
+                "按普通家用饭碗半碗熟米饭约100克估算",
+                "USDA SR Legacy 2018 的对应食物参考值；实际品种、含水量可不同。"
+              ],
+              "included_in_totals": true,
+              "nutrients": {
+                "calories_kcal": 130,
+                "protein_g": 2.7,
+                "fat_g": 0.3,
+                "carbs_g": 28.2
+              }
+            },
+            {
+              "id": "hotpot_soup",
+              "name": "火锅汤底",
+              "original_portion": "没有喝汤",
+              "eater": "self",
+              "consumption": "not_eaten",
+              "parent_id": null,
+              "consumed_grams": null,
+              "portion_is_estimate": false,
+              "nutrition_basis": "unknown",
+              "nutrition_source": null,
+              "nutrients_per_100g": null,
+              "estimation_notes": [
+                "用户明确表示没有喝汤，不计入摄入"
+              ],
+              "included_in_totals": false,
+              "nutrients": null
+            }
+          ],
+          "totals": {
+            "calories_kcal": 442,
+            "protein_g": 20,
+            "fat_g": 18.4,
+            "carbs_g": 48.2
+          },
+          "known_subtotal": {
+            "calories_kcal": 442,
+            "protein_g": 20,
+            "fat_g": 18.4,
+            "carbs_g": 48.2
+          },
+          "totals_complete": true,
+          "requires_estimate_acceptance": true,
+          "model": {
+            "name": "keepfit-v1",
+            "schema_version": "1.0",
+            "prompt_version": "2026-10-24.1-r1",
+            "provider": "mimo",
+            "base_model": "mimo-v2.6-flash",
+            "simulated": false,
+            "nutrition_version": "usda-sr-2018-keepfit-2026-10-24+recipes-1"
+          },
+          "record_id": "3b3952c7-ec4b-47fd-af39-fd8e753bc2d9",
+          "answer_history": [
+            {
+              "q_beef": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。",
+              "q_potato": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。",
+              "q_rice": "我想起来了，我本人只吃了六片薄肥牛、四片土豆和半碗熟米饭，没有喝汤。请按普通火锅食材大小和普通家用饭碗合理估算，明确标注估算即可，不再追问。"
+            }
+          ],
+          "demo_fixture": null
+        }
+      }
+    }
+  ]
+}

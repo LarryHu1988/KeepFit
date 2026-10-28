@@ -1,0 +1,3443 @@
+{
+  "status": "PASS",
+  "errors": [],
+  "imageCounts": {
+    "header": 3,
+    "search": 3,
+    "universal": 3,
+    "screenshot": 310
+  },
+  "screenshotSetCount": 52,
+  "videos": [
+    {
+      "file": "02_Previews/en/duo-inner.mp4",
+      "width": 1920,
+      "height": 886,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 16086296,
+      "sha256": "530af916aca846ac3460c22320ca127b7f4e113277225229ea1b55b6b1fa2518",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/en/duo-outer.mp4",
+      "width": 886,
+      "height": 1920,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 32422155,
+      "sha256": "9f1cf8aa61abc72447fa4074298e18fdbc23461f75f9f2a80de365bc536cc11c",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/en/ipad-legacy.mp4",
+      "width": 900,
+      "height": 1200,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 27840094,
+      "sha256": "1ac03b22832ac3c96ed6ad1a5a0dcdae5c55ff4b0d237eeffc6b39ba0f066720",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/en/ipad.mp4",
+      "width": 1200,
+      "height": 1600,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 32856295,
+      "sha256": "26e1205b5d1c4d043a03d21a0cc765c455f771e1486ced228ce45d92df390149",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/en/iphone-home-large.mp4",
+      "width": 1080,
+      "height": 1920,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 35911374,
+      "sha256": "9043b347ec825f7fcdac3988108ed0ef3dbbdd3ab68c662247b1d82267fcc4ff",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/en/iphone-home-medium.mp4",
+      "width": 750,
+      "height": 1334,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 33954080,
+      "sha256": "54fb01548fa7de5f515fe272f59ba04b9b0e3ad88eca49736e22304e8cea90f5",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/en/iphone-modern.mp4",
+      "width": 886,
+      "height": 1920,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 35873786,
+      "sha256": "3e04ec911d57e3db0e45723719308be9130daac3eb7808a4c832dba30f9869e1",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/zh-Hans/duo-inner.mp4",
+      "width": 1920,
+      "height": 886,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 15339369,
+      "sha256": "67224a4c8036a03fc36c138ce4f260fffb975d8cff5035cd40d9f3dd724dbc71",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/zh-Hans/duo-outer.mp4",
+      "width": 886,
+      "height": 1920,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 32448033,
+      "sha256": "dd5fbf136bff9723069aeeebc7fed9f34acba20154b4278637c2417910814e5d",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/zh-Hans/ipad-legacy.mp4",
+      "width": 900,
+      "height": 1200,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 28131946,
+      "sha256": "e8761aa821b708cf5b07a43562cf92eb2053e8398d2329ade4598e9f24549b08",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/zh-Hans/ipad.mp4",
+      "width": 1200,
+      "height": 1600,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 32466132,
+      "sha256": "c559f1365ed678b22dda9f9b8286df0da8ae58b196966ee8de49b257771731f0",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/zh-Hans/iphone-home-large.mp4",
+      "width": 1080,
+      "height": 1920,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 35511792,
+      "sha256": "74b666882e3d41d5dcd9fa376f0201b205ea709b65784bcf994d87c9543c466a",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/zh-Hans/iphone-home-medium.mp4",
+      "width": 750,
+      "height": 1334,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 32945327,
+      "sha256": "bd45d33d2ceb47c6f43b6597ce0e2a64042104af24d2868cfcab86222e0071ca",
+      "pass": true
+    },
+    {
+      "file": "02_Previews/zh-Hans/iphone-modern.mp4",
+      "width": 886,
+      "height": 1920,
+      "duration": 28.0,
+      "codec": "h264",
+      "profile": "High",
+      "level": 40,
+      "fps": "30/1",
+      "audioCodec": "aac",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "audioBitRate": "254256",
+      "bytes": 35515009,
+      "sha256": "a9c2823568e2197110bdd0de5b5c61a5682e9b7cb9565811aa644cef8165e4b2",
+      "pass": true
+    }
+  ],
+  "images": [
+    {
+      "file": "03_Creatives/zh-Hans/header-3840x1646.png",
+      "pixels": [
+        3840,
+        1646
+      ],
+      "mode": "RGB",
+      "bytes": 773012,
+      "sha256": "7252cc0d5caa70b3f99cc19774e0c5445b4cc71bbc18a9ee555eeb5317ccfafb"
+    },
+    {
+      "file": "03_Creatives/en/header-3840x1646.png",
+      "pixels": [
+        3840,
+        1646
+      ],
+      "mode": "RGB",
+      "bytes": 770301,
+      "sha256": "13f8f9d0674aad1ffe352cf11e83015f4ed9a6c5bea39d9d3ff0891cf817aa00"
+    },
+    {
+      "file": "03_Creatives/text-free/header-3840x1646.png",
+      "pixels": [
+        3840,
+        1646
+      ],
+      "mode": "RGB",
+      "bytes": 803320,
+      "sha256": "5a3d87e3256848e025d83b8613f4a257dcc6159950bfa64eaa9391b65b3383cf"
+    },
+    {
+      "file": "03_Creatives/zh-Hans/search-3840x2560.png",
+      "pixels": [
+        3840,
+        2560
+      ],
+      "mode": "RGB",
+      "bytes": 2521748,
+      "sha256": "ce83fa5dc8a195a8f6a898ca0c14c4cc1113de24c15ee1fab92364c892de081e"
+    },
+    {
+      "file": "03_Creatives/en/search-3840x2560.png",
+      "pixels": [
+        3840,
+        2560
+      ],
+      "mode": "RGB",
+      "bytes": 2516645,
+      "sha256": "ed55dca720dab63f3961fafc263e413c136c076304429fb9da19b397e940b96d"
+    },
+    {
+      "file": "03_Creatives/text-free/search-3840x2560.png",
+      "pixels": [
+        3840,
+        2560
+      ],
+      "mode": "RGB",
+      "bytes": 797697,
+      "sha256": "db3ce808149078a34eca6ac74ab99ef0cd092cc93091edba815b90cf6e19d479"
+    },
+    {
+      "file": "03_Creatives/zh-Hans/universal-5244x2950.png",
+      "pixels": [
+        5244,
+        2950
+      ],
+      "mode": "RGB",
+      "bytes": 4967399,
+      "sha256": "de74d8a48c918316f5bc0858e9c12341bccf130600c0c0dcad2ade35d0e0bfbc"
+    },
+    {
+      "file": "03_Creatives/en/universal-5244x2950.png",
+      "pixels": [
+        5244,
+        2950
+      ],
+      "mode": "RGB",
+      "bytes": 4973951,
+      "sha256": "23e6057551feeb3fb1e01ae171ef8798ca492dc035c55cb81cf40d096513d3f3"
+    },
+    {
+      "file": "03_Creatives/text-free/universal-5244x2950.png",
+      "pixels": [
+        5244,
+        2950
+      ],
+      "mode": "RGB",
+      "bytes": 1037666,
+      "sha256": "d09d511d0b7f5760f21fc885ca601144da1c329e20d5e6dc2cc1fd777c93268e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2224/01.png",
+      "pixels": [
+        1668,
+        2224
+      ],
+      "mode": "RGB",
+      "bytes": 1020969,
+      "sha256": "481248362c6de802b2746962a6530c8c69b1429370fec83b35b1a8aeacded972"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2224/02.png",
+      "pixels": [
+        1668,
+        2224
+      ],
+      "mode": "RGB",
+      "bytes": 1047310,
+      "sha256": "016452be146c393173c4ef2cafa76581a825d65d81f01ddccaf0953b06571e8e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2224/03.png",
+      "pixels": [
+        1668,
+        2224
+      ],
+      "mode": "RGB",
+      "bytes": 1004639,
+      "sha256": "596aecd867ec0e2bd544d39c43d8ea9a6a1ef18b1889ff3c4968d70fbf5c8eea"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2224/04.png",
+      "pixels": [
+        1668,
+        2224
+      ],
+      "mode": "RGB",
+      "bytes": 1064836,
+      "sha256": "805812bf792d9d775acdba2241cec1ce88ebcda0cbd6805bf7562df6713670e0"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2224/01.png",
+      "pixels": [
+        1668,
+        2224
+      ],
+      "mode": "RGB",
+      "bytes": 1037944,
+      "sha256": "0204ce12d0dc93ff1aae8a243837fbff063e38f36441043e3228a34e7781c2d2"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2224/02.png",
+      "pixels": [
+        1668,
+        2224
+      ],
+      "mode": "RGB",
+      "bytes": 1047050,
+      "sha256": "70940749e3d3cb61e7c9edb61c0b5d84a18c775e822ed381c970644292b388f3"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2224/03.png",
+      "pixels": [
+        1668,
+        2224
+      ],
+      "mode": "RGB",
+      "bytes": 1019491,
+      "sha256": "88ceccfa191a375ab6a06fd118e3cfcf20766e567c243720cd00d3a96a366873"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2224/04.png",
+      "pixels": [
+        1668,
+        2224
+      ],
+      "mode": "RGB",
+      "bytes": 1072595,
+      "sha256": "5b8c8cc3f2773bcccd2853c659e42c5b51f28ff80274c904fe9b12d1007af964"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1536x2048/01.png",
+      "pixels": [
+        1536,
+        2048
+      ],
+      "mode": "RGB",
+      "bytes": 920604,
+      "sha256": "18b4a2fff22ff1a9616ab890f6e038d1e6db8786c554d66a25f7e6266baae823"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1536x2048/02.png",
+      "pixels": [
+        1536,
+        2048
+      ],
+      "mode": "RGB",
+      "bytes": 844191,
+      "sha256": "4fe74381525341b54ef877b6a33602549bd2d91b85d5f0964cecdeb86cea7719"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1536x2048/03.png",
+      "pixels": [
+        1536,
+        2048
+      ],
+      "mode": "RGB",
+      "bytes": 810195,
+      "sha256": "a17f99a9dcae84744d98322d04a87a4a213d8ee5708b8f64a6ec2ad0d2b148ea"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1536x2048/04.png",
+      "pixels": [
+        1536,
+        2048
+      ],
+      "mode": "RGB",
+      "bytes": 859218,
+      "sha256": "68b688fa3fbb4e58aa9a273056486a7520157a9c859e6ff00a02e03f353ff82b"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1536x2048/01.png",
+      "pixels": [
+        1536,
+        2048
+      ],
+      "mode": "RGB",
+      "bytes": 933696,
+      "sha256": "0d43f7f1da35b89185d61579b07d29262871e418c4f785efe9f24e6fe0a99247"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1536x2048/02.png",
+      "pixels": [
+        1536,
+        2048
+      ],
+      "mode": "RGB",
+      "bytes": 843928,
+      "sha256": "cc55366a2390b22519dd938453bb85687ec7c2c1c6552a4f4db8954e11a62222"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1536x2048/03.png",
+      "pixels": [
+        1536,
+        2048
+      ],
+      "mode": "RGB",
+      "bytes": 825379,
+      "sha256": "5f30f653286defe783b3c5e750b735fd90f3b463e41194f27595fa9b2cf51330"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1536x2048/04.png",
+      "pixels": [
+        1536,
+        2048
+      ],
+      "mode": "RGB",
+      "bytes": 867960,
+      "sha256": "158ba74710eb69de5d0014e598b897fa1be6554e976ac3ad2455b2a858295caa"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/2048x2732/01.png",
+      "pixels": [
+        2048,
+        2732
+      ],
+      "mode": "RGB",
+      "bytes": 1738144,
+      "sha256": "b1b8073c2293b34c50912a994a36f4c30be8b31a51d95524651b70a6dd4378fc"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/2048x2732/02.png",
+      "pixels": [
+        2048,
+        2732
+      ],
+      "mode": "RGB",
+      "bytes": 1612293,
+      "sha256": "7af27f03ed04aaa330440fd2f3fa85828fb2b3564c1c3233ef66bde89a6647e0"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/2048x2732/03.png",
+      "pixels": [
+        2048,
+        2732
+      ],
+      "mode": "RGB",
+      "bytes": 1526528,
+      "sha256": "ccea72204ed32ad6b71070694ab4988740e499bcafa8cd5f92d30a3c4883ff8b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/2048x2732/04.png",
+      "pixels": [
+        2048,
+        2732
+      ],
+      "mode": "RGB",
+      "bytes": 1670883,
+      "sha256": "71a90e416aba81d62b7f2eb414cc172dd292914bea040936620e47dc7e5fe009"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/2048x2732/01.png",
+      "pixels": [
+        2048,
+        2732
+      ],
+      "mode": "RGB",
+      "bytes": 1759228,
+      "sha256": "5c83e55faea6f072b379db394a09833b2dd92ca73afac87e9bd16cdc884dc68e"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/2048x2732/02.png",
+      "pixels": [
+        2048,
+        2732
+      ],
+      "mode": "RGB",
+      "bytes": 1610786,
+      "sha256": "649642e7854d7732d4688659794788a537281cea4c08522e04268d113d1c3caa"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/2048x2732/03.png",
+      "pixels": [
+        2048,
+        2732
+      ],
+      "mode": "RGB",
+      "bytes": 1545383,
+      "sha256": "38addf92256b58684d1d8435e1886485a3664b47a1db4f50dc46c3f8cd2a4c0f"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/2048x2732/04.png",
+      "pixels": [
+        2048,
+        2732
+      ],
+      "mode": "RGB",
+      "bytes": 1675294,
+      "sha256": "84942719b0c44d19882059d1faf646a44b63c90ba6845923ebfb9944cddade6b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1488x2266/01.png",
+      "pixels": [
+        1488,
+        2266
+      ],
+      "mode": "RGB",
+      "bytes": 951604,
+      "sha256": "f1d39c300b4b937754fad3f06cf87c4150710bcaa1dbef2df2e5957f911d9a15"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1488x2266/02.png",
+      "pixels": [
+        1488,
+        2266
+      ],
+      "mode": "RGB",
+      "bytes": 1045704,
+      "sha256": "f0678b02806692a80fcc249b2121179cfc74d2119d65dee708f499b67b78ea29"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1488x2266/03.png",
+      "pixels": [
+        1488,
+        2266
+      ],
+      "mode": "RGB",
+      "bytes": 994616,
+      "sha256": "df2ad6f19163e73ba42b313450fd14535147709ab54c4738ad0aa36b94a6e90b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1488x2266/04.png",
+      "pixels": [
+        1488,
+        2266
+      ],
+      "mode": "RGB",
+      "bytes": 1073261,
+      "sha256": "e70966fab9b4737148d4148052969bb360938bc0cb82249b1014d8f0ff104b89"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1488x2266/01.png",
+      "pixels": [
+        1488,
+        2266
+      ],
+      "mode": "RGB",
+      "bytes": 968721,
+      "sha256": "131ebdb7403ce8cdb1752e766121a59b067e0300e659398bebe4093dffb9b522"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1488x2266/02.png",
+      "pixels": [
+        1488,
+        2266
+      ],
+      "mode": "RGB",
+      "bytes": 1044773,
+      "sha256": "a690d0b6a6fb0491d620be30e03676454bc6a33117ac2f08dbf8aa121f216c8c"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1488x2266/03.png",
+      "pixels": [
+        1488,
+        2266
+      ],
+      "mode": "RGB",
+      "bytes": 1007564,
+      "sha256": "aac62aff4c4c737a8ec5e0484c2f63947852b39a3f870815850c44b25f59ffe5"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1488x2266/04.png",
+      "pixels": [
+        1488,
+        2266
+      ],
+      "mode": "RGB",
+      "bytes": 1080253,
+      "sha256": "f222a931bbc15529439e8e88d7ee6db482556d73fe68d531e44b5eb5478de14a"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1640x2360/01.png",
+      "pixels": [
+        1640,
+        2360
+      ],
+      "mode": "RGB",
+      "bytes": 1053741,
+      "sha256": "0623dc33c994b53b0a2edd06b1ff962e031e5dc295ef39662d7294397d4f6fca"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1640x2360/02.png",
+      "pixels": [
+        1640,
+        2360
+      ],
+      "mode": "RGB",
+      "bytes": 1187127,
+      "sha256": "0655d55b81f4cb9e16004ecb58677bd7e7873f5c5613cecc54feba0d09aee93a"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1640x2360/03.png",
+      "pixels": [
+        1640,
+        2360
+      ],
+      "mode": "RGB",
+      "bytes": 1139176,
+      "sha256": "3f60a773fc502320d9dd0070a0de4d49e59a06867c86b48599580bed91b49cd3"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1640x2360/04.png",
+      "pixels": [
+        1640,
+        2360
+      ],
+      "mode": "RGB",
+      "bytes": 1204847,
+      "sha256": "93e3d9a9b8fc5c948475645f7753eed65cdc46801dfcabbb3c65b40e5430bb7b"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1640x2360/01.png",
+      "pixels": [
+        1640,
+        2360
+      ],
+      "mode": "RGB",
+      "bytes": 1071588,
+      "sha256": "e7492e5856e24b4dbcade2e58b00a6a85ff493873ce7cf8b9b3db54225cd24f0"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1640x2360/02.png",
+      "pixels": [
+        1640,
+        2360
+      ],
+      "mode": "RGB",
+      "bytes": 1186566,
+      "sha256": "c2fd99743041666ce114cf5ba010128a9903feaf41cd49bc419e92e9b16b8b96"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1640x2360/03.png",
+      "pixels": [
+        1640,
+        2360
+      ],
+      "mode": "RGB",
+      "bytes": 1155015,
+      "sha256": "50e409f19f2578b85c95ab5ff9a3e5758353c8e3021fb2f31edab47f51a3d6ae"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1640x2360/04.png",
+      "pixels": [
+        1640,
+        2360
+      ],
+      "mode": "RGB",
+      "bytes": 1214243,
+      "sha256": "acfbac4af1a2ad9f0e1d65b4f804e57c95abb0a06cb90c55d74545becced223c"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2388/01.png",
+      "pixels": [
+        1668,
+        2388
+      ],
+      "mode": "RGB",
+      "bytes": 1006073,
+      "sha256": "53a4a406a03e770441022e3edb8ee263eb537b467bc067efa2e7c2818969e560"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2388/02.png",
+      "pixels": [
+        1668,
+        2388
+      ],
+      "mode": "RGB",
+      "bytes": 1213312,
+      "sha256": "78c17e0c46abfb4b81fd9c77b7e1c2b86621f25342c85a1003a6ce57d3158c3c"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2388/03.png",
+      "pixels": [
+        1668,
+        2388
+      ],
+      "mode": "RGB",
+      "bytes": 1163539,
+      "sha256": "282f80a173a2c5739e983345ddd7e3379cf9fdfc3e5aeb7a91e3561f2528a993"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2388/04.png",
+      "pixels": [
+        1668,
+        2388
+      ],
+      "mode": "RGB",
+      "bytes": 1230649,
+      "sha256": "dba9253e8b5e1a3948364022eb9553850449de069a814eff23ee20ec8653c88b"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2388/01.png",
+      "pixels": [
+        1668,
+        2388
+      ],
+      "mode": "RGB",
+      "bytes": 1024370,
+      "sha256": "50a404121826a27145d126acfd37721b83aea0fc6d7f084b089c064c6a0f9d7c"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2388/02.png",
+      "pixels": [
+        1668,
+        2388
+      ],
+      "mode": "RGB",
+      "bytes": 1211611,
+      "sha256": "c10002b5211ed1db9aa00f4d228db8d2f744b568c72c10bfd15bb14ba5dec659"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2388/03.png",
+      "pixels": [
+        1668,
+        2388
+      ],
+      "mode": "RGB",
+      "bytes": 1179074,
+      "sha256": "9f2c9720ddfa81e4eddd5ebcac362a5e7d164a268757af688f1c739b56255de6"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2388/04.png",
+      "pixels": [
+        1668,
+        2388
+      ],
+      "mode": "RGB",
+      "bytes": 1241405,
+      "sha256": "13243a503cc19d2fca888fc6b3c9a2b407452f5b73fcae55faa195e379b8213b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2420/01.png",
+      "pixels": [
+        1668,
+        2420
+      ],
+      "mode": "RGB",
+      "bytes": 1014853,
+      "sha256": "3199581e29aab61ae38e2f5a3fb1c6db2334bd3672b52706944c690a9a53e445"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2420/02.png",
+      "pixels": [
+        1668,
+        2420
+      ],
+      "mode": "RGB",
+      "bytes": 1211932,
+      "sha256": "ef9ad0303e46f5981493175f7cdefc5ed677ce0e43ad8ba6a9ea6d9bd245c943"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2420/03.png",
+      "pixels": [
+        1668,
+        2420
+      ],
+      "mode": "RGB",
+      "bytes": 1147562,
+      "sha256": "663e3cda9c1404357b254e9cde3eac0fb76077730a81e89b34f2c7c08bfc2046"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/1668x2420/04.png",
+      "pixels": [
+        1668,
+        2420
+      ],
+      "mode": "RGB",
+      "bytes": 1248062,
+      "sha256": "08cb63179db3d591b812523adce313265b194c308ee54f87d6d925f39412e3fc"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2420/01.png",
+      "pixels": [
+        1668,
+        2420
+      ],
+      "mode": "RGB",
+      "bytes": 1032972,
+      "sha256": "31f1392ed8e1018e9bfe80ce9009593004349299f8698c23ada4f2075fdfe459"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2420/02.png",
+      "pixels": [
+        1668,
+        2420
+      ],
+      "mode": "RGB",
+      "bytes": 1212714,
+      "sha256": "7950fcdf79c49198ae9b96b2f749c8b5c47f976aae9b62f308492785dd42d723"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2420/03.png",
+      "pixels": [
+        1668,
+        2420
+      ],
+      "mode": "RGB",
+      "bytes": 1163373,
+      "sha256": "c0ab25cf2ff103ccaca78a4c8ec5f350789f0f9e6a615503f7c2b7c1f64905f6"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/1668x2420/04.png",
+      "pixels": [
+        1668,
+        2420
+      ],
+      "mode": "RGB",
+      "bytes": 1255785,
+      "sha256": "513474b0ad4b85f4c3fa1c096ce0d5697c4b3a404695ab87f234417e94e8aab6"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/2064x2752/01.png",
+      "pixels": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "bytes": 1738538,
+      "sha256": "45e52087038f7037530fa9f52f9851a2d9ad8eaf80da925a5c5ebdf395c574b0"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/2064x2752/02.png",
+      "pixels": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "bytes": 1663599,
+      "sha256": "a4d965dd1aca636cdb3da8fe6623ac081c6322badd4a073eb597ed59f6f13841"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/2064x2752/03.png",
+      "pixels": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "bytes": 1588081,
+      "sha256": "717f65e19a7bfce391f8567b388eef69e1e8f0ce9825c8a2f52e6f0de65a064e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/ipad/2064x2752/04.png",
+      "pixels": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "bytes": 1698744,
+      "sha256": "b4ed67a3b360f6fde45a0c003e3b26f34612037e5bece16ff2270d717006a5a3"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/2064x2752/01.png",
+      "pixels": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "bytes": 1759561,
+      "sha256": "e40e2c5fad44b7b03b15f96a0540048f6aed027b045c63f6d462096773322974"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/2064x2752/02.png",
+      "pixels": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "bytes": 1661516,
+      "sha256": "dbc5536fc47e2024c5e635ac6d5eb5dfa906d40e333acf5c29b190364f8c3139"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/2064x2752/03.png",
+      "pixels": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "bytes": 1605179,
+      "sha256": "1c30e5db3aba156ec8d2700d7e02ccac4a036f7732af38cd6efd0589e4b3913a"
+    },
+    {
+      "file": "01_Screenshots/en/ipad/2064x2752/04.png",
+      "pixels": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "bytes": 1705414,
+      "sha256": "9bc4335bb7a524c5126e825b5c8535876f264d4576bee5d7abc57e3150577a7a"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x960/01.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 302298,
+      "sha256": "89a19bfea2e278a11501a00613062b4cac39b994da9285ee7064f4cb68c9fda9"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x960/02.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 215455,
+      "sha256": "d47f7221325a2a57d9e2ee4495d89eca72dd516df73348d75082d666fae67c03"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x960/03.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 215875,
+      "sha256": "bb0446b720430149041938a0cc4b43f433ad58591dab0858eb18ed4461a1ccf1"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x960/04.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 219744,
+      "sha256": "c0cfef2ce0e6f09644ff70770e5b828a94216819466de9f4ea0e21d3dcb7e769"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x960/05.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 216641,
+      "sha256": "94918fd772031667b50f29f6ec06beff7054cc0dcbb843263f6b8b92fadf4c7e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x960/06.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 215228,
+      "sha256": "ad411967ce3cc876b6035b3dd7533659a045983c9ce88284fabda4b7682c64c4"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x960/07.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 211328,
+      "sha256": "9a36c64e18105b62983bbe73b8828e9d52a1a9289c79ffacde70693e9fc4852f"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x960/01.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 309459,
+      "sha256": "7b55f9f5f5c361e6465250a5d76205fe03e1311d05d053b59273f5115b718eba"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x960/02.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 214631,
+      "sha256": "9c7c38ba59482e295d5df23b5734df7078eb4dc21dc9ab9083ff38c7a713b712"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x960/03.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 219693,
+      "sha256": "065c322cf75a9bdc753b849643a676bc5025144e4045925c887e2071156bbc36"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x960/04.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 221444,
+      "sha256": "8857d60a353d2c584890d59df5b868fe10eaf0a791c9d4942491831e934e4f06"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x960/05.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 223624,
+      "sha256": "e595194b15a9bebb25f72264eaafd103573ab12df00583d04b71c6092154b5a2"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x960/06.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 217285,
+      "sha256": "69f6a601d442e87033248a6d7f56f282d39a72e21dcda1df30e9c7ed8818961a"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x960/07.png",
+      "pixels": [
+        640,
+        960
+      ],
+      "mode": "RGB",
+      "bytes": 210709,
+      "sha256": "bba70d4d69d06ab6b9cfa84ebbb7f26399094214588a6a5efa80f5df240809ea"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x1136/01.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 360911,
+      "sha256": "d6d94fe15810433442c538ed7de8b3d6a3d8f300b0793950f5d2a634cc682cd5"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x1136/02.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 258315,
+      "sha256": "843203733b373b90ce70a54c66ecdc7383dca12eb2e6ac9fa4172674b469f0d9"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x1136/03.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 261006,
+      "sha256": "4a406cbfb8818c0753caedbf3fc363f4e88f25d901ec72d4d5e9f9b06cb51a7c"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x1136/04.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 263350,
+      "sha256": "0669277442d498b19f9c22499ff296835bd97ce2079d97a3aa52ed857663f8e1"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x1136/05.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 260266,
+      "sha256": "d0d8b4942bd95e25346e3589c3f231a3e525ebf56d44da96b1225d99dc77c3ee"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x1136/06.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 258003,
+      "sha256": "2da371e428da097c246544d953110e329e3c3a0dbd4af402d18b97f951e00806"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/640x1136/07.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 252881,
+      "sha256": "ab97a0c4ddff11f6c10b708dceaf638164b3c259c546241cb501f2f89cc23929"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x1136/01.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 368844,
+      "sha256": "b019b7b8cc1f5a6b7166a292f199f08d47ecea71fc0136edd1834afe4dab4df4"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x1136/02.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 257230,
+      "sha256": "e782643b0042a28f442af971e3e3203eb2759e356fddc95cda968a32dbe2ef86"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x1136/03.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 264935,
+      "sha256": "17543cba7d1fba3b9b22f4b9128df4110d03a579d053c0da35c162dd67064655"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x1136/04.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 265910,
+      "sha256": "0c969325eb38d971a71d31c94c1d7dec47fc08f982ec5eb3bb5612032973db4f"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x1136/05.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 267521,
+      "sha256": "00fe80e859652fdb8a5b4b496bea006dfeed30dca320c7fef1c3cc2d1610c26f"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x1136/06.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 261158,
+      "sha256": "3aa7fe15c828714b6b68db9643abd193c49b570a4a5ef4ad39f4a20a78abba80"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/640x1136/07.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "mode": "RGB",
+      "bytes": 251534,
+      "sha256": "fef86185791203ae03c0a666292d0cd1f211b9e3fc029092a579292befeabfe2"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/750x1334/01.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 413185,
+      "sha256": "eb074f27dd1fe94dcfb9965b52e05fb8af00edb07d736b6ec837e39a359e5c36"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/750x1334/02.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 302532,
+      "sha256": "9cf737b9366d54db56a55335d9a98b00af549db79d28082dd661b123ad27f90c"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/750x1334/03.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 314874,
+      "sha256": "702d31392df542b20a5a6e1e859960b25ecf795109bc90c6f9c1f288ce08d261"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/750x1334/04.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 306395,
+      "sha256": "58a3f0d06ba3b98b0fef2778058f609fda2adc3e82c592f0e2d48210690d29d2"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/750x1334/05.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 316040,
+      "sha256": "020c46df40826bbcc0eb8a4b618e329aa1b58c4f344498884bb73504e2b15332"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/750x1334/06.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 308716,
+      "sha256": "b2f6d15b3a34f2eb5aeb49620784b7d3195c5a9c1fb19e02c9bf1685de0742db"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/750x1334/07.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 296669,
+      "sha256": "d832d85beede6b4604b9f433427d33e4f3b518985b55d0c4ab7bf6a871f8554f"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/750x1334/01.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 421902,
+      "sha256": "c723fead97192a9c45e1cac47b329ca391b7217aa72a23eddf5e0af660e1d74b"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/750x1334/02.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 301187,
+      "sha256": "68503f12fbe5a2efad5771f586de7a49360dd9f796c86736a41f86a86937f4e0"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/750x1334/03.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 318437,
+      "sha256": "25e7310758c5827d84ff3a7db00d20dfa5b61882cff802660ec1c906370f3c9d"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/750x1334/04.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 308816,
+      "sha256": "9718f9c0c51984c5f0e0f4072857b5ff463a6558e70281f8f16d410466dfd05a"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/750x1334/05.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 324422,
+      "sha256": "b41eacfa3b3d2657ea312f448c0cfd6f038375383614e6c5082af19cbacdd2d4"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/750x1334/06.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 312374,
+      "sha256": "e125d6e410fba5b7fefebffaa4991fb490867bd7a51e4095e9ac90509364410a"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/750x1334/07.png",
+      "pixels": [
+        750,
+        1334
+      ],
+      "mode": "RGB",
+      "bytes": 297261,
+      "sha256": "62327a7e686c8cc0a22b654fe8e4e136b03b719c38efbc96ae07ab819b679ace"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2208/01.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 1048769,
+      "sha256": "ff4966cc6c952536541e798263cb6b7ad9cf7afe0d400b90dd8055d658f7d1f8"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2208/02.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 736013,
+      "sha256": "3130f105769b3e206ead61d5206d729d95b845cc6340f44b4b64520732f776b0"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2208/03.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 746180,
+      "sha256": "947084fd76e83e90d00dd88e386bd294898669b66daa4c88426de06889a22113"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2208/04.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 738089,
+      "sha256": "c580256b4e3124bb21b2bce152fdd14f4b745debb0a8a7661079b2e500b33552"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2208/05.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 731564,
+      "sha256": "ac2d3374531cb1a85f744989c695537f928774babc0124a6b1f26ae378d6af57"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2208/06.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 723404,
+      "sha256": "78cb9d28ecbe648aecb55aee44f381e46409ca3e20791e9a45054ac6d615de9a"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2208/07.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 707243,
+      "sha256": "ceb7c355badb8dadcaeea2c3f7267dac6f2fb63273035517920f4bec7609cbc8"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2208/01.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 1055486,
+      "sha256": "64c709cf9b1d2d33a65819229a07299998f8d87dd9e4dcd49e3ad0e036d3bd02"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2208/02.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 725926,
+      "sha256": "3abb945adf45a579df16aabafe90f3c6b92dd80804d758a934d5d8714a677a27"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2208/03.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 747225,
+      "sha256": "530dd88efb17db759e589802962cb71cbd4c1a00291c0555f9f868d72dd85670"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2208/04.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 741515,
+      "sha256": "159641302a3b2133bca4bb4dcdaa5ae44a278cfceaf53f6d58d0ec1d521fe7e3"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2208/05.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 741890,
+      "sha256": "bdf400ae19316e877bbf5044d91a93c1f39d7f5695a3ad0d35df714a332d78e2"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2208/06.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 723938,
+      "sha256": "b6f1fc795a5bd1743171eddbf044efb423dbc28ebbe64b4fcd4857c13e353337"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2208/07.png",
+      "pixels": [
+        1242,
+        2208
+      ],
+      "mode": "RGB",
+      "bytes": 702536,
+      "sha256": "e234f7f4561dae7d392943a000b88ba3987ea7747594d9875c315b606e6c58b5"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1080x2340/01.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 981707,
+      "sha256": "ebeb273f82a4f405b3c4d3f35f9e5a106ddad4236a4e9c09b9d94309c6e78a91"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1080x2340/02.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 771817,
+      "sha256": "ac84845e301e0a918772e588a45f08ba9d989825f534e609fb9f20d9ad0f576b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1080x2340/03.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 786879,
+      "sha256": "7243aace0fb963146fff35e981fcbcf047810edd9486a630e21f3e14831bfc72"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1080x2340/04.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 774881,
+      "sha256": "b4557232c53631a81e3db6b1397b9108c2fdcf5846f4caa3d1419f3c71546717"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1080x2340/05.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 769123,
+      "sha256": "a7d2157cb6b9f9e61333ab8e053bdc3c9bdd074d7b61709d331547a2cda5a27e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1080x2340/06.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 757551,
+      "sha256": "14ac8c1c93a2d12f9b9f8629ca8b4bde4621ce88453b372b3eb898daf00d65c1"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1080x2340/07.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 740941,
+      "sha256": "b641e5a3b27886fda964034b04f6f78a09435c222d73c7e7dd5552a3faee8888"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1080x2340/01.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 988799,
+      "sha256": "1d779a98fe1a31687f6dd614e69ecba498fecbfb777627b846abf6234997f39f"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1080x2340/02.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 761199,
+      "sha256": "3d5b1c1089c52de52e644a76459267b0c5c61f2fb370b3bab9e8e366f01209d4"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1080x2340/03.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 786572,
+      "sha256": "fd2f4f877b214da5ef4194b276a4b251a6f2c5176a156eedfe193b5ea774786d"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1080x2340/04.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 778126,
+      "sha256": "a6b0c16cd23719edd20e4c8aa04d0daa8c29f60abc39714a5ff87784c9b834e3"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1080x2340/05.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 778037,
+      "sha256": "e7457c71e34c1f3a0fa503d2681afe5c870b3748369b3a12adade8189d2e076b"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1080x2340/06.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 760618,
+      "sha256": "e3e0ebecc7802c4609910ff95b76dd385f233ad0199cc0842746d09d9a714288"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1080x2340/07.png",
+      "pixels": [
+        1080,
+        2340
+      ],
+      "mode": "RGB",
+      "bytes": 734408,
+      "sha256": "651f420d67748033327f3ad753797e924493c10b9b4aa5bb1fffcf5a032613e0"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1125x2436/01.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 1046147,
+      "sha256": "051e097233132131228cafb56efe7093a92a868a7f343b88722db5249938867c"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1125x2436/02.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 804536,
+      "sha256": "0a7341546c4a646bc7904349a345ee7948843be24802192e0b540930b1b7b4a3"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1125x2436/03.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 830274,
+      "sha256": "98b1d0d15c83cb314c67e4d8fd91fc0a52024f41fc2c3fc10a4c0527a588dc5e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1125x2436/04.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 806431,
+      "sha256": "cd5bc6081347ae8e6ac86fb56b54123f32ab4c629d8d37634a083ec26f4208d6"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1125x2436/05.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 807009,
+      "sha256": "108c961240c6d7420fc49d42c46b87b66f83e9ba47829a0c97e74e7989afebaf"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1125x2436/06.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 790123,
+      "sha256": "1d03097ce2ca4a54b7c89e144c54970b271ee75a8ad5639c7cb21e24359affd6"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1125x2436/07.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 780970,
+      "sha256": "ab8fb31d70c4fd724d8c69ade9559d6b300886bd7092212b57e1b49d817f4b4a"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1125x2436/01.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 1049980,
+      "sha256": "8f5c3596a1e2c0715f285fd38e4ba0d4a84f617c5de360139829e7f9edce6e15"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1125x2436/02.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 792449,
+      "sha256": "00e8edeae320789740a06ffab45232d4c959ba53d3c2e5f6a4789880281e5cef"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1125x2436/03.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 830215,
+      "sha256": "5b0109a0f63df25db9b04949cb5726fe0ebd42dd5ee40a840f1fc389e576263b"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1125x2436/04.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 809706,
+      "sha256": "e0c2bfe2e51a323141bd5ca48a402bc73a748c0c6fad1785aa6a622b64955a73"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1125x2436/05.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 817016,
+      "sha256": "f28c5940ecd94d0a1e082543c636dffdb713fd6c79678315b1b9de26e269cfb5"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1125x2436/06.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 792301,
+      "sha256": "570f1452743261a607c01a881783d8b67b09714e0094b8e44379b6d7beb5ff63"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1125x2436/07.png",
+      "pixels": [
+        1125,
+        2436
+      ],
+      "mode": "RGB",
+      "bytes": 773527,
+      "sha256": "7d1de73a7e7cee782df877960a9e15f286b48bc1931fab1a58b416f0c528d71e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1170x2532/01.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 1110215,
+      "sha256": "057781ba94df927c9cb06619f221474dac93d9394f712e01a6328e2dcbc06cd7"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1170x2532/02.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 862998,
+      "sha256": "7bbd30b264c75bd9d653bc2526bc661c6b3c8886ef9d6b6cd9485b0e6333b688"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1170x2532/03.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 886848,
+      "sha256": "67c55ceac4cc8600a046c26657cfc402068f11f7bdedce38088ca2eda9b91ba5"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1170x2532/04.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 864839,
+      "sha256": "bf397394f962ff5ac5a445b8f990a35439bc7e0fd8393f003166266f8b0d2857"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1170x2532/05.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 861693,
+      "sha256": "1c224cdfc0f0e78fa703320e5b94ef063a3d1a83cbaae7890c76a5ebbb4d29eb"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1170x2532/06.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 846081,
+      "sha256": "983d5a852a31ee0b2c4a2853e97e748eb97a4fe573309abb4276b416121a99e7"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1170x2532/07.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 830895,
+      "sha256": "a61d676bbfa5ed32d47d39c8c5cac29733d2eac6dc13907e1691db25b60a930d"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1170x2532/01.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 1117803,
+      "sha256": "1db23038cd7a140bd35fedfd08e6131b816de9f7c6db7162b375683edd0262de"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1170x2532/02.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 850635,
+      "sha256": "df5cd9aa31c5832e014b69041fdfdab63511800dcabfd81b7075e9c370da4e2d"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1170x2532/03.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 886372,
+      "sha256": "ce54aae258c4ac14c79014b87dcc78555ea5bf76fc056f1536518323a8d01f01"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1170x2532/04.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 867346,
+      "sha256": "0c7c740b84caa40d9af42f412957e288249ca4648a2c6b85b461d9be46e9b74c"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1170x2532/05.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 871062,
+      "sha256": "e7f865f788ec70e610bf682aa939c193a4f756c80cd02a46eb577d4342e4af7d"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1170x2532/06.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 849431,
+      "sha256": "223865fc23c9e7ca99765336587624683f294caa46fa06fa6c8ccdcf755a35dd"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1170x2532/07.png",
+      "pixels": [
+        1170,
+        2532
+      ],
+      "mode": "RGB",
+      "bytes": 824699,
+      "sha256": "7d7e3bd5248d4e2840774a98ee220d2da3b2623cea9aca54d9310a6521a44cbb"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1179x2556/01.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 1125143,
+      "sha256": "aeca7afbd304248ef9981b810258dbd21f0a206c0caefc7bd23e26421af6cc33"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1179x2556/02.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 871349,
+      "sha256": "f99f040df31c83c66fc1f76df3e124b14938a4abd421b688464253dc7c504918"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1179x2556/03.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 894043,
+      "sha256": "2d7cbbae92fe464bee465f9fd6a23ffae35384171a9e1c9992dafaa164f8bd80"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1179x2556/04.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 876869,
+      "sha256": "fe01c01acae55910ef98ccdb3f68042527b8de77cc57dbe3a41059c5001dcc91"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1179x2556/05.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 870695,
+      "sha256": "12fcca2aec67535c2a6ca7c5a6b8f408d62aaef5b7be656171589db7886c982b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1179x2556/06.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 855697,
+      "sha256": "0dd3ffafd1b445a1a799e2b86371cbb6872e8ddf3b14ed9136f861d0d1bc120d"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1179x2556/07.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 839913,
+      "sha256": "6b7da5b0e763d87982662728f63313bb455b332b46089ffbb2247e1c7c7dcb6d"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1179x2556/01.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 1131433,
+      "sha256": "9b2d751139283d3e640dee5d9069c78a943401b709ef8aa7d3b06dbb320360e3"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1179x2556/02.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 860718,
+      "sha256": "6ec10c8b46c7961ad6e813dab2c41da88d9e252c1117381cc795eae0ec718a37"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1179x2556/03.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 893684,
+      "sha256": "7c7c2d98a373f8f61f6cda37a86bec80ed5a2c2124577d05b4458edf9f3bc685"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1179x2556/04.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 879504,
+      "sha256": "bbe2f939c9721568299a9a5f7728a92686ec273a3e1ab90620d7d664a61267d2"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1179x2556/05.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 880869,
+      "sha256": "fe00bc2c7aec079d732979dd5780315c5d42790760c28fbe0825d3bae874d3be"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1179x2556/06.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 858854,
+      "sha256": "bd059e12d1e77d9ef94ffc190b1ec08a6c01c016633ce8aec65c18776f448bba"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1179x2556/07.png",
+      "pixels": [
+        1179,
+        2556
+      ],
+      "mode": "RGB",
+      "bytes": 833291,
+      "sha256": "6eb58fd86b96761a14bc452ef3f5799b269f026476d63013b157884a9ff39c7d"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1206x2622/01.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 1159507,
+      "sha256": "d3f4567657c782652f0b3be8ff2cb5a2122557b77350b23e97286aa02f50d99a"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1206x2622/02.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 916871,
+      "sha256": "c1696dea2a76fc9e3374568d0008d9bd78a7641b4cd151420236f8c3a1a2c265"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1206x2622/03.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 937342,
+      "sha256": "2615a08429542476f00546f2465c8c6e150b494d64e385f90946e50c6949a395"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1206x2622/04.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 921372,
+      "sha256": "a93ee62bef09939535214b7cd5be2321c43df05d0b953b0092f3eba73985e638"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1206x2622/05.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 921166,
+      "sha256": "cf2d23a5c26bc12fc57aa0becd6e35f5b09fbcdbc62bf0e59b2a6e89be2d74b7"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1206x2622/06.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 897207,
+      "sha256": "9751c45f824f4deb278cdcea7d16ba2eca3ca5641e25e20477ae0ae06a679193"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1206x2622/07.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 883442,
+      "sha256": "56a7a9c1d6601f047fb663adfaefeba89b0565246cf09bc15b445fecd66f63ae"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1206x2622/01.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 1166095,
+      "sha256": "590693a2dcff6135abb953303923ebb05e978c11d895feeb8807a390e9a26a15"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1206x2622/02.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 904932,
+      "sha256": "be6087d09ab874fc59db67820fc2523ca0a5b3818c52e618b937220e930fe64c"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1206x2622/03.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 935448,
+      "sha256": "d5eeb38fba87d0f97758c0381080f3c6396ce3f3a1ee1b423d2485c1f830f3b6"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1206x2622/04.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 923693,
+      "sha256": "d8940249d214708f885336825e5f9f9a154a3dc7ce764ab710f97274fe889532"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1206x2622/05.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 930613,
+      "sha256": "fd62c7aed9ebd5e2b4e3790724374bff672460515906a3f762c8b24e4380df9f"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1206x2622/06.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 900331,
+      "sha256": "e1227512df83ee3a05a28401d0cb909dad5052efdb5ca84691f77290d263802d"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1206x2622/07.png",
+      "pixels": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "bytes": 875927,
+      "sha256": "4da126d03d58cc3621e053adc4cda153fd7d50f280c25c1e2f0cd1e3c2dddf30"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2688/01.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 1208407,
+      "sha256": "8f63499a27b7f57d3fa21539ee0830abc364a0589927f1810d67945cee8ee865"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2688/02.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 972796,
+      "sha256": "039d517e26b6a6b5f3a12ff8a5ce6491cb2f3e6b219540f601c7a7c1bad9a53b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2688/03.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 992034,
+      "sha256": "0efaba4c09092892171213db18472ee9095791aa83c0469569cd78c847b33a52"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2688/04.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 977595,
+      "sha256": "add763284c3d2fc3f329b94f4079c19223e19d832ab70b123e268bc28b39d3ec"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2688/05.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 978483,
+      "sha256": "7fa104831df2716b3a064277e0a6fcbd8cd4d626faae36c89f82602084335ab9"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2688/06.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 953576,
+      "sha256": "5d2ac66369933a3ed023650908769aed2e0e9bfba90f879a862dad73576bbf62"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1242x2688/07.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 936771,
+      "sha256": "212149414c92bf41e851dc6739d76e4b9f07f59dc403e5f0a40079cc017b6edb"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2688/01.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 1215556,
+      "sha256": "58880a650a420790534e7c2d3eee45f68f8bd00bb6f7ccbd0502572494f65770"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2688/02.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 960629,
+      "sha256": "f7408fb89bf88c792cd7f44931b356a49d1e53905463b8e2bbe6575ea2b8d60c"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2688/03.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 991299,
+      "sha256": "745693fa7fc693be119bc3b608b58c088afb9b443b76006e65c42484cabe324a"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2688/04.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 982166,
+      "sha256": "876ad8ae781f8e73ee5f5e6b555097d0cd37a52309fc37b614aecfcd0c586790"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2688/05.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 987958,
+      "sha256": "32dc26a09bfabc2ed08dec11610bf74bcedab12352dadb64c022d4cdf6490a17"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2688/06.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 955052,
+      "sha256": "0775923787bbec6cd5a04ae09e3e9f2fa218811d54aee692589dcdbfca83a0ef"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1242x2688/07.png",
+      "pixels": [
+        1242,
+        2688
+      ],
+      "mode": "RGB",
+      "bytes": 931115,
+      "sha256": "b5b48de199ac81f34d2fe2b2f681d2664c6649573bc38f11db31d0dbd419daab"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1284x2778/01.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1284075,
+      "sha256": "466e40d58012a793e6f741fc999c5c85c091f9bc8d1ea952f006f708b0127184"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1284x2778/02.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1050240,
+      "sha256": "d2edb56d32d382b47006c4f23ea5f1d3e2dd92fe35f8461d130918945f70d6c1"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1284x2778/03.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1074698,
+      "sha256": "f74936878652b7dacfce5970bb04be7090f9a6ee901571ffe68d77bc2e922ecc"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1284x2778/04.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1058178,
+      "sha256": "a8d655bfdf67079c68d31f682b1a7b602aacf062ea35ae2cc8f48ee487276d21"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1284x2778/05.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1061392,
+      "sha256": "eb906fad21bc4bbe15ddceb0b7d163d257f51cb82b019393537e409d2e676ab8"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1284x2778/06.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1033479,
+      "sha256": "7321c9ee58a89787589cd278a6bc08a4835ec905b9c955a070a1f292b78f846a"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1284x2778/07.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1019969,
+      "sha256": "677d1c0c4a9996f3172f3dea82719b4244b63cfe000b57fe8265dc57cc7a7045"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1284x2778/01.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1290434,
+      "sha256": "a9a15ec878f4fcfb0b4ae29ca84a295c676fa72a656abf0fec28db3ec2fae94a"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1284x2778/02.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1037047,
+      "sha256": "5e91b5d750fccd716143d8344ed0fb804f4a35f43d97613df59e5491960a5397"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1284x2778/03.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1073836,
+      "sha256": "a5b3ac895bf171ad47a9b0c2dee863a8b294f8b39956355bdb4618de3ff166ab"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1284x2778/04.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1061587,
+      "sha256": "aa69199e101fa1d48ab34d7d415d7ec45dbcd14d1513e30d63849492e924b19d"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1284x2778/05.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1069878,
+      "sha256": "94bd1a292dfb5d335d1bce9538b540eae60bc3bfad72add213f6b0cd5b77cc10"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1284x2778/06.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1036494,
+      "sha256": "27936100ccb5ae9441ccf144cd71d64c12eff6f0366268089d9a989248f2a277"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1284x2778/07.png",
+      "pixels": [
+        1284,
+        2778
+      ],
+      "mode": "RGB",
+      "bytes": 1012454,
+      "sha256": "48cb2c8648fafeae306c8f53cacff355c82380400dab8baed1e8c9f3375b5c2e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1260x2736/01.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1249651,
+      "sha256": "e0a584aa0696dc4ab09c5b37f0475af5d48e04d9ead04be129dddf01d730aa7c"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1260x2736/02.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1027615,
+      "sha256": "b9b912f9bda22edc4367177fa1fb0b73924b6eb41f43de2318324147f867be3b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1260x2736/03.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1046760,
+      "sha256": "54555dd977af64d2c717efd88499229326bb1e670c455a06ee8e1067d7c77b31"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1260x2736/04.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1038808,
+      "sha256": "99ea1c28d366517120af936dcb42c22912d4e838100331f8bbe7f451c5f9e238"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1260x2736/05.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1033991,
+      "sha256": "832b2f0b6142c6d96def93b4fe157d2fd5d89b84036b4734805cd51740da7a66"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1260x2736/06.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1012793,
+      "sha256": "a1d2d4d17765e6d96a2d33598f56f8f69e8a16569aea713499d7465fbf6b87e0"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1260x2736/07.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 990810,
+      "sha256": "1905ba1b01f37d71d97efefda3aa892d7ac5b99f7fe54b6e8e6ce270ed7195aa"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1260x2736/01.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1257487,
+      "sha256": "84b4f1cf32103b34013af9516658ef4fa4e2e624cd238058bad262abc74ec438"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1260x2736/02.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1015943,
+      "sha256": "ea80cdd28261d3fca1fe9710260015a1c933ff5e2c219e2f2cff242701b9c4e2"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1260x2736/03.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1043130,
+      "sha256": "f96b0f1ec7609301fcee543988d765d3da08725dc0d9fc83ea2732e28eaf12fe"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1260x2736/04.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1041604,
+      "sha256": "8a06cad60bf79246325a2c937d1074ee3c79f028da8868011e28bc624b0afab3"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1260x2736/05.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1042781,
+      "sha256": "98042135ecd99eb2779546ca37ec40bdcee6fbe5d60005f9d4366869a09fea52"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1260x2736/06.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 1015667,
+      "sha256": "baf68e53b2db6523a0cf28cb1dcf97aa70bba2a70d48bca6acd4ba040aa0ffb9"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1260x2736/07.png",
+      "pixels": [
+        1260,
+        2736
+      ],
+      "mode": "RGB",
+      "bytes": 984356,
+      "sha256": "42346cab58dfb14a53c0b261144d5728e3fe181bb9773aa1c32ea5e4f9100342"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1290x2796/01.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1292993,
+      "sha256": "1a87b3455b3a073d52509ea236c4516e1786cf55e13221374c3597db22a01da6"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1290x2796/02.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1089892,
+      "sha256": "cc4559887088ae6e3b58d86b93888495e630195552b1181158eec3f83396158f"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1290x2796/03.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1102749,
+      "sha256": "b3f4c2dd62da7ee56033fffff8084f6671ceb293b39d154d005486f322708eac"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1290x2796/04.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1098348,
+      "sha256": "e9af40fa08a49b4ad11842dc013113609d4ee19fe62f3691c6f744fcc0f405f8"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1290x2796/05.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1094359,
+      "sha256": "bd50493c9dbb0ea15a7cd08abdedd0b132f87c3cd15c5e4d372188141a73572b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1290x2796/06.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1072717,
+      "sha256": "c6d7d0cc215d6cea7ab9b1792263df70ab877caaa007c7f6974afaaac7e24b89"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1290x2796/07.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1053467,
+      "sha256": "a9199babed06974fb565fe5caa33e8c726bc429fa82f323d7d7d056c384513ad"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1290x2796/01.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1301507,
+      "sha256": "ec697b33de4cb677255e95abea8c31f62eafd83ba276b590e492e4199976e8ac"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1290x2796/02.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1076569,
+      "sha256": "d4fea0b2e2188238fc2ae72d1473de63e8e632d6a3a8bb28ea319d619055dec5"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1290x2796/03.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1103637,
+      "sha256": "29adb4fb3b7505708c9aaaadaa887ebb9be0a61119c4348ab206cedb52d98820"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1290x2796/04.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1102096,
+      "sha256": "32e05b71f954bdb54c5c8fa55c96c2fdb1b3dc48b99d67b5e665b9e22a95a3cb"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1290x2796/05.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1104270,
+      "sha256": "38a1b26eb202d10e341bb6470cf26859ce66ee5cbd760792cb1e72f1e707686f"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1290x2796/06.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1074701,
+      "sha256": "d7e9cd519f6c172ad41fe565b4e9316964f5f127b4bd3733342cc902847e3fc7"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1290x2796/07.png",
+      "pixels": [
+        1290,
+        2796
+      ],
+      "mode": "RGB",
+      "bytes": 1045486,
+      "sha256": "bfba1c12632736afdd7930403727ee86b0f257b469c28fc46ac26c1350208562"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1320x2868/01.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1319174,
+      "sha256": "bbce291bedc719a74a445996b2b0b0147694dbb84450ed252658c1e73f0afb2d"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1320x2868/02.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1156595,
+      "sha256": "867c0711c645b1bdffdb7dc9598d2041858af6ca7834cc230b3508fa45be232e"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1320x2868/03.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1173735,
+      "sha256": "a53b70b1c5ad0ef4a8f5d8e056db76e2ce131352d15433d7f48318cbf7756564"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1320x2868/04.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1170874,
+      "sha256": "60deb2e89ec669225904ed62b6e732ea29e58e32bd410f5698fa1e504e8a5c8a"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1320x2868/05.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1165384,
+      "sha256": "ab483eaf44e008bf3789614abcf942283d6c3c14e635648af0aa0f267680cd09"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1320x2868/06.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1143469,
+      "sha256": "0ec5d6de3dfbb7e62f9cf5a6409d30a0afbcd613f37975208095426df6f1d84b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/iphone/1320x2868/07.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1120372,
+      "sha256": "85c4914fae1162719fe4c25e24c528e6efa1ef4e11b543dd679304ab2ae731da"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1320x2868/01.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1327048,
+      "sha256": "0ae52427ad50c379883bc438a783fb50da62e5fd35a5cbbaf0a4cbd7c37538cc"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1320x2868/02.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1144097,
+      "sha256": "85b246d5535c1981514d7b570172e9a195dbb634cb2c4f1b4d8406c9776f1cb6"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1320x2868/03.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1170650,
+      "sha256": "23f87cd774082a71523d6072b9da29c67ed1589ae44e2f389b3bdff63aa6b2fb"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1320x2868/04.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1174201,
+      "sha256": "ecbf8b5a8852a2c564a3c4044de66201976f2fe7268fb71939280bb0ad6f192e"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1320x2868/05.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1175521,
+      "sha256": "727c623aef3f795d78c8285e192dafc41045c224b84f42ee3781118822ae384c"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1320x2868/06.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1145300,
+      "sha256": "b6ea4117bf3de0e12ed878977df4a24119f946118f1a69e70e73b68589e096fe"
+    },
+    {
+      "file": "01_Screenshots/en/iphone/1320x2868/07.png",
+      "pixels": [
+        1320,
+        2868
+      ],
+      "mode": "RGB",
+      "bytes": 1113572,
+      "sha256": "a6b21f769723d9b046967ec5ff419eda3e606b8830be5c631724b6e8a7dcd1e5"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/01.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 1061564,
+      "sha256": "62019369b9280a0a09b47ffb1592751f15cb7423ae281720a3c7a7d630db22dc"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/02.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 904646,
+      "sha256": "a1976a001fa13b644bf9a76ece2d263dc7d39890a19b09ece7cb81e9480584fa"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/03.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 931250,
+      "sha256": "cb9c5efb99f7633eae0a86947d447b7f09d614013e24d915069147cde4754226"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/04.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 917517,
+      "sha256": "6b406ae999364b3285e50dcba243666d2ed8913a41b026384d9c01faca32aae6"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/05.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 925250,
+      "sha256": "e1170597e1287a4907aec756b344e95186a8b9b327e50c5b87552c1bc840ce0f"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/06.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 920920,
+      "sha256": "f06864278aa7528786f0d0390ec1b75e62eec3bf195861e73d44ec9de99a9d1b"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/07.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 885035,
+      "sha256": "d144b967d1307db58f85cce610863be5d41267a72baa0c6446dbbd855663854d"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer/1398x2034/01.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 1076908,
+      "sha256": "f0eddd9c91567667843f099f574cbf6ed3c50eb01222de7c743d1f1314f1e8e8"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer/1398x2034/02.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 902413,
+      "sha256": "0d08eaf5b0e2f0f1809718e92b2794a0f13dca8bc664548c3d90f4597b30655d"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer/1398x2034/03.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 934672,
+      "sha256": "7671b6b6de31865ea9b7352039078ed76e0ce198dd6fba9e9f8ca96a1f31d65f"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer/1398x2034/04.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 916680,
+      "sha256": "d22794485f586420924a9c27360b89d83db41693fbfd9175160d8915d83a96bb"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer/1398x2034/05.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 938792,
+      "sha256": "6114cd630ef238b1349d14d17499b7b141ab66aafd57727fa2d9cce96baab374"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer/1398x2034/06.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 922722,
+      "sha256": "8f4da304a5c0f42959a0aefa0c0e516f2534f1e81e42fdc0c6934aa16e3b07b8"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer/1398x2034/07.png",
+      "pixels": [
+        1398,
+        2034
+      ],
+      "mode": "RGB",
+      "bytes": 878796,
+      "sha256": "c0e046628b0d1d7391a4ccf03a5adc4b1a3964089cab222bf5c2abf5d265e6cf"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/01.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1370748,
+      "sha256": "09234ea73e996052ebdb15f2b54808daeec5a2578cf8e166ab53a38c531ccdc1"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/02.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1923571,
+      "sha256": "acf704758af5a8f9f33b3d17e4da01fdbb1d5df2807d14001434eac7e0180ae8"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/03.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1934716,
+      "sha256": "e62d88a08849aa7cbdebf1f87a82a4708202b88c84a9555d0172946f508d4f49"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/04.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1860390,
+      "sha256": "50b49e90b72a7513add122bf55ddab569d600029aa4d6d66358cf77e9f9a8eb1"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/05.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1857935,
+      "sha256": "c26ef66729b530cd6b80be5fb0ccde92356707bcbccda0a944bc9da4454dc9b6"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/06.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1921046,
+      "sha256": "8561aa2d04a2cfde7fbb5d7e9789a341ea3e5b52ca04a72294d975cd1dafd0d1"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/07.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1927739,
+      "sha256": "dab8a57e73175a288f70013d553fb4fb13aa48343b6a0b60962fe5295b794582"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner/2007x2853/01.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1394427,
+      "sha256": "4fa2f138c2c55ef1c762a0cb4c003ff6355b09c107f1d7be82d3235ef442f265"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner/2007x2853/02.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1920074,
+      "sha256": "f063e49559270457f6f4eb662ddc0c1b3426a635fb2cba9239ae04379862954c"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner/2007x2853/03.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1944661,
+      "sha256": "e1313664f1125da54aa1376ab05fd85c84ea867ceddee50dcdc11bea9981ce4d"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner/2007x2853/04.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1870167,
+      "sha256": "e5db446b7287a3767aa79cebe6398680234d358145807544684d459710464ef6"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner/2007x2853/05.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1875726,
+      "sha256": "9556d76826a219e57b3fc314ef09d20f37ab1e71b766a74537500a203f66ba97"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner/2007x2853/06.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1908633,
+      "sha256": "49083be98446dcd494eb2b0c382fe0193e5a4d518cc167493ea4b79579c346f0"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner/2007x2853/07.png",
+      "pixels": [
+        2007,
+        2853
+      ],
+      "mode": "RGB",
+      "bytes": 1927180,
+      "sha256": "86f59c6d2231bc45d976846cccd74a3680fb7aac1d7f5ece9e6b58e8d1b36438"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/01.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 718644,
+      "sha256": "74abeb4c40b2d43cb478b61ea895e6e159f1818d161bf8205b6a6e51b2892311"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/02.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 585784,
+      "sha256": "a18de17604151ddbc50c2c7ad368d2dfb4250a884964106e2a779a3b02803518"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/03.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 595991,
+      "sha256": "a7ae62cdbc94ff98757c41498a30f03fd54c582ca6bae62e518b8a751b6700fc"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/04.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 588855,
+      "sha256": "c8e3225b5623f9db03f7d81edfd66aecc6b12c9e983ae6270d91c191a70ee679"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/05.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 588315,
+      "sha256": "43d9e87b1ddc2ee5a16db027e0966058346a2125d9636e7e356472d359aa9a0c"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/06.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 590531,
+      "sha256": "1fdf6b1f63ad90ee69bd68d0c7a528df74bb569f15b00e2d8948027ce13c900a"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/07.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 567743,
+      "sha256": "d1ec2dd5e97543bf03bd6b0d06e3495750af5fa096fd4b12fabdb69d9f03efac"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/01.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 730750,
+      "sha256": "a6fe3976154a2b52d2a670c4bca34860ec8b20f67aeffaa5f8e0e69ef9e92530"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/02.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 584786,
+      "sha256": "83ae6ded266160cd5fa304e363b2b8cd34a7793e3dcfb4e088c5cffd3b6671fb"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/03.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 601131,
+      "sha256": "7541881a46ccd78f9bb5dd8ebbfdc1f5908224742355bc72b0af2c35e59d4325"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/04.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 590748,
+      "sha256": "3aebaf34c674fb69e9219bd50c0d76b3f3bfb267e635c99fe64032d85642015f"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/05.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 599480,
+      "sha256": "41ebcabf3395c063c21d48a3e06abbe8419bc7dd72a171bf1874303b507ae2c4"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/06.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 595041,
+      "sha256": "8b96de242a1a2d37a9edb25d2cbd058d461f5da718cf8e41ddf7cd31fe35f2ee"
+    },
+    {
+      "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/07.png",
+      "pixels": [
+        2034,
+        1398
+      ],
+      "mode": "RGB",
+      "bytes": 568599,
+      "sha256": "49bcba9d79c9d92a8b707effcee0b31133f0186eb60f55a193d4da8792493e16"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner-landscape/2853x2007/01.png",
+      "pixels": [
+        2853,
+        2007
+      ],
+      "mode": "RGB",
+      "bytes": 2013828,
+      "sha256": "057a34cb231d7b091f44f72b48274e8278a03eeabbf0ae700e90e7b5a63be469"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner-landscape/2853x2007/02.png",
+      "pixels": [
+        2853,
+        2007
+      ],
+      "mode": "RGB",
+      "bytes": 2182153,
+      "sha256": "f5ebe9f853260c08ade4bfd761f101c513fc1fc781b0f496ce32ff2cc2b0f5d2"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner-landscape/2853x2007/03.png",
+      "pixels": [
+        2853,
+        2007
+      ],
+      "mode": "RGB",
+      "bytes": 2122664,
+      "sha256": "dbdc33453c003b914e89d6522154950f1c7fa20f041416572876bdf6ab39072f"
+    },
+    {
+      "file": "01_Screenshots/zh-Hans/duo-inner-landscape/2853x2007/04.png",
+      "pixels": [
+        2853,
+        2007
+      ],
+      "mode": "RGB",
+      "bytes": 2189795,
+      "sha256": "7317e0134f87d249f9a2b26ff50dc5fa3ef63dff63ccae30f525c6e02f0e4e49"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner-landscape/2853x2007/01.png",
+      "pixels": [
+        2853,
+        2007
+      ],
+      "mode": "RGB",
+      "bytes": 2031764,
+      "sha256": "04b007ce281393e28da40d93c1dfb4850e40c2a0d4b19037040ffe501e05a7e3"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner-landscape/2853x2007/02.png",
+      "pixels": [
+        2853,
+        2007
+      ],
+      "mode": "RGB",
+      "bytes": 2181630,
+      "sha256": "d06c0faa79f94b759871651357a152e2189fe22ef45e55456971a91ed949d0aa"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner-landscape/2853x2007/03.png",
+      "pixels": [
+        2853,
+        2007
+      ],
+      "mode": "RGB",
+      "bytes": 2133166,
+      "sha256": "34e8cc899d4653b9637294580cbdad3eafb9a1f798089e275f5057fe60e4cbc3"
+    },
+    {
+      "file": "01_Screenshots/en/duo-inner-landscape/2853x2007/04.png",
+      "pixels": [
+        2853,
+        2007
+      ],
+      "mode": "RGB",
+      "bytes": 2195477,
+      "sha256": "2c7161e016676361d346387ee48c20671f75de9e250c54d9cb428f136b044d49"
+    }
+  ]
+}

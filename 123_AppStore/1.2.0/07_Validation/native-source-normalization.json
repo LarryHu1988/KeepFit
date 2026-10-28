@@ -1,0 +1,842 @@
+[
+  {
+    "file": "05_Sources/screens/ipad/zh-Hans/eat-overview.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/zh-Hans/lose-overview.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/zh-Hans/eat-details.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/zh-Hans/move-details.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/zh-Hans/move-overview.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/zh-Hans/lose-details.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/zh-Hans/weight-trend.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/en/eat-overview.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/en/lose-overview.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/en/eat-details.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/en/move-details.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/en/move-overview.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/en/lose-details.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/ipad/en/weight-trend.png",
+    "storedSize": [
+      2064,
+      2752
+    ],
+    "normalizedSize": [
+      2064,
+      2752
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/zh-Hans/eat-overview.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/zh-Hans/lose-overview.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/zh-Hans/eat-details.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/zh-Hans/move-details.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/zh-Hans/move-overview.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/zh-Hans/lose-details.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/zh-Hans/weight-trend.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/en/eat-overview.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/en/lose-overview.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/en/eat-details.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/en/move-details.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/en/move-overview.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/en/lose-details.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone/en/weight-trend.png",
+    "storedSize": [
+      1320,
+      2868
+    ],
+    "normalizedSize": [
+      1320,
+      2868
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/zh-Hans/eat-overview.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/zh-Hans/lose-overview.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/zh-Hans/eat-details.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/zh-Hans/move-details.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/zh-Hans/move-overview.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/zh-Hans/lose-details.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/zh-Hans/weight-trend.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/en/eat-overview.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/en/lose-overview.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/en/eat-details.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/en/move-details.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/en/move-overview.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/en/lose-details.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/iphone-se/en/weight-trend.png",
+    "storedSize": [
+      750,
+      1334
+    ],
+    "normalizedSize": [
+      750,
+      1334
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/zh-Hans/eat-overview.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/zh-Hans/lose-overview.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/zh-Hans/eat-details.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/zh-Hans/move-details.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/zh-Hans/move-overview.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/zh-Hans/lose-details.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/zh-Hans/weight-trend.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/en/eat-overview.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/en/lose-overview.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/en/eat-details.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/en/move-details.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/en/move-overview.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/en/lose-details.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-inner-landscape/en/weight-trend.png",
+    "storedSize": [
+      2006,
+      2852
+    ],
+    "normalizedSize": [
+      2853,
+      2007
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/zh-Hans/eat-overview.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/zh-Hans/lose-overview.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/zh-Hans/eat-details.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/zh-Hans/move-details.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/zh-Hans/move-overview.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/zh-Hans/lose-details.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/zh-Hans/weight-trend.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/en/eat-overview.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/en/lose-overview.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/en/eat-details.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/en/move-details.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/en/move-overview.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/en/lose-details.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  },
+  {
+    "file": "05_Sources/screens/duo-outer/en/weight-trend.png",
+    "storedSize": [
+      1398,
+      2034
+    ],
+    "normalizedSize": [
+      1398,
+      2034
+    ],
+    "rotation": "EXIF applied, no enlargement"
+  }
+]

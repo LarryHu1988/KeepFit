@@ -1,0 +1,196 @@
+Attributes: Application, 0x10a4a1180, pid: 23389, label: 'KeepFit'
+Element subtree:
+ →Application, 0x10a4a1180, pid: 23389, label: 'KeepFit'
+    Window, 0x10a4a30c0, {{0.0, -0.0}, {951.0, 669.0}}
+      Other, 0x10a4a1040, {{0.0, -0.0}, {951.0, 669.0}}
+      Other, 0x10a4a1400, {{0.0, -0.0}, {951.0, 669.0}}
+        Other, 0x10a4a1540, {{0.0, -0.0}, {951.0, 669.0}}
+          Other, 0x10a4a1680, {{0.0, -0.0}, {951.0, 669.0}}
+            Other, 0x10a4a1a40, {{0.0, -0.0}, {951.0, 669.0}}
+              Other, 0x10a4a1900, {{0.0, -0.0}, {951.0, 669.0}}
+                Other, 0x10a4a1b80, {{0.0, -0.0}, {951.0, 669.0}}
+                  Other, 0x10a4a17c0, {{0.0, -0.0}, {951.0, 669.0}}
+                    Other, 0x10a4a1e00, {{0.0, -0.0}, {951.0, 669.0}}
+                      Other, 0x10a4a2080, {{0.0, -0.0}, {951.0, 669.0}}
+                        Other, 0x10a4a1cc0, {{0.0, -0.0}, {951.0, 669.0}}
+                          Other, 0x10a4a21c0, {{0.0, -0.0}, {951.0, 669.0}}
+                            NavigationBar, 0x10a4a1f40, {{0.0, 24.0}, {951.0, 58.0}}, identifier: '管住嘴'
+                              StaticText, 0x10a4a2440, {{20.0, 27.7}, {96.7, 40.7}}, label: '管住嘴'
+                            Other, 0x10a4a2300, {{0.0, -0.0}, {951.0, 669.0}}
+                              Other, 0x10a4a26c0, {{0.0, -0.0}, {951.0, 669.0}}
+                                Other, 0x10a4a2a80, {{0.0, -0.0}, {951.0, 669.0}}
+                                  Other, 0x10a4a2bc0, {{0.0, -0.0}, {951.0, 669.0}}
+                                    ScrollView, 0x10a4a2940, {{16.0, -0.0}, {407.7, 669.0}}, identifier: 'keepfit.overview'
+                                      Other, 0x10a4a2800, {{16.0, -0.0}, {407.7, 669.0}}
+                                        Other, 0x10a4a2f80, {{16.0, -0.0}, {407.7, 122.0}}
+                                      Other, 0x10a4a3200, {{16.0, -0.0}, {407.7, 669.0}}
+                                      Other, 0x10a4a2d00, {{16.0, 82.0}, {407.7, 596.0}}
+                                        Other, 0x10a4a3340, {{20.0, 99.5}, {394.2, 542.5}}
+                                          Button, 0x10a4a3840, {{25.5, 99.5}, {50.3, 55.0}}, label: '日、25'
+                                            StaticText, 0x10a4a3980, {{44.8, 106.5}, {11.7, 14.0}}, label: '日'
+                                            StaticText, 0x10a4a3480, {{41.3, 122.5}, {18.7, 18.0}}, label: '25'
+                                          Button, 0x10a4a3ac0, {{81.8, 99.5}, {50.3, 55.0}}, label: '一、26'
+                                            StaticText, 0x10a4a3d40, {{101.2, 106.5}, {11.7, 14.0}}, label: '一'
+                                            StaticText, 0x10a4a3e80, {{97.5, 122.5}, {19.0, 18.0}}, label: '26'
+                                          Button, 0x10a4a3c00, {{138.2, 99.5}, {50.3, 55.0}}, label: '二、27'
+                                            StaticText, 0x10a4a0b40, {{157.6, 106.5}, {11.7, 14.0}}, label: '二'
+                                            StaticText, 0x10a4a0280, {{154.4, 122.5}, {18.0, 18.0}}, label: '27'
+                                          Button, 0x10767b200, {{194.5, 99.5}, {50.3, 55.0}}, label: '三、28', Disabled
+                                            StaticText, 0x10767b840, {{213.9, 106.5}, {11.7, 14.0}}, label: '三', Disabled
+                                            StaticText, 0x10767b980, {{210.1, 122.5}, {19.3, 18.0}}, label: '28', Disabled
+                                          Button, 0x10767bac0, {{250.8, 99.5}, {50.3, 55.0}}, label: '四、29', Disabled
+                                            StaticText, 0x10767bd40, {{270.3, 106.5}, {11.7, 14.0}}, label: '四', Disabled
+                                            StaticText, 0x10767be80, {{266.6, 122.5}, {19.0, 18.0}}, label: '29', Disabled
+                                          Button, 0x107679540, {{307.2, 99.5}, {50.3, 55.0}}, label: '五、30', Disabled
+                                            StaticText, 0x107679400, {{326.6, 106.5}, {11.7, 14.0}}, label: '五', Disabled
+                                            StaticText, 0x10b5e8000, {{322.8, 122.5}, {19.3, 18.0}}, label: '30', Disabled
+                                          Button, 0x10b5e8140, {{363.5, 99.5}, {50.7, 55.0}}, label: '六、31', Disabled
+                                            StaticText, 0x10b5e8280, {{383.0, 106.5}, {11.7, 14.0}}, label: '六', Disabled
+                                            StaticText, 0x10b5e83c0, {{380.3, 122.5}, {17.0, 18.0}}, label: '31', Disabled
+                                          StaticText, 0x10b5e8500, {{20.0, 186.0}, {76.7, 24.0}}, label: '摄入进度'
+                                          StaticText, 0x10b5e8640, {{198.8, 298.8}, {42.0, 26.3}}, label: '剩余'
+                                          StaticText, 0x10b5e8780, {{183.8, 329.2}, {38.3, 26.3}}, label: '813'
+                                          StaticText, 0x10b5e88c0, {{225.1, 334.8}, {30.7, 19.3}}, label: 'kcal'
+                                          StaticText, 0x10b5e8a00, {{175.8, 359.5}, {88.0, 15.7}}, label: '目标 1804 kcal'
+                                          StaticText, 0x10b5e8b40, {{20.0, 474.0}, {76.7, 24.0}}, label: '营养结构'
+                                          StaticText, 0x10b5e8c80, {{83.9, 528.2}, {24.0, 21.7}}, label: '🍗'
+                                          StaticText, 0x10b5e8dc0, {{207.8, 528.2}, {24.0, 21.7}}, label: '🍚'
+                                          StaticText, 0x10b5e8f00, {{331.6, 528.2}, {24.0, 21.7}}, label: '🧈'
+                                          StaticText, 0x10b5e9040, {{83.9, 555.0}, {24.0, 14.3}}, label: '蛋白'
+                                          StaticText, 0x10b5e9180, {{207.8, 555.0}, {24.0, 14.3}}, label: '碳水'
+                                          StaticText, 0x10b5e92c0, {{331.6, 555.0}, {24.0, 14.3}}, label: '脂肪'
+                                          StaticText, 0x10b5e9400, {{79.8, 574.3}, {32.3, 18.0}}, label: '64 g'
+                                          StaticText, 0x10b5e9540, {{198.8, 574.3}, {42.0, 18.0}}, label: '107 g'
+                                          StaticText, 0x10b5e9680, {{327.4, 574.3}, {32.3, 18.0}}, label: '33 g'
+                                          StaticText, 0x10b5e97c0, {{81.9, 597.3}, {28.0, 14.3}}, label: '26%'
+                                          StaticText, 0x10b5e9900, {{205.8, 597.3}, {28.0, 14.3}}, label: '43%'
+                                          StaticText, 0x10b5e9a40, {{329.6, 597.3}, {28.0, 14.3}}, label: '30%'
+                                          StaticText, 0x10b5e9b80, {{66.4, 627.7}, {306.7, 14.3}}, label: '今日仍可摄入约 813 kcal，优先补充蛋白质和高纤维碳水。'
+                                    ScrollView, 0x10b5e9cc0, {{527.7, -0.0}, {323.3, 669.0}}, identifier: 'keepfit.records'
+                                      Other, 0x10b5e9e00, {{527.7, -0.0}, {323.3, 669.0}}
+                                        Other, 0x10b5e9f40, {{527.7, -0.0}, {323.3, 122.0}}
+                                      Other, 0x10b5ea080, {{527.7, -0.0}, {323.3, 669.0}}
+                                      Other, 0x10b5ea1c0, {{527.7, 82.0}, {323.3, 587.0}}
+                                        Other, 0x10b5ea300, {{531.7, 90.0}, {305.7, 546.3}}
+                                          StaticText, 0x10b5ea440, {{531.7, 90.0}, {76.7, 24.0}}, label: '进食记录'
+                                          Button, 0x10b5ea580, {{541.3, 139.6}, {74.8, 40.8}}, label: '15:35'
+                                            StaticText, 0x10b5ea6c0, {{549.7, 152.2}, {37.3, 15.7}}, label: '15:35'
+                                            Image, 0x10b5ea800, {{599.0, 154.7}, {7.3, 10.7}}, identifier: 'chevron.up.chevron.down', label: 'V形向上和向下符号'
+                                          Button, 0x10b5ea940, {{620.3, 139.6}, {116.5, 40.8}}, identifier: 'food.entry.selector', label: '低脂原味酸奶'
+                                            StaticText, 0x10b5eaa80, {{627.7, 152.8}, {17.0, 14.3}}, label: '🥛'
+                                            StaticText, 0x10b5eabc0, {{652.7, 154.0}, {50.0, 12.0}}, label: '低脂原味酸奶'
+                                            Image, 0x10b5ead00, {{720.7, 154.7}, {7.3, 10.7}}, identifier: 'chevron.up.chevron.down', label: 'V形向上和向下符号'
+                                          Button, 0x10b5eae40, {{805.3, 144.0}, {32.0, 32.0}}, identifier: 'food.entry.add', label: '添加进食记录'
+                                            Image, 0x10b5eaf80, {{805.3, 144.0}, {32.0, 32.0}}, identifier: 'plus', label: '添加'
+                                          TextField, 0x10b5eb0c0, {{748.3, 152.0}, {31.7, 16.0}}, identifier: 'food.entry.amount', value: 100
+                                          StaticText, 0x10b5eb200, {{784.8, 152.2}, {8.3, 15.7}}, identifier: 'food.entry.unit', label: 'g'
+                                          StaticText, 0x10b5eb340, {{541.7, 204.8}, {24.0, 20.7}}, label: '🍠'
+                                          StaticText, 0x10b5eb480, {{575.7, 200.3}, {24.0, 14.3}}, label: '红薯'
+                                          StaticText, 0x10b5eb5c0, {{759.2, 208.0}, {49.0, 14.3}}, label: '163 kcal'
+                                          Button, 0x10b5eb700, {{819.7, 206.0}, {16.3, 18.7}}, identifier: 'trash', label: '删除'
+                                          StaticText, 0x10b5eb840, {{575.7, 216.7}, {74.0, 13.3}}, label: '18:48  ·  190g'
+                                          StaticText, 0x10b5eb980, {{541.7, 244.5}, {24.0, 20.7}}, label: '🥦'
+                                          StaticText, 0x10b5ebac0, {{575.7, 240.0}, {36.0, 14.3}}, label: '西兰花'
+                                          StaticText, 0x10b5ebc00, {{767.2, 247.7}, {41.0, 14.3}}, label: '61 kcal'
+                                          Button, 0x10b5ebd40, {{819.7, 245.3}, {16.3, 18.7}}, identifier: 'trash', label: '删除'
+                                          StaticText, 0x10b5ebe80, {{575.7, 256.3}, {74.0, 13.3}}, label: '18:46  ·  180g'
+                                          StaticText, 0x10b5ec000, {{541.7, 284.2}, {24.0, 20.7}}, label: '🍣'
+                                          StaticText, 0x10b5ec140, {{575.7, 279.7}, {36.0, 14.3}}, label: '三文鱼'
+                                          StaticText, 0x10b5ec280, {{757.5, 287.3}, {50.7, 14.3}}, label: '354 kcal'
+                                          Button, 0x10b5ec3c0, {{819.7, 285.3}, {16.3, 18.7}}, identifier: 'trash', label: '删除'
+                                          StaticText, 0x10b5ec500, {{575.7, 296.0}, {72.0, 13.3}}, label: '12:35  ·  170g'
+                                          StaticText, 0x10b5ec640, {{541.7, 323.8}, {24.0, 20.7}}, label: '🍚'
+                                          StaticText, 0x10b5ec780, {{575.7, 319.3}, {47.3, 14.3}}, label: '米饭(熟)'
+                                          StaticText, 0x10b5ec8c0, {{760.5, 327.0}, {47.7, 14.3}}, label: '174 kcal'
+                                          Button, 0x10b5eca00, {{819.7, 324.7}, {16.3, 18.7}}, identifier: 'trash', label: '删除'
+                                          StaticText, 0x10b5ecb40, {{575.7, 335.7}, {72.7, 13.3}}, label: '12:32  ·  150g'
+                                          StaticText, 0x10b5ecc80, {{541.7, 363.5}, {24.0, 20.7}}, label: '🫐'
+                                          StaticText, 0x10b5ecdc0, {{575.7, 359.0}, {24.0, 14.3}}, label: '蓝莓'
+                                          StaticText, 0x10b5ecf00, {{764.8, 366.7}, {43.3, 14.3}}, label: '46 kcal'
+                                          Button, 0x10b5ed040, {{819.7, 364.7}, {16.3, 18.7}}, identifier: 'trash', label: '删除'
+                                          StaticText, 0x10b5ed180, {{575.7, 375.3}, {68.3, 13.3}}, label: '08:12  ·  80g'
+                                          StaticText, 0x10b5ed2c0, {{575.7, 398.7}, {48.0, 14.3}}, label: '希腊酸奶'
+                                          StaticText, 0x10b5ed400, {{541.7, 408.3}, {24.0, 10.3}}, label: '🥣💪'
+                                          StaticText, 0x10b5ed540, {{759.2, 406.3}, {49.0, 14.3}}, label: '194 kcal'
+                                          Button, 0x10b5ed680, {{819.7, 404.3}, {16.3, 18.7}}, identifier: 'trash', label: '删除'
+                                          StaticText, 0x10b5ed7c0, {{575.7, 415.0}, {75.0, 13.3}}, label: '08:10  ·  200g'
+                                          StaticText, 0x10b5ed900, {{531.7, 464.3}, {76.7, 24.0}}, label: '当月进食'
+                                          StaticText, 0x10b5eda40, {{541.7, 514.3}, {37.7, 18.0}}, label: '10/27'
+                                          Image, 0x10b5edb80, {{656.0, 516.7}, {10.0, 13.0}}, identifier: 'flame', label: '火焰'
+                                          StaticText, 0x10b5edcc0, {{656.0, 516.7}, {67.5, 14.4}}, label: '992 kcal'
+                                          StaticText, 0x10b5ede00, {{733.0, 516.2}, {104.2, 14.3}}, label: 'P64 C107 F33'
+                                          Image, 0x10b5edf40, {{733.0, 517.3}, {15.0, 11.3}}, identifier: 'chart.bar', label: '图表柱形图'
+                                          StaticText, 0x10b5ee080, {{541.7, 540.3}, {38.3, 18.0}}, label: '10/25'
+                                          Image, 0x10b5ee1c0, {{664.7, 542.7}, {10.0, 13.0}}, identifier: 'flame', label: '火焰'
+                                          StaticText, 0x10b5ee300, {{664.7, 542.7}, {66.5, 14.4}}, label: '744 kcal'
+                                          Image, 0x10b5ee440, {{740.7, 543.3}, {15.0, 11.3}}, identifier: 'chart.bar', label: '图表柱形图'
+                                          StaticText, 0x10b5ee580, {{740.7, 542.2}, {96.5, 14.3}}, label: 'P47 C81 F26'
+                                          StaticText, 0x10b5ee6c0, {{541.7, 566.3}, {38.3, 18.0}}, label: '10/23'
+                                          Image, 0x10b5ee800, {{666.0, 568.7}, {10.0, 13.0}}, identifier: 'flame', label: '火焰'
+                                          StaticText, 0x10b5ee940, {{666.0, 568.7}, {66.2, 14.4}}, label: '772 kcal'
+                                          Image, 0x10b5eea80, {{741.7, 569.3}, {15.0, 11.3}}, identifier: 'chart.bar', label: '图表柱形图'
+                                          StaticText, 0x10b5eebc0, {{741.7, 568.2}, {95.5, 14.3}}, label: 'P72 C75 F19'
+                                          StaticText, 0x10b5eed00, {{541.7, 592.3}, {36.0, 18.0}}, label: '10/21'
+                                          Image, 0x10b5eee40, {{663.0, 594.7}, {10.0, 13.0}}, identifier: 'flame', label: '火焰'
+                                          StaticText, 0x10b5eef80, {{663.0, 594.7}, {66.5, 14.4}}, label: '762 kcal'
+                                          StaticText, 0x10b5ef0c0, {{739.0, 594.2}, {98.2, 14.3}}, label: 'P57 C60 F32'
+                                          Image, 0x10b5ef200, {{739.0, 595.3}, {15.0, 11.3}}, identifier: 'chart.bar', label: '图表柱形图'
+                                          StaticText, 0x10b5ef340, {{541.7, 618.3}, {36.3, 18.0}}, label: '10/19'
+                                          Image, 0x10b5ef480, {{658.0, 620.7}, {10.0, 13.0}}, identifier: 'flame', label: '火焰'
+                                          StaticText, 0x10b5ef5c0, {{658.0, 620.7}, {67.5, 14.4}}, label: '942 kcal'
+                                          StaticText, 0x10b5ef700, {{735.0, 620.2}, {102.2, 14.3}}, label: 'P78 C128 F14'
+                                          Image, 0x10b5ef840, {{735.0, 621.3}, {15.0, 11.3}}, identifier: 'chart.bar', label: '图表柱形图'
+                            Toolbar, 0x10b5ef980, {{0.0, -0.0}, {951.0, 669.0}}, identifier: 'Toolbar', label: 'Toolbar'
+                              Other, 0x10b5efac0, {{0.0, -0.0}, {951.0, 669.0}}
+                Other, 0x10b5efc00, {{0.0, -0.0}, {951.0, 669.0}}
+                  Toolbar, 0x10b5efd40, {{0.0, -0.0}, {951.0, 669.0}}, identifier: 'Toolbar', label: 'Toolbar'
+                    Other, 0x10b5efe80, {{0.0, -0.0}, {951.0, 669.0}}
+                      Other, 0x10b5f0000, {{0.0, -0.0}, {951.0, 669.0}}
+                        Other, 0x10b5f0140, {{0.0, -0.0}, {951.0, 669.0}}
+                          Other, 0x10b5f0280, {{0.0, 0.0}, {0.0, 0.0}}
+                            Other, 0x10b5f03c0, {{879.0, 120.0}, {48.0, 48.0}}
+                              Other, 0x10b5f0500, {{879.0, 120.0}, {48.0, 48.0}}
+                                Other, 0x10b5f0640, {{884.0, 126.0}, {38.0, 36.0}}
+                                  Other, 0x10b5f0780, {{884.0, 126.0}, {38.0, 36.0}}
+                                    Other, 0x10b5f08c0, {{884.0, 126.0}, {38.0, 36.0}}
+                                      Other, 0x10b5f0a00, {{884.0, 126.0}, {38.0, 36.0}}
+                                        Button, 0x10b5f0b40, {{888.7, 126.0}, {28.7, 36.0}}, identifier: 'gearshape.fill', label: '设置'
+                        Other, 0x10b5f0c80, {{0.0, -0.0}, {951.0, 669.0}}
+                          Other, 0x10b5f0dc0, {{0.0, 0.0}, {0.0, 0.0}}
+                            Other, 0x10b5f0f00, {{879.0, 483.0}, {48.0, 162.0}}
+                              Other, 0x10b5f1040, {{879.0, 483.0}, {48.0, 162.0}}
+                                Other, 0x10b5f1180, {{879.0, 483.0}, {48.0, 162.0}}
+                                  Other, 0x10b5f12c0, {{879.0, 483.0}, {48.0, 162.0}}
+                                    Other, 0x10b5f1400, {{879.0, 483.0}, {48.0, 162.0}}
+                                      Other, 0x10b5f1540, {{879.0, 483.0}, {48.0, 162.0}}
+                                        Other, 0x10b5f1680, {{879.0, 483.0}, {44.0, 58.0}}
+                                        Other, 0x10b5f17c0, {{879.0, 483.0}, {48.0, 162.0}}
+                                          Button, 0x10b5f1900, {{881.0, 485.0}, {44.0, 58.0}}, label: '管住嘴', Selected
+                                            Image, 0x10b5f1a40, {{892.3, 497.7}, {21.7, 30.7}}, identifier: 'fork.knife', label: 'Food'
+                                          Button, 0x10b5f1b80, {{881.0, 535.0}, {44.0, 58.0}}, label: '迈开腿'
+                                            Image, 0x10b5f1cc0, {{890.7, 549.3}, {24.7, 29.3}}, identifier: 'figure.run', label: 'Running'
+                                          Button, 0x10b5f1e00, {{881.0, 585.0}, {44.0, 58.0}}, label: '减个肥'
+                                            Image, 0x10b5f1f40, {{888.7, 599.0}, {29.0, 29.3}}, identifier: 'sun.max.fill', label: 'brightness higher'
+                                        Other, 0x10b5f2080, {{879.0, 483.0}, {48.0, 162.0}}
+                                        Other, 0x10b5f21c0, {{879.0, 483.0}, {48.0, 162.0}}
+                                          Other, 0x10b5f2300, {{879.0, 483.0}, {48.0, 162.0}}
+                                            Other, 0x10b5f2440, {{879.0, 483.0}, {48.0, 162.0}}
+                                              Other, 0x10b5f2580, {{879.0, 483.0}, {48.0, 162.0}}
+                                                Other, 0x10b5f26c0, {{879.0, 483.0}, {48.0, 162.0}}
+                                              Other, 0x10b5f2800, {{879.0, 483.0}, {48.0, 162.0}}
+                                        Other, 0x10b5f2940, {{881.0, 485.0}, {44.0, 58.0}}
+                                          Other, 0x10b5f2a80, {{881.0, 485.0}, {44.0, 58.0}}
+                                            Other, 0x10b5f2bc0, {{881.0, 485.0}, {44.0, 58.0}}
+                                            Other, 0x10b5f2d00, {{881.0, 485.0}, {44.0, 58.0}}
+                                              Other, 0x10b5f2e40, {{881.0, 485.0}, {44.0, 58.0}}
+                                                Other, 0x10b5f2f80, {{881.0, 485.0}, {44.0, 58.0}}
+                                                  Other, 0x10b5f30c0, {{881.0, 485.0}, {44.0, 58.0}}
+                                                Other, 0x10b5f3200, {{881.0, 485.0}, {44.0, 58.0}}
+                                              Other, 0x10b5f3340, {{881.0, 485.0}, {44.0, 58.0}}
+Path to element:
+ →Application, 0x10a4a1180, pid: 23389, label: 'KeepFit'
+Query chain:
+ →Find: Target Application 'com.larry.keepfit'
+  Output: {
+    Application, 0x10b5f3480, pid: 23389, label: 'KeepFit'
+  }

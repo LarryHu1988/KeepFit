@@ -1,0 +1,128 @@
+[
+  {
+    "file": "02_Previews/en/duo-inner.mp4",
+    "coverHoldDifference": 0.055830830830830826,
+    "eatMotion": 2.006118618618619,
+    "moveMotion": 5.022647647647648,
+    "loseMotion": 6.481619119119119,
+    "minFrameBrightness": 224.71152402402402,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/en/duo-outer.mp4",
+    "coverHoldDifference": 0.058395895895895895,
+    "eatMotion": 4.963250750750751,
+    "moveMotion": 6.807194694694695,
+    "loseMotion": 6.401001001001002,
+    "minFrameBrightness": 224.582982982983,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/en/ipad-legacy.mp4",
+    "coverHoldDifference": 0.07193672839506172,
+    "eatMotion": 0.5088657407407408,
+    "moveMotion": 7.902044753086419,
+    "loseMotion": 8.181304012345679,
+    "minFrameBrightness": 207.58617283950616,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/en/ipad.mp4",
+    "coverHoldDifference": 0.08005401234567901,
+    "eatMotion": 0.503287037037037,
+    "moveMotion": 7.890239197530865,
+    "loseMotion": 8.148179012345679,
+    "minFrameBrightness": 207.89466820987653,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/en/iphone-home-large.mp4",
+    "coverHoldDifference": 0.07466049382716049,
+    "eatMotion": 7.927551440329218,
+    "moveMotion": 11.766131687242797,
+    "loseMotion": 9.849537037037038,
+    "minFrameBrightness": 219.48702674897118,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/en/iphone-home-medium.mp4",
+    "coverHoldDifference": 0.07680041152263374,
+    "eatMotion": 6.343487654320988,
+    "moveMotion": 8.900781893004115,
+    "loseMotion": 6.028086419753087,
+    "minFrameBrightness": 181.65801440329219,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/en/iphone-modern.mp4",
+    "coverHoldDifference": 0.07102102102102102,
+    "eatMotion": 9.15666916916917,
+    "moveMotion": 13.562199699699699,
+    "loseMotion": 11.370345345345344,
+    "minFrameBrightness": 215.93813813813813,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/zh-Hans/duo-inner.mp4",
+    "coverHoldDifference": 0.05549299299299299,
+    "eatMotion": 1.9862112112112111,
+    "moveMotion": 4.74094094094094,
+    "loseMotion": 5.827827827827828,
+    "minFrameBrightness": 224.60833333333335,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/zh-Hans/duo-outer.mp4",
+    "coverHoldDifference": 0.0626001001001001,
+    "eatMotion": 5.735185185185185,
+    "moveMotion": 6.803853853853854,
+    "loseMotion": 6.182695195195195,
+    "minFrameBrightness": 224.46358858858858,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/zh-Hans/ipad-legacy.mp4",
+    "coverHoldDifference": 0.07804783950617283,
+    "eatMotion": 0.5210262345679012,
+    "moveMotion": 8.110192901234567,
+    "loseMotion": 9.20298611111111,
+    "minFrameBrightness": 209.2687114197531,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/zh-Hans/ipad.mp4",
+    "coverHoldDifference": 0.08537037037037037,
+    "eatMotion": 0.5197530864197532,
+    "moveMotion": 8.112214506172839,
+    "loseMotion": 9.176944444444445,
+    "minFrameBrightness": 209.58290895061728,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/zh-Hans/iphone-home-large.mp4",
+    "coverHoldDifference": 0.08059670781893004,
+    "eatMotion": 8.1105658436214,
+    "moveMotion": 11.389969135802469,
+    "loseMotion": 8.94272633744856,
+    "minFrameBrightness": 219.38313786008231,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/zh-Hans/iphone-home-medium.mp4",
+    "coverHoldDifference": 0.0832201646090535,
+    "eatMotion": 6.666820987654321,
+    "moveMotion": 9.007139917695474,
+    "loseMotion": 6.582345679012346,
+    "minFrameBrightness": 182.14069958847736,
+    "pass": true
+  },
+  {
+    "file": "02_Previews/zh-Hans/iphone-modern.mp4",
+    "coverHoldDifference": 0.07646396396396397,
+    "eatMotion": 9.383308308308308,
+    "moveMotion": 13.174236736736738,
+    "loseMotion": 10.321058558558558,
+    "minFrameBrightness": 215.80365365365367,
+    "pass": true
+  }
+]

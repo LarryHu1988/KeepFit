@@ -1,0 +1,8 @@
+KeepFit 1.2 brings food, movement and body trends into a more connected daily tracking experience.
+
+• A searchable food composition atlas with calories and macronutrients calculated from recorded amounts
+• Frequently used foods first, with simple food names and icons
+• Searchable exercises, duration logging and energy estimates
+• A connected view of calorie balance, weight and body fat trends
+• Refined layouts and charts across iPhone, iPad and iPhone Duo
+• Improvements to settings, sync and everyday interactions

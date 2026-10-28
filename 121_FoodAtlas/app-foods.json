@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "overrides": {
+    "usda:173424": {
+      "icon": "🥚",
+      "category": "protein"
+    },
+    "usda:168483": {
+      "name": "烤红薯（未加盐）",
+      "category": "staple",
+      "icon": "🍠"
+    },
+    "usda:169999": {
+      "name": "水煮甜玉米（沥干未加盐）",
+      "category": "staple",
+      "icon": "🌽"
+    },
+    "usda:168917": {
+      "name": "熟藜麦",
+      "category": "staple",
+      "icon": "🌾"
+    },
+    "usda:168871": {
+      "name": "熟小米",
+      "category": "staple",
+      "icon": "🌾"
+    },
+    "usda:2708352": {
+      "name": "熟面条",
+      "category": "staple",
+      "icon": "🍜"
+    },
+    "usda:168914": {
+      "name": "熟米粉",
+      "category": "staple",
+      "icon": "🍜"
+    },
+    "usda:171917": {
+      "name": "冲泡绿茶",
+      "category": "drink",
+      "icon": "🍵"
+    },
+    "usda:169118": {
+      "name": "生鲜梨",
+      "category": "fruit",
+      "icon": "🍐"
+    },
+    "usda:168153": {
+      "name": "生鲜绿心猕猴桃",
+      "category": "fruit",
+      "icon": "🥝"
+    },
+    "usda:169247": {
+      "name": "生罗马生菜",
+      "category": "vegetable",
+      "icon": "🥬"
+    },
+    "usda:169988": {
+      "name": "生芹菜",
+      "category": "vegetable",
+      "icon": "🥬"
+    },
+    "usda:169228": {
+      "name": "生茄子",
+      "category": "vegetable",
+      "icon": "🍆"
+    },
+    "usda:168437": {
+      "name": "熟香菇（未加盐）",
+      "category": "vegetable",
+      "icon": "🍄"
+    },
+    "usda:168457": {
+      "name": "生海带",
+      "category": "vegetable",
+      "icon": "🌿"
+    },
+    "usda:172388": {
+      "name": "烤熟去皮鸡腿肉",
+      "category": "protein",
+      "icon": "🍗"
+    },
+    "usda:172411": {
+      "name": "烤熟去皮鸭肉",
+      "category": "protein",
+      "icon": "🦆"
+    },
+    "usda:173709": {
+      "name": "水浸金枪鱼罐头（沥干）",
+      "category": "protein",
+      "icon": "🐟"
+    },
+    "usda:169711": {
+      "name": "熟糯米饭（未强化）",
+      "category": "staple",
+      "icon": "🍚"
+    },
+    "usda:173740": {
+      "name": "水煮芸豆（未加盐）",
+      "category": "protein",
+      "icon": "🫘"
+    },
+    "usda:170567": {
+      "name": "巴旦木仁",
+      "category": "nuts",
+      "icon": "🥜"
+    },
+    "usda:2705405": {
+      "name": "无糖豆奶",
+      "category": "drink",
+      "icon": "🥛"
+    },
+    "usda:169957": {
+      "name": "生绿豆芽",
+      "category": "vegetable",
+      "icon": "🌱"
+    },
+    "usda:173647": {
+      "name": "饮用自来水",
+      "category": "drink",
+      "icon": "💧"
+    },
+    "usda:169928": {
+      "name": "生鲜黄桃",
+      "category": "fruit",
+      "icon": "🍑"
+    }
+  },
+  "foods": [],
+  "commonFoodIDs": [
+    "usda:168878",
+    "usda:173424",
+    "usda:171265",
+    "usda:172475",
+    "usda:172476",
+    "usda:171411",
+    "usda:167812",
+    "usda:174277",
+    "usda:169655",
+    "usda:168894",
+    "usda:169979",
+    "usda:170390",
+    "usda:169967",
+    "usda:173944",
+    "usda:168409",
+    "usda:170000",
+    "usda:170440",
+    "usda:174030",
+    "usda:170457",
+    "usda:171287",
+    "usda:171477",
+    "usda:171688",
+    "usda:174924",
+    "usda:172688",
+    "usda:174925",
+    "usda:174987",
+    "usda:174578",
+    "usda:174614",
+    "usda:169773",
+    "usda:171821",
+    "usda:168081",
+    "usda:168082",
+    "usda:167676",
+    "usda:2706743",
+    "usda:2706857",
+    "usda:168928",
+    "usda:169737",
+    "usda:173292",
+    "usda:170710",
+    "usda:2708489",
+    "usda:171284",
+    "usda:170886",
+    "usda:170887",
+    "usda:170379",
+    "usda:170393",
+    "usda:170026",
+    "usda:170427",
+    "usda:169251",
+    "usda:168462",
+    "usda:169975",
+    "usda:169986",
+    "usda:175167",
+    "usda:175168",
+    "usda:175180",
+    "usda:171955",
+    "usda:169704",
+    "usda:169703",
+    "usda:173423",
+    "usda:173414",
+    "usda:170187",
+    "usda:170162",
+    "usda:172430",
+    "usda:172421",
+    "usda:174257",
+    "usda:174256",
+    "usda:174258",
+    "usda:167762",
+    "usda:171711",
+    "usda:167765",
+    "usda:174683",
+    "usda:169097",
+    "usda:171413",
+    "usda:172336",
+    "usda:173410",
+    "usda:171890",
+    "usda:171891",
+    "usda:168483",
+    "usda:169999",
+    "usda:168917",
+    "usda:168871",
+    "usda:2708352",
+    "usda:168914",
+    "usda:171917",
+    "usda:169118",
+    "usda:168153",
+    "usda:169247",
+    "usda:169988",
+    "usda:169228",
+    "usda:168437",
+    "usda:168457",
+    "usda:172388",
+    "usda:172411",
+    "usda:173709",
+    "usda:169711",
+    "usda:173740",
+    "usda:170567",
+    "usda:2705405",
+    "usda:169957",
+    "usda:173647",
+    "usda:169928"
+  ]
+}

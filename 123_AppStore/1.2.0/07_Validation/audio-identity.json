@@ -1,0 +1,58 @@
+[
+  {
+    "file": "02_Previews/en/duo-inner.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/en/duo-outer.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/en/ipad-legacy.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/en/ipad.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/en/iphone-home-large.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/en/iphone-home-medium.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/en/iphone-modern.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/zh-Hans/duo-inner.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/zh-Hans/duo-outer.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/zh-Hans/ipad-legacy.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/zh-Hans/ipad.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/zh-Hans/iphone-home-large.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/zh-Hans/iphone-home-medium.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  },
+  {
+    "file": "02_Previews/zh-Hans/iphone-modern.mp4",
+    "decodedAudioHash": "SHA256=467bb9b13de8adead87e8f2326660adfd77fe8b66c4baeafd33d9c7c68d84175"
+  }
+]

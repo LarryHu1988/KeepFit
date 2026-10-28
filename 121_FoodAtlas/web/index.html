@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>食物成分图谱 · KeepFit Food Atlas</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#search">跳到食物搜索</a>
+  <aside class="sidebar" aria-label="数据来源筛选">
+    <a class="brand" href="/" aria-label="食物成分图谱首页"><span class="brand-mark" aria-hidden="true">f.</span><span>食物成分图谱<small>KEEPFIT / FOOD ATLAS</small></span></a>
+    <div class="side-label">探索数据库 <span id="source-count">数据来源</span></div>
+    <nav id="source-nav"><button class="source active" data-source="all">全部食物 <span>…</span></button></nav>
+    <div class="side-note"><span class="live-dot"></span> 本地资料库<small>数据留在本机，查询无需联网。</small></div>
+    <div class="license-note"><strong>关于数据使用</strong><p>USDA 数据可商用。中国疾控数据仅供本地参考，商用需另行取得授权。</p><button id="about-button" class="text-button">查看来源与去重规则 ↗</button></div>
+    <footer>KEEPFIT RESEARCH LIBRARY<small>把每一口，了解得更清楚。</small></footer>
+  </aside>
+  <main>
+    <header class="topbar"><span>营养数据 / <strong>食物目录</strong></span><span class="local-pill"><span class="live-dot"></span> LOCAL DATABASE</span></header>
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-text"><p class="eyebrow">THE INGREDIENTS OF EVERYDAY LIFE</p><h1 id="title">食物有据，<br>营养可查<span>。</span></h1><p class="intro">从一粒米到一餐饭，找到食物背后的营养构成。<br>中英文对照 · 来源可追溯 · 按实际份量换算</p></div>
+      <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="plate"><span>FOOD<br><em>ATLAS</em></span></div><span class="art-label art-protein">PROTEIN <i></i></span><span class="art-label art-carb"><i></i> CARBOHYDRATE</span><span class="art-label art-fat">FAT <i></i></span><span class="art-number">100<small>GRAMS / 基准</small></span></div>
+    </section>
+    <section class="stats" aria-label="数据库概览"><div><span id="stat-foods">—</span><p>去重后食物名 <small id="stat-merged"></small></p></div><div><span id="stat-records">—</span><p>原始来源记录 <small>全部保留可查</small></p></div><div><span id="stat-bilingual">—</span><p>双语名称覆盖 <small>含待校对辅助译名</small></p></div><div><span id="stat-portions">—</span><p>来源份量记录 <small>另含每项 100g 基准</small></p></div></section>
+    <section id="collection-status" class="collection-status" aria-label="数据补采状态" hidden></section>
+    <section class="catalog" aria-labelledby="catalog-title">
+      <div class="section-title"><div><p class="eyebrow">EXPLORE THE CATALOG</p><h2 id="catalog-title">找到你想了解的食物</h2></div><a id="export" class="export" href="/api/export.csv" download>导出当前结果 <span>↓</span></a></div>
+      <form id="search-form" role="search"><div class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg><input id="search" type="search" placeholder="搜索中文、英文或食物别名，如：鸡蛋 / egg" autocomplete="off" maxlength="200" aria-label="搜索食物"><kbd>/</kbd><button type="submit">搜索</button></div></form>
+      <div class="suggestions"><span>试试搜索</span><button data-query="米饭">米饭</button><button data-query="鸡蛋">鸡蛋</button><button data-query="chicken">鸡肉</button><button data-query="salmon">三文鱼</button><button data-query="oat">燕麦</button><button data-query="dumpling">饺子</button><button id="reset" class="reset">重置筛选 ↺</button></div>
+      <div class="filters"><div class="filter-select"><label for="category">食物分类</label><select id="category"><option value="all">全部分类</option><option value="none">来源未分类</option></select></div><div class="filter-select"><label for="quality">数据完整度</label><select id="quality"><option value="all">全部记录</option><option value="complete">每100g四项营养齐全</option><option value="missing">每100g有缺项或待核验</option></select></div><div class="filter-select"><label for="sort">排序方式</label><select id="sort"><option value="default">默认排序</option><option value="name">中文名称</option><option value="calories_kcal">热量从高到低</option><option value="protein_g">蛋白质从高到低</option><option value="fat_g">脂肪从高到低</option><option value="carbs_g">碳水从高到低</option></select></div></div>
+      <div class="table-caption"><span id="results-count" role="status" aria-live="polite">正在读取本地数据库…</span><span>基础值按 100g；未核验标签在详情查看原值</span></div>
+      <div id="error" class="error" role="alert" hidden></div>
+      <div class="table-wrap"><table><thead><tr><th scope="col">食物名称 <small>中文 / ENGLISH</small></th><th scope="col">基准单位</th><th scope="col" class="numeric">热量 <small>kcal</small></th><th scope="col" class="numeric"><i class="dot protein"></i> 蛋白质 <small>g</small></th><th scope="col" class="numeric"><i class="dot fat"></i> 脂肪 <small>g</small></th><th scope="col" class="numeric"><i class="dot carbs"></i> 碳水 <small>g</small></th><th scope="col">数据来源</th></tr></thead><tbody id="foods"><tr><td colspan="7" class="empty">正在加载…</td></tr></tbody></table></div>
+      <div class="pagination"><span id="page-note"></span><div><button id="previous" aria-label="上一页">← 上一页</button><span id="page-current">1 / 1</span><button id="next" aria-label="下一页">下一页 →</button></div></div>
+      <p class="data-note">基础食物同名折叠；商品保留来源ID，不按同名合并不同条码、品牌或规格。<span>“—” 表示来源缺失、尚未采集或计量基准未核验，不等于 0。商品与餐盘详情会说明具体状态。</span></p>
+    </section>
+    <footer class="main-footer"><span>食物成分图谱 <em>Food Atlas.</em></span><button id="about-footer" class="text-button">来源与说明 ↗</button><span>为 KeepFit 构建的可追溯食物资料库</span></footer>
+  </main>
+  <dialog id="detail-dialog" aria-labelledby="detail-title"><div class="detail-top"><span>FOOD PROFILE / 食物档案</span><button id="close-detail" class="close" aria-label="关闭食物详情">×</button></div><div id="detail-body"></div></dialog>
+  <dialog id="about-dialog" aria-labelledby="about-title"><div class="detail-top"><span>DATA & METHODOLOGY</span><button id="close-about" class="close" aria-label="关闭来源说明">×</button></div><div class="about-content"><p class="eyebrow">来源与使用边界</p><h2 id="about-title">每个数字，都有出处。</h2><p>本页读取完整本地主库，不是商业发行精简库。原始名称、全部营养项、家庭份量和缺失状态均可在详情查看。</p><h3>去重，而不是抹平差异</h3><p>对原始名称做 Unicode、大小写及空白规范化后，将同名记录折叠为一项。不会用机器译名合并食物，也不会将各来源营养值平均；详情可以切换所有原始记录。默认优先展示基础营养较完整的记录，再按来源选择。</p><h3>双语名称</h3><p>原文和已整理译名优先保留；缺失语言使用本地 OPUS-MT 模型生成，并标注为“机器译名 · 待校对”。译名不代表来源官方命名，不用于确定食物身份。营养数值不经过生成式补全。</p><h3>份量与缺失值</h3><p>只采用来源提供的克重，不凭空推测一碗或一个的重量。所有质量型营养按可食克数换算；百分比、比重不随份量放大。未检测、未检出、微量及错误原值保留来源标记，不作为零处理。</p><h3>授权与模型说明</h3><div id="source-details"></div><p>名称翻译：<a href="https://huggingface.co/Helsinki-NLP/opus-mt-en-zh" target="_blank" rel="noopener noreferrer">Helsinki-NLP OPUS-MT en→zh</a>（Apache-2.0）、<a href="https://huggingface.co/Helsinki-NLP/opus-mt-zh-en" target="_blank" rel="noopener noreferrer">zh→en</a>（CC-BY-4.0）。使用 gaudi 转换的 CTranslate2 权重在本机运行。机译结果仅供检索参考。</p><p class="local-warning">仅绑定 127.0.0.1。请勿将完整主库或本页部署到公网；疾控数据用于 App 或网站前需先解决商业授权。食物成分不能替代个体化医疗建议。</p></div></dialog>
+</body>
+</html>

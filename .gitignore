@@ -1,29 +1,41 @@
-# macOS
 .DS_Store
-
-# Xcode user data
 xcuserdata/
 *.xcuserstate
-
-# Build artifacts
 build/
 DerivedData/
-
-# SwiftPM
 .swiftpm/
 .build/
-
-# Fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots/**/*.png
-fastlane/test_output/
-
-# CocoaPods
 Pods/
-
-# Carthage
 Carthage/Build/
-
-# Local env
 .env
+__pycache__/
+*.pyc
+126_Tools/MediaRenderer/node_modules/
+123_AppStore/**/01_Screenshots/
+123_AppStore/**/02_Previews/
+123_AppStore/**/03_Creatives/
+123_AppStore/**/05_Sources/recordings/
+123_AppStore/**/05_Sources/screens/
+123_AppStore/**/.hyperframes/
+125_Docs/qa/**/*.log
+125_Docs/releases/**/*.log
+
+# Local databases, tokens and signing material
+**/.data/
+*.p8
+*.p12
+*.mobileprovision
+
+# Local upload evidence can include App Review contact data
+123_AppStore/**/08_AppStoreConnect/
+
+# Private operational records and reproducible media intermediates
+.asc/reports/
+125_Docs/.local/
+123_AppStore/**/05_Sources/apple-templates/*.psd
+123_AppStore/**/05_Sources/apple-templates/*.png
+123_AppStore/**/05_Sources/device-frames/
+123_AppStore/**/05_Sources/framed-screens/
+123_AppStore/**/05_Sources/preview-stages/
+123_AppStore/**/05_Sources/covers/
+123_AppStore/**/05_Sources/music/*.wav

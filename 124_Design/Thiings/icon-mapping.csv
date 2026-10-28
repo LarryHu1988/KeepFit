@@ -1,0 +1,399 @@
+﻿kind,id,name,category,status,thiings_slug,thiings_name,source_url,note
+食材／菜品,yu_xiang_shredded_pork,鱼香肉丝,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,twice_cooked_pork,回锅肉,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,green_pepper_pork,青椒肉丝,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,beijing_sauce_pork,京酱肉丝,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,moo_shu_pork,木须肉,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,boiled_pork_slices,水煮肉片,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,sweet_sour_pork,糖醋里脊,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,farmhouse_pork,农家小炒肉,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,mei_cai_pork,梅菜扣肉,protein,近似候选，需确认,crispy-pork-belly,Crispy Pork Belly,https://www.thiings.co/things/crispy-pork-belly,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,braised_ribs,红烧排骨,protein,近似候选，需确认,ribs,Ribs,https://www.thiings.co/things/ribs,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,sweet_sour_ribs,糖醋排骨,protein,近似候选，需确认,ribs,Ribs,https://www.thiings.co/things/ribs,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,spicy_chicken,辣子鸡,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,poached_chicken,白切鸡,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,braised_chicken,黄焖鸡,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,cola_wings,可乐鸡翅,protein,近似候选，需确认,chicken-wings,Chicken Wings,https://www.thiings.co/things/chicken-wings,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,potato_chicken,土豆烧鸡,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,braised_beef_potato,土豆烧牛肉,protein,近似候选，需确认,beef-raw,Raw Beef,https://www.thiings.co/things/beef-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,tomato_beef_brisket,番茄炖牛腩,protein,近似候选，需确认,beef-raw,Raw Beef,https://www.thiings.co/things/beef-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,onion_beef,洋葱炒牛肉,protein,近似候选，需确认,beef-raw,Raw Beef,https://www.thiings.co/things/beef-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,cumin_lamb,孜然羊肉,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,sauerkraut_fish,酸菜鱼,protein,近似候选，需确认,fish-cooked,Cooked Fish,https://www.thiings.co/things/fish-cooked,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,boiled_fish,水煮鱼,protein,近似候选，需确认,fish-cooked,Cooked Fish,https://www.thiings.co/things/fish-cooked,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,braised_fish,红烧鱼,protein,近似候选，需确认,fish-cooked,Cooked Fish,https://www.thiings.co/things/fish-cooked,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,sweet_sour_fish,糖醋鱼,protein,近似候选，需确认,fish-cooked,Cooked Fish,https://www.thiings.co/things/fish-cooked,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,garlic_shrimp,蒜蓉虾,protein,近似候选，需确认,garlic-butter-shrimp,Garlic Butter Shrimp,https://www.thiings.co/things/garlic-butter-shrimp,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,spicy_crayfish,麻辣小龙虾,protein,待选型,,,https://www.thiings.co/things?q=spicy%20crayfish,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,home_style_tofu,家常豆腐,protein,近似候选，需确认,tofu,Tofu,https://www.thiings.co/things/tofu,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,braised_tofu,红烧豆腐,protein,近似候选，需确认,tofu,Tofu,https://www.thiings.co/things/tofu,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,yu_xiang_eggplant,鱼香茄子,vegetable,近似候选，需确认,eggplant,Eggplant,https://www.thiings.co/things/eggplant,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,di_san_xian,地三鲜,vegetable,近似候选，需确认,eggplant,Eggplant,https://www.thiings.co/things/eggplant,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,dry_fried_green_beans,干煸四季豆,vegetable,待选型,,,https://www.thiings.co/things?q=dry%20fried%20green%20beans,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,sour_spicy_potato,酸辣土豆丝,vegetable,近似候选，需确认,potato,Potato,https://www.thiings.co/things/potato,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,hand_torn_cabbage,手撕包菜,vegetable,近似候选，需确认,cabbage,Cabbage,https://www.thiings.co/things/cabbage,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,oyster_sauce_lettuce,蚝油生菜,vegetable,近似候选，需确认,lettuce,Lettuce,https://www.thiings.co/things/lettuce,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,garlic_broccoli,蒜蓉西兰花,vegetable,近似候选，需确认,broccoli,Broccoli,https://www.thiings.co/things/broccoli,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,chive_scrambled_egg,韭菜炒鸡蛋,protein,近似候选，需确认,scrambled-egg,Scrambled Egg,https://www.thiings.co/things/scrambled-egg,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,eggplant_minced_pork,肉末茄子,protein,近似候选，需确认,eggplant,Eggplant,https://www.thiings.co/things/eggplant,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,fo_tiao_qiang,佛跳墙,protein,近似候选，需确认,soup-bowl,Soup Bowl,https://www.thiings.co/things/soup-bowl,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,fuqi_feipian,夫妻肺片,protein,近似候选，需确认,beef-raw,Raw Beef,https://www.thiings.co/things/beef-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,ants_climbing_tree,蚂蚁上树,staple,近似候选，需确认,noodles,Noodles,https://www.thiings.co/things/noodles,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,braised_lion_head,红烧狮子头,protein,近似候选，需确认,meatball,Meatball,https://www.thiings.co/things/meatball,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,squirrel_mandarin_fish,松鼠桂鱼,protein,近似候选，需确认,fish-cooked,Cooked Fish,https://www.thiings.co/things/fish-cooked,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,beggars_chicken,叫花鸡,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,dongpo_pork,东坡肉,protein,近似候选，需确认,crispy-pork-belly,Crispy Pork Belly,https://www.thiings.co/things/crispy-pork-belly,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,guobaorou,锅包肉,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,saliva_chicken,口水鸡,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,big_plate_chicken,大盘鸡,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,chopped_pepper_fish_head,剁椒鱼头,protein,近似候选，需确认,fish-cooked,Cooked Fish,https://www.thiings.co/things/fish-cooked,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,steamed_pork_rice_flour,粉蒸肉,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,winter_melon_rib_soup,冬瓜排骨汤,protein,近似候选，需确认,soup-bowl,Soup Bowl,https://www.thiings.co/things/soup-bowl,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,seaweed_egg_soup,紫菜蛋花汤,protein,近似候选，需确认,soup-bowl,Soup Bowl,https://www.thiings.co/things/soup-bowl,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,tomato_egg_soup,番茄鸡蛋汤,protein,近似候选，需确认,soup-bowl,Soup Bowl,https://www.thiings.co/things/soup-bowl,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,mushroom_soup,菌菇汤,vegetable,近似候选，需确认,soup-bowl,Soup Bowl,https://www.thiings.co/things/soup-bowl,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,malatang,麻辣烫,protein,近似候选，需确认,hot-pot,Hot Pot,https://www.thiings.co/things/hot-pot,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,maocai,冒菜,protein,近似候选，需确认,hot-pot,Hot Pot,https://www.thiings.co/things/hot-pot,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,chinese_hotpot,火锅,protein,近似候选，需确认,hot-pot,Hot Pot,https://www.thiings.co/things/hot-pot,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,luosifen,螺蛳粉,staple,近似候选，需确认,noodles,Noodles,https://www.thiings.co/things/noodles,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,zhajiang_noodles,炸酱面,staple,近似候选，需确认,noodles,Noodles,https://www.thiings.co/things/noodles,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,reganmian,热干面,staple,近似候选，需确认,noodles,Noodles,https://www.thiings.co/things/noodles,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,chongqing_noodles,重庆小面,staple,近似候选，需确认,noodles,Noodles,https://www.thiings.co/things/noodles,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,sour_spicy_noodles,酸辣粉,staple,近似候选，需确认,noodles,Noodles,https://www.thiings.co/things/noodles,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,liangpi,凉皮,staple,近似候选，需确认,noodles,Noodles,https://www.thiings.co/things/noodles,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,beef_rice_bowl,牛肉盖饭,staple,近似候选，需确认,rice,Rice,https://www.thiings.co/things/rice,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,braised_pork_rice,卤肉饭,staple,近似候选，需确认,rice,Rice,https://www.thiings.co/things/rice,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,rice_white,米饭(熟),staple,共享候选,rice,Rice,https://www.thiings.co/things/rice,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,rice_brown,糙米饭(熟),staple,近似候选，需确认,rice,Rice,https://www.thiings.co/things/rice,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,oatmeal,燕麦片,staple,直接候选,oatmeal,Oatmeal,https://www.thiings.co/things/oatmeal,英文名称对应；素材外观仍需目视核对。
+食材／菜品,whole_wheat_bread,全麦面包,staple,近似候选，需确认,rye-bread,Rye bread,https://www.thiings.co/things/rye-bread,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,bread_white,白面包,staple,直接候选,bread-white,Bread,https://www.thiings.co/things/bread-white,英文名称对应；素材外观仍需目视核对。
+食材／菜品,sweet_potato,红薯,staple,直接候选,sweet-potato,Sweet Potato,https://www.thiings.co/things/sweet-potato,英文名称对应；素材外观仍需目视核对。
+食材／菜品,potato,土豆,staple,直接候选,potato,Potato,https://www.thiings.co/things/potato,英文名称对应；素材外观仍需目视核对。
+食材／菜品,corn,玉米,staple,共享候选,corn-on-the-cob,Corn on the Cob,https://www.thiings.co/things/corn-on-the-cob,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,noodles,面条(熟),staple,直接候选,noodles,Noodles,https://www.thiings.co/things/noodles,英文名称对应；素材外观仍需目视核对。
+食材／菜品,dumpling,饺子(熟),staple,共享候选,dumplings,Dumplings,https://www.thiings.co/things/dumplings,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,quinoa,藜麦(熟),staple,直接候选,quinoa,Quinoa,https://www.thiings.co/things/quinoa,英文名称对应；素材外观仍需目视核对。
+食材／菜品,millet,小米饭(熟),staple,近似候选，需确认,groat,Groat,https://www.thiings.co/things/groat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,barley,大麦(熟),staple,近似候选，需确认,groat,Groat,https://www.thiings.co/things/groat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,pumpkin,南瓜,staple,直接候选,pumpkin,Pumpkin,https://www.thiings.co/things/pumpkin,英文名称对应；素材外观仍需目视核对。
+食材／菜品,rice_noodle,米线(熟),staple,近似候选，需确认,rice-vermicelli,Rice Vermicelli,https://www.thiings.co/things/rice-vermicelli,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,udon,乌冬面(熟),staple,直接候选,udon,Udon,https://www.thiings.co/things/udon,英文名称对应；素材外观仍需目视核对。
+食材／菜品,pasta_wholewheat,全麦意面(熟),staple,近似候选，需确认,pasta,Pasta,https://www.thiings.co/things/pasta,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,bun_steamed,包子,staple,共享候选,baozi,Baozi,https://www.thiings.co/things/baozi,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,mantou,馒头,staple,近似候选，需确认,bread-roll,Bread Roll,https://www.thiings.co/things/bread-roll,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,bagel,贝果,staple,直接候选,bagel,Bagel,https://www.thiings.co/things/bagel,英文名称对应；素材外观仍需目视核对。
+食材／菜品,congee,白粥,staple,近似候选，需确认,rice,Rice,https://www.thiings.co/things/rice,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,fried_rice,炒饭,staple,近似候选，需确认,luncheon-meat-fried-rice,Luncheon Meat Fried Rice,https://www.thiings.co/things/luncheon-meat-fried-rice,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,fried_noodles,炒面,staple,近似候选，需确认,noodles,Noodles,https://www.thiings.co/things/noodles,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,sushi_roll,寿司卷,staple,共享候选,sushi-california-roll,Sushi - California Roll,https://www.thiings.co/things/sushi-california-roll,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,wonton,馄饨(熟),staple,共享候选,dumplings,Dumplings,https://www.thiings.co/things/dumplings,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,tortilla,玉米饼,staple,近似候选，需确认,corn-tortilla,Corn tortilla,https://www.thiings.co/things/corn-tortilla,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,pancake,煎饼,staple,直接候选,pancake,Pancake,https://www.thiings.co/things/pancake,英文名称对应；素材外观仍需目视核对。
+食材／菜品,cereal,谷物麦片,staple,近似候选，需确认,fruit-ring-cereal,Fruit Ring Cereal,https://www.thiings.co/things/fruit-ring-cereal,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,toast,吐司,staple,直接候选,toast,Toast,https://www.thiings.co/things/toast,英文名称对应；素材外观仍需目视核对。
+食材／菜品,croissant,可颂,staple,直接候选,croissant,Croissant,https://www.thiings.co/things/croissant,英文名称对应；素材外观仍需目视核对。
+食材／菜品,wrap,卷饼,staple,共享候选,burrito,Burrito,https://www.thiings.co/things/burrito,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,chicken_breast,鸡胸肉,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,chicken_leg,鸡腿肉,protein,共享候选,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,beef_lean,瘦牛肉,protein,近似候选，需确认,beef-raw,Raw Beef,https://www.thiings.co/things/beef-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,pork_lean,瘦猪肉,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,salmon,三文鱼,protein,直接候选,salmon,Salmon,https://www.thiings.co/things/salmon,英文名称对应；素材外观仍需目视核对。
+食材／菜品,tuna,金枪鱼,protein,近似候选，需确认,canned-tuna,Canned Tuna,https://www.thiings.co/things/canned-tuna,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,shrimp,虾仁,protein,直接候选,shrimp,Shrimp,https://www.thiings.co/things/shrimp,英文名称对应；素材外观仍需目视核对。
+食材／菜品,egg,鸡蛋,protein,直接候选,egg,Egg,https://www.thiings.co/things/egg,英文名称对应；素材外观仍需目视核对。
+食材／菜品,egg_white,蛋清,protein,近似候选，需确认,egg,Egg,https://www.thiings.co/things/egg,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,tofu,北豆腐,protein,直接候选,tofu,Tofu,https://www.thiings.co/things/tofu,英文名称对应；素材外观仍需目视核对。
+食材／菜品,duck_breast,鸭胸肉,protein,共享候选,smoked-duck-breast,Smoked Duck Breast,https://www.thiings.co/things/smoked-duck-breast,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,cod,鳕鱼,protein,近似候选，需确认,fish-raw,Raw Fish,https://www.thiings.co/things/fish-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,tilapia,罗非鱼,protein,直接候选,tilapia,Tilapia,https://www.thiings.co/things/tilapia,英文名称对应；素材外观仍需目视核对。
+食材／菜品,mackerel,鲭鱼,protein,近似候选，需确认,fish-raw,Raw Fish,https://www.thiings.co/things/fish-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,lean_lamb,瘦羊肉,protein,近似候选，需确认,meat,Meat,https://www.thiings.co/things/meat,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,turkey_breast,火鸡胸,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,prawn,大虾,protein,共享候选,shrimp-925i6g,Shrimp,https://www.thiings.co/things/shrimp-925i6g,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,crab,蟹肉,protein,直接候选,crab,Crab,https://www.thiings.co/things/crab,英文名称对应；素材外观仍需目视核对。
+食材／菜品,beef_shank,牛腱,protein,近似候选，需确认,beef-raw,Raw Beef,https://www.thiings.co/things/beef-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,tempeh,天贝,protein,待选型,,,https://www.thiings.co/things?q=tempeh,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,sardine,沙丁鱼,protein,直接候选,sardine,Sardine,https://www.thiings.co/things/sardine,英文名称对应；素材外观仍需目视核对。
+食材／菜品,mussel,青口贝,protein,待选型,,,https://www.thiings.co/things?q=mussel,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,scallop,扇贝,protein,直接候选,scallop,Scallop,https://www.thiings.co/things/scallop,英文名称对应；素材外观仍需目视核对。
+食材／菜品,squid,鱿鱼,protein,直接候选,squid,Squid,https://www.thiings.co/things/squid,英文名称对应；素材外观仍需目视核对。
+食材／菜品,oyster,生蚝,protein,待选型,,,https://www.thiings.co/things?q=oyster,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,edamame,毛豆,protein,直接候选,edamame,Edamame,https://www.thiings.co/things/edamame,英文名称对应；素材外观仍需目视核对。
+食材／菜品,chickpea,鹰嘴豆,protein,直接候选,chickpea,Chickpea,https://www.thiings.co/things/chickpea,英文名称对应；素材外观仍需目视核对。
+食材／菜品,chicken_wing,鸡翅,protein,共享候选,chicken-wings,Chicken Wings,https://www.thiings.co/things/chicken-wings,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,pork_tenderloin,猪里脊,protein,共享候选,meat,Meat,https://www.thiings.co/things/meat,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,minced_beef,牛肉末,protein,近似候选，需确认,beef-raw,Raw Beef,https://www.thiings.co/things/beef-raw,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,broccoli,西兰花,vegetable,直接候选,broccoli,Broccoli,https://www.thiings.co/things/broccoli,英文名称对应；素材外观仍需目视核对。
+食材／菜品,spinach,菠菜,vegetable,直接候选,spinach,Spinach,https://www.thiings.co/things/spinach,英文名称对应；素材外观仍需目视核对。
+食材／菜品,lettuce,生菜,vegetable,直接候选,lettuce,Lettuce,https://www.thiings.co/things/lettuce,英文名称对应；素材外观仍需目视核对。
+食材／菜品,tomato,番茄,vegetable,直接候选,tomato,Tomato,https://www.thiings.co/things/tomato,英文名称对应；素材外观仍需目视核对。
+食材／菜品,cucumber,黄瓜,vegetable,直接候选,cucumber,Cucumber,https://www.thiings.co/things/cucumber,英文名称对应；素材外观仍需目视核对。
+食材／菜品,carrot,胡萝卜,vegetable,直接候选,carrot,Carrot,https://www.thiings.co/things/carrot,英文名称对应；素材外观仍需目视核对。
+食材／菜品,mushroom,蘑菇,vegetable,共享候选,oyster-mushroom,Oyster Mushroom,https://www.thiings.co/things/oyster-mushroom,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,cauliflower,花菜,vegetable,直接候选,cauliflower,Cauliflower,https://www.thiings.co/things/cauliflower,英文名称对应；素材外观仍需目视核对。
+食材／菜品,bok_choy,上海青,vegetable,近似候选，需确认,lettuce,Lettuce,https://www.thiings.co/things/lettuce,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,cabbage,卷心菜,vegetable,直接候选,cabbage,Cabbage,https://www.thiings.co/things/cabbage,英文名称对应；素材外观仍需目视核对。
+食材／菜品,asparagus,芦笋,vegetable,近似候选，需确认,white-asparagus,White Asparagus,https://www.thiings.co/things/white-asparagus,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,bell_pepper,彩椒,vegetable,共享候选,green-pepper,Green Pepper,https://www.thiings.co/things/green-pepper,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,onion,洋葱,vegetable,直接候选,onion,Onion,https://www.thiings.co/things/onion,英文名称对应；素材外观仍需目视核对。
+食材／菜品,eggplant,茄子,vegetable,直接候选,eggplant,Eggplant,https://www.thiings.co/things/eggplant,英文名称对应；素材外观仍需目视核对。
+食材／菜品,zucchini,西葫芦,vegetable,直接候选,zucchini,Zucchini,https://www.thiings.co/things/zucchini,英文名称对应；素材外观仍需目视核对。
+食材／菜品,kale,羽衣甘蓝,vegetable,近似候选，需确认,lettuce,Lettuce,https://www.thiings.co/things/lettuce,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,celery,芹菜,vegetable,直接候选,celery,Celery,https://www.thiings.co/things/celery,英文名称对应；素材外观仍需目视核对。
+食材／菜品,green_beans,四季豆,vegetable,待选型,,,https://www.thiings.co/things?q=green%20beans,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,pea,豌豆,vegetable,近似候选，需确认,can-of-peas,Can of Peas,https://www.thiings.co/things/can-of-peas,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,bean_sprout,豆芽,vegetable,待选型,,,https://www.thiings.co/things?q=bean%20sprout,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,radish,白萝卜,vegetable,直接候选,radish,Radish,https://www.thiings.co/things/radish,英文名称对应；素材外观仍需目视核对。
+食材／菜品,lotus_root,莲藕,vegetable,近似候选，需确认,fried-lotus-root,Fried Lotus Root,https://www.thiings.co/things/fried-lotus-root,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,seaweed,海带,vegetable,共享候选,nori-sheet,Nori Sheet,https://www.thiings.co/things/nori-sheet,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,okra,秋葵,vegetable,待选型,,,https://www.thiings.co/things?q=okra,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,broccoli_sprout,西兰花苗,vegetable,待选型,,,https://www.thiings.co/things?q=broccoli%20sprout,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,apple,苹果,fruit,直接候选,apple,Apple,https://www.thiings.co/things/apple,英文名称对应；素材外观仍需目视核对。
+食材／菜品,banana,香蕉,fruit,直接候选,banana,Banana,https://www.thiings.co/things/banana,英文名称对应；素材外观仍需目视核对。
+食材／菜品,orange,橙子,fruit,直接候选,orange,Orange,https://www.thiings.co/things/orange,英文名称对应；素材外观仍需目视核对。
+食材／菜品,blueberry,蓝莓,fruit,直接候选,blueberry,Blueberry,https://www.thiings.co/things/blueberry,英文名称对应；素材外观仍需目视核对。
+食材／菜品,strawberry,草莓,fruit,直接候选,strawberry,Strawberry,https://www.thiings.co/things/strawberry,英文名称对应；素材外观仍需目视核对。
+食材／菜品,grape,葡萄,fruit,直接候选,grape,Grape,https://www.thiings.co/things/grape,英文名称对应；素材外观仍需目视核对。
+食材／菜品,kiwi,猕猴桃,fruit,共享候选,kiwi-fruit,Kiwi Fruit,https://www.thiings.co/things/kiwi-fruit,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,mango,芒果,fruit,直接候选,mango,Mango,https://www.thiings.co/things/mango,英文名称对应；素材外观仍需目视核对。
+食材／菜品,watermelon,西瓜,fruit,直接候选,watermelon,Watermelon,https://www.thiings.co/things/watermelon,英文名称对应；素材外观仍需目视核对。
+食材／菜品,avocado,牛油果,fruit,直接候选,avocado,Avocado,https://www.thiings.co/things/avocado,英文名称对应；素材外观仍需目视核对。
+食材／菜品,pineapple,菠萝,fruit,直接候选,pineapple,Pineapple,https://www.thiings.co/things/pineapple,英文名称对应；素材外观仍需目视核对。
+食材／菜品,pear,梨,fruit,直接候选,pear,Pear,https://www.thiings.co/things/pear,英文名称对应；素材外观仍需目视核对。
+食材／菜品,peach,桃子,fruit,直接候选,peach,Peach,https://www.thiings.co/things/peach,英文名称对应；素材外观仍需目视核对。
+食材／菜品,cherry,樱桃,fruit,共享候选,cherries,Cherries,https://www.thiings.co/things/cherries,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,dragonfruit,火龙果,fruit,共享候选,dragon-fruit,Dragon Fruit,https://www.thiings.co/things/dragon-fruit,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,grapefruit,西柚,fruit,直接候选,grapefruit,Grapefruit,https://www.thiings.co/things/grapefruit,英文名称对应；素材外观仍需目视核对。
+食材／菜品,lemon,柠檬,fruit,直接候选,lemon,Lemon,https://www.thiings.co/things/lemon,英文名称对应；素材外观仍需目视核对。
+食材／菜品,lime,青柠,fruit,直接候选,lime,Lime,https://www.thiings.co/things/lime,英文名称对应；素材外观仍需目视核对。
+食材／菜品,papaya,木瓜,fruit,直接候选,papaya,Papaya,https://www.thiings.co/things/papaya,英文名称对应；素材外观仍需目视核对。
+食材／菜品,lychee,荔枝,fruit,直接候选,lychee,Lychee,https://www.thiings.co/things/lychee,英文名称对应；素材外观仍需目视核对。
+食材／菜品,plum,李子,fruit,直接候选,plum,Plum,https://www.thiings.co/things/plum,英文名称对应；素材外观仍需目视核对。
+食材／菜品,raspberry,覆盆子,fruit,直接候选,raspberry,Raspberry,https://www.thiings.co/things/raspberry,英文名称对应；素材外观仍需目视核对。
+食材／菜品,blackberry,黑莓,fruit,直接候选,blackberry,Blackberry,https://www.thiings.co/things/blackberry,英文名称对应；素材外观仍需目视核对。
+食材／菜品,cantaloupe,哈密瓜,fruit,直接候选,cantaloupe,Cantaloupe,https://www.thiings.co/things/cantaloupe,英文名称对应；素材外观仍需目视核对。
+食材／菜品,coconut,椰肉,fruit,直接候选,coconut,Coconut,https://www.thiings.co/things/coconut,英文名称对应；素材外观仍需目视核对。
+食材／菜品,greek_yogurt,希腊酸奶,dairy,直接候选,greek-yogurt,Greek yogurt,https://www.thiings.co/things/greek-yogurt,英文名称对应；素材外观仍需目视核对。
+食材／菜品,milk,牛奶,dairy,直接候选,milk,Milk,https://www.thiings.co/things/milk,英文名称对应；素材外观仍需目视核对。
+食材／菜品,soy_milk,无糖豆浆,dairy,近似候选，需确认,milk,Milk,https://www.thiings.co/things/milk,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,lowfat_milk,低脂牛奶,dairy,近似候选，需确认,milk,Milk,https://www.thiings.co/things/milk,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,kefir,开菲尔,dairy,近似候选，需确认,yogurt,Yogurt,https://www.thiings.co/things/yogurt,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,cottage_cheese,茅屋奶酪,dairy,近似候选，需确认,cheese,Cheese,https://www.thiings.co/things/cheese,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,cheddar_cheese,切达奶酪,dairy,近似候选，需确认,cheese,Cheese,https://www.thiings.co/things/cheese,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,mozzarella,马苏里拉,dairy,共享候选,mozzarella-cheese,Mozzarella Cheese,https://www.thiings.co/things/mozzarella-cheese,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,yogurt_plain,原味酸奶,dairy,共享候选,yogurt,Yogurt,https://www.thiings.co/things/yogurt,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,skyr,冰岛酸奶,dairy,近似候选，需确认,yogurt,Yogurt,https://www.thiings.co/things/yogurt,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,soy_yogurt,豆乳酸奶,dairy,近似候选，需确认,yogurt,Yogurt,https://www.thiings.co/things/yogurt,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,chocolate_milk,巧克力牛奶,dairy,近似候选，需确认,milk,Milk,https://www.thiings.co/things/milk,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,almond,杏仁,nuts,直接候选,almond,Almond,https://www.thiings.co/things/almond,英文名称对应；素材外观仍需目视核对。
+食材／菜品,walnut,核桃,nuts,直接候选,walnut,Walnut,https://www.thiings.co/things/walnut,英文名称对应；素材外观仍需目视核对。
+食材／菜品,peanut,花生,nuts,直接候选,peanut,Peanut,https://www.thiings.co/things/peanut,英文名称对应；素材外观仍需目视核对。
+食材／菜品,cashew,腰果,nuts,直接候选,cashew,Cashew,https://www.thiings.co/things/cashew,英文名称对应；素材外观仍需目视核对。
+食材／菜品,pistachio,开心果,nuts,直接候选,pistachio,Pistachio,https://www.thiings.co/things/pistachio,英文名称对应；素材外观仍需目视核对。
+食材／菜品,macadamia,夏威夷果,nuts,待选型,,,https://www.thiings.co/things?q=macadamia,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,sunflower_seed,葵花籽,nuts,直接候选,sunflower-seed,Sunflower Seed,https://www.thiings.co/things/sunflower-seed,英文名称对应；素材外观仍需目视核对。
+食材／菜品,pumpkin_seed,南瓜籽,nuts,共享候选,pumpkin-seeds,Pumpkin Seeds,https://www.thiings.co/things/pumpkin-seeds,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,hazelnut,榛子,nuts,直接候选,hazelnut,Hazelnut,https://www.thiings.co/things/hazelnut,英文名称对应；素材外观仍需目视核对。
+食材／菜品,pecan,碧根果,nuts,直接候选,pecan,Pecan,https://www.thiings.co/things/pecan,英文名称对应；素材外观仍需目视核对。
+食材／菜品,chestnut,板栗,nuts,共享候选,roasted-chestnut,Roasted Chestnut,https://www.thiings.co/things/roasted-chestnut,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,chia_seed,奇亚籽,nuts,共享候选,chia-seeds,Chia Seeds,https://www.thiings.co/things/chia-seeds,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,flaxseed,亚麻籽,nuts,待选型,,,https://www.thiings.co/things?q=flaxseed,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,pine_nut,松子,nuts,直接候选,pine-nut,Pine Nut,https://www.thiings.co/things/pine-nut,英文名称对应；素材外观仍需目视核对。
+食材／菜品,black_coffee,美式咖啡,drink,共享候选,filter-coffee,Filter Coffee,https://www.thiings.co/things/filter-coffee,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,latte,拿铁,drink,直接候选,latte,Latte,https://www.thiings.co/things/latte,英文名称对应；素材外观仍需目视核对。
+食材／菜品,green_tea,绿茶,drink,共享候选,traditional-chinese-green-tea,Traditional Chinese Green Tea,https://www.thiings.co/things/traditional-chinese-green-tea,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,cola,可乐,drink,共享候选,cola-can,Cola Can,https://www.thiings.co/things/cola-can,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,milk_tea,奶茶,drink,共享候选,bubble-tea,Bubble Tea,https://www.thiings.co/things/bubble-tea,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,protein_powder,蛋白粉,drink,直接候选,protein-powder,Protein powder,https://www.thiings.co/things/protein-powder,英文名称对应；素材外观仍需目视核对。
+食材／菜品,orange_juice,橙汁,drink,直接候选,orange-juice,Orange Juice,https://www.thiings.co/things/orange-juice,英文名称对应；素材外观仍需目视核对。
+食材／菜品,coconut_water,椰子水,drink,共享候选,coconut-water-carton,Coconut Water Carton,https://www.thiings.co/things/coconut-water-carton,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,cappuccino,卡布奇诺,drink,直接候选,cappuccino,Cappuccino,https://www.thiings.co/things/cappuccino,英文名称对应；素材外观仍需目视核对。
+食材／菜品,espresso,浓缩咖啡,drink,直接候选,espresso,Espresso,https://www.thiings.co/things/espresso,英文名称对应；素材外观仍需目视核对。
+食材／菜品,sparkling_water,气泡水,drink,近似候选，需确认,bottle-of-water,Bottle of Water,https://www.thiings.co/things/bottle-of-water,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,sports_drink,运动饮料,drink,近似候选，需确认,bottle-of-water,Bottle of Water,https://www.thiings.co/things/bottle-of-water,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,smoothie_berry,莓果奶昔,drink,近似候选，需确认,smoothie-bowl,Smoothie Bowl,https://www.thiings.co/things/smoothie-bowl,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,lemonade,柠檬水,drink,直接候选,lemonade,Lemonade,https://www.thiings.co/things/lemonade,英文名称对应；素材外观仍需目视核对。
+食材／菜品,tomato_juice,番茄汁,drink,直接候选,tomato-juice,Tomato Juice,https://www.thiings.co/things/tomato-juice,英文名称对应；素材外观仍需目视核对。
+食材／菜品,oat_milk,燕麦奶,drink,直接候选,oat-milk,Oat Milk,https://www.thiings.co/things/oat-milk,英文名称对应；素材外观仍需目视核对。
+食材／菜品,dark_chocolate,黑巧克力,snack,共享候选,chocolate-bar,Chocolate Bar,https://www.thiings.co/things/chocolate-bar,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,chips,薯片,snack,直接候选,chips,Chips,https://www.thiings.co/things/chips,英文名称对应；素材外观仍需目视核对。
+食材／菜品,cookie,曲奇饼干,snack,直接候选,cookie,Cookie,https://www.thiings.co/things/cookie,英文名称对应；素材外观仍需目视核对。
+食材／菜品,ice_cream,冰淇淋,snack,直接候选,ice-cream,Ice cream,https://www.thiings.co/things/ice-cream,英文名称对应；素材外观仍需目视核对。
+食材／菜品,beef_jerky,牛肉干,snack,直接候选,beef-jerky,Beef Jerky,https://www.thiings.co/things/beef-jerky,英文名称对应；素材外观仍需目视核对。
+食材／菜品,energy_bar,能量棒,snack,近似候选，需确认,cereal-bar,Cereal Bar,https://www.thiings.co/things/cereal-bar,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,popcorn,爆米花,snack,直接候选,popcorn,Popcorn,https://www.thiings.co/things/popcorn,英文名称对应；素材外观仍需目视核对。
+食材／菜品,cracker,苏打饼干,snack,共享候选,saltine-cracker,Saltine Cracker,https://www.thiings.co/things/saltine-cracker,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,mooncake,月饼,snack,直接候选,mooncake,Mooncake,https://www.thiings.co/things/mooncake,英文名称对应；素材外观仍需目视核对。
+食材／菜品,fried_chicken,炸鸡,snack,近似候选，需确认,korean-fried-chicken,Korean Fried Chicken,https://www.thiings.co/things/korean-fried-chicken,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,pretzel,椒盐卷饼,snack,直接候选,pretzel,Pretzel,https://www.thiings.co/things/pretzel,英文名称对应；素材外观仍需目视核对。
+食材／菜品,muffin,松饼,snack,近似候选，需确认,blueberry-muffin,Blueberry Muffin,https://www.thiings.co/things/blueberry-muffin,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,donut,甜甜圈,snack,直接候选,donut,Donut,https://www.thiings.co/things/donut,英文名称对应；素材外观仍需目视核对。
+食材／菜品,brownie,布朗尼,snack,直接候选,brownie,Brownie,https://www.thiings.co/things/brownie,英文名称对应；素材外观仍需目视核对。
+食材／菜品,rice_cracker,米饼,snack,近似候选，需确认,saltine-cracker,Saltine Cracker,https://www.thiings.co/things/saltine-cracker,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,granola,格兰诺拉,snack,直接候选,granola,Granola,https://www.thiings.co/things/granola,英文名称对应；素材外观仍需目视核对。
+食材／菜品,sandwich,三明治,snack,直接候选,sandwich,Sandwich,https://www.thiings.co/things/sandwich,英文名称对应；素材外观仍需目视核对。
+食材／菜品,hamburger,汉堡,snack,直接候选,hamburger,Hamburger,https://www.thiings.co/things/hamburger,英文名称对应；素材外观仍需目视核对。
+食材／菜品,pizza,披萨,snack,直接候选,pizza,Pizza,https://www.thiings.co/things/pizza,英文名称对应；素材外观仍需目视核对。
+食材／菜品,hot_dog,热狗,snack,直接候选,hot-dog,Hot Dog,https://www.thiings.co/things/hot-dog,英文名称对应；素材外观仍需目视核对。
+食材／菜品,spring_roll,春卷,snack,共享候选,nems,Nems,https://www.thiings.co/things/nems,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,seaweed_snack,海苔脆,snack,共享候选,nori-sheet,Nori Sheet,https://www.thiings.co/things/nori-sheet,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,grilled_sausage_cn,烤肠,protein,共享候选,sausage,Sausage,https://www.thiings.co/things/sausage,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,pork_cabbage_dumpling,猪肉白菜水饺(熟),staple,共享候选,dumplings,Dumplings,https://www.thiings.co/things/dumplings,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,chive_egg_dumpling,韭菜鸡蛋水饺(熟),staple,共享候选,dumplings,Dumplings,https://www.thiings.co/things/dumplings,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,pork_baozi,猪肉包子,staple,共享候选,baozi,Baozi,https://www.thiings.co/things/baozi,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,vegetable_baozi,素菜包子,staple,共享候选,baozi,Baozi,https://www.thiings.co/things/baozi,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,jianbing_guozi,煎饼果子,staple,近似候选，需确认,fried-scallion-pancake,Fried Scallion Pancake,https://www.thiings.co/things/fried-scallion-pancake,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,youtiao,油条,staple,待选型,,,https://www.thiings.co/things?q=youtiao,未找到可靠的同名或近义候选；不自动用另一种食材／动作冒充。
+食材／菜品,egg_fried_rice_cn,蛋炒饭,staple,共享候选,luncheon-meat-fried-rice,Luncheon Meat Fried Rice,https://www.thiings.co/things/luncheon-meat-fried-rice,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,beef_noodle_soup_cn,牛肉汤面,staple,共享候选,taiwan-beef-noodle-soup,Taiwan beef noodle soup,https://www.thiings.co/things/taiwan-beef-noodle-soup,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,pork_wonton_soup,鲜肉馄饨,staple,共享候选,dumplings,Dumplings,https://www.thiings.co/things/dumplings,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,pork_preserved_egg_congee,皮蛋瘦肉粥,staple,近似候选，需确认,rice,Rice,https://www.thiings.co/things/rice,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,guilin_rice_noodles,桂林米粉,staple,共享候选,rice-vermicelli,Rice Vermicelli,https://www.thiings.co/things/rice-vermicelli,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,scallion_pancake_cn,葱油饼,staple,共享候选,fried-scallion-pancake,Fried Scallion Pancake,https://www.thiings.co/things/fried-scallion-pancake,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,pork_zongzi,鲜肉粽子,staple,共享候选,zongzi,Zongzi,https://www.thiings.co/things/zongzi,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,red_bean_zongzi,红豆粽子,staple,共享候选,zongzi,Zongzi,https://www.thiings.co/things/zongzi,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,sesame_tangyuan,黑芝麻汤圆,staple,共享候选,tangyuan,Tangyuan,https://www.thiings.co/things/tangyuan,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,shrimp_rice_roll,鲜虾肠粉,staple,共享候选,rice-vermicelli,Rice Vermicelli,https://www.thiings.co/things/rice-vermicelli,同类食材、运动或器械共用；保留原项目名称与强度。
+食材／菜品,roujiamo,肉夹馍,staple,近似候选，需确认,gua-bao,Gua bao,https://www.thiings.co/things/gua-bao,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,tomato_scrambled_egg,番茄炒鸡蛋,protein,近似候选，需确认,scrambled-egg,Scrambled Egg,https://www.thiings.co/things/scrambled-egg,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,mapo_tofu,麻婆豆腐,protein,近似候选，需确认,tofu,Tofu,https://www.thiings.co/things/tofu,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,kung_pao_chicken,宫保鸡丁,protein,近似候选，需确认,chicken-roasted,Roast Chicken,https://www.thiings.co/things/chicken-roasted,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,braised_pork_cn,红烧肉,protein,近似候选，需确认,crispy-pork-belly,Crispy Pork Belly,https://www.thiings.co/things/crispy-pork-belly,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,steamed_fish_cn,清蒸鱼,protein,近似候选，需确认,fish-cooked,Cooked Fish,https://www.thiings.co/things/fish-cooked,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+食材／菜品,stir_fried_bok_choy,清炒小白菜,vegetable,近似候选，需确认,lettuce,Lettuce,https://www.thiings.co/things/lettuce,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,walking_slow,散步,cardio,共享候选,walk,Walk,https://www.thiings.co/things/walk,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,walking_fast,快走,cardio,共享候选,walk,Walk,https://www.thiings.co/things/walk,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,jogging,慢跑,cardio,共享候选,running,Running,https://www.thiings.co/things/running,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,running,跑步,cardio,直接候选,running,Running,https://www.thiings.co/things/running,英文名称对应；素材外观仍需目视核对。
+运动,cycling_light,骑行(轻松),cardio,共享候选,bicycle,Bicycle,https://www.thiings.co/things/bicycle,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,cycling_fast,骑行(高速),cardio,共享候选,bicycle,Bicycle,https://www.thiings.co/things/bicycle,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,jump_rope,跳绳,cardio,直接候选,jump-rope,Jump Rope,https://www.thiings.co/things/jump-rope,英文名称对应；素材外观仍需目视核对。
+运动,hiit,HIIT,cardio,近似候选，需确认,workout-5uerrd,Workout,https://www.thiings.co/things/workout-5uerrd,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,elliptical,椭圆机,cardio,共享候选,cross-trainer,Cross Trainer,https://www.thiings.co/things/cross-trainer,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,stair_climber,爬楼机,cardio,直接候选,stair-climber,Stair Climber,https://www.thiings.co/things/stair-climber,英文名称对应；素材外观仍需目视核对。
+运动,swim_light,游泳(轻松),cardio,共享候选,swimming,Swimming,https://www.thiings.co/things/swimming,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,swim_fast,游泳(较快),cardio,共享候选,swimming,Swimming,https://www.thiings.co/things/swimming,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,rowing_machine,划船机,cardio,直接候选,rowing-machine,Rowing Machine,https://www.thiings.co/things/rowing-machine,英文名称对应；素材外观仍需目视核对。
+运动,dancing,跳舞,cardio,共享候选,dance,Dance,https://www.thiings.co/things/dance,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,aerobics,有氧操,cardio,直接候选,aerobics,Aerobics,https://www.thiings.co/things/aerobics,英文名称对应；素材外观仍需目视核对。
+运动,spinning,动感单车,cardio,共享候选,indoor-cycling-bike,Indoor Cycling Bike,https://www.thiings.co/things/indoor-cycling-bike,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,zumba,尊巴,cardio,共享候选,dance,Dance,https://www.thiings.co/things/dance,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,step_aerobics,踏板操,cardio,共享候选,step-aerobics-platform,Step Aerobics Platform,https://www.thiings.co/things/step-aerobics-platform,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,burpees,波比跳,cardio,近似候选，需确认,workout-5uerrd,Workout,https://www.thiings.co/things/workout-5uerrd,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,jumping_jacks,开合跳,cardio,近似候选，需确认,workout-5uerrd,Workout,https://www.thiings.co/things/workout-5uerrd,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,shadow_boxing,空击,cardio,共享候选,boxing,Boxing,https://www.thiings.co/things/boxing,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,indoor_run,室内慢跑,cardio,共享候选,running,Running,https://www.thiings.co/things/running,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,treadmill_walk,跑步机快走,cardio,共享候选,treadmill,Treadmill,https://www.thiings.co/things/treadmill,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,treadmill_run,跑步机跑步,cardio,共享候选,treadmill,Treadmill,https://www.thiings.co/things/treadmill,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,battle_rope,战绳,cardio,近似候选，需确认,climbing-rope,Climbing Rope,https://www.thiings.co/things/climbing-rope,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,skierg,滑雪机,cardio,近似候选，需确认,ski,Ski,https://www.thiings.co/things/ski,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,airbike,风阻单车,cardio,近似候选，需确认,indoor-cycling-bike,Indoor Cycling Bike,https://www.thiings.co/things/indoor-cycling-bike,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,mountain_bike,山地骑行,cardio,直接候选,mountain-bike,Mountain Bike,https://www.thiings.co/things/mountain-bike,英文名称对应；素材外观仍需目视核对。
+运动,kickboxing_cardio,搏击有氧,cardio,共享候选,boxing,Boxing,https://www.thiings.co/things/boxing,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,rope_climb_machine,爬绳机,cardio,共享候选,climbing-rope,Climbing Rope,https://www.thiings.co/things/climbing-rope,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,sprint_interval,冲刺间歇跑,cardio,共享候选,running,Running,https://www.thiings.co/things/running,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,incline_walk,坡度快走,cardio,共享候选,treadmill,Treadmill,https://www.thiings.co/things/treadmill,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,dance_kpop,韩舞,cardio,共享候选,dance,Dance,https://www.thiings.co/things/dance,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,dance_jazz,爵士舞,cardio,共享候选,dance,Dance,https://www.thiings.co/things/dance,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,boxing_bag,沙袋拳击,cardio,共享候选,punching-bag,Punching Bag,https://www.thiings.co/things/punching-bag,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,stair_walk,台阶走,cardio,共享候选,step-aerobics-platform,Step Aerobics Platform,https://www.thiings.co/things/step-aerobics-platform,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,skipping_light,轻跳绳,cardio,共享候选,skipping-rope,Skipping rope,https://www.thiings.co/things/skipping-rope,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,water_aerobics,水中有氧,cardio,共享候选,swimming,Swimming,https://www.thiings.co/things/swimming,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,bodyweight,自重训练,strength,近似候选，需确认,workout-5uerrd,Workout,https://www.thiings.co/things/workout-5uerrd,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,weight_training,力量训练,strength,共享候选,weightlifting,Weightlifting,https://www.thiings.co/things/weightlifting,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,crossfit,综合体能,strength,近似候选，需确认,workout-5uerrd,Workout,https://www.thiings.co/things/workout-5uerrd,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,kettlebell,壶铃训练,strength,直接候选,kettlebell,Kettlebell,https://www.thiings.co/things/kettlebell,英文名称对应；素材外观仍需目视核对。
+运动,squat_training,下肢训练,strength,共享候选,squat-rack,Squat Rack,https://www.thiings.co/things/squat-rack,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,core_training,核心训练,strength,近似候选，需确认,ab-wheel,Ab Wheel,https://www.thiings.co/things/ab-wheel,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,plank,平板支撑,strength,直接候选,plank,Plank,https://www.thiings.co/things/plank,英文名称对应；素材外观仍需目视核对。
+运动,pushup,俯卧撑,strength,近似候选，需确认,bicep,Bicep,https://www.thiings.co/things/bicep,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,pullup,引体向上,strength,共享候选,calisthenics-pull-up,Calisthenics Pull-Up,https://www.thiings.co/things/calisthenics-pull-up,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,deadlift,硬拉,strength,共享候选,barbell,Barbell,https://www.thiings.co/things/barbell,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,bench_press,卧推,strength,共享候选,weights-bench,Weights Bench,https://www.thiings.co/things/weights-bench,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,shoulder_press,推举,strength,共享候选,dumbbell,Dumbbell,https://www.thiings.co/things/dumbbell,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,lunge_training,弓步训练,strength,近似候选，需确认,bicep,Bicep,https://www.thiings.co/things/bicep,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,resistance_band,弹力带训练,strength,直接候选,resistance-band,Resistance band,https://www.thiings.co/things/resistance-band,英文名称对应；素材外观仍需目视核对。
+运动,trx,TRX 训练,strength,近似候选，需确认,resistance-band,Resistance band,https://www.thiings.co/things/resistance-band,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,leg_press,腿举,strength,直接候选,leg-press,Leg Press,https://www.thiings.co/things/leg-press,英文名称对应；素材外观仍需目视核对。
+运动,lat_pulldown,高位下拉,strength,近似候选，需确认,high-low-pulley-cable,High-Low Pulley Cable,https://www.thiings.co/things/high-low-pulley-cable,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,seated_row,坐姿划船,strength,共享候选,lateral-seated-row-machine,Lateral Seated Row Machine,https://www.thiings.co/things/lateral-seated-row-machine,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,bicep_curl,弯举,strength,共享候选,dumbbell,Dumbbell,https://www.thiings.co/things/dumbbell,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,tricep_dip,臂屈伸,strength,共享候选,dip-bar,Dip Bar,https://www.thiings.co/things/dip-bar,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,hip_thrust,臀推,strength,近似候选，需确认,bicep,Bicep,https://www.thiings.co/things/bicep,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,glute_bridge,臀桥,strength,近似候选，需确认,bicep,Bicep,https://www.thiings.co/things/bicep,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,calisthenics,街头健身,strength,共享候选,calisthenics-pull-up,Calisthenics Pull-Up,https://www.thiings.co/things/calisthenics-pull-up,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,power_clean,高翻,strength,共享候选,weightlifting,Weightlifting,https://www.thiings.co/things/weightlifting,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,sandbag_training,沙袋训练,strength,近似候选，需确认,workout-5uerrd,Workout,https://www.thiings.co/things/workout-5uerrd,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,dumbbell_training,哑铃训练,strength,共享候选,dumbbell,Dumbbell,https://www.thiings.co/things/dumbbell,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,barbell_squat,杠铃深蹲,strength,共享候选,squat-rack,Squat Rack,https://www.thiings.co/things/squat-rack,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,chest_fly,飞鸟训练,strength,近似候选，需确认,high-low-pulley-cable,High-Low Pulley Cable,https://www.thiings.co/things/high-low-pulley-cable,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,cable_row,绳索划船,strength,共享候选,lateral-seated-row-machine,Lateral Seated Row Machine,https://www.thiings.co/things/lateral-seated-row-machine,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,leg_curl,腿弯举,strength,共享候选,lying-leg-curl-machine,Lying Leg Curl Machine,https://www.thiings.co/things/lying-leg-curl-machine,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,leg_extension,腿屈伸,strength,共享候选,leg-extension-machine,Leg Extension Machine,https://www.thiings.co/things/leg-extension-machine,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,farmer_walk,农夫行走,strength,共享候选,walk,Walk,https://www.thiings.co/things/walk,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,yoga,瑜伽,flexibility,直接候选,yoga,Yoga,https://www.thiings.co/things/yoga,英文名称对应；素材外观仍需目视核对。
+运动,pilates,普拉提,flexibility,直接候选,pilates,Pilates,https://www.thiings.co/things/pilates,英文名称对应；素材外观仍需目视核对。
+运动,stretching,拉伸,flexibility,近似候选，需确认,flexibility,Flexibility,https://www.thiings.co/things/flexibility,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,mobility,灵活性训练,flexibility,近似候选，需确认,flexibility,Flexibility,https://www.thiings.co/things/flexibility,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,tai_chi,太极,flexibility,直接候选,tai-chi,Tai Chi,https://www.thiings.co/things/tai-chi,英文名称对应；素材外观仍需目视核对。
+运动,meditation_walk,冥想散步,flexibility,共享候选,walk,Walk,https://www.thiings.co/things/walk,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,foam_rolling,泡沫轴放松,flexibility,共享候选,foam-roller,Foam roller,https://www.thiings.co/things/foam-roller,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,dynamic_stretch,动态拉伸,flexibility,共享候选,flexibility,Flexibility,https://www.thiings.co/things/flexibility,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,static_stretch,静态拉伸,flexibility,共享候选,flexibility,Flexibility,https://www.thiings.co/things/flexibility,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,qigong,气功,flexibility,近似候选，需确认,tai-chi,Tai Chi,https://www.thiings.co/things/tai-chi,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,breathing_flow,呼吸流练习,flexibility,近似候选，需确认,tai-chi,Tai Chi,https://www.thiings.co/things/tai-chi,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,surya_namaskar,拜日式,flexibility,共享候选,yoga,Yoga,https://www.thiings.co/things/yoga,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,barre,芭蕾塑形,flexibility,近似候选，需确认,pilates,Pilates,https://www.thiings.co/things/pilates,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,yin_yoga,阴瑜伽,flexibility,共享候选,yoga,Yoga,https://www.thiings.co/things/yoga,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,mobility_flow,关节流动训练,flexibility,共享候选,flexibility,Flexibility,https://www.thiings.co/things/flexibility,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,chair_yoga,椅子瑜伽,flexibility,近似候选，需确认,yoga,Yoga,https://www.thiings.co/things/yoga,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,fascia_release,筋膜放松,flexibility,共享候选,foam-roller,Foam roller,https://www.thiings.co/things/foam-roller,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,shoulder_mobility,肩颈活动,flexibility,共享候选,flexibility,Flexibility,https://www.thiings.co/things/flexibility,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,hip_opener,髋部打开,flexibility,近似候选，需确认,yoga,Yoga,https://www.thiings.co/things/yoga,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,recovery_flow,恢复流,flexibility,近似候选，需确认,flexibility,Flexibility,https://www.thiings.co/things/flexibility,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,boxing,拳击训练,sports,直接候选,boxing,Boxing,https://www.thiings.co/things/boxing,英文名称对应；素材外观仍需目视核对。
+运动,badminton,羽毛球,sports,直接候选,badminton,Badminton,https://www.thiings.co/things/badminton,英文名称对应；素材外观仍需目视核对。
+运动,basketball,篮球,sports,直接候选,basketball,Basketball,https://www.thiings.co/things/basketball,英文名称对应；素材外观仍需目视核对。
+运动,soccer,足球,sports,共享候选,soccer-ball,Soccer Ball,https://www.thiings.co/things/soccer-ball,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,tennis,网球,sports,共享候选,tennis-racket,Tennis Racket,https://www.thiings.co/things/tennis-racket,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,table_tennis,乒乓球,sports,共享候选,table-tennis-paddle,Table Tennis Paddle,https://www.thiings.co/things/table-tennis-paddle,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,volleyball,排球,sports,直接候选,volleyball,Volleyball,https://www.thiings.co/things/volleyball,英文名称对应；素材外观仍需目视核对。
+运动,baseball,棒球,sports,直接候选,baseball,Baseball,https://www.thiings.co/things/baseball,英文名称对应；素材外观仍需目视核对。
+运动,golf,高尔夫,sports,直接候选,golf,Golf,https://www.thiings.co/things/golf,英文名称对应；素材外观仍需目视核对。
+运动,rugby,橄榄球,sports,直接候选,rugby,Rugby,https://www.thiings.co/things/rugby,英文名称对应；素材外观仍需目视核对。
+运动,handball,手球,sports,直接候选,handball,Handball,https://www.thiings.co/things/handball,英文名称对应；素材外观仍需目视核对。
+运动,squash,壁球,sports,共享候选,squash-racket,Squash Racket,https://www.thiings.co/things/squash-racket,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,pickleball,匹克球,sports,直接候选,pickleball,Pickleball,https://www.thiings.co/things/pickleball,英文名称对应；素材外观仍需目视核对。
+运动,fencing,击剑,sports,直接候选,fencing,Fencing,https://www.thiings.co/things/fencing,英文名称对应；素材外观仍需目视核对。
+运动,taekwondo,跆拳道,sports,直接候选,taekwondo,Taekwondo,https://www.thiings.co/things/taekwondo,英文名称对应；素材外观仍需目视核对。
+运动,judo,柔道,sports,直接候选,judo,Judo,https://www.thiings.co/things/judo,英文名称对应；素材外观仍需目视核对。
+运动,karate,空手道,sports,直接候选,karate,Karate,https://www.thiings.co/things/karate,英文名称对应；素材外观仍需目视核对。
+运动,muay_thai,泰拳,sports,共享候选,boxing,Boxing,https://www.thiings.co/things/boxing,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,ultimate_frisbee,飞盘,sports,共享候选,ultimate-disc,Ultimate Disc,https://www.thiings.co/things/ultimate-disc,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,water_polo,水球,sports,直接候选,water-polo,Water Polo,https://www.thiings.co/things/water-polo,英文名称对应；素材外观仍需目视核对。
+运动,padel,板式网球,sports,直接候选,padel,Padel,https://www.thiings.co/things/padel,英文名称对应；素材外观仍需目视核对。
+运动,rock_climbing,攀岩,sports,直接候选,rock-climbing,Rock climbing,https://www.thiings.co/things/rock-climbing,英文名称对应；素材外观仍需目视核对。
+运动,bouldering,抱石,sports,共享候选,rock-climbing,Rock climbing,https://www.thiings.co/things/rock-climbing,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,surfing,冲浪,sports,直接候选,surfing,Surfing,https://www.thiings.co/things/surfing,英文名称对应；素材外观仍需目视核对。
+运动,skating_ice,滑冰,sports,共享候选,ice-skating,Ice Skating,https://www.thiings.co/things/ice-skating,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,cricket,板球,sports,共享候选,cricket-bat,Cricket Bat,https://www.thiings.co/things/cricket-bat,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,hockey,曲棍球,sports,共享候选,hockey-stick,Hockey Stick,https://www.thiings.co/things/hockey-stick,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,archery,射箭,sports,直接候选,archery,Archery,https://www.thiings.co/things/archery,英文名称对应；素材外观仍需目视核对。
+运动,hiking,徒步,outdoors,共享候选,hiking-on-trails,Hiking on Trails,https://www.thiings.co/things/hiking-on-trails,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,mountain_climb,登山,outdoors,近似候选，需确认,rock-climbing,Rock climbing,https://www.thiings.co/things/rock-climbing,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,skating,轮滑,outdoors,共享候选,inline-skate,Inline Skate,https://www.thiings.co/things/inline-skate,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,stairs_up,爬楼,outdoors,近似候选，需确认,stair-climber,Stair Climber,https://www.thiings.co/things/stair-climber,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,housework,家务,outdoors,近似候选，需确认,cleaning-the-table,Cleaning the Table,https://www.thiings.co/things/cleaning-the-table,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,rowing_outdoor,户外划船,outdoors,共享候选,rowing-boat,Rowing Boat,https://www.thiings.co/things/rowing-boat,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,kayaking,皮划艇,outdoors,共享候选,kayak,Kayak,https://www.thiings.co/things/kayak,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,skiing,滑雪,outdoors,直接候选,skiing,Skiing,https://www.thiings.co/things/skiing,英文名称对应；素材外观仍需目视核对。
+运动,snowboarding,单板滑雪,outdoors,直接候选,snowboarding,Snowboarding,https://www.thiings.co/things/snowboarding,英文名称对应；素材外观仍需目视核对。
+运动,trail_running,越野跑,outdoors,共享候选,running,Running,https://www.thiings.co/things/running,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,rucking,负重行走,outdoors,近似候选，需确认,hiking-backpack,Hiking Backpack,https://www.thiings.co/things/hiking-backpack,仅表示主食材、食物类别或训练器械，不表示准确菜式／动作；需目视选型确认。
+运动,dog_walking,遛狗,outdoors,直接候选,dog-walking,Dog Walking,https://www.thiings.co/things/dog-walking,英文名称对应；素材外观仍需目视核对。
+运动,gardening,园艺,outdoors,共享候选,gardening-starter-kit,Gardening Kit,https://www.thiings.co/things/gardening-starter-kit,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,paddle_board,桨板,outdoors,共享候选,paddleboard,Paddleboard,https://www.thiings.co/things/paddleboard,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,fishing,钓鱼,outdoors,共享候选,fishing-rod,Fishing Rod,https://www.thiings.co/things/fishing-rod,同类食材、运动或器械共用；保留原项目名称与强度。
+运动,snowshoe,雪地徒步,outdoors,直接候选,snowshoe,Snowshoe,https://www.thiings.co/things/snowshoe,英文名称对应；素材外观仍需目视核对。
+运动,orienteering,定向越野,outdoors,共享候选,compass,Compass,https://www.thiings.co/things/compass,同类食材、运动或器械共用；保留原项目名称与强度。

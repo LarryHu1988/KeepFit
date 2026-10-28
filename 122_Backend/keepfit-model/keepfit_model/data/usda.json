@@ -1,0 +1,805 @@
+{
+  "version": "usda-sr-2018-keepfit-2026-10-24",
+  "source": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip",
+  "license": "CC0-1.0",
+  "archive_sha256": "b80817294b8850530aaedf2e515c02593b1824f763a0ff356e5c2081643e6fd0",
+  "foods": [
+    {
+      "id": "usda:168878",
+      "name": "熟白米饭",
+      "aliases": [
+        "米饭",
+        "白米饭",
+        "熟米饭"
+      ],
+      "source_description": "Rice, white, long-grain, regular, enriched, cooked",
+      "nutrients_per_100g": {
+        "protein_g": 2.69,
+        "fat_g": 0.28,
+        "carbs_g": 28.17,
+        "calories_kcal": 130.0
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup",
+          "grams": 158.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients"
+    },
+    {
+      "id": "usda:173424",
+      "name": "水煮鸡蛋",
+      "aliases": [
+        "煮鸡蛋",
+        "白煮蛋",
+        "水煮蛋"
+      ],
+      "source_description": "Egg, whole, cooked, hard-boiled",
+      "nutrients_per_100g": {
+        "calories_kcal": 155.0,
+        "protein_g": 12.58,
+        "fat_g": 10.61,
+        "carbs_g": 1.12
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup, chopped",
+          "grams": 136.0
+        },
+        {
+          "amount": 1.0,
+          "description": "tbsp",
+          "grams": 8.5
+        },
+        {
+          "amount": 1.0,
+          "description": "large",
+          "grams": 50.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/173424/nutrients"
+    },
+    {
+      "id": "usda:171265",
+      "name": "全脂牛奶",
+      "aliases": [
+        "全脂纯牛奶"
+      ],
+      "source_description": "Milk, whole, 3.25% milkfat, with added vitamin D",
+      "nutrients_per_100g": {
+        "fat_g": 3.25,
+        "carbs_g": 4.8,
+        "calories_kcal": 61.0,
+        "protein_g": 3.15
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup",
+          "grams": 244.0
+        },
+        {
+          "amount": 1.0,
+          "description": "fl oz",
+          "grams": 30.5
+        },
+        {
+          "amount": 1.0,
+          "description": "tbsp",
+          "grams": 15.0
+        },
+        {
+          "amount": 1.0,
+          "description": "quart",
+          "grams": 976.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/171265/nutrients"
+    },
+    {
+      "id": "usda:172475",
+      "name": "生硬豆腐",
+      "aliases": [],
+      "source_description": "Tofu, raw, firm, prepared with calcium sulfate",
+      "nutrients_per_100g": {
+        "carbs_g": 2.78,
+        "calories_kcal": 144.0,
+        "protein_g": 17.27,
+        "fat_g": 8.72
+      },
+      "portions": [
+        {
+          "amount": 0.5,
+          "description": "cup",
+          "grams": 126.0
+        },
+        {
+          "amount": 0.25,
+          "description": "block",
+          "grams": 81.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/172475/nutrients"
+    },
+    {
+      "id": "usda:172476",
+      "name": "生普通豆腐",
+      "aliases": [],
+      "source_description": "Tofu, raw, regular, prepared with calcium sulfate",
+      "nutrients_per_100g": {
+        "carbs_g": 1.87,
+        "fat_g": 4.78,
+        "calories_kcal": 76.0,
+        "protein_g": 8.08
+      },
+      "portions": [
+        {
+          "amount": 0.5,
+          "description": "cup",
+          "grams": 124.0
+        },
+        {
+          "amount": 0.25,
+          "description": "block",
+          "grams": 116.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/172476/nutrients"
+    },
+    {
+      "id": "usda:171411",
+      "name": "大豆油",
+      "aliases": [
+        "豆油"
+      ],
+      "source_description": "Oil, soybean, salad or cooking",
+      "nutrients_per_100g": {
+        "protein_g": 0.0,
+        "fat_g": 100.0,
+        "carbs_g": 0.0,
+        "calories_kcal": 884.0
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "tbsp",
+          "grams": 13.6
+        },
+        {
+          "amount": 1.0,
+          "description": "cup",
+          "grams": 218.0
+        },
+        {
+          "amount": 1.0,
+          "description": "tsp",
+          "grams": 4.5
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/171411/nutrients"
+    },
+    {
+      "id": "usda:167812",
+      "name": "生五花肉",
+      "aliases": [],
+      "source_description": "Pork, fresh, belly, raw",
+      "nutrients_per_100g": {
+        "fat_g": 53.01,
+        "carbs_g": 0.0,
+        "calories_kcal": 518.0,
+        "protein_g": 9.34
+      },
+      "portions": [
+        {
+          "amount": 4.0,
+          "description": "oz",
+          "grams": 113.0
+        },
+        {
+          "amount": 1.0,
+          "description": "lb",
+          "grams": 453.6
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/167812/nutrients"
+    },
+    {
+      "id": "usda:174277",
+      "name": "酱油",
+      "aliases": [],
+      "source_description": "Soy sauce made from soy and wheat (shoyu)",
+      "nutrients_per_100g": {
+        "fat_g": 0.57,
+        "carbs_g": 4.93,
+        "protein_g": 8.14,
+        "calories_kcal": 53.0
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "tbsp",
+          "grams": 16.0
+        },
+        {
+          "amount": 1.0,
+          "description": "tsp",
+          "grams": 5.3
+        },
+        {
+          "amount": 1.0,
+          "description": "cup",
+          "grams": 255.0
+        },
+        {
+          "amount": 1.0,
+          "description": "individual packet",
+          "grams": 8.9
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/174277/nutrients"
+    },
+    {
+      "id": "usda:169655",
+      "name": "白砂糖",
+      "aliases": [
+        "白糖"
+      ],
+      "source_description": "Sugars, granulated",
+      "nutrients_per_100g": {
+        "protein_g": 0.0,
+        "fat_g": 0.0,
+        "calories_kcal": 387.0,
+        "carbs_g": 99.98
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "serving packet",
+          "grams": 2.8
+        },
+        {
+          "amount": 1.0,
+          "description": "tsp",
+          "grams": 4.2
+        },
+        {
+          "amount": 1.0,
+          "description": "cup",
+          "grams": 200.0
+        },
+        {
+          "amount": 1.0,
+          "description": "serving 1 cube",
+          "grams": 2.3
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/169655/nutrients"
+    },
+    {
+      "id": "usda:168894",
+      "name": "普通小麦面粉",
+      "aliases": [
+        "中筋面粉"
+      ],
+      "source_description": "Wheat flour, white, all-purpose, enriched, bleached",
+      "nutrients_per_100g": {
+        "protein_g": 10.33,
+        "fat_g": 0.98,
+        "carbs_g": 76.31,
+        "calories_kcal": 364.0
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup",
+          "grams": 125.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/168894/nutrients"
+    },
+    {
+      "id": "usda:169979",
+      "name": "生大白菜",
+      "aliases": [],
+      "source_description": "Cabbage, chinese (pe-tsai), raw",
+      "nutrients_per_100g": {
+        "carbs_g": 3.23,
+        "protein_g": 1.2,
+        "fat_g": 0.2,
+        "calories_kcal": 16.0
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup, shredded",
+          "grams": 76.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/169979/nutrients"
+    },
+    {
+      "id": "usda:170390",
+      "name": "生小白菜",
+      "aliases": [],
+      "source_description": "Cabbage, chinese (pak-choi), raw",
+      "nutrients_per_100g": {
+        "protein_g": 1.5,
+        "fat_g": 0.2,
+        "carbs_g": 2.18,
+        "calories_kcal": 13.0
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup, shredded",
+          "grams": 70.0
+        },
+        {
+          "amount": 1.0,
+          "description": "head",
+          "grams": 840.0
+        },
+        {
+          "amount": 1.0,
+          "description": "leaf",
+          "grams": 14.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/170390/nutrients"
+    },
+    {
+      "id": "usda:169967",
+      "name": "水煮西兰花",
+      "aliases": [
+        "白灼西兰花"
+      ],
+      "source_description": "Broccoli, cooked, boiled, drained, without salt",
+      "nutrients_per_100g": {
+        "fat_g": 0.41,
+        "protein_g": 2.38,
+        "carbs_g": 7.18,
+        "calories_kcal": 35.0
+      },
+      "portions": [
+        {
+          "amount": 0.5,
+          "description": "cup, chopped",
+          "grams": 78.0
+        },
+        {
+          "amount": 1.0,
+          "description": "stalk, large (11\"-12\" long)",
+          "grams": 280.0
+        },
+        {
+          "amount": 1.0,
+          "description": "stalk, medium (7-1/2\" - 8\" long)",
+          "grams": 180.0
+        },
+        {
+          "amount": 1.0,
+          "description": "stalk, small (5\" long)",
+          "grams": 140.0
+        },
+        {
+          "amount": 1.0,
+          "description": "spear (about 5\" long)",
+          "grams": 37.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/169967/nutrients"
+    },
+    {
+      "id": "usda:173944",
+      "name": "香蕉",
+      "aliases": [],
+      "source_description": "Bananas, raw",
+      "nutrients_per_100g": {
+        "carbs_g": 22.84,
+        "calories_kcal": 89.0,
+        "protein_g": 1.09,
+        "fat_g": 0.33
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup, mashed",
+          "grams": 225.0
+        },
+        {
+          "amount": 1.0,
+          "description": "cup, sliced",
+          "grams": 150.0
+        },
+        {
+          "amount": 1.0,
+          "description": "extra small (less than 6\" long)",
+          "grams": 81.0
+        },
+        {
+          "amount": 1.0,
+          "description": "small (6\" to 6-7/8\" long)",
+          "grams": 101.0
+        },
+        {
+          "amount": 1.0,
+          "description": "medium (7\" to 7-7/8\" long)",
+          "grams": 118.0
+        },
+        {
+          "amount": 1.0,
+          "description": "large (8\" to 8-7/8\" long)",
+          "grams": 136.0
+        },
+        {
+          "amount": 1.0,
+          "description": "extra large (9\" or longer)",
+          "grams": 152.0
+        },
+        {
+          "amount": 1.0,
+          "description": "NLEA serving",
+          "grams": 126.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/173944/nutrients"
+    },
+    {
+      "id": "usda:168409",
+      "name": "生黄瓜",
+      "aliases": [
+        "黄瓜"
+      ],
+      "source_description": "Cucumber, with peel, raw",
+      "nutrients_per_100g": {
+        "carbs_g": 3.63,
+        "calories_kcal": 15.0,
+        "fat_g": 0.11,
+        "protein_g": 0.65
+      },
+      "portions": [
+        {
+          "amount": 0.5,
+          "description": "cup slices",
+          "grams": 52.0
+        },
+        {
+          "amount": 1.0,
+          "description": "cucumber (8-1/4\")",
+          "grams": 301.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/168409/nutrients"
+    },
+    {
+      "id": "usda:170000",
+      "name": "生洋葱",
+      "aliases": [],
+      "source_description": "Onions, raw",
+      "nutrients_per_100g": {
+        "fat_g": 0.1,
+        "carbs_g": 9.34,
+        "calories_kcal": 40.0,
+        "protein_g": 1.1
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup, chopped",
+          "grams": 160.0
+        },
+        {
+          "amount": 1.0,
+          "description": "cup, sliced",
+          "grams": 115.0
+        },
+        {
+          "amount": 1.0,
+          "description": "tbsp chopped",
+          "grams": 10.0
+        },
+        {
+          "amount": 1.0,
+          "description": "large",
+          "grams": 150.0
+        },
+        {
+          "amount": 1.0,
+          "description": "slice, large (1/4\" thick)",
+          "grams": 38.0
+        },
+        {
+          "amount": 1.0,
+          "description": "medium (2-1/2\" dia)",
+          "grams": 110.0
+        },
+        {
+          "amount": 1.0,
+          "description": "slice, medium (1/8\" thick)",
+          "grams": 14.0
+        },
+        {
+          "amount": 1.0,
+          "description": "small",
+          "grams": 70.0
+        },
+        {
+          "amount": 1.0,
+          "description": "slice, thin",
+          "grams": 9.0
+        },
+        {
+          "amount": 10.0,
+          "description": "rings",
+          "grams": 60.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/170000/nutrients"
+    },
+    {
+      "id": "usda:170440",
+      "name": "去皮水煮土豆",
+      "aliases": [],
+      "source_description": "Potatoes, boiled, cooked without skin, flesh, without salt",
+      "nutrients_per_100g": {
+        "carbs_g": 20.01,
+        "calories_kcal": 86.0,
+        "fat_g": 0.1,
+        "protein_g": 1.71
+      },
+      "portions": [
+        {
+          "amount": 0.5,
+          "description": "cup",
+          "grams": 78.0
+        },
+        {
+          "amount": 1.0,
+          "description": "large (3\" to 4-1/4\" dia.)",
+          "grams": 300.0
+        },
+        {
+          "amount": 1.0,
+          "description": "medium (2-1/4\" to 3-1/4\" dia.)",
+          "grams": 167.0
+        },
+        {
+          "amount": 1.0,
+          "description": "small (1-3/4\" to 2-1/2\" dia.)",
+          "grams": 125.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/170440/nutrients"
+    },
+    {
+      "id": "usda:174030",
+      "name": "生牛肉末（10%脂肪）",
+      "aliases": [],
+      "source_description": "Beef, ground, 90% lean meat / 10% fat, raw",
+      "nutrients_per_100g": {
+        "fat_g": 10.0,
+        "carbs_g": 0.0,
+        "protein_g": 20.0,
+        "calories_kcal": 176.0
+      },
+      "portions": [
+        {
+          "amount": 4.0,
+          "description": "oz",
+          "grams": 113.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/174030/nutrients"
+    },
+    {
+      "id": "usda:170457",
+      "name": "番茄",
+      "aliases": [
+        "西红柿"
+      ],
+      "source_description": "Tomatoes, red, ripe, raw, year round average",
+      "nutrients_per_100g": {
+        "carbs_g": 3.89,
+        "calories_kcal": 18.0,
+        "fat_g": 0.2,
+        "protein_g": 0.88
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup cherry tomatoes",
+          "grams": 149.0
+        },
+        {
+          "amount": 1.0,
+          "description": "cup, chopped or sliced",
+          "grams": 180.0
+        },
+        {
+          "amount": 1.0,
+          "description": "Italian tomato",
+          "grams": 62.0
+        },
+        {
+          "amount": 1.0,
+          "description": "cherry",
+          "grams": 17.0
+        },
+        {
+          "amount": 1.0,
+          "description": "large whole (3\" dia)",
+          "grams": 182.0
+        },
+        {
+          "amount": 1.0,
+          "description": "medium whole (2-3/5\" dia)",
+          "grams": 123.0
+        },
+        {
+          "amount": 1.0,
+          "description": "slice, medium (1/4\" thick)",
+          "grams": 20.0
+        },
+        {
+          "amount": 1.0,
+          "description": "plum tomato",
+          "grams": 62.0
+        },
+        {
+          "amount": 1.0,
+          "description": "small whole (2-2/5\" dia)",
+          "grams": 91.0
+        },
+        {
+          "amount": 1.0,
+          "description": "slice, thick/large (1/2\" thick)",
+          "grams": 27.0
+        },
+        {
+          "amount": 1.0,
+          "description": "wedge (1/4 of medium tomato)",
+          "grams": 31.0
+        },
+        {
+          "amount": 1.0,
+          "description": "slice, thin/small",
+          "grams": 15.0
+        },
+        {
+          "amount": 1.0,
+          "description": "NLEA serving",
+          "grams": 148.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/170457/nutrients"
+    },
+    {
+      "id": "usda:171287",
+      "name": "生鸡蛋",
+      "aliases": [],
+      "source_description": "Egg, whole, raw, fresh",
+      "nutrients_per_100g": {
+        "calories_kcal": 143.0,
+        "protein_g": 12.56,
+        "fat_g": 9.51,
+        "carbs_g": 0.72
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "large",
+          "grams": 50.0
+        },
+        {
+          "amount": 1.0,
+          "description": "extra large",
+          "grams": 56.0
+        },
+        {
+          "amount": 1.0,
+          "description": "jumbo",
+          "grams": 63.0
+        },
+        {
+          "amount": 1.0,
+          "description": "cup (4.86 large eggs)",
+          "grams": 243.0
+        },
+        {
+          "amount": 1.0,
+          "description": "medium",
+          "grams": 44.0
+        },
+        {
+          "amount": 1.0,
+          "description": "small",
+          "grams": 38.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/171287/nutrients"
+    },
+    {
+      "id": "usda:171477",
+      "name": "熟去皮鸡胸肉",
+      "aliases": [],
+      "source_description": "Chicken, broilers or fryers, breast, meat only, cooked, roasted",
+      "nutrients_per_100g": {
+        "fat_g": 3.57,
+        "carbs_g": 0.0,
+        "calories_kcal": 165.0,
+        "protein_g": 31.02
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup, chopped or diced",
+          "grams": 140.0
+        },
+        {
+          "amount": 1.0,
+          "description": "unit (yield from 1 lb ready-to-cook chicken)",
+          "grams": 52.0
+        },
+        {
+          "amount": 0.5,
+          "description": "breast, bone and skin removed",
+          "grams": 86.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/171477/nutrients"
+    },
+    {
+      "id": "usda:171688",
+      "name": "苹果",
+      "aliases": [],
+      "source_description": "Apples, raw, with skin (Includes foods for USDA's Food Distribution Program)",
+      "nutrients_per_100g": {
+        "carbs_g": 13.81,
+        "calories_kcal": 52.0,
+        "fat_g": 0.17,
+        "protein_g": 0.26
+      },
+      "portions": [
+        {
+          "amount": 1.0,
+          "description": "cup, quartered or chopped",
+          "grams": 125.0
+        },
+        {
+          "amount": 1.0,
+          "description": "cup slices",
+          "grams": 109.0
+        },
+        {
+          "amount": 1.0,
+          "description": "large (3-1/4\" dia)",
+          "grams": 223.0
+        },
+        {
+          "amount": 1.0,
+          "description": "medium (3\" dia)",
+          "grams": 182.0
+        },
+        {
+          "amount": 1.0,
+          "description": "small (2-3/4\" dia)",
+          "grams": 149.0
+        },
+        {
+          "amount": 1.0,
+          "description": "extra small (2-1/2\" dia)",
+          "grams": 101.0
+        },
+        {
+          "amount": 1.0,
+          "description": "NLEA serving",
+          "grams": 242.0
+        }
+      ],
+      "url": "https://fdc.nal.usda.gov/food-details/171688/nutrients"
+    }
+  ]
+}

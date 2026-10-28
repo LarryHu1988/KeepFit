@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-21",
+  "total": 398,
+  "byKind": {
+    "食材／菜品": 263,
+    "运动": 135
+  },
+  "statusCounts": {
+    "近似候选，需确认": 143,
+    "待选型": 12,
+    "共享候选": 117,
+    "直接候选": 126
+  },
+  "uniqueCandidateIcons": 236,
+  "metadataChecks": "passed: unique IDs, existing slugs, CSV/JSON/HTML equality",
+  "uiChecks": [
+    "Apple search returns one item",
+    "Pending filter returns 12 items",
+    "Exercise filter returns 135 items",
+    "Pagination advances to 2/4 and returns to 1/4"
+  ],
+  "screenshot": "review.png",
+  "artworkImported": false,
+  "appCodeChanged": false,
+  "newBuildPublished": false
+}

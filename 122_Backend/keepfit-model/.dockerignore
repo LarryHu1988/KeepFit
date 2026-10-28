@@ -1,0 +1,5 @@
+*
+!requirements.txt
+!keepfit_model/
+!keepfit_model/**
+**/__pycache__/

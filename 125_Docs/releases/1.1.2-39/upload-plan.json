@@ -1,0 +1,15 @@
+{
+  "app_id": "6759662867",
+  "bundle_id": "com.larry.keepfit",
+  "version": "1.1.2",
+  "build_number": "39",
+  "group_id": "9479bcf6-a1eb-414d-af6b-36bf46865268",
+  "group": "Pilot",
+  "lane": "low-level build upload, notes, and group read-back",
+  "app_store_review_submission": false,
+  "notes_locales": [
+    "zh-Hans",
+    "en-US"
+  ],
+  "atlas_records": 13535
+}

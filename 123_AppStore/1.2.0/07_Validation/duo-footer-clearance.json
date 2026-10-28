@@ -1,0 +1,82 @@
+[
+  {
+    "lang": "zh-Hans",
+    "slide": 1,
+    "footerTop": 1940.78125,
+    "footerBottom": 1982.921875,
+    "screenshotBottom": 1866.5,
+    "gap": 74.28125,
+    "inside": true,
+    "pass": true
+  },
+  {
+    "lang": "zh-Hans",
+    "slide": 2,
+    "footerTop": 1940.78125,
+    "footerBottom": 1982.921875,
+    "screenshotBottom": 1906.625,
+    "gap": 34.15625,
+    "inside": true,
+    "pass": true
+  },
+  {
+    "lang": "zh-Hans",
+    "slide": 3,
+    "footerTop": 1940.78125,
+    "footerBottom": 1982.921875,
+    "screenshotBottom": 1906.625,
+    "gap": 34.15625,
+    "inside": true,
+    "pass": true
+  },
+  {
+    "lang": "zh-Hans",
+    "slide": 4,
+    "footerTop": 1940.78125,
+    "footerBottom": 1982.921875,
+    "screenshotBottom": 1906.625,
+    "gap": 34.15625,
+    "inside": true,
+    "pass": true
+  },
+  {
+    "lang": "en",
+    "slide": 1,
+    "footerTop": 1940.78125,
+    "footerBottom": 1982.921875,
+    "screenshotBottom": 1866.5,
+    "gap": 74.28125,
+    "inside": true,
+    "pass": true
+  },
+  {
+    "lang": "en",
+    "slide": 2,
+    "footerTop": 1940.78125,
+    "footerBottom": 1982.921875,
+    "screenshotBottom": 1906.625,
+    "gap": 34.15625,
+    "inside": true,
+    "pass": true
+  },
+  {
+    "lang": "en",
+    "slide": 3,
+    "footerTop": 1940.78125,
+    "footerBottom": 1982.921875,
+    "screenshotBottom": 1906.625,
+    "gap": 34.15625,
+    "inside": true,
+    "pass": true
+  },
+  {
+    "lang": "en",
+    "slide": 4,
+    "footerTop": 1940.78125,
+    "footerBottom": 1982.921875,
+    "screenshotBottom": 1906.625,
+    "gap": 34.15625,
+    "inside": true,
+    "pass": true
+  }
+]

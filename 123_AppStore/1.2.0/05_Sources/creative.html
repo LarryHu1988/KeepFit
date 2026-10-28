@@ -1,0 +1,80 @@
+<!doctype html><html><meta charset="utf-8"><style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;color:#1d2b32}#c{position:relative;width:100vw;height:100vh;overflow:hidden;background:#f7fafb}.wash{position:absolute;border-radius:50%;filter:blur(80px);opacity:.13}.brand{position:absolute;display:flex;align-items:center;font-weight:700;letter-spacing:-.035em}.brand img{width:1.4em;height:1.4em;border-radius:25%;margin-right:.35em}.title{position:absolute;font-weight:750;letter-spacing:-.05em;line-height:1.13;white-space:pre-line}.sub{position:absolute;line-height:1.55;color:#53636d;white-space:pre-line}.ui{position:absolute;object-fit:contain;background:white;border:solid #fff;border-radius:4%;box-shadow:0 20px 65px #233e5618}.hardware{position:absolute;object-fit:contain;filter:drop-shadow(0 12px 22px #233e5622)}.tablabel{position:absolute;font-weight:650;letter-spacing:.025em;white-space:nowrap}.foot{position:absolute;display:flex;gap:1.1em;align-items:center;color:#64757e;font-weight:550}.dot{display:inline-block;width:.45em;height:.45em;border-radius:50%;margin-right:.3em}.ring{position:absolute;border-style:solid;border-radius:50%;opacity:.8}
+</style><div id="c"></div><script>
+const P=new URLSearchParams(location.search),W=+P.get('w')||1320,H=+P.get('h')||2868,lang=P.get('lang')||'zh-Hans',en=lang==='en',device=P.get('device')||'iphone',n=+P.get('slide')||1,kind=P.get('kind')||'shot',source=P.get('source')||device,c=document.getElementById('c');
+const scenes=en?[
+['Food. Movement.\nOne clear picture.','Meals, activity and body trends.\nKeep your daily records together.','lose-overview'],
+['Know your\ndaily intake.','Calories and nutrition.\nSee where your day stands.','eat-overview'],
+['Every meal.\nA clearer record.','Food, amounts and daily history.\nKeep track of what you eat.','eat-details'],
+['See your\nactivity progress.','Review your movement goal\nand estimated energy use.','move-overview'],
+['Keep every\nworkout in view.','Exercise, duration and energy estimates.\nBring your activity records together.','move-details'],
+['See your day\nin balance.','Food intake and activity.\nTogether on your calendar.','lose-overview'],
+['Your progress,\nover time.','Calories, weight and body fat.\nSee how your records change.','weight-trend']]:[
+['吃、动、体重\n一起记录','饮食、运动与身体趋势，\n连成看得见的日常。','lose-overview'],
+['吃了多少\n心里有数','摄入进度与营养结构，\n一眼看清今天的状态。','eat-overview'],
+['每一餐\n都有迹可循','记录食物与份量，\n回看每天的饮食。','eat-details'],
+['动了多少\n进度看得见','运动目标与消耗估算，\n看见每一天的活动进度。','move-overview'],
+['每一次运动\n都算数','项目、时长与消耗估算，\n清楚留在记录里。','move-details'],
+['把摄入与消耗\n放在一起看','热量平衡与日历回顾，\n了解每一天。','lose-overview'],
+['从日常记录\n看长期趋势','热量、体重与体脂，\n回看一段时间的变化。','weight-trend']];
+let[t,s,key]=scenes[((device==='duo-inner-landscape'||device==='ipad')&&kind==='shot'?[0,1,3,5][n-1]:n-1)];
+if(device==='duo-inner-landscape'&&kind==='shot'&&n===4){t=en?'Energy balance.\nBody trends.':'热量平衡\n身体趋势';s=en?'Intake, activity and long-term change.\nTogether in two columns.':'摄入、消耗与长期变化，\n在双栏里一起回看。';key='lose-details'}
+if(device==='ipad'&&kind==='shot'&&n>1){
+ const combined=en?[
+ ['Intake and nutrition.\nEvery meal in view.','Calories, nutrients, foods and portions.\nReview your daily meal records.','eat-overview'],
+ ['Goals and movement.\nEvery workout counts.','Activity goals, exercises and duration.\nKeep estimated energy use and records together.','move-overview'],
+ ['Energy and body.\nProgress over time.','Intake, activity and your daily calendar.\nFollow weight and body-fat trends.','lose-details']]:[
+ ['摄入与营养\n每一餐都清楚','摄入进度、营养结构与食物份量，\n一起回看每天的饮食记录。','eat-overview'],
+ ['目标与运动\n每一次都算数','运动目标、项目、时长与消耗估算，\n清楚记录每一天的活动。','move-overview'],
+ ['热量与身体\n看见长期变化','把摄入、消耗与日历放在一起，\n回看体重、体脂和长期趋势。','lose-details']];
+ [t,s,key]=combined[n-2];
+}
+const icon='/05_Sources/app-icon.png',base='/05_Sources/screens/'+source+'/'+lang+'/';
+function el(tag,cls,css,txt){const x=document.createElement(tag);x.className=cls;Object.assign(x.style,css);if(txt)x.textContent=txt;c.append(x);return x}
+function img(src,cls,css){const x=el('img',cls,css);x.src=src;return x}
+function brand(x,y,size){const b=el('div','brand',{left:x+'px',top:y+'px',fontSize:size+'px'});const i=document.createElement('img');i.src=icon;b.append(i,document.createTextNode('KeepFit'))}
+function footer(){const duoShot=device==='duo-inner-landscape'&&kind==='shot';const f=el('div','foot',{left:W*.065+'px',bottom:H*(duoShot?.012:.025)+'px',fontSize:(duoShot?H*.021:Math.min(W*.022,H*.028))+'px',lineHeight:duoShot?'1':'normal'});for(const[col,txt]of[['#ff9d44',en?'Eat Well':'管住嘴'],['#2ac983',en?'Move More':'迈开腿'],['#4ca9f5',en?'Lose Weight':'减个肥']]){let a=document.createElement('span');a.innerHTML=`<i class="dot" style="background:${col}"></i>${txt}`;f.append(a)}}
+for(const[x,y,color]of[[-.2,.15,'#ffa54d'],[.6,.6,'#2dcc8c'],[.5,.85,'#50afff']])el('div','wash',{left:x*W+'px',top:y*H+'px',width:W*.8+'px',height:W*.8+'px',background:color});
+const ratio=source==='iphone-se'?750/1334:source==='ipad'?2064/2752:source.startsWith('duo-inner')?2853/2007:source.startsWith('duo-outer')?1398/2034:1320/2868;
+const frameRatio=source==='iphone-se'?431/889:source==='ipad'?1124/1468:source.startsWith('duo-inner')?924/660:source.startsWith('duo-outer')?514/706:474/990;
+const labels=en?['Eat Well','Move More','Lose Weight']:['管住嘴','迈开腿','减个肥'],colors=['#dd8639','#229d6b','#358cc6'];
+function hardware(tab,index,x,y,w,h,src=source,labelsOn=true){const r=src==='iphone'?474/990:frameRatio;let hh=Math.min(h,w/r),ww=hh*r,xx=x+(w-ww)/2,yy=y+(h-hh)/2;img(`/05_Sources/framed-screens/${src}/${lang}/${tab}-overview.png`,'hardware',{left:xx+'px',top:yy+'px',width:ww+'px',height:hh+'px'});if(labelsOn){const fs=Math.min(W*.023,H*.021),search=kind==='search',gap=search?H*.025:Math.max(12,Math.ceil(fs*1.25));el('div','tablabel',{left:xx+'px',top:(yy-fs*1.2-gap)+'px',fontSize:fs+'px',lineHeight:'1.2',color:colors[index]},String(index+1).padStart(2,'0')+'  '+labels[index])}return[xx,yy,ww,hh]}
+function overview(){const wide=W>H,inner=source.startsWith('duo-inner'),top=(wide?(inner?.39:.38):device==='ipad'?.40:.365)*H,bh=(wide?(inner&&kind==='shot'?.55:kind==='cover'?.50:.53):device==='ipad'?.53:.565)*H,bw=W*.87,x=W*.065;hardware('eat',0,x,top,bw*.58,bh);hardware('move',1,x+bw*.65,top,bw*.35,bh*.44);hardware('lose',2,x+bw*.65,top+bh*.56,bw*.35,bh*.44)}
+if(kind==='stage'){
+ const bodies={iphone:[474,990,17,17,440,956],'iphone-se':[431,889,28,111,375,667],ipad:[1124,1468,46,46,1032,1376],'duo-outer':[514,706,26,14,466,678],'duo-inner-landscape':[924,660,17,17,890,626]};
+ const [fw,fh,ax,ay,aw,ah]=bodies[source];let bw,bh,x,y;
+ if(source==='duo-inner-landscape'){bh=H*.84;bw=bh*fw/fh;x=W*.95-bw;y=H*.08;brand(W*.065,H*.17,H*.048);el('div','title',{left:W*.065+'px',top:H*.34+'px',width:W*.30+'px',fontSize:H*(en?.058:.070)+'px'},en?'Two columns.\nOne clear view.':'一屏双栏\n记录与回看');el('div','sub',{left:W*.065+'px',top:H*.66+'px',fontSize:H*.027+'px'},en?'Food · Movement · Body trends':'饮食 · 运动 · 身体趋势')}
+ else if(source==='duo-outer'){bw=W*.86;bh=bw*fh/fw;x=(W-bw)/2;y=H*.93-bh;brand(W*.075,H*.07,W*.048);el('div','title',{left:W*.075+'px',top:H*.15+'px',fontSize:W*(en?.063:.071)+'px',width:W*.85+'px'},en?'Eat. Move.\nFind your rhythm.':'吃、动、体重\n找到自己的节奏')}
+ else{bh=Math.min(H*.89,W*.90*fh/fw);bw=bh*fw/fh;x=(W-bw)/2;y=H*.53-bh/2;brand(W*.065,H*.024,Math.min(W*.035,H*.03))}
+ x=Math.round(x);y=Math.round(y);bw=Math.round(bw);bh=Math.round(bh);
+ img('/05_Sources/device-frames/'+source+'-body.png','hardware',{left:x+'px',top:y+'px',width:bw+'px',height:bh+'px'});
+ window.stageGeometry={source,x,y,bodyWidth:bw,bodyHeight:bh,screenX:Math.round(x+ax/fw*bw),screenY:Math.round(y+ay/fh*bh),screenWidth:Math.floor(aw/fw*bw/2)*2,screenHeight:Math.floor(ah/fh*bh/2)*2};
+}else if(kind==='shot'||kind==='cover'){
+ if(kind==='cover'){t=en?'Eat. Move.\nFind your rhythm.':'吃、动、体重\n找到自己的节奏';s=en?'Food · Movement · Body trends':'饮食 · 运动 · 身体趋势'}
+ const wide=W>H,hero=kind==='cover'||n===1;brand(W*.065,H*.035,Math.min(W*.04,H*.046));
+ let ty=H*.12,fs=Math.min(W*(en?.081:.089),H*.076),sy=H*.265,ss=W*.027,top=H*.37,maxH=H*.57,maxW=W*.83;
+ if(device==='ipad'){fs=W*(en?.069:.076);sy=H*.285}
+ if(wide){ty=H*.095;fs=Math.min(W*.038,H*.067);sy=H*.245;ss=H*.025;top=H*.335;maxH=H*.60;maxW=W*.91}
+ if(wide&&source.startsWith('duo-inner')){ty=H*.09;fs=H*.066;sy=H*.242;ss=H*.026;top=H*.33;maxH=H*.62;maxW=W*.92}
+ el('div','title',{left:W*.065+'px',top:ty+'px',fontSize:fs+'px',width:W*.87+'px'},t);el('div','sub',{left:W*.065+'px',top:sy+'px',fontSize:ss+'px',width:W*.86+'px'},s);
+ if(hero)overview();else{let hh=Math.min(maxH,maxW/frameRatio),ww=hh*frameRatio;img('/05_Sources/framed-screens/'+source+'/'+lang+'/'+key+'.png','hardware detail-hardware',{left:(W-ww)/2+'px',top:top+'px',width:ww+'px',height:hh+'px'})}footer();
+}else if(kind==='header'){
+ const safe={left:1097,top:493,right:2743,bottom:1154},sx=W/3840,sy=H/1646,text=P.get('text')!=='0';
+ document.querySelectorAll('.wash').forEach(x=>x.remove());
+ const bg=el('div','header-background',{position:'absolute',inset:'0',background:'linear-gradient(115deg,#fff6ed 0%,#f5faf7 50%,#edf7fc 100%)'});
+ bg.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 3840 1646" preserveAspectRatio="none"><defs><linearGradient id="flow" x1="0" x2="1"><stop stop-color="#ffab54"/><stop offset=".5" stop-color="#44cf99"/><stop offset="1" stop-color="#5db7ef"/></linearGradient></defs><path d="M-500 1460C450 1470 750 100 1700 130S2870 1710 4350 1120" fill="none" stroke="url(#flow)" stroke-width="360" opacity=".075"/><path d="M-500 1460C450 1470 750 100 1700 130S2870 1710 4350 1120" fill="none" stroke="url(#flow)" stroke-width="2" opacity=".18"/><circle cx="90" cy="-150" r="780" fill="none" stroke="#ffb36b" stroke-width="165" opacity=".09"/><circle cx="3750" cy="1690" r="800" fill="none" stroke="#66b6e8" stroke-width="165" opacity=".09"/></svg>`;
+ if(text){
+  el('div','title header-wordmark',{left:1150*sx+'px',top:590*sy+'px',fontSize:190*sy+'px',width:850*sx+'px',letterSpacing:'-.045em'},'KeepFit');
+  el('div','title header-tagline',{left:1155*sx+'px',top:865*sy+'px',fontSize:(en?78:78)*sy+'px',fontWeight:'550',letterSpacing:en?'-.015em':'-.025em',lineHeight:'1.2',color:'#48606a',width:865*sx+'px'},en?'Eat. Move.\nFind your rhythm.':'吃、动、体重\n找到自己的节奏');
+ }else img(icon,'header-mark',{position:'absolute',left:1210*sx+'px',top:600*sy+'px',width:450*sy+'px',height:450*sy+'px',borderRadius:'24%'});
+ const symbol=el('div','header-symbol',{position:'absolute',left:2125*sx+'px',top:565*sy+'px',width:540*sy+'px',height:540*sy+'px'});
+ symbol.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 540 540" fill="none"><circle cx="270" cy="270" r="244" stroke="#ffad57" stroke-width="38" opacity=".12"/><circle cx="270" cy="270" r="244" stroke="#ff9d44" stroke-width="38" stroke-linecap="round" stroke-dasharray="1130 404" transform="rotate(-75 270 270)"/><circle cx="270" cy="270" r="178" stroke="#2ac983" stroke-width="38" opacity=".12"/><circle cx="270" cy="270" r="178" stroke="#2ac983" stroke-width="38" stroke-linecap="round" stroke-dasharray="820 299" transform="rotate(20 270 270)"/><circle cx="270" cy="270" r="112" stroke="#4ca9f5" stroke-width="38" opacity=".12"/><circle cx="270" cy="270" r="112" stroke="#4ca9f5" stroke-width="38" stroke-linecap="round" stroke-dasharray="510 194" transform="rotate(105 270 270)"/></svg>`;
+ window.headerGeometry={template:'Apple product page header static PSD',canvas:[W,H],safeArea:safe,revision:'balanced-full-bleed-brand-v5'};
+}else{
+ const text=P.get('text')!=='0',S=Math.min(W,H);
+ if(text){brand(W*.055,H*.13,S*.052);el('div','title',{left:W*.055+'px',top:H*.34+'px',fontSize:Math.min(H*.09,W*(en?.033:.045))+'px',width:W*.30+'px'},en?'Food. Movement.\nOne clear picture.':'吃、动、体重\n一起记录');el('div','sub',{left:W*.055+'px',top:H*.73+'px',width:W*.30+'px',fontSize:Math.min(H*.027,W*.018)+'px'},en?'Your daily\nwellness journal.':'把每一天，\n记成看得见的改变。');
+  for(let i=0;i<3;i++)hardware(['eat','move','lose'][i],i,W*(.39+i*.195),H*(i===1?.13:.08),W*.175,H*(i===1?.79:.82),'iphone');
+ }else{img(icon,'',{position:'absolute',left:W*.14+'px',top:H*.3+'px',width:S*.36+'px',height:S*.36+'px',borderRadius:'24%'});for(const[r,col]of[[.42,'#ff9d44'],[.31,'#2acc86'],[.20,'#4aa9fa']])el('div','ring',{left:W*.69-S*r+'px',top:H*.5-S*r+'px',width:S*r*2+'px',height:S*r*2+'px',borderWidth:S*.05+'px',borderColor:col,borderLeftColor:'transparent',transform:'rotate(-25deg)'})}
+}
+window.ready=true;
+</script></html>

@@ -1,0 +1,51 @@
+{
+  "data": [
+    {
+      "type": "betaBuildLocalizations",
+      "id": "935b1d2b-16a9-4036-a386-caebbe5b4996",
+      "attributes": {
+        "locale": "zh-Hans",
+        "whatsNew": "新增 KeepFit 饮食识别：在「管住嘴」使用打字、语音或拍照记录一餐。首次使用需 Apple 登录，并同意将本餐内容发送给小米 MiMo 处理。\n\n请重点测试：\n1. 用半碗、三块等自然说法描述成品菜，核对份量和营养估算；信息不清楚时回答补问，也可直接纠正。\n2. 未吃的、剩下的和他人吃的食物应正确处理；多人共餐不应直接平均分。\n3. 接受明确标注的估算后确认保存，检查进食记录、当天/当月统计，以及重复点击或重试是否重复入账；旧记录应正常保留。\n4. 真机 Apple 登录、麦克风权限和录音转写、相机/相册选择和照片识别尚待真机验收，请重点反馈。\n\n当前为小范围付费试用，全服务每日最多10次模型调用，补问和纠正也计次数。后台真实文字识别与补问流程已验证，营养估算仍需核对。"
+      },
+      "relationships": {
+        "build": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/betaBuildLocalizations/935b1d2b-16a9-4036-a386-caebbe5b4996/relationships/build",
+            "related": "https://api.appstoreconnect.apple.com/v1/betaBuildLocalizations/935b1d2b-16a9-4036-a386-caebbe5b4996/build"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/betaBuildLocalizations/935b1d2b-16a9-4036-a386-caebbe5b4996"
+      }
+    },
+    {
+      "type": "betaBuildLocalizations",
+      "id": "4368d3e7-9aa9-4f1a-a650-df3cd1b3796c",
+      "attributes": {
+        "locale": "en-US",
+        "whatsNew": "New KeepFit meal understanding: use typing, voice or a photo on Eat Well to record a meal. First use requires Sign in with Apple and consent to send this meal to Xiaomi MiMo.\n\nPlease test:\n1. Describe dishes and everyday portions, review nutrition estimates, answer follow-up questions and correct misunderstandings.\n2. Uneaten food, leftovers and other people’s food should be handled correctly. Shared dishes should not automatically be divided by the number of diners.\n3. Accept the displayed estimates and confirm. Check saved meals and daily/monthly totals, duplicate prevention after retries, and preservation of old records.\n4. Real-device Apple sign-in, microphone permissions and transcription, camera/library access and food-photo recognition still need device acceptance testing.\n\nThis small paid pilot is limited to 10 model calls per day across the service; follow-ups and corrections also count. Real text understanding and clarification have passed backend checks. Review all nutrition estimates before saving."
+      },
+      "relationships": {
+        "build": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/betaBuildLocalizations/4368d3e7-9aa9-4f1a-a650-df3cd1b3796c/relationships/build",
+            "related": "https://api.appstoreconnect.apple.com/v1/betaBuildLocalizations/4368d3e7-9aa9-4f1a-a650-df3cd1b3796c/build"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/betaBuildLocalizations/4368d3e7-9aa9-4f1a-a650-df3cd1b3796c"
+      }
+    }
+  ],
+  "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/betaBuildLocalizations?filter%5Bbuild%5D=914c96db-24aa-4f14-8748-6dee312fdb38&limit=200"
+  },
+  "meta": {
+    "paging": {
+      "total": 2,
+      "limit": 200
+    }
+  }
+}

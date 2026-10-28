@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>KeepFit</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>KeepFitModelURL</key>
+	<string>https://keepfit-api.larryhu.com/</string>
+	<key>NSCameraUsageDescription</key>
+	<string>用于拍摄本餐食物，确认后发送给饮食识别服务。</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>允许 KeepFit 将饮食、运动与体重记录写入 Apple 健康。</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>用于将你说的饮食内容转成文字，核对后再识别。</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>用于选择头像或本餐食物照片</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>用于转写饮食描述；设备不支持本地转写时可能使用 Apple 语音服务。</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict/>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+</dict>
+</plist>

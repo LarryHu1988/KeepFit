@@ -1,0 +1,408 @@
+[
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/07-Home-Button-Medium/Previews/01-preview-750x1334.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 750,
+          "height": 1334,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/01-Dynamic-Island-Medium/Previews/01-preview-886x1920.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 886,
+          "height": 1920,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/03-Face-ID-Large/Previews/01-preview-886x1920.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 886,
+          "height": 1920,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/06-Home-Button-Large/Previews/01-preview-1080x1920.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 1080,
+          "height": 1920,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/05-Face-ID-Medium/Previews/01-preview-886x1920.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 886,
+          "height": 1920,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/04-iPhone-Duo/Previews/03-iPhone-Duo-Outer-886x1920.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 886,
+          "height": 1920,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/04-iPhone-Duo/Previews/04-iPhone-Duo-Inner-1920x886.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 1920,
+          "height": 886,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/02-Dynamic-Island-Large/Previews/01-preview-886x1920.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 886,
+          "height": 1920,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPhone-All-Sizes-Final-20261020/zh-Hans/08-Home-Button-4-inch/Previews/01-preview-1080x1920.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 1080,
+          "height": 1920,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPad-All-Sizes-Final-20261020/zh-Hans/05-iPad-9.7/Previews/01-iPad-900x1200.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 900,
+          "height": 1200,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPad-All-Sizes-Final-20261020/zh-Hans/04-iPad-10.5/Previews/01-iPad-1200x1600.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 1200,
+          "height": 1600,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPad-All-Sizes-Final-20261020/zh-Hans/01-iPad-13/Previews/01-iPad-1200x1600.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 1200,
+          "height": 1600,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPad-All-Sizes-Final-20261020/zh-Hans/02-iPad-12.9/Previews/01-iPad-1200x1600.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 1200,
+          "height": 1600,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  },
+  {
+    "file": "../13_SimpleWorth/AppStore/Final/SimpleWorth-AppStore-iPad-All-Sizes-Final-20261020/zh-Hans/03-iPad-11-Air-Mini/Previews/01-iPad-1200x1600.mp4",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "codec_type": "video",
+          "width": 1200,
+          "height": 1600,
+          "level": 40,
+          "r_frame_rate": "30/1"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0"
+        }
+      ],
+      "format": {
+        "duration": "20.000000"
+      }
+    }
+  }
+]

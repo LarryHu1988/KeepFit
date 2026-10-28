@@ -1,0 +1,292 @@
+[
+  {
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  }
+]

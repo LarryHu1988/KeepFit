@@ -1,0 +1,34 @@
+[Unit]
+Description=KeepFit meal understanding API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=keepfit
+Group=keepfit
+WorkingDirectory=/opt/keepfit/current
+ExecStart=/opt/keepfit/venv/bin/python -m keepfit_model --host 127.0.0.1 --port 18765 --data-dir /opt/keepfit/data
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+Environment=KEEPFIT_MODE=production
+Environment=KEEPFIT_ALLOWED_HOSTS=keepfit-api.larryhu.com,127.0.0.1,localhost
+Environment=KEEPFIT_CLOUD_PROVIDER=mimo
+Environment=KEEPFIT_PROVIDER_KEY_FILE=/opt/keepfit/secrets/provider-key
+Environment=KEEPFIT_APPLE_AUDIENCE=com.larry.keepfit
+Environment=KEEPFIT_USER_DAILY_LIMIT=10
+Environment=KEEPFIT_DAILY_LIMIT=10
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/keepfit/data
+MemoryMax=384M
+CPUQuota=65%
+TasksMax=96
+
+[Install]
+WantedBy=multi-user.target

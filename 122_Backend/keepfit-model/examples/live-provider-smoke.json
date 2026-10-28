@@ -1,0 +1,191 @@
+{
+  "kind": "synthetic_live_smoke_test",
+  "date": "2026-10-22",
+  "http_status": 201,
+  "request": {
+    "source": "text",
+    "text": "早餐吃了两个水煮鸡蛋和半碗熟米饭，没有吃面包。鸡蛋按普通大小、米饭按普通小饭碗估算即可。",
+    "reference_time": "2026-10-22T08:00:00+08:00",
+    "timezone": "Asia/Shanghai"
+  },
+  "response": {
+    "id": "b4c450bc-d035-4434-aa25-bc88f282072b",
+    "revision": 1,
+    "status": "ready_for_confirmation",
+    "source": "text",
+    "reference_time": "2026-10-22T08:00:00+08:00",
+    "timezone": "Asia/Shanghai",
+    "created_at": "2026-10-22T11:57:10.622962Z",
+    "updated_at": "2026-10-22T11:57:10.622962Z",
+    "original_text": "早餐吃了两个水煮鸡蛋和半碗熟米饭，没有吃面包。鸡蛋按普通大小、米饭按普通小饭碗估算即可。",
+    "understanding": {
+      "meal_time": "2026-10-22T08:00:00+08:00",
+      "meal_time_note": "按用户描述为早餐，采用参考时间",
+      "normalized_text": "早餐吃了两个普通大小的水煮鸡蛋和半碗熟米饭（普通小饭碗），没有吃面包。",
+      "items": [
+        {
+          "id": "boiled_egg",
+          "name": "水煮鸡蛋",
+          "original_portion": "两个（普通大小）",
+          "eater": "self",
+          "consumption": "eaten",
+          "parent_id": null,
+          "consumed_grams": 100.0,
+          "portion_is_estimate": true,
+          "nutrition_basis": "model_estimate",
+          "nutrients_per_100g": {
+            "calories_kcal": 144.0,
+            "protein_g": 13.3,
+            "fat_g": 8.8,
+            "carbs_g": 2.8
+          },
+          "estimation_notes": [
+            "按用户说明取普通大小鸡蛋，单个去壳可食部分约50克，两个约100克",
+            "营养值为常见水煮蛋的估算，非数据库或包装标签数据"
+          ]
+        },
+        {
+          "id": "cooked_rice",
+          "name": "熟米饭",
+          "original_portion": "半碗（普通小饭碗）",
+          "eater": "self",
+          "consumption": "eaten",
+          "parent_id": null,
+          "consumed_grams": 75.0,
+          "portion_is_estimate": true,
+          "nutrition_basis": "model_estimate",
+          "nutrients_per_100g": {
+            "calories_kcal": 116.0,
+            "protein_g": 2.6,
+            "fat_g": 0.3,
+            "carbs_g": 25.9
+          },
+          "estimation_notes": [
+            "按用户说明取普通小饭碗，一碗熟米饭约150克，半碗约75克",
+            "营养值为常见白米饭的估算，非数据库或包装标签数据"
+          ]
+        },
+        {
+          "id": "bread",
+          "name": "面包",
+          "original_portion": "未吃",
+          "eater": "self",
+          "consumption": "not_eaten",
+          "parent_id": null,
+          "consumed_grams": null,
+          "portion_is_estimate": false,
+          "nutrition_basis": "unknown",
+          "nutrients_per_100g": null,
+          "estimation_notes": [
+            "用户明确说没有吃面包，不计入摄入"
+          ]
+        }
+      ],
+      "questions": [],
+      "warnings": [
+        "鸡蛋与米饭的克重及营养值均为常见份量估算，非称重或权威数据库结果"
+      ]
+    },
+    "items": [
+      {
+        "id": "boiled_egg",
+        "name": "水煮鸡蛋",
+        "original_portion": "两个（普通大小）",
+        "eater": "self",
+        "consumption": "eaten",
+        "parent_id": null,
+        "consumed_grams": 100.0,
+        "portion_is_estimate": true,
+        "nutrition_basis": "model_estimate",
+        "nutrients_per_100g": {
+          "calories_kcal": 144.0,
+          "protein_g": 13.3,
+          "fat_g": 8.8,
+          "carbs_g": 2.8
+        },
+        "estimation_notes": [
+          "按用户说明取普通大小鸡蛋，单个去壳可食部分约50克，两个约100克",
+          "营养值为常见水煮蛋的估算，非数据库或包装标签数据"
+        ],
+        "included_in_totals": true,
+        "nutrients": {
+          "calories_kcal": 144.0,
+          "protein_g": 13.3,
+          "fat_g": 8.8,
+          "carbs_g": 2.8
+        }
+      },
+      {
+        "id": "cooked_rice",
+        "name": "熟米饭",
+        "original_portion": "半碗（普通小饭碗）",
+        "eater": "self",
+        "consumption": "eaten",
+        "parent_id": null,
+        "consumed_grams": 75.0,
+        "portion_is_estimate": true,
+        "nutrition_basis": "model_estimate",
+        "nutrients_per_100g": {
+          "calories_kcal": 116.0,
+          "protein_g": 2.6,
+          "fat_g": 0.3,
+          "carbs_g": 25.9
+        },
+        "estimation_notes": [
+          "按用户说明取普通小饭碗，一碗熟米饭约150克，半碗约75克",
+          "营养值为常见白米饭的估算，非数据库或包装标签数据"
+        ],
+        "included_in_totals": true,
+        "nutrients": {
+          "calories_kcal": 87.0,
+          "protein_g": 2.0,
+          "fat_g": 0.2,
+          "carbs_g": 19.4
+        }
+      },
+      {
+        "id": "bread",
+        "name": "面包",
+        "original_portion": "未吃",
+        "eater": "self",
+        "consumption": "not_eaten",
+        "parent_id": null,
+        "consumed_grams": null,
+        "portion_is_estimate": false,
+        "nutrition_basis": "unknown",
+        "nutrients_per_100g": null,
+        "estimation_notes": [
+          "用户明确说没有吃面包，不计入摄入"
+        ],
+        "included_in_totals": false,
+        "nutrients": null
+      }
+    ],
+    "totals": {
+      "calories_kcal": 231.0,
+      "protein_g": 15.3,
+      "fat_g": 9.0,
+      "carbs_g": 22.2
+    },
+    "known_subtotal": {
+      "calories_kcal": 231.0,
+      "protein_g": 15.3,
+      "fat_g": 9.0,
+      "carbs_g": 22.2
+    },
+    "totals_complete": true,
+    "requires_estimate_acceptance": true,
+    "model": {
+      "name": "keepfit-v1",
+      "schema_version": "1.0",
+      "prompt_version": "2026-10-22.2-r1",
+      "provider": "deepseek",
+      "base_model": "deepseek-flash",
+      "simulated": false,
+      "nutrition_version": "model-estimates-v1"
+    },
+    "record_id": null,
+    "answer_history": [],
+    "demo_fixture": null
+  }
+}

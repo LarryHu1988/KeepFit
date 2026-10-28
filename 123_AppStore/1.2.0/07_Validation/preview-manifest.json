@@ -1,0 +1,772 @@
+[
+  {
+    "file": "02_Previews/zh-Hans/iphone-modern.mp4",
+    "profile": "iphone-modern",
+    "locale": "zh-Hans",
+    "source": "iphone",
+    "width": 886,
+    "height": 1920,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "start": 1793100731.731015,
+        "end": 1793100738.859267,
+        "tab": "eat"
+      },
+      {
+        "start": 1793100738.8593578,
+        "end": 1793100747.701641,
+        "tab": "move"
+      },
+      {
+        "tab": "lose",
+        "start": 1793100747.701734,
+        "end": 1793100764.4235802
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/zh-Hans/iphone-home-large.mp4",
+    "profile": "iphone-home-large",
+    "locale": "zh-Hans",
+    "source": "iphone",
+    "width": 1080,
+    "height": 1920,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "start": 1793100731.731015,
+        "end": 1793100738.859267,
+        "tab": "eat"
+      },
+      {
+        "start": 1793100738.8593578,
+        "end": 1793100747.701641,
+        "tab": "move"
+      },
+      {
+        "tab": "lose",
+        "start": 1793100747.701734,
+        "end": 1793100764.4235802
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/zh-Hans/iphone-home-medium.mp4",
+    "profile": "iphone-home-medium",
+    "locale": "zh-Hans",
+    "source": "iphone-se",
+    "width": 750,
+    "height": 1334,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "end": 1793101250.9423552,
+        "start": 1793101243.284964,
+        "tab": "eat"
+      },
+      {
+        "start": 1793101250.9425778,
+        "tab": "move",
+        "end": 1793101262.7491422
+      },
+      {
+        "tab": "lose",
+        "end": 1793101280.305718,
+        "start": 1793101262.749281
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/zh-Hans/ipad.mp4",
+    "profile": "ipad",
+    "locale": "zh-Hans",
+    "source": "ipad",
+    "width": 1200,
+    "height": 1600,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "start": 1793101003.503823,
+        "end": 1793101009.1649551,
+        "tab": "eat"
+      },
+      {
+        "end": 1793101017.262372,
+        "start": 1793101009.1652231,
+        "tab": "move"
+      },
+      {
+        "tab": "lose",
+        "start": 1793101017.265491,
+        "end": 1793101033.8113809
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/zh-Hans/ipad-legacy.mp4",
+    "profile": "ipad-legacy",
+    "locale": "zh-Hans",
+    "source": "ipad",
+    "width": 900,
+    "height": 1200,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "start": 1793101003.503823,
+        "end": 1793101009.1649551,
+        "tab": "eat"
+      },
+      {
+        "end": 1793101017.262372,
+        "start": 1793101009.1652231,
+        "tab": "move"
+      },
+      {
+        "tab": "lose",
+        "start": 1793101017.265491,
+        "end": 1793101033.8113809
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/zh-Hans/duo-outer.mp4",
+    "profile": "duo-outer",
+    "locale": "zh-Hans",
+    "source": "duo-outer",
+    "width": 886,
+    "height": 1920,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "start": 1793103058.0722961,
+        "tab": "eat",
+        "end": 1793103068.7727451
+      },
+      {
+        "tab": "move",
+        "end": 1793103077.8111959,
+        "start": 1793103068.7729201
+      },
+      {
+        "end": 1793103094.355655,
+        "tab": "lose",
+        "start": 1793103077.811325
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/zh-Hans/duo-inner.mp4",
+    "profile": "duo-inner",
+    "locale": "zh-Hans",
+    "source": "duo-inner-landscape",
+    "width": 1920,
+    "height": 886,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "start": 1793101948.716172,
+        "tab": "eat",
+        "end": 1793101954.485886
+      },
+      {
+        "tab": "move",
+        "end": 1793101963.155573,
+        "start": 1793101954.4861178
+      },
+      {
+        "start": 1793101963.1557178,
+        "tab": "lose",
+        "end": 1793101975.836139
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/en/iphone-modern.mp4",
+    "profile": "iphone-modern",
+    "locale": "en",
+    "source": "iphone",
+    "width": 886,
+    "height": 1920,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "tab": "eat",
+        "start": 1793100770.446368,
+        "end": 1793100777.858274
+      },
+      {
+        "start": 1793100777.858413,
+        "end": 1793100786.130755,
+        "tab": "move"
+      },
+      {
+        "end": 1793100803.034899,
+        "tab": "lose",
+        "start": 1793100786.130903
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/en/iphone-home-large.mp4",
+    "profile": "iphone-home-large",
+    "locale": "en",
+    "source": "iphone",
+    "width": 1080,
+    "height": 1920,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "tab": "eat",
+        "start": 1793100770.446368,
+        "end": 1793100777.858274
+      },
+      {
+        "start": 1793100777.858413,
+        "end": 1793100786.130755,
+        "tab": "move"
+      },
+      {
+        "end": 1793100803.034899,
+        "tab": "lose",
+        "start": 1793100786.130903
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/en/iphone-home-medium.mp4",
+    "profile": "iphone-home-medium",
+    "locale": "en",
+    "source": "iphone-se",
+    "width": 750,
+    "height": 1334,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "tab": "eat",
+        "end": 1793101294.5980349,
+        "start": 1793101286.5961661
+      },
+      {
+        "start": 1793101294.598151,
+        "tab": "move",
+        "end": 1793101305.687652
+      },
+      {
+        "end": 1793101322.206917,
+        "start": 1793101305.687687,
+        "tab": "lose"
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/en/ipad.mp4",
+    "profile": "ipad",
+    "locale": "en",
+    "source": "ipad",
+    "width": 1200,
+    "height": 1600,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "tab": "eat",
+        "start": 1793101040.438519,
+        "end": 1793101045.917355
+      },
+      {
+        "end": 1793101053.8845038,
+        "start": 1793101045.9175081,
+        "tab": "move"
+      },
+      {
+        "start": 1793101053.8845649,
+        "end": 1793101069.946526,
+        "tab": "lose"
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/en/ipad-legacy.mp4",
+    "profile": "ipad-legacy",
+    "locale": "en",
+    "source": "ipad",
+    "width": 900,
+    "height": 1200,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "tab": "eat",
+        "start": 1793101040.438519,
+        "end": 1793101045.917355
+      },
+      {
+        "end": 1793101053.8845038,
+        "start": 1793101045.9175081,
+        "tab": "move"
+      },
+      {
+        "start": 1793101053.8845649,
+        "end": 1793101069.946526,
+        "tab": "lose"
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/en/duo-outer.mp4",
+    "profile": "duo-outer",
+    "locale": "en",
+    "source": "duo-outer",
+    "width": 886,
+    "height": 1920,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "tab": "eat",
+        "end": 1793103113.019435,
+        "start": 1793103102.474842
+      },
+      {
+        "start": 1793103113.0195909,
+        "tab": "move",
+        "end": 1793103122.0103579
+      },
+      {
+        "end": 1793103138.37075,
+        "tab": "lose",
+        "start": 1793103122.0104852
+      }
+    ]
+  },
+  {
+    "file": "02_Previews/en/duo-inner.mp4",
+    "profile": "duo-inner",
+    "locale": "en",
+    "source": "duo-inner-landscape",
+    "width": 1920,
+    "height": 886,
+    "duration": 28,
+    "posterTimecode": "00:00:00:00",
+    "hardwareFrame": "Apple DeviceKit",
+    "overviewTabs": [
+      "eat",
+      "move",
+      "lose"
+    ],
+    "chapters": [
+      {
+        "tab": "cover",
+        "start": 0,
+        "duration": 2.5
+      },
+      {
+        "tab": "eat",
+        "start": 2.5,
+        "duration": 8.5
+      },
+      {
+        "tab": "move",
+        "start": 11.0,
+        "duration": 8.5
+      },
+      {
+        "tab": "lose",
+        "start": 19.5,
+        "duration": 8.5
+      }
+    ],
+    "rawPhases": [
+      {
+        "start": 1793101988.468687,
+        "tab": "eat",
+        "end": 1793101994.188695
+      },
+      {
+        "tab": "move",
+        "end": 1793102002.739923,
+        "start": 1793101994.188894
+      },
+      {
+        "start": 1793102002.740104,
+        "tab": "lose",
+        "end": 1793102018.307307
+      }
+    ]
+  }
+]

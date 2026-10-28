@@ -1,0 +1,33 @@
+services:
+  api:
+    build: ..
+    image: keepfit-model:0.3.0
+    restart: unless-stopped
+    read_only: true
+    user: "10001:10001"
+    mem_limit: 384m
+    cpus: 0.65
+    pids_limit: 96
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    ports: ["127.0.0.1:18765:8765"]
+    tmpfs: ["/tmp:size=32m,noexec,nosuid"]
+    volumes:
+      - /opt/keepfit/data:/data
+      - /opt/keepfit/secrets:/run/keepfit-secrets:ro
+    environment:
+      KEEPFIT_MODE: production
+      KEEPFIT_ALLOWED_HOSTS: keepfit-api.larryhu.com,127.0.0.1,localhost
+      KEEPFIT_CLOUD_PROVIDER: mimo
+      KEEPFIT_PROVIDER_KEY_FILE: /run/keepfit-secrets/provider-key
+      KEEPFIT_APPLE_AUDIENCE: com.larry.keepfit
+      KEEPFIT_USER_DAILY_LIMIT: "10"
+      KEEPFIT_DAILY_LIMIT: "10"
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8765/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options: {max-size: "5m", max-file: "2"}

@@ -1,0 +1,42 @@
+{
+  "updated_at": "2026-10-26T09:16:06+00:00",
+  "jobs": [
+    {
+      "id": "china-nlc-packaged",
+      "status": "partial",
+      "total": 58102,
+      "completed": 58070,
+      "failed": 32,
+      "updated_at": "2026-10-26T06:17:04+00:00",
+      "notes": "Raw label coverage is separate from verified per-100g/per-100ml basis. Re-run resumes missing batches."
+    },
+    {
+      "id": "china-cdc-plate",
+      "status": "complete",
+      "total": 98,
+      "completed": 98,
+      "failed": 0,
+      "updated_at": "2026-10-26T01:52:25+00:00",
+      "notes": "All source plate entries retained. Source has no complete nutrition panels; foodpb not treated as nutrients."
+    },
+    {
+      "id": "china-nlc-basis",
+      "status": "partial",
+      "total": 10648,
+      "completed": 9627,
+      "failed": 1021,
+      "updated_at": "2026-10-26T09:16:06+00:00",
+      "notes": "Checked linked detail pages; source-unavailable records and index candidates without links remain unverified."
+    }
+  ],
+  "total_food_records": 73144,
+  "raw_label_nutrient_rows": 352555,
+  "reference_basis": {
+    "detail_unavailable": 56,
+    "tool_reference_only": 98,
+    "unverified": 48475,
+    "verified": 9571
+  },
+  "quarantined_index_records": 1,
+  "scope": "Public product index snapshot + four-column public comparison pages + all embedded My Plate entries; not a claim that fq.chinanutri.cn is accessible or that all labels have a verified reference unit."
+}

@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-26",
+  "timezone": "Asia/Shanghai",
+  "app_id": "6759662867",
+  "bundle_id": "com.larry.keepfit",
+  "version": "1.1.2",
+  "build_number": "39",
+  "build_id": "1235611b-a121-4af8-8000-6211b162fd37",
+  "processing_state": "VALID",
+  "internal_state": "IN_BETA_TESTING",
+  "external_state": "READY_FOR_BETA_SUBMISSION",
+  "group": "Pilot",
+  "group_id": "9479bcf6-a1eb-414d-af6b-36bf46865268",
+  "ipa_path": "/Users/larry/Library/Developer/Xcode/Archives/2026-10-26/KeepFit-1.1.2-39.ipa",
+  "ipa_sha256": "9b50e97c4c12c006671d947d3e92b6bc12d55b95f49532619e97532f722d359d",
+  "archive_path": "/Users/larry/Library/Developer/Xcode/Archives/2026-10-26/KeepFit-1.1.2-39.xcarchive",
+  "atlas_foods": 13535,
+  "notes_locales": [
+    "en-US",
+    "zh-Hans"
+  ],
+  "test_notes_readback_matches": true,
+  "source_manifest": "source-manifest.json",
+  "temporary_keychain_removed": true,
+  "original_keychain_search_list_restored": true,
+  "real_device_acceptance_pending": true,
+  "app_store_review_submitted": false
+}

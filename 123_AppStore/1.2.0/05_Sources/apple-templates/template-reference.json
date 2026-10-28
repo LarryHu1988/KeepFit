@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "header",
+    "canvas": [
+      3840,
+      1646
+    ],
+    "safeArea": [
+      1097,
+      493,
+      2743,
+      1154
+    ],
+    "sha256": "4200f416adcf3affb70d5847c1d0554fc39b7405110ec527bdea92bfb82f93b0",
+    "url": "https://devimages-cdn.apple.com/design/resources/download/app-store/creative_assets-product_page_header_template-static.psd"
+  },
+  {
+    "kind": "universal",
+    "canvas": [
+      5244,
+      2950
+    ],
+    "safeArea": [
+      1921,
+      660,
+      3323,
+      1622
+    ],
+    "sha256": "72e3f5e67a4be0df463e509cd0df5645e97123c40a897eeba8064339cac0535c",
+    "url": "https://devimages-cdn.apple.com/design/resources/download/app-store/creative_assets-universal_asset_template-static.psd"
+  }
+]

@@ -1,0 +1,14 @@
+KeepFit 1.2.0 (0) — App Review information
+
+The app can be used locally without signing in. On first launch choose the local-use option. Apple sign-in, iCloud sync and Apple Health are optional.
+
+Main flow: Eat Well → select/search food → enter amount → add. Move More → select/search exercise → enter duration → add. Lose Weight → review calorie balance/calendar and record weight/body fat; scroll for trends.
+
+The food atlas is bundled for offline access. Calories and macronutrients are calculated from food baseline values; exercise energy use is estimated using duration, profile and internal MET data. These are wellness estimates, not medical advice. Search lists display names and icons only.
+
+Duo: unfolded landscape inner display uses two columns when the system provides a division region. Other configurations use the regular single-column layout. Simulator media demonstrates layout, not physical-device acceptance.
+
+App Store media uses isolated sample records, not personal health data. No demo credentials are required for local use.
+
+Privacy policy: https://larryhu.com/keepfit/privacy/
+Support: https://larryhu.com/keepfit/support/

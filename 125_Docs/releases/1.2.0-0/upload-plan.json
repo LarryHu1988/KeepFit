@@ -1,0 +1,12 @@
+{
+  "app_id": "6759662867",
+  "version": "1.2.0",
+  "build_number": "0",
+  "build_number_explicitly_requested": true,
+  "group_id": "9479bcf6-a1eb-414d-af6b-36bf46865268",
+  "group": "Pilot",
+  "lane": "low-level IPA upload and internal TestFlight read-back",
+  "app_store_review_submission": false,
+  "github_push_deferred": true,
+  "local_commit": "378e290dbfccf8c802d5baae4d650c6a80a978b9"
+}

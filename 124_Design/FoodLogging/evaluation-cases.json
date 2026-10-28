@@ -1,0 +1,344 @@
+{
+  "status": "design_test_seeds_not_executed",
+  "date": "2026-10-22",
+  "nutrition_ground_truth_included": false,
+  "cases": [
+    {
+      "id": "FOOD-001",
+      "input": "半碗米饭和两个鸡蛋",
+      "required_semantics": [
+        "米饭:半碗",
+        "鸡蛋:2个"
+      ],
+      "must_not": [
+        "把半碗当整碗"
+      ]
+    },
+    {
+      "id": "FOOD-002",
+      "input": "中午一份宫保鸡丁盖饭，只吃了半份",
+      "required_semantics": [
+        "盖饭:整份的1/2"
+      ],
+      "must_not": [
+        "再把饭和鸡丁各算一遍"
+      ]
+    },
+    {
+      "id": "FOOD-003",
+      "input": "四个人吃一盘红烧肉，我吃了三块",
+      "required_semantics": [
+        "本人:红烧肉3块",
+        "聚餐人数:4"
+      ],
+      "must_not": [
+        "自动记1/4盘"
+      ]
+    },
+    {
+      "id": "FOOD-004",
+      "input": "点了一盘番茄炒蛋，我吃了三分之一",
+      "required_semantics": [
+        "菜品:番茄炒蛋",
+        "全盘食用比例:1/3"
+      ],
+      "must_not": [
+        "拆成鸡蛋和番茄重复计入"
+      ]
+    },
+    {
+      "id": "FOOD-005",
+      "input": "没吃米饭，吃了八个水饺",
+      "required_semantics": [
+        "水饺:8个",
+        "米饭:明确未吃"
+      ],
+      "must_not": [
+        "记入米饭"
+      ]
+    },
+    {
+      "id": "FOOD-006",
+      "input": "两个包子，不对，是一个半",
+      "required_semantics": [
+        "包子:1.5个",
+        "纠正前数量作废"
+      ],
+      "must_not": [
+        "把2与1.5相加"
+      ]
+    },
+    {
+      "id": "FOOD-007",
+      "input": "吃一碗面，还剩半碗",
+      "required_semantics": [
+        "面:实际吃半碗"
+      ],
+      "must_not": [
+        "吃一碗又吃半碗"
+      ]
+    },
+    {
+      "id": "FOOD-008",
+      "input": "昨天晚上半碗粥",
+      "required_semantics": [
+        "时间:昨天晚上",
+        "粥:半碗"
+      ],
+      "must_not": [
+        "强行用今天时间"
+      ]
+    },
+    {
+      "id": "FOOD-009",
+      "input": "一碗麻辣烫，里面两个鱼丸一把青菜一份粉丝",
+      "required_semantics": [
+        "整碗麻辣烫与内含食物关系",
+        "份量待核对"
+      ],
+      "must_not": [
+        "整碗与子项重复相加"
+      ]
+    },
+    {
+      "id": "FOOD-010",
+      "input": "一顿火锅",
+      "required_semantics": [
+        "餐型:火锅",
+        "具体食用项未知"
+      ],
+      "must_not": [
+        "套用固定500g当本人已吃"
+      ]
+    },
+    {
+      "id": "FOOD-011",
+      "input": "火锅三片肥牛、两块豆腐、半碗米饭，没喝汤",
+      "required_semantics": [
+        "本人食用项与数量",
+        "汤:未喝"
+      ],
+      "must_not": [
+        "记入全锅汤或其他人的食物"
+      ]
+    },
+    {
+      "id": "FOOD-012",
+      "input": "一杯无糖豆浆",
+      "required_semantics": [
+        "豆浆:1杯",
+        "糖:无",
+        "杯量未确认"
+      ],
+      "must_not": [
+        "无糖推断为零热量"
+      ]
+    },
+    {
+      "id": "FOOD-013",
+      "input": "半袋薯片，袋子净重六十克",
+      "required_semantics": [
+        "薯片:实际30g",
+        "净重60g"
+      ],
+      "must_not": [
+        "吃下60g或袋重加份量"
+      ]
+    },
+    {
+      "id": "FOOD-014",
+      "input": "米线，不是面条",
+      "required_semantics": [
+        "菜品:米线",
+        "否定:面条"
+      ],
+      "must_not": [
+        "同时记米线与面条"
+      ]
+    },
+    {
+      "id": "FOOD-015",
+      "input": "螺蛳粉只吃了粉，汤没喝",
+      "required_semantics": [
+        "菜品:螺蛳粉",
+        "汤:未喝",
+        "粉量未知"
+      ],
+      "must_not": [
+        "将整碗配方全部视为吃下"
+      ]
+    },
+    {
+      "id": "FOOD-016",
+      "input": "同事吃了一份炸鸡，我只喝了拿铁",
+      "required_semantics": [
+        "本人:拿铁",
+        "同事:炸鸡"
+      ],
+      "must_not": [
+        "炸鸡记给本人"
+      ]
+    },
+    {
+      "id": "FOOD-017",
+      "input": "番茄炒蛋油挺多，吃了小半碗",
+      "required_semantics": [
+        "菜品:番茄炒蛋",
+        "小半碗",
+        "用油偏多的观察"
+      ],
+      "must_not": [
+        "把偏多转换为确定的油克数"
+      ]
+    },
+    {
+      "id": "FOOD-018",
+      "input": "食堂两荤一素加半碗饭",
+      "required_semantics": [
+        "饭:半碗",
+        "两荤一素菜名未明"
+      ],
+      "must_not": [
+        "编造三个具体菜名"
+      ]
+    },
+    {
+      "id": "FOOD-019",
+      "input": "晚饭跟昨天差不多，米饭少一半",
+      "required_semantics": [
+        "查找昨天晚餐候选",
+        "本次米饭相对昨天1/2"
+      ],
+      "must_not": [
+        "没有历史就编造菜品"
+      ]
+    },
+    {
+      "id": "FOOD-020",
+      "input": "自制炖菜三百克",
+      "required_semantics": [
+        "自定义炖菜",
+        "称得300g",
+        "配方未知"
+      ],
+      "must_not": [
+        "因有重量就假定已知营养"
+      ]
+    },
+    {
+      "id": "FOOD-021",
+      "input": "麦当劳的一个汉堡",
+      "required_semantics": [
+        "品牌:麦当劳",
+        "汉堡:1个",
+        "具体品种未知"
+      ],
+      "must_not": [
+        "替换为任意品牌通用汉堡并说精确"
+      ]
+    },
+    {
+      "id": "FOOD-022",
+      "input": "吃了一些家里做的菜，名字说不清",
+      "required_semantics": [
+        "未知菜保留",
+        "可补照片或选择类似菜"
+      ],
+      "must_not": [
+        "静默丢弃或算零"
+      ]
+    },
+    {
+      "id": "FOOD-023",
+      "input": "250毫升牛奶加30克燕麦",
+      "required_semantics": [
+        "牛奶250ml",
+        "燕麦30g",
+        "两种单位分别处理"
+      ],
+      "must_not": [
+        "把所有液体都固定1g/ml"
+      ]
+    },
+    {
+      "id": "FOOD-024",
+      "input": "一根带骨排骨",
+      "required_semantics": [
+        "排骨1根",
+        "带骨",
+        "可食部份量未知"
+      ],
+      "must_not": [
+        "直接把带骨重量当可食重量"
+      ]
+    },
+    {
+      "id": "FOOD-025",
+      "input": "这盘菜五个人分，我大约吃了一半",
+      "required_semantics": [
+        "聚餐人数5",
+        "本人比例约1/2"
+      ],
+      "must_not": [
+        "用1/5覆盖本人明确份额"
+      ]
+    },
+    {
+      "id": "FOOD-026",
+      "input": "没吃辣子鸡，吃的是宫保鸡丁",
+      "required_semantics": [
+        "宫保鸡丁:已吃",
+        "辣子鸡:未吃",
+        "份量未知"
+      ],
+      "must_not": [
+        "只匹配两个菜名并全部入账"
+      ]
+    },
+    {
+      "id": "FOOD-027",
+      "input": "一口蛋糕就没吃了",
+      "required_semantics": [
+        "蛋糕:一口",
+        "份量不确定"
+      ],
+      "must_not": [
+        "默认一整块蛋糕"
+      ]
+    },
+    {
+      "id": "FOOD-028",
+      "input": "沙县拌面大概四分之一，扁肉六个",
+      "required_semantics": [
+        "品牌/风格:沙县",
+        "拌面:约1/4份",
+        "扁肉:6个"
+      ],
+      "must_not": [
+        "把扁肉当某种生肉"
+      ]
+    },
+    {
+      "id": "FOOD-029",
+      "input": "我和朋友点了三个菜，我吃了多少记不清",
+      "required_semantics": [
+        "共餐3道菜",
+        "本人份量未知"
+      ],
+      "must_not": [
+        "未经确认均分"
+      ]
+    },
+    {
+      "id": "FOOD-030",
+      "input": "拍的是一桌菜，帮我先记住，稍后补我吃了什么",
+      "required_semantics": [
+        "照片属于全桌",
+        "本人摄入待补"
+      ],
+      "must_not": [
+        "照片所有菜立即计入本人摄入"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "locale": "zh-Hans",
+    "field": "name",
+    "count": 16,
+    "unit": "characters",
+    "limit": 30,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "zh-Hans",
+    "field": "subtitle",
+    "count": 15,
+    "unit": "characters",
+    "limit": 30,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "zh-Hans",
+    "field": "keywords",
+    "count": 99,
+    "unit": "UTF-8 bytes",
+    "limit": 100,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "zh-Hans",
+    "field": "promotionalText",
+    "count": 61,
+    "unit": "characters",
+    "limit": 170,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "zh-Hans",
+    "field": "description",
+    "count": 560,
+    "unit": "characters",
+    "limit": 4000,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "zh-Hans",
+    "field": "whatsNew",
+    "count": 209,
+    "unit": "characters",
+    "limit": 4000,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "en-US",
+    "field": "name",
+    "count": 25,
+    "unit": "characters",
+    "limit": 30,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "en-US",
+    "field": "subtitle",
+    "count": 30,
+    "unit": "characters",
+    "limit": 30,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "en-US",
+    "field": "keywords",
+    "count": 96,
+    "unit": "UTF-8 bytes",
+    "limit": 100,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "en-US",
+    "field": "promotionalText",
+    "count": 163,
+    "unit": "characters",
+    "limit": 170,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "en-US",
+    "field": "description",
+    "count": 1534,
+    "unit": "characters",
+    "limit": 4000,
+    "copiesConsistent": true,
+    "pass": true
+  },
+  {
+    "locale": "en-US",
+    "field": "whatsNew",
+    "count": 518,
+    "unit": "characters",
+    "limit": 4000,
+    "copiesConsistent": true,
+    "pass": true
+  }
+]

@@ -1,0 +1,4455 @@
+[
+  {
+    "file": "03_Creatives/zh-Hans/header-3840x1646.png",
+    "locale": "zh-Hans",
+    "kind": "header",
+    "width": 3840,
+    "height": 1646
+  },
+  {
+    "file": "03_Creatives/en/header-3840x1646.png",
+    "locale": "en",
+    "kind": "header",
+    "width": 3840,
+    "height": 1646
+  },
+  {
+    "file": "03_Creatives/text-free/header-3840x1646.png",
+    "locale": "text-free",
+    "kind": "header",
+    "width": 3840,
+    "height": 1646
+  },
+  {
+    "file": "03_Creatives/zh-Hans/search-3840x2560.png",
+    "locale": "zh-Hans",
+    "kind": "search",
+    "width": 3840,
+    "height": 2560
+  },
+  {
+    "file": "03_Creatives/en/search-3840x2560.png",
+    "locale": "en",
+    "kind": "search",
+    "width": 3840,
+    "height": 2560
+  },
+  {
+    "file": "03_Creatives/text-free/search-3840x2560.png",
+    "locale": "text-free",
+    "kind": "search",
+    "width": 3840,
+    "height": 2560
+  },
+  {
+    "file": "03_Creatives/zh-Hans/universal-5244x2950.png",
+    "locale": "zh-Hans",
+    "kind": "universal",
+    "width": 5244,
+    "height": 2950
+  },
+  {
+    "file": "03_Creatives/en/universal-5244x2950.png",
+    "locale": "en",
+    "kind": "universal",
+    "width": 5244,
+    "height": 2950
+  },
+  {
+    "file": "03_Creatives/text-free/universal-5244x2950.png",
+    "locale": "text-free",
+    "kind": "universal",
+    "width": 5244,
+    "height": 2950
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2224/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2224/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2224/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2224/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2224/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2224/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2224/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2224/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1668,
+    "height": 2224,
+    "key": "1668x2224",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_105"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1536x2048/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1536x2048/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1536x2048/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1536x2048/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1536x2048/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1536x2048/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1536x2048/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1536x2048/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1536,
+    "height": 2048,
+    "key": "1536x2048",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_97"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/2048x2732/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/2048x2732/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/2048x2732/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/2048x2732/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/2048x2732/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/2048x2732/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/2048x2732/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/2048x2732/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 2048,
+    "height": 2732,
+    "key": "2048x2732",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_129",
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1488x2266/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1488x2266/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1488x2266/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1488x2266/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1488x2266/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1488x2266/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1488x2266/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1488x2266/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1488,
+    "height": 2266,
+    "key": "1488x2266",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1640x2360/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1640x2360/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1640x2360/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1640x2360/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1640x2360/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1640x2360/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1640x2360/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1640x2360/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1640,
+    "height": 2360,
+    "key": "1640x2360",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2388/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2388/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2388/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2388/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2388/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2388/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2388/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2388/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1668,
+    "height": 2388,
+    "key": "1668x2388",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2420/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2420/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2420/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/1668x2420/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2420/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2420/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2420/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/1668x2420/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1668,
+    "height": 2420,
+    "key": "1668x2420",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_11"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/2064x2752/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/2064x2752/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/2064x2752/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/ipad/2064x2752/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/2064x2752/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/2064x2752/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/2064x2752/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/ipad/2064x2752/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 2064,
+    "height": 2752,
+    "key": "2064x2752",
+    "device": "ipad",
+    "source": "ipad",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPAD_PRO_3GEN_129"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x960/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x960/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x960/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x960/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x960/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x960/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x960/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x960/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x960/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x960/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x960/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x960/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x960/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x960/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 640,
+    "height": 960,
+    "key": "640x960",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_35"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x1136/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x1136/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x1136/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x1136/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x1136/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x1136/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/640x1136/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x1136/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x1136/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x1136/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x1136/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x1136/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x1136/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/640x1136/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 640,
+    "height": 1136,
+    "key": "640x1136",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_40"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/750x1334/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/750x1334/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/750x1334/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/750x1334/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/750x1334/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/750x1334/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/750x1334/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/750x1334/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/750x1334/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/750x1334/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/750x1334/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/750x1334/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/750x1334/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/750x1334/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 750,
+    "height": 1334,
+    "key": "750x1334",
+    "device": "iphone",
+    "source": "iphone-se",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_47"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2208/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2208/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2208/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2208/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2208/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2208/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2208/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2208/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2208/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2208/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2208/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2208/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2208/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2208/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1242,
+    "height": 2208,
+    "key": "1242x2208",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_55"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1080x2340/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1080x2340/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1080x2340/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1080x2340/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1080x2340/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1080x2340/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1080x2340/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1080x2340/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1080x2340/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1080x2340/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1080x2340/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1080x2340/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1080x2340/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1080x2340/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1080,
+    "height": 2340,
+    "key": "1080x2340",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1125x2436/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1125x2436/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1125x2436/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1125x2436/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1125x2436/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1125x2436/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1125x2436/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1125x2436/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1125x2436/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1125x2436/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1125x2436/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1125x2436/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1125x2436/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1125x2436/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1125,
+    "height": 2436,
+    "key": "1125x2436",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1170x2532/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1170x2532/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1170x2532/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1170x2532/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1170x2532/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1170x2532/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1170x2532/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1170x2532/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1170x2532/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1170x2532/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1170x2532/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1170x2532/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1170x2532/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1170x2532/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1170,
+    "height": 2532,
+    "key": "1170x2532",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_58"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1179x2556/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1179x2556/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1179x2556/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1179x2556/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1179x2556/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1179x2556/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1179x2556/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1179x2556/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1179x2556/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1179x2556/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1179x2556/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1179x2556/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1179x2556/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1179x2556/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1179,
+    "height": 2556,
+    "key": "1179x2556",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1206x2622/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1206x2622/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1206x2622/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1206x2622/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1206x2622/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1206x2622/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1206x2622/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1206x2622/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1206x2622/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1206x2622/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1206x2622/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1206x2622/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1206x2622/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1206x2622/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1206,
+    "height": 2622,
+    "key": "1206x2622",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_61"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2688/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2688/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2688/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2688/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2688/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2688/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1242x2688/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2688/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2688/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2688/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2688/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2688/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2688/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1242x2688/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1242,
+    "height": 2688,
+    "key": "1242x2688",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1284x2778/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1284x2778/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1284x2778/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1284x2778/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1284x2778/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1284x2778/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1284x2778/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1284x2778/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1284x2778/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1284x2778/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1284x2778/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1284x2778/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1284x2778/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1284x2778/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1284,
+    "height": 2778,
+    "key": "1284x2778",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_65"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1260x2736/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1260x2736/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1260x2736/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1260x2736/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1260x2736/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1260x2736/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1260x2736/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1260x2736/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1260x2736/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1260x2736/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1260x2736/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1260x2736/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1260x2736/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1260x2736/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1260,
+    "height": 2736,
+    "key": "1260x2736",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1290x2796/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1290x2796/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1290x2796/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1290x2796/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1290x2796/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1290x2796/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1290x2796/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1290x2796/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1290x2796/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1290x2796/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1290x2796/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1290x2796/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1290x2796/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1290x2796/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1290,
+    "height": 2796,
+    "key": "1290x2796",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1320x2868/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1320x2868/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1320x2868/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1320x2868/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1320x2868/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1320x2868/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/iphone/1320x2868/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1320x2868/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1320x2868/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1320x2868/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1320x2868/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1320x2868/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1320x2868/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/iphone/1320x2868/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1320,
+    "height": 2868,
+    "key": "1320x2868",
+    "device": "iphone",
+    "source": "iphone",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_67",
+      "APP_IPHONE_69"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer/1398x2034/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer/1398x2034/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer/1398x2034/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer/1398x2034/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer/1398x2034/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer/1398x2034/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer/1398x2034/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer/1398x2034/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 1398,
+    "height": 2034,
+    "key": "1398x2034",
+    "device": "duo-outer",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner/2007x2853/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner/2007x2853/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner/2007x2853/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner/2007x2853/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner/2007x2853/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner/2007x2853/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner/2007x2853/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner/2007x2853/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 2007,
+    "height": 2853,
+    "key": "2007x2853",
+    "device": "duo-inner",
+    "source": "duo-inner-landscape",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/05.png",
+    "locale": "zh-Hans",
+    "slide": 5,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/06.png",
+    "locale": "zh-Hans",
+    "slide": 6,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-outer-landscape/2034x1398/07.png",
+    "locale": "zh-Hans",
+    "slide": 7,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/05.png",
+    "locale": "en",
+    "slide": 5,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/06.png",
+    "locale": "en",
+    "slide": 6,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-outer-landscape/2034x1398/07.png",
+    "locale": "en",
+    "slide": 7,
+    "width": 2034,
+    "height": 1398,
+    "key": "2034x1398",
+    "device": "duo-outer-landscape",
+    "source": "duo-outer",
+    "shotCount": 7,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner-landscape/2853x2007/01.png",
+    "locale": "zh-Hans",
+    "slide": 1,
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner-landscape/2853x2007/02.png",
+    "locale": "zh-Hans",
+    "slide": 2,
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner-landscape/2853x2007/03.png",
+    "locale": "zh-Hans",
+    "slide": 3,
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/zh-Hans/duo-inner-landscape/2853x2007/04.png",
+    "locale": "zh-Hans",
+    "slide": 4,
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner-landscape/2853x2007/01.png",
+    "locale": "en",
+    "slide": 1,
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner-landscape/2853x2007/02.png",
+    "locale": "en",
+    "slide": 2,
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner-landscape/2853x2007/03.png",
+    "locale": "en",
+    "slide": 3,
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  },
+  {
+    "file": "01_Screenshots/en/duo-inner-landscape/2853x2007/04.png",
+    "locale": "en",
+    "slide": 4,
+    "width": 2853,
+    "height": 2007,
+    "key": "2853x2007",
+    "device": "duo-inner-landscape",
+    "source": "duo-inner-landscape",
+    "shotCount": 4,
+    "displayTypes": [
+      "APP_IPHONE_DUO"
+    ]
+  }
+]

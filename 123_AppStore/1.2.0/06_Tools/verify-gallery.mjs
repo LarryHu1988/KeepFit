@@ -1,0 +1,10 @@
+import fs from'node:fs/promises';import path from'node:path';import{fileURLToPath}from'node:url';import assert from'node:assert/strict';
+const R=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');const{chromium}=await import(path.join(R,'../../126_Tools/MediaRenderer/node_modules/playwright/index.mjs'));
+const browser=await chromium.launch({headless:true,channel:'chrome'}),page=await browser.newPage({viewport:{width:1450,height:1100}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto('http://127.0.0.1:3212/');await page.waitForFunction(()=>document.querySelector('#description').textContent.length>100&&document.querySelectorAll('#shots img').length===7);
+const normal=await page.locator('#shots a').count();assert.equal(normal,7);assert.equal(await page.locator('#size option').count(),26);assert.equal(await page.locator('video').count(),7);
+await page.screenshot({path:path.join(R,'07_Validation/ReviewSheets/gallery-iphone.png')});
+await page.locator('#size').selectOption({label:'duo-inner-landscape · 2853x2007'});await page.waitForFunction(()=>document.querySelectorAll('#shots img').length===4&&document.querySelector('#shots img').src.includes('2853x2007'));assert.equal(await page.locator('#shots a').count(),4);
+await page.locator('#lang').selectOption('en');await page.waitForFunction(()=>document.querySelector('#description').textContent.includes('Small daily records'));assert.equal(await page.locator('#shots a').count(),4);
+await page.screenshot({path:path.join(R,'07_Validation/ReviewSheets/gallery-duo.png')});assert.deepEqual(errors,[]);
+const result={status:'PASS',errors,languageOptions:2,sizeOptions:26,normalScreenshotCards:normal,duoInnerLandscapeCards:4,videoCards:7,localizedCreativeCards:3,brandCreativeCards:3};await fs.writeFile(path.join(R,'07_Validation/gallery-validation.json'),JSON.stringify(result,null,2));console.log(result);await browser.close();

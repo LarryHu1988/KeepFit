@@ -1,0 +1,48 @@
+{
+  "trackedRelocations": 225,
+  "unchanged": 218,
+  "changed": [
+    {
+      "old": "Design/Thiings/README.md",
+      "new": "124_Design/Thiings/README.md",
+      "contentUnchanged": false
+    },
+    {
+      "old": "Design/Thiings/icon-mapping.csv",
+      "new": "124_Design/Thiings/icon-mapping.csv",
+      "contentUnchanged": false
+    },
+    {
+      "old": "Design/Thiings/prepare_plan.py",
+      "new": "124_Design/Thiings/prepare_plan.py",
+      "contentUnchanged": false
+    },
+    {
+      "old": "Tests/run-meal-model.sh",
+      "new": "120_App/Tests/run-meal-model.sh",
+      "contentUnchanged": false
+    },
+    {
+      "old": "nutrition-database/README.md",
+      "new": "121_FoodAtlas/README.md",
+      "contentUnchanged": false
+    },
+    {
+      "old": "nutrition-database/export_app.py",
+      "new": "121_FoodAtlas/export_app.py",
+      "contentUnchanged": false
+    },
+    {
+      "old": "nutrition-database/tests/browser_smoke.cjs",
+      "new": "121_FoodAtlas/tests/browser_smoke.cjs",
+      "contentUnchanged": false
+    }
+  ],
+  "missing": [],
+  "appBuild": "BUILD SUCCEEDED",
+  "foodAtlasTests": 36,
+  "backendTests": 54,
+  "trendAxisCombinations": 12768,
+  "appFoodExportByteIdentical": true,
+  "sqliteQuickCheck": "ok"
+}

@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-24",
+  "timezone": "Asia/Shanghai",
+  "app_id": "6759662867",
+  "bundle_id": "com.larry.keepfit",
+  "version": "1.1.1",
+  "build_number": "38",
+  "build_id": "914c96db-24aa-4f14-8748-6dee312fdb38",
+  "processing_state": "VALID",
+  "internal_state": "IN_BETA_TESTING",
+  "group": "Pilot",
+  "group_id": "9479bcf6-a1eb-414d-af6b-36bf46865268",
+  "ipa_path": "/Users/larry/Library/Developer/Xcode/Archives/2026-10-24/KeepFit-1.1.1-38.ipa",
+  "ipa_sha256": "d0bef46847793866723f6949e73bcfcd40286f9fd8719a96cd0e64c986e37afc",
+  "archive_path": "/Users/larry/Library/Developer/Xcode/Archives/2026-10-24/KeepFit-1.1.1-38.xcarchive",
+  "production_model_url": "https://keepfit-api.larryhu.com/",
+  "notes_locales": [
+    "zh-Hans",
+    "en-US"
+  ],
+  "distribution_profile_id": "GR3Y77S4UU",
+  "distribution_certificate_sha1": "5379D112F4842B9FF41CC26EFD614A3AB3186B2F",
+  "real_device_acceptance_pending": [
+    "Apple sign-in",
+    "microphone/transcription",
+    "food photo recognition",
+    "complete on-device meal import"
+  ],
+  "app_store_review_submitted": false
+}

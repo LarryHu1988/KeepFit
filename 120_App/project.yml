@@ -1,0 +1,67 @@
+name: KeepFit
+options:
+  minimumXcodeGenVersion: 2.37.0
+  createIntermediateGroups: true
+configs:
+  Debug: debug
+  Release: release
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+    INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+    INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+    INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleDefault
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    STRING_CATALOG_GENERATE_SYMBOLS: YES
+
+targets:
+  KeepFit:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: KeepFitApp
+        excludes:
+          - "**/*.md"
+    resources:
+      - path: KeepFitApp/Assets.xcassets
+    dependencies:
+      - sdk: Charts.framework
+      - sdk: HealthKit.framework
+      - sdk: PhotosUI.framework
+      - sdk: Speech.framework
+      - sdk: AVFoundation.framework
+    settings:
+      base:
+        CODE_SIGN_ENTITLEMENTS: KeepFitApp/KeepFit.entitlements
+        DEVELOPMENT_TEAM: 2S7X36GQC9
+        PRODUCT_BUNDLE_IDENTIFIER: com.larry.keepfit
+        MARKETING_VERSION: 1.2.0
+        CURRENT_PROJECT_VERSION: 0
+        INFOPLIST_KEY_CFBundleDisplayName: KeepFit
+        INFOPLIST_KEY_NSHealthShareUsageDescription: 允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。
+        INFOPLIST_KEY_NSHealthUpdateUsageDescription: 允许 KeepFit 将饮食、运动与体重记录写入 Apple 健康。
+        INFOPLIST_KEY_NSPhotoLibraryUsageDescription: 用于选择头像或本餐食物照片
+    info:
+      path: KeepFitApp/Info.plist
+      properties:
+        CFBundleDisplayName: KeepFit
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        ITSAppUsesNonExemptEncryption: false
+        NSHealthShareUsageDescription: 允许 KeepFit 读取你的 Apple 健康数据用于同步饮食、运动与体重记录。
+        NSHealthUpdateUsageDescription: 允许 KeepFit 将饮食、运动与体重记录写入 Apple 健康。
+        NSPhotoLibraryUsageDescription: 用于选择头像或本餐食物照片
+        NSMicrophoneUsageDescription: 用于将你说的饮食内容转成文字，核对后再识别。
+        NSSpeechRecognitionUsageDescription: 用于转写饮食描述；设备不支持本地转写时可能使用 Apple 语音服务。
+        NSCameraUsageDescription: 用于拍摄本餐食物，确认后发送给饮食识别服务。
+        KeepFitModelURL: "https://keepfit-api.larryhu.com/"
+        UIApplicationSceneManifest: {}
+        UILaunchScreen: {}
+    scheme:
+      gatherCoverageData: false
+      environmentVariables: {}

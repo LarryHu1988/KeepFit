@@ -1,0 +1,144 @@
+{
+  "generated_at": "2026-10-26T02:23:38+00:00",
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "china-cdc",
+      "name": "中国疾控中心营养与健康所 / 中国食物成分表公开查询",
+      "version": "public-query-2026-10-25",
+      "license": "Commercial use requires written permission from China CDC NINH",
+      "commercial_use_authorized": 0,
+      "foods": 1356,
+      "complete_macros": 1178
+    },
+    {
+      "id": "china-cdc-plate",
+      "name": "中国疾控营养所 · 我的餐盘菜品及份量",
+      "version": "snapshot-2026-10-26",
+      "license": "Copyright retained by source; commercial permission not established",
+      "commercial_use_authorized": 0,
+      "foods": 98,
+      "complete_macros": 0
+    },
+    {
+      "id": "china-nlc-packaged",
+      "name": "中国疾控营养所 · 预包装食品营养标签",
+      "version": "snapshot-2026-10-26",
+      "license": "Copyright retained by source; commercial permission not established",
+      "commercial_use_authorized": 0,
+      "foods": 58102,
+      "complete_macros": 1
+    },
+    {
+      "id": "usda-fndds",
+      "name": "USDA FoodData Central - FNDDS 2021-2023",
+      "version": "2024-10",
+      "license": "CC0-1.0",
+      "commercial_use_authorized": 1,
+      "foods": 5432,
+      "complete_macros": 5431
+    },
+    {
+      "id": "usda-foundation",
+      "name": "USDA FoodData Central - Foundation Foods",
+      "version": "2026-04",
+      "license": "CC0-1.0",
+      "commercial_use_authorized": 1,
+      "foods": 363,
+      "complete_macros": 311
+    },
+    {
+      "id": "usda-sr-legacy",
+      "name": "USDA FoodData Central - SR Legacy",
+      "version": "2018-04",
+      "license": "CC0-1.0",
+      "commercial_use_authorized": 1,
+      "foods": 7793,
+      "complete_macros": 7793
+    }
+  ],
+  "integrity": "ok",
+  "foreign_key_errors": [],
+  "foods": 73144,
+  "nutrients": 1054374,
+  "source_portions": 14814,
+  "chinese_names": 59632,
+  "missing_macros": 58430,
+  "invalid_nutrients": 0,
+  "invalid_source_values": 10,
+  "qualifiers": {
+    "invalid_source_value": 10,
+    "missing": 5907,
+    "not_detected": 513,
+    "not_tested": 6654,
+    "reported": 1041290
+  },
+  "source_details": [
+    {
+      "id": "china-cdc",
+      "name": "中国疾控中心营养与健康所 / 中国食物成分表公开查询",
+      "version": "public-query-2026-10-25",
+      "url": "https://nlc.chinanutri.cn/fq/foodinfo/261.html",
+      "license": "Commercial use requires written permission from China CDC NINH",
+      "commercial_use_authorized": 0,
+      "retrieved_at": "2026-10-25T13:22:20+00:00",
+      "raw_sha256": "e4439eb1f5a4790526838a5aacad879bad00f51a65d8204adf851fd086b5ae22",
+      "notes": "Local reference only; excluded from App/commercial exports pending permission. 100 g source basis; household portion weights not supplied."
+    },
+    {
+      "id": "china-cdc-plate",
+      "name": "中国疾控营养所 · 我的餐盘菜品及份量",
+      "version": "snapshot-2026-10-26",
+      "url": "https://nlc.chinanutri.cn/ssbt/plate.htm",
+      "license": "Copyright retained by source; commercial permission not established",
+      "commercial_use_authorized": 0,
+      "retrieved_at": "2026-10-26T01:43:38+00:00",
+      "raw_sha256": "aa487747241700665da9a36a7e45d70e60d364f06560945eaff8cca15c22da45",
+      "notes": "Dish names, tool quantities and original foodpb vector only. The vector is not a nutrient panel; no gram-to-ml assumptions or estimated macros were added."
+    },
+    {
+      "id": "china-nlc-packaged",
+      "name": "中国疾控营养所 · 预包装食品营养标签",
+      "version": "snapshot-2026-10-26",
+      "url": "https://nlc.chinanutri.cn/",
+      "license": "Copyright retained by source; commercial permission not established",
+      "commercial_use_authorized": 0,
+      "retrieved_at": "2026-10-26T01:43:36+00:00",
+      "raw_sha256": "b0c27e738d06455368f3e94ae4d6ae838320d80159713054268ebb8007bdc892",
+      "notes": "Public autocomplete index snapshot; comparison data retains original labels. Not every indexed candidate has a working standalone detail page. No per-100g normalization until label reference basis is verified."
+    },
+    {
+      "id": "usda-fndds",
+      "name": "USDA FoodData Central - FNDDS 2021-2023",
+      "version": "2024-10",
+      "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_survey_food_json_2024-10-31.zip",
+      "license": "CC0-1.0",
+      "commercial_use_authorized": 1,
+      "retrieved_at": "2026-10-25T13:16:11+00:00",
+      "raw_sha256": "dfb06ae7ddc397ccd570b91c14b75438ab2ba39f64f22d321f61d4a52a77f3eb",
+      "notes": "Nutrients per 100 g edible food. Raw/cooked states retained; missing is NULL."
+    },
+    {
+      "id": "usda-foundation",
+      "name": "USDA FoodData Central - Foundation Foods",
+      "version": "2026-04",
+      "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_json_2026-04-30.zip",
+      "license": "CC0-1.0",
+      "commercial_use_authorized": 1,
+      "retrieved_at": "2026-10-25T13:16:09+00:00",
+      "raw_sha256": "186e988ec542e913f51ef62b86a47758e8cdd0d1dc3889e7b055581f3c09c77a",
+      "notes": "Nutrients per 100 g edible food. Raw/cooked states retained; missing is NULL. Source contains 32 null records; skipped."
+    },
+    {
+      "id": "usda-sr-legacy",
+      "name": "USDA FoodData Central - SR Legacy",
+      "version": "2018-04",
+      "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_json_2018-04.zip",
+      "license": "CC0-1.0",
+      "commercial_use_authorized": 1,
+      "retrieved_at": "2026-10-25T13:16:03+00:00",
+      "raw_sha256": "0fe8ae486a2c8eb42cb96413f058deb51863a46c8fb8eeb4b1fb45006dd338ef",
+      "notes": "Nutrients per 100 g edible food. Raw/cooked states retained; missing is NULL."
+    }
+  ]
+}

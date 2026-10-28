@@ -1,0 +1,18 @@
+{
+    admin off
+    acme_ca https://acme-v02.api.letsencrypt.org/directory
+}
+keepfit-api.larryhu.com {
+    request_body {
+        max_size 6MB
+    }
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy no-referrer
+        Cache-Control no-store
+        -Server
+    }
+    reverse_proxy 127.0.0.1:18765 {
+        header_up X-Forwarded-For {remote_host}
+    }
+}

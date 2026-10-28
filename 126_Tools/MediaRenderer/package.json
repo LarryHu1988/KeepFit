@@ -1,0 +1,1 @@
+{"name":"keepfit-media-renderer","private":true,"type":"module","dependencies":{"playwright":"1.58.2","sharp":"0.34.5"}}
