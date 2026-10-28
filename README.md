@@ -12,16 +12,18 @@
   <a href="https://larryhu.com/keepfit/support/">技术支持</a> ·
   <a href="README.en.md">English</a>
 </p>
-<p align="center">iPhone 与 iPad · iOS / iPadOS 17 及以上 · SwiftUI</p>
+<p align="center">iPhone 与 iPad · iOS / iPadOS 17 及以上</p>
 
 ## 把日常，连成一条线
 
 从今天吃了什么，到这段时间的变化。三个熟悉的页面，陪你慢慢积累。
 
-| 管住嘴 | 迈开腿 | 减个肥 |
-|:---:|:---:|:---:|
-| <img src="125_Docs/branding/zh-eat-overview.png" width="250" alt="KeepFit 饮食记录界面"> | <img src="125_Docs/branding/zh-move-overview.png" width="250" alt="KeepFit 运动记录界面"> | <img src="125_Docs/branding/zh-lose-overview.png" width="250" alt="KeepFit 热量平衡与身体趋势界面"> |
-| 记录食物与份量，查看热量估算及蛋白、碳水、脂肪，用日历回顾饮食。 | 记下运动项目与时长，了解估算消耗，为日常活动留下连续的记录。 | 把热量平衡、体重和体脂趋势放在一起，拉长时间看见变化。 |
+<p align="center">
+  <img src="125_Docs/branding/zh-eat-overview.png" width="30%" alt="KeepFit 饮食记录界面">
+  <img src="125_Docs/branding/zh-move-overview.png" width="30%" alt="KeepFit 运动记录界面">
+  <img src="125_Docs/branding/zh-lose-overview.png" width="30%" alt="KeepFit 热量平衡与身体趋势界面">
+</p>
+<p align="center">管住嘴 · 迈开腿 · 减个肥</p>
 
 真实应用界面，截图中为演示数据。
 
@@ -41,33 +43,8 @@
 
 热量、消耗和相关建议仅供日常记录参考，不构成医疗诊断或治疗建议。如有健康问题，请咨询专业人士。
 
-## 从源码开始
-
-使用 Xcode 打开 `120_App/KeepFit.xcodeproj`，选择 **KeepFit** scheme。无需签名的模拟器构建：
-
-```sh
-DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild \
-  -project 120_App/KeepFit.xcodeproj -scheme KeepFit \
-  -sdk iphonesimulator -derivedDataPath /tmp/keepfit-build \
-  CODE_SIGNING_ALLOWED=NO build
-```
-
-| 目录 | 内容 |
-|---|---|
-| [120_App](120_App/) | SwiftUI App、Xcode 工程和测试 |
-| [121_FoodAtlas](121_FoodAtlas/) | 食物图谱整理、来源追踪和离线导出工具 |
-| [122_Backend](122_Backend/) | 饮食识别后端、工作台与部署说明 |
-| [123_AppStore](123_AppStore/) | 上架文案、素材源文件和重制工具 |
-| [124_Design](124_Design/) | 设计资料与图标映射 |
-| [125_Docs](125_Docs/) | 开发说明、支持、隐私与版本记录 |
-| [126_Tools](126_Tools/) | 媒体工具依赖清单 |
-
-详见[开发与维护说明](125_Docs/README.md)、[App 测试](120_App/Tests/README.md)和[食物图谱说明](121_FoodAtlas/README.md)。私有数据库、凭据、签名、审核联系人及大型素材中间文件不包含在仓库中。App 已包含可直接加载的离线食物数据包。
-
-源码版本与更新说明见 [GitHub Releases](https://github.com/LarryHu1988/KeepFit/releases)。App Store 可下载版本以商店页面为准。
-
 ## 联系
 
-问题与建议欢迎提交 [Issue](https://github.com/LarryHu1988/KeepFit/issues)，或联系 [keepfit@larryhu.com](mailto:keepfit@larryhu.com)。反馈时请附设备型号、系统与 App 版本，以及复现步骤；请勿公开个人健康记录或凭据。
+问题与建议请访问[技术支持](https://larryhu.com/keepfit/support/)，或联系 [keepfit@larryhu.com](mailto:keepfit@larryhu.com)。反馈时请附设备型号、系统与 App 版本，以及复现步骤；请勿公开个人健康记录或凭据。
 
-© 2026 Larry Hu。仓库公开供查看，尚未授予统一的开源许可；第三方资料遵循各自许可与使用条款。
+© 2026 Larry Hu
